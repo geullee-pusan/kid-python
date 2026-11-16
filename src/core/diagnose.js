@@ -13,6 +13,7 @@
 //            - want: 나와야 하는 출력이 이 정규식에 맞을 때만 본다(입력이 여러 가지인 문제에서 어느 입력 때의 실수인지 가리려고)
 //            - inputs: 채점할 때 넣은 답(쉼표로 이은 것)이 이 정규식에 맞을 때만 본다. 예: "^130$"
 //            - output을 "^$"로 적으면 아무것도 나오지 않은 경우를 가리킨다
+//            - again: true면, 준 답을 다 쓰고도 프로그램이 또 물었을 때만 본다(그때까지의 출력으로 견준다)
 
 /** 출력을 줄 목록으로. 줄 끝 빈칸과 맨 끝 빈 줄은 뺀다. */
 export function outputLines(output) {
@@ -47,7 +48,7 @@ export function diagnoseTask(task, code, run) {
   const compute = task.compute ?? [];
 
   const same = got.length === want.length && got.every((line, i) => line === want[i]);
-  if (same) {
+  if (same && !run.again) {
     const missing = compute.find((item) => !new RegExp(item.pattern).test(bare));
     if (missing) return { kind: 'not-computed', vars: { calc: missing.literal } };
     // 출력은 맞지만 배운 방법을 쓰지 않은 경우(예: 이름표를 쓰지 않고 숫자를 바로 곱함)
@@ -63,6 +64,8 @@ export function diagnoseTask(task, code, run) {
     (m) =>
       // 아무것도 나오지 않았을 때는, 출력 조건을 따로 적어 둔 실수만 본다(나머지는 "아직 아무것도 안 나왔다"고 알려 준다).
       (got.length > 0 || m.output !== undefined) &&
+      // again: 준 답을 다 쓰고도 또 물었을 때(run.again)만 보는 실수. 예: 기회가 끝났는데도 계속 묻는다.
+      Boolean(m.again) === Boolean(run.again) &&
       (!m.code || new RegExp(m.code).test(bare)) &&
       (m.output === undefined || new RegExp(m.output).test(text)) &&
       (!m.want || new RegExp(m.want).test(wanted)) &&

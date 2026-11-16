@@ -64,6 +64,11 @@ function asAnswer(inputs) {
   return `${inputs.join(', ')}${hasBatchim(inputs[inputs.length - 1]) ? '이라고' : '라고'}`;
 }
 
+/** 무작위 수를 쓰는 문제는 채점할 때 고를 수를 정해 둔다. 그 수를 말로: { randoms: [62] } → "고른 수가 62일 때, " */
+function picked(one) {
+  return one.randoms?.length ? `고른 수가 ${one.randoms[0]}일 때, ` : '';
+}
+
 /** "처음으로"를 눌러 수업을 그만둘 때 흐름을 한 번에 빠져나오려고 던진다. */
 class Stop extends Error {}
 
@@ -476,7 +481,10 @@ async function main() {
         hush();
         if (pressed === 'skip') return 'stop';
         const ran = lastRun;
-        const same = ran && !ran.error && (scene.match ? new RegExp(scene.match).test(ran.output) : outputLines(ran.output).join('\n') === scene.expect.join('\n'));
+        // stopped: 끝나지 않는 프로그램을 돌려 보고 멈춤 버튼으로 멈추는 연습. 멈췄으면 된 것이다.
+        const same = scene.stopped
+          ? Boolean(ran?.stopped)
+          : ran && !ran.error && !ran.stopped && (scene.match ? new RegExp(scene.match).test(ran.output) : outputLines(ran.output).join('\n') === scene.expect.join('\n'));
         log('follow', { mission: mission.id, ok: Boolean(same), tries, code: editor.getCode() });
         if (same) return 'done';
         tries += 1;
@@ -484,10 +492,11 @@ async function main() {
         if (tries >= 3) {
           // 막다른 길을 만들지 않는다. 세 번째에는 선생님이 다시 보여 주고 넘어간다.
           await say('follow-show');
-          await player.play([{ kind: 'code-type', code: scene.code }, { kind: 'trace', code: scene.code, inputs: scene.inputs ?? [] }]);
+          await player.play([{ kind: 'code-type', code: scene.code }, { kind: 'trace', code: scene.code, inputs: scene.inputs ?? [], limit: scene.limit }]);
           return 'done';
         }
         if (!ran) await say('follow-not-run');
+        else if (scene.stopped) await say('follow-not-stopped');
         else if (ran.error) await player.say(explain(ran.error, knows()));
         else await say('follow-different');
         if (player.stopped) return 'stop';
@@ -585,14 +594,24 @@ async function main() {
     editor.markErrorLine(null);
     let diagnosis = { kind: 'correct' };
     for (const one of task.cases) {
-      const result = await runner.run(code, { check: true, inputs: one.inputs });
+      // randoms: 무작위 수를 쓰는 문제는 채점할 때 나올 수를 정해 둔다.
+      const result = await runner.run(code, { check: true, inputs: one.inputs, randoms: one.randoms });
       if (result.stopped) return null;
-      // 무엇을 넣어 돌려 봤는지 아이가 볼 수 있게 출력 칸에 남긴다.
-      lessonConsole.append(`▶ ${asAnswer(one.inputs)} 답해 봤어요\n`, 'note');
-      lessonConsole.append(result.output ?? '');
+      // 무엇을 넣어 돌려 봤는지 아이가 볼 수 있게 출력 칸에 남긴다(묻지 않는 문제는 적을 것이 없다).
+      if (one.inputs.length) lessonConsole.append(`▶ ${picked(one)}${asAnswer(one.inputs)} 답해 봤어요\n`, 'note');
+      // 끝나지 않는 반복은 출력이 수만 줄일 수 있다. 앞의 몇 줄만 보여 준다.
+      const endless = result.error?.type === 'TraceLimit';
+      const printed = result.output ?? '';
+      lessonConsole.append(endless ? `${printed.split('\n').slice(0, 12).join('\n')}\n…\n` : printed);
       showVars(result.vars ?? {});
-      if (result.error?.type === 'EOFError') {
-        diagnosis = { kind: 'input-many', vars: { want: one.inputs.length } };
+      if (endless) {
+        // 끝나지 않는 반복: 실행기가 줄 수를 세다가 멈춘 것이다.
+        lessonConsole.append('\n■ 끝나지 않아서 멈췄어요\n', 'note');
+        diagnosis = { kind: 'endless' };
+      } else if (result.error?.type === 'EOFError') {
+        // 준 답을 다 쓰고도 또 물었다. 이 문제에서 흔한 실수(예: break를 빼먹음)로 짚을 수 있으면 그 말을 한다.
+        const guess = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, { error: null, output: result.output, again: true });
+        diagnosis = guess.kind === 'mistake' ? guess : { kind: 'input-many', vars: { want: one.inputs.length } };
       } else if (result.error) {
         const at = result.error.line ? ` (${result.error.line}번 줄)` : '';
         lessonConsole.append(`\n${explain(result.error, knows())}${at}\n`, 'ko');
@@ -625,8 +644,8 @@ async function main() {
         ...task,
         title: total > 1 ? `${task.title} (${index + 1} / ${total})` : task.title,
         want: task.show ? (sample ? sample.expect : task.expect) : null,
-        wantNote: task.show && sample ? `${asAnswer(sample.inputs)} 답했을 때 이렇게 나와야 해요` : null,
-        wants: several ? several.map((one) => ({ note: `${asAnswer(one.inputs)} 답하면`, lines: one.expect })) : null,
+        wantNote: task.show && sample?.inputs.length ? `${picked(sample)}${asAnswer(sample.inputs)} 답했을 때 이렇게 나와야 해요` : null,
+        wants: several ? several.map((one) => ({ note: `${picked(one)}${asAnswer(one.inputs)} 답하면`, lines: one.expect })) : null,
       });
     showTask();
     // 쓰던 것이 있으면 이어서, 없으면 문제에 딸린 시작 코드(고치기 문제)로 시작한다.

@@ -93,15 +93,18 @@ export class Runner {
    * trace: true면 화면에 내보내지 않고, 줄마다 무엇이 나왔는지와 변수 값을 steps: [{ line, out, vars }]로 함께 돌려준다.
    * check: true면 채점용으로 돌린다(화면에 내보내지 않고, 질문 글은 출력에 넣지 않는다).
    * inputs: trace와 check에서 input()이 받을 답들. 다 쓰고도 또 물으면 EOFError가 난다. 남으면 unused에 개수가 온다.
+   * limit: trace에서 보여 줄 줄 수의 한도(넘으면 오류 종류가 TraceLimit). 끝나지 않는 반복을 시연할 때 작게 준다.
+   * randoms: trace와 check에서 random.randint가 차례로 돌려줄 값들(무작위 수를 쓰는 프로그램을 늘 같게 돌리려고).
+   * check에서 프로그램이 끝나지 않으면(줄을 20만 번 넘게 실행하면) 오류 종류가 TraceLimit으로 온다.
    */
-  async run(code, { trace = false, check = false, inputs = [] } = {}) {
+  async run(code, { trace = false, check = false, inputs = [], limit, randoms } = {}) {
     await this.ready;
     if (this.current) throw new Error('이미 돌아가는 프로그램이 있어요');
     const id = this.nextId++;
     this.setState('running');
     return new Promise((resolve) => {
       this.current = { id, resolve, output: '', stopRequested: false, stopTimer: null, started: performance.now() };
-      this.worker.postMessage({ type: 'run', id, code, mode: trace ? 'trace' : check ? 'check' : 'run', inputs });
+      this.worker.postMessage({ type: 'run', id, code, mode: trace ? 'trace' : check ? 'check' : 'run', inputs, limit, randoms });
     });
   }
 

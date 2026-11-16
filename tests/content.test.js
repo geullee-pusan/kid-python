@@ -27,18 +27,19 @@ before(async () => {
   const body = /const RUNNER_SOURCE = `([\s\S]*?)`;/.exec(worker)[1];
   pyodide.runPython(new Function(`return \`${body}\`;`)());
   const call = pyodide.globals.get('__kidpy_scripted');
-  scripted = (code, inputs, trace) => JSON.parse(call(code, JSON.stringify(inputs ?? []), trace));
+  // limit: 한 줄씩 보기에서 보여 줄 줄 수의 한도. randoms: random.randint가 차례로 돌려줄 값.
+  scripted = (code, inputs, trace, { limit, randoms } = {}) => JSON.parse(call(code, JSON.stringify(inputs ?? []), trace, limit ?? 300, JSON.stringify(randoms ?? [])));
 });
 
 /** 한 줄씩 보기로 돌린다. 화면에 보이는 그대로(질문과 넣은 답 포함)의 출력을 돌려준다. */
-function shown(code, inputs) {
-  const ran = scripted(code, inputs, true);
+function shown(code, inputs, options) {
+  const ran = scripted(code, inputs, true, options);
   return { ...ran, output: ran.output.replace(/[\x01\x02]/g, '') };
 }
 
 /** 아이가 직접 실행했을 때 프로그램이 내보내는 글(질문은 있고, 친 답은 없다) */
-function typedRun(code, inputs) {
-  const ran = scripted(code, inputs, true);
+function typedRun(code, inputs, options) {
+  const ran = scripted(code, inputs, true, options);
   return { ...ran, output: ran.output.replace(/\x01[^\x02]*\x02\n/g, '') };
 }
 
@@ -50,8 +51,14 @@ function grade(task, code) {
   }
   let diagnosis = { kind: 'correct' };
   for (const one of task.cases) {
-    const ran = scripted(code, one.inputs, false);
-    if (ran.error?.type === 'EOFError') diagnosis = { kind: 'input-many' };
+    const ran = scripted(code, one.inputs, false, { randoms: one.randoms });
+    // 끝나지 않는 반복은 실행기가 줄 수를 세다가 멈춘다.
+    if (ran.error?.type === 'TraceLimit') diagnosis = { kind: 'endless' };
+    else if (ran.error?.type === 'EOFError') {
+      // 준 답을 다 쓰고도 또 물었다. 이 문제의 흔한 실수로 짚을 수 있으면 그 말을 한다(앱과 같다).
+      const guess = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, { error: null, output: ran.output, again: true });
+      diagnosis = guess.kind === 'mistake' ? guess : { kind: 'input-many' };
+    }
     else if (ran.error) diagnosis = { kind: 'error', error: ran.error };
     else if (ran.unused > 0) diagnosis = { kind: 'input-few' };
     else diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, ran);
@@ -66,7 +73,7 @@ function grade(task, code) {
 for (const m of Object.values(MISSIONS)) {
   test(`${m.id}: 예측 문제의 정답이 실제 출력과 같다`, () => {
     for (const q of m.predict ?? []) {
-      const ran = shown(q.code, q.inputs);
+      const ran = shown(q.code, q.inputs, { limit: q.limit, randoms: q.randoms });
       if (q.outcome) {
         // 오류가 답인 문제: 보기 글은 설명이라서, 대본에 적어 둔 실제 결과(outcome)와 견준다.
         assert.equal(ran.error?.type, q.outcome.error, `${q.id}: 오류 종류`);
@@ -96,7 +103,8 @@ for (const m of Object.values(MISSIONS)) {
     for (const task of allTasks(m)) {
       for (const hint of task.hints ?? []) {
         if (!hint.card?.code) continue;
-        const ran = scripted(hint.card.code, ['1', '2', '3'], false);
+        // 힌트 예제가 묻는 횟수나 무작위 수가 정해져 있어야 하면 카드에 inputs, randoms를 적는다.
+        const ran = scripted(hint.card.code, hint.card.inputs ?? ['1', '2', '3'], false, { randoms: hint.card.randoms });
         assert.equal(ran.error, null, `${task.id}: 힌트 예제에서 오류 (${ran.error?.message})`);
         assert.notEqual(grade(task, hint.card.code).kind, 'correct', `${task.id}: 힌트 예제가 정답이에요`);
       }
@@ -107,13 +115,18 @@ for (const m of Object.values(MISSIONS)) {
     for (const part of m.lecture ?? []) {
       for (const spec of part) {
         if (spec.follow) {
-          const ran = typedRun(spec.follow.code, spec.follow.inputs);
+          const ran = typedRun(spec.follow.code, spec.follow.inputs, { randoms: spec.follow.randoms });
+          // 멈춤 버튼 연습: 끝나지 않는 프로그램이어야 한다.
+          if (spec.follow.stopped) {
+            assert.equal(ran.error?.type, 'TraceLimit', '멈춤 연습은 끝나지 않는 프로그램이어야 해요');
+            continue;
+          }
           assert.equal(ran.error, null, `따라 하기에서 오류 (${ran.error?.message})`);
           if (spec.follow.match) assert.match(ran.output, new RegExp(spec.follow.match), '따라 하기 출력 모양');
           else assert.deepEqual(outputLines(ran.output), spec.follow.expect, '따라 하기 출력');
         }
         if (spec.trace !== undefined) {
-          const ran = shown(spec.trace, spec.inputs);
+          const ran = shown(spec.trace, spec.inputs, { limit: spec.limit, randoms: spec.randoms });
           // 일부러 오류를 내는 시연은 대본에 expectError로 적어 둔다.
           assert.equal(ran.error?.type ?? null, spec.expectError ?? null, `시연: ${spec.trace.replace(/\n/g, ' ⏎ ')}`);
           assert.equal(ran.unused, 0, '시연에 쓰지 않은 입력이 남았어요');
@@ -297,6 +310,48 @@ const WRONG = [
   ['unit5-review', 'primes', 'for 수 in range(1, 101):\n    개수 = 0\n    for i in range(1, 수 + 1):\n        if 수 % i == 0:\n            개수 += 1\n    if 개수 <= 2:\n        print(수)', 'mistake', 'prime-one'],
   ['unit5-review', 'primes', 'for 수 in range(2, 101):\n개수 = 0\nfor i in range(1, 수 + 1):\n    if 수 % i == 0:\n        개수 += 1\nif 개수 == 2:\n    print(수)', 'error'],
   ['unit5-review', 'primes', 'for 수 in range(2, 50):\n    개수 = 0\n    for i in range(1, 수 + 1):\n        if 수 % i == 0:\n            개수 += 1\n    if 개수 == 2:\n        print(수)', 'count'],
+  // 조건이 맞는 동안 반복 단원
+  ['while-loop', 'kilo', '수 = 1\n횟수 = 0\nwhile 수 <= 1000:\n    횟수 = 횟수 + 1\nprint(횟수)', 'endless'],
+  ['while-loop', 'kilo', '수 = 1\n횟수 = 0\nwhile 수 <= 1000:\n    수 = 수 * 2\n    횟수 = 횟수 + 1\nprint(수)', 'mistake', 'kilo-value'],
+  ['while-loop', 'kilo', '수 = 1\n횟수 = 0\nwhile 수 <= 1000:\n    수 = 수 * 2\n    횟수 = 횟수 + 1\n    print(횟수)', 'mistake', 'kilo-in'],
+  ['while-loop', 'kilo', '수 = 1\n횟수 = 0\nwhile 수 * 2 <= 1000:\n    수 = 수 * 2\n    횟수 = 횟수 + 1\nprint(횟수)', 'mistake', 'kilo-nine'],
+  ['while-loop', 'kilo', 'print(10)', 'mistake', 'need-while'],
+  ['while-loop', 'kilo', '수 = 1\n횟수 = 0\nwhile 수 < 1000:\n    수 = 수 * 2\n    횟수 = 횟수 + 1\nprint(횟수)', 'correct'],
+  ['while-loop', 'half', '수 = 1000\nwhile 수 > 0:\n    print(수)\n    수 = 수 / 2', 'mistake', 'half-slash'],
+  ['while-loop', 'half', '수 = 1000\nwhile 수 >= 0:\n    print(수)\n    수 = 수 // 2', 'endless'],
+  ['while-loop', 'half', '수 = 1000\nwhile 수 > 0:\n    print(수)', 'endless'],
+  ['break', 'echo', 'while True:\n    말 = input()\n    print(말)\n    if 말 == "그만":\n        break\nprint("안녕")', 'mistake', 'echo-stop'],
+  ['break', 'echo', 'while True:\n    말 = input()\n    if 말 != "그만":\n        print(말)', 'input-many'],
+  ['break', 'echo', 'while True:\n    말 = input()\n    if 말 == "그만":\n        break\n    print(말)', 'mistake', 'echo-no-bye'],
+  ['break', 'echo', 'while True:\n    말 = input()\n    if 말 == "그만":\n    break\n    print(말)\nprint("안녕")', 'error'],
+  ['break', 'echo', '말 = input()\nwhile 말 != "그만":\n    print(말)\n    말 = input()\nprint("안녕")', 'correct'],
+  ['break', 'echo', '말 = input()\nwhile 말 != "그만":\n    print(말)\nprint("안녕")', 'endless'],
+  ['break', 'skip', 'for i in range(1, 11):\n    if i % 3 == 0:\n        break\n    print(i)', 'mistake', 'skip-break'],
+  ['break', 'skip', 'for i in range(1, 11):\n    if i % 3 != 0:\n        print(i)', 'mistake', 'need-continue'],
+  ['break', 'skip', 'i = 1\nwhile i <= 10:\n    if i % 3 == 0:\n        continue\n    print(i)\n    i += 1', 'endless'],
+  ['random', 'guess', 'import random\n답 = random.randint(1, 100)\nwhile True:\n    수 = int(input())\n    if 수 == 답:\n        print("정답")\n        break\n    elif 수 > 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")', 'mistake', 'guess-reversed'],
+  ['random', 'guess', 'import random\nwhile True:\n    답 = random.randint(1, 100)\n    수 = int(input())\n    if 수 == 답:\n        print("정답")\n        break\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")', 'mistake', 'guess-inside'],
+  ['random', 'guess', 'import random\n답 = random.randint(1, 100)\nwhile True:\n    수 = int(input())\n    if 수 == 답:\n        print("정답")\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")', 'input-many'],
+  ['random', 'guess', '답 = random.randint(1, 100)\nwhile True:\n    수 = int(input())\n    if 수 == 답:\n        print("정답")\n        break\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")', 'error'],
+  ['random', 'guess', 'import random\n답 = random.randint(1, 100)\nwhile True:\n    수 = input()\n    if 수 == 답:\n        print("정답")\n        break\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")', 'error'],
+  ['random', 'guess', 'import random\n답 = random.randint(1, 100)\n수 = int(input())\nif 수 == 답:\n    print("정답")\nelif 수 < 답:\n    print("더 큰 수예요")\nelse:\n    print("더 작은 수예요")', 'input-few'],
+  ['random', 'count-tries', 'import random\n답 = random.randint(1, 100)\n횟수 = 0\nwhile True:\n    수 = int(input())\n    if 수 == 답:\n        print("정답")\n        print(횟수, "번 만에 맞혔어요")\n        break\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")\n    횟수 = 횟수 + 1', 'mistake', 'count-off'],
+  ['for-or-while', 'collatz', '수 = int(input())\nwhile 수 != 1:\n    if 수 % 2 == 0:\n        수 = 수 / 2\n    else:\n        수 = 수 * 3 + 1\n    print(수)', 'mistake', 'col-slash'],
+  ['for-or-while', 'collatz', '수 = int(input())\nwhile 수 != 1:\n    print(수)\n    if 수 % 2 == 0:\n        수 = 수 // 2\n    else:\n        수 = 수 * 3 + 1', 'mistake', 'col-first'],
+  ['for-or-while', 'collatz', '수 = int(input())\nwhile 수 != 1:\n    if 수 % 2 == 0:\n        수 = 수 // 2\n    else:\n        수 = 수 * 3\n    print(수)', 'error'],
+  ['for-or-while', 'collatz', '수 = int(input())\nwhile 수 != 1:\n    if 수 % 2 == 0:\n        수 = 수 // 2\n    else:\n        수 = 수 * 3 + 1\nprint(수)', 'count'],
+  ['for-or-while', 'collatz', '수 = input()\nwhile 수 != 1:\n    if 수 % 2 == 0:\n        수 = 수 // 2\n    else:\n        수 = 수 * 3 + 1\n    print(수)', 'error'],
+  ['for-or-while', 'collatz', '수 = int(input())\nwhile 수 != 1:\n    if 수 % 2 == 0:\n        수 // 2\n    else:\n        수 * 3 + 1\n    print(수)', 'endless'],
+  ['for-or-while', 'steps', '수 = int(input())\n횟수 = 0\nwhile 수 != 1:\n    if 수 % 2 == 0:\n        수 = 수 // 2\n    else:\n        수 = 수 * 3 + 1\n    횟수 = 횟수 + 1\n    print(수)\nprint(횟수)', 'mistake', 'steps-list'],
+  ['unit6-review', 'countdown', '수 = int(input())\nwhile 수 >= 0:\n    print(수)\n    수 = 수 - 1\nprint("발사")', 'mistake', 'count-zero'],
+  ['unit6-review', 'countdown', '수 = int(input())\nwhile 수 > 0:\n    print(수)\n    수 = 수 + 1\nprint("발사")', 'endless'],
+  ['unit6-review', 'countdown', '수 = int(input())\nfor i in range(수, 0, -1):\n    print(i)\nprint("발사")', 'mistake', 'need-while'],
+  ['unit6-review', 'game', 'import random\n답 = random.randint(1, 100)\n횟수 = 0\nwhile True:\n    수 = int(input())\n    횟수 = 횟수 + 1\n    if 수 == 답:\n        print("정답!", 횟수, "번 만에 맞혔어요")\n        break\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")\nprint("게임 끝")', 'mistake', 'game-limit'],
+  ['unit6-review', 'game', 'import random\n답 = random.randint(1, 100)\n횟수 = 0\nwhile 횟수 <= 7:\n    수 = int(input())\n    횟수 = 횟수 + 1\n    if 수 == 답:\n        print("정답!", 횟수, "번 만에 맞혔어요")\n        break\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")\nprint("게임 끝")', 'mistake', 'game-limit'],
+  ['unit6-review', 'game', 'import random\n답 = random.randint(1, 100)\n횟수 = 0\nwhile 횟수 < 7:\n    수 = int(input())\n    if 수 == 답:\n        print("정답!", 횟수, "번 만에 맞혔어요")\n        break\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")\n    횟수 = 횟수 + 1\nprint("게임 끝")', 'mistake', 'game-count'],
+  ['unit6-review', 'game', 'import random\n답 = random.randint(1, 100)\n횟수 = 0\nwhile 횟수 < 7:\n    수 = int(input())\n    횟수 = 횟수 + 1\n    if 수 == 답:\n        print("정답!", 횟수, "번 만에 맞혔어요")\n        break\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")\n', 'mistake', 'game-no-end'],
+  ['unit6-review', 'game', 'import random\n답 = random.randint(1, 100)\n횟수 = 0\nwhile 횟수 < 7:\n    수 = int(input())\n    횟수 = 횟수 + 1\n    if 수 == 답:\n        print("정답!", 횟수, "번 만에 맞혔어요")\n        break\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")\n    print("게임 끝")', 'mistake', 'game-end-in'],
+  ['unit6-review', 'game', 'import random\n답 = random.randint(1, 100)\n횟수 = 0\nwhile 횟수 < 7:\n    수 = int(input())\n    횟수 = 횟수 + 1\n    if 수 == 답:\n        print("정답!", 횟수, "번 만에 맞혔어요")\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")\nprint("게임 끝")', 'input-many'],
 ];
 
 test('흔한 오답에 의도한 말이 나온다', () => {
@@ -362,6 +417,16 @@ test('파이썬이 내는 오류를 우리 설명이 알아듣는다', () => {
     ['print(5 / 0)', 'ZeroDivisionError', /^0으로 나눌 수 없어요\.$/],
     ['합 = 합 + 1', 'NameError', /이름표가 아직 없어요/, loops],
     ['for i in range(3):\n    합 += i\nprint(합)', 'NameError', /이름표가 아직 없어요/, loops],
+    // while과 무작위 수를 배운 뒤
+    ['수 = 1\nWhile 수 < 3:\n    수 += 1', 'SyntaxError', /while는 모두 작은 글자/, loops],
+    ['수 = 1\nif 수 == 1:\n    break', 'SyntaxError', /반복 안에서만/, loops],
+    ['while True\n    print(1)', 'SyntaxError', /콜론/, loops],
+    ['수 = random.randint(1, 6)', 'NameError', /import random/, loops],
+    ['import random\n수 = randint(1, 6)', 'NameError', /random과 점/, loops],
+    ['import random\n수 = random.randit(1, 6)', 'AttributeError', /철자/, loops],
+    ['import Random', 'ModuleNotFoundError', /작은 글자/, loops],
+    ['import random\n수 = random.randint(6, 1)', 'ValueError', /작은 수를 먼저/, loops],
+    ['수 = 3\nwhile 수 != 1:\n    수 = 수 * 3\n    print(수)', 'ValueError', /끝없이 커졌어요/, loops],
   ];
   for (const [code, type, pattern, knows] of cases) {
     const ran = scripted(code, [], false);

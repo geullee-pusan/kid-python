@@ -68,11 +68,11 @@ export function createPlayer(ctx) {
   }
 
   /** 코드를 한 줄씩 실행해 보인다: 실행하는 줄을 표시하고, 그 줄이 내보낸 글자를 출력 창에 더한다. */
-  async function trace(code, inputs = []) {
+  async function trace(code, inputs = [], { limit, randoms } = {}) {
     if (editor.getCode() !== code) editor.setCode(code);
     output.clear();
     ctx.ui.vars?.({});
-    const result = await ctx.runner.run(code, { trace: true, inputs });
+    const result = await ctx.runner.run(code, { trace: true, inputs, limit, randoms });
     const steps = result.steps ?? [];
     for (const [index, step] of steps.entries()) {
       if (stopped) break;
@@ -89,6 +89,12 @@ export function createPlayer(ctx) {
       await pause((550 * pace) / slow);
     }
     editor.markRunLine(null);
+    // 끝나지 않는 반복을 시연한 경우: 정해 둔 줄 수만 보여 주고 멈춘다(오류가 아니다).
+    if (result.error?.type === 'TraceLimit' && !stopped) {
+      output.append('\n■ 끝나지 않아서 멈췄어요\n', 'note');
+      await pause(900 / slow);
+      return result;
+    }
     // 오류가 나는 코드도 그대로 보여 준다(오류 읽기 수업, 오류가 답인 예측 문제).
     if (result.error && !stopped) {
       const at = result.error.line ? ` (${result.error.line}번 줄)` : '';
@@ -129,7 +135,7 @@ export function createPlayer(ctx) {
         case 'trace':
           teacher.pose('point');
           editor.setLocked(true);
-          await trace(scene.code, scene.inputs);
+          await trace(scene.code, scene.inputs, { limit: scene.limit, randoms: scene.randoms });
           teacher.pose('idle');
           break;
         case 'follow': {

@@ -46,8 +46,10 @@ export function explain(error, knows = {}) {
     if (knows.variables && /^\s*[^\s=()"'#]+\s+[^\s=()"'#]+\s*=[^=]/m.test(text)) return '이름에는 빈칸을 쓸 수 없어요. 붙여 쓰거나 밑줄(_)로 이어요.';
     // for를 큰 글자로 시작한 경우: "For i in range(3):"
     if (/^\s*F[oO][rR]\s/m.test(text) || /^\s*fOR\s|^\s*FOR\s/m.test(text)) return 'for는 모두 작은 글자로 써요.';
-    // if, else, elif를 큰 글자로 쓴 경우
-    const shouted = /^\s*(If|IF|Else|ELSE|Elif|ELIF)\b/m.exec(text);
+    if (/'break' outside loop/.test(message)) return 'break는 반복 안에서만 쓸 수 있어요. 반복 안에 들여썼는지 봐요.';
+    if (/'continue' not properly in loop/.test(message)) return 'continue는 반복 안에서만 쓸 수 있어요. 반복 안에 들여썼는지 봐요.';
+    // if, else, elif, while을 큰 글자로 쓴 경우
+    const shouted = /^\s*(If|IF|Else|ELSE|Elif|ELIF|While|WHILE)\b/m.exec(text);
     if (shouted) return `${shouted[1].toLowerCase()}는 모두 작은 글자로 써요.`;
     // else나 elif가 짝이 되는 if와 줄이 맞지 않는 경우
     if (/^\s*(else\s*:|elif\b)/m.test(text)) return 'else와 elif는 짝이 되는 if와 줄의 앞을 맞춰 써요. if가 위에 있는지도 봐요.';
@@ -66,6 +68,8 @@ export function explain(error, knows = {}) {
     if (name && name !== 'print' && name.toLowerCase() === 'print') return 'print는 모두 작은 글자로 써요.';
     if (name && name !== 'input' && name.toLowerCase() === 'input') return 'input은 모두 작은 글자로 써요.';
     if (name && /^(true|false|TRUE|FALSE)$/.test(name)) return 'True와 False는 첫 글자만 큰 글자로 써요.';
+    if (name === 'random') return 'random을 쓰려면, 맨 윗줄에 import random 을 먼저 써요.';
+    if (name === 'randint') return 'randint는 random.randint( ) 처럼, 앞에 random과 점을 붙여 써요.';
     if (name && knows.variables) return `${called(name)} 이름표가 아직 없어요. 먼저 값을 넣었는지, 철자가 같은지 봐요. 글자를 쓰려던 거라면 따옴표로 감싸요.`;
     if (name && HANGUL.test(name)) return `"${name}"에 따옴표가 없는 것 같아요. 글자는 따옴표로 감싸요.`;
     if (name) return `${called(name)} 이름을 파이썬이 몰라요. 글자라면 따옴표로 감싸고, 명령이라면 철자를 확인해요.`;
@@ -79,9 +83,17 @@ export function explain(error, knows = {}) {
     if (/missing \d+ required positional argument|takes \d+ positional argument/.test(message)) return '괄호 안에 넣은 값의 개수가 맞지 않아요.';
     return '종류가 맞지 않는 값끼리 계산하려고 했어요.';
   }
+  if (type === 'AttributeError') {
+    if (/module 'random' has no attribute/.test(message)) return 'random 뒤의 이름이 달라요. random.randint 의 철자를 확인해요.';
+    return '점(.) 뒤에 쓴 이름을 파이썬이 몰라요. 철자를 확인해요.';
+  }
+  if (type === 'ModuleNotFoundError' || type === 'ImportError') return 'import 뒤의 이름을 파이썬이 몰라요. random 은 모두 작은 글자로 써요.';
   if (type === 'ValueError') {
     const bad = /invalid literal for int\(\) with base 10: (.+)$/.exec(message);
     if (bad) return `${bad[1]}은(는) 숫자로 바꿀 수 없어요. int( ) 안에는 숫자로 된 글자만 넣어요.`;
+    if (/empty range/.test(message)) return 'randint( ) 안에는 작은 수를 먼저, 큰 수를 나중에 써요.';
+    // 끝나지 않는 반복에서 수가 끝없이 커지면, 파이썬이 그 수를 글자로 바꾸다가 멈춘다.
+    if (/Exceeds the limit/.test(message)) return '수가 끝없이 커졌어요. 반복이 끝나지 않는 것 같아요. 조건이 언젠가 거짓이 되는지 봐요.';
     return '값의 모양이 맞지 않아요.';
   }
   if (type === 'ZeroDivisionError') {

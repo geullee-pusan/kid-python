@@ -59,7 +59,8 @@ function toScene(script, spec, seed) {
   if (spec.card) return { kind: 'board-card', ...spec.card };
   if (spec.clearBoard) return { kind: 'board-clear' };
   if (spec.type !== undefined) return { kind: 'code-type', code: spec.type };
-  if (spec.trace !== undefined) return { kind: 'trace', code: spec.trace, inputs: spec.inputs ?? [] };
+  // limit: 끝나지 않는 반복을 시연할 때 보여 줄 줄 수. randoms: 무작위 수를 정해 둘 때.
+  if (spec.trace !== undefined) return { kind: 'trace', code: spec.trace, inputs: spec.inputs ?? [], limit: spec.limit, randoms: spec.randoms };
   // 따라 하기: say는 아이가 치는 동안 선생님이 하는 말이다(말이 끝나기를 기다리지 않고 바로 칠 수 있다).
   if (spec.follow) return { kind: 'follow', ...spec.follow, say: (spec.follow.say ?? []).map((key) => line(script, key, seed)) };
   if (spec.check) {
@@ -97,7 +98,7 @@ export function predictFeedback(script, question, choiceIndex, seed = 0) {
 
 /** 예측 문제: 실행해서 확인하는 장면 */
 export function predictRevealScenes(script, question, seed = 0) {
-  return [line(script, 'predict-run', seed), { kind: 'trace', code: question.code, inputs: question.inputs ?? [] }];
+  return [line(script, 'predict-run', seed), { kind: 'trace', code: question.code, inputs: question.inputs ?? [], limit: question.limit, randoms: question.randoms }];
 }
 
 /** 쓰기 문제: 채점 뒤 선생님 말. diagnosis는 src/core/diagnose.js의 결과다. */
@@ -138,11 +139,11 @@ export function allTasks(script) {
 /** 대본 점검: 장면과 문제가 가리키는 대사가 모두 있는가. 테스트에서 쓴다. */
 export function missingLines(script) {
   const used = new Set([
-    'intro-ask', 'intro-solve', 'follow-different', 'follow-not-run', 'follow-show', 'predict-ask', 'predict-run',
+    'intro-ask', 'intro-solve', 'follow-different', 'follow-not-run', 'follow-not-stopped', 'follow-show', 'predict-ask', 'predict-run',
     'task-intro', 'task-next', 'task-how', 'task-correct-first', 'task-correct', 'skip-ok', 'lecture-back', 'done-bye',
     'challenge-ask', 'challenge-intro', 'challenge-skip',
   ]);
-  for (const kind of ['not-computed', 'quoted-calc', 'order', 'count', 'spacing', 'line-diff', 'no-output', 'input-few', 'input-many', 'case']) used.add(`task-${kind}`);
+  for (const kind of ['not-computed', 'quoted-calc', 'order', 'count', 'spacing', 'line-diff', 'no-output', 'input-few', 'input-many', 'case', 'endless']) used.add(`task-${kind}`);
   const walk = (spec) => {
     if (spec.say) used.add(spec.say);
     for (const key of spec.follow?.say ?? []) used.add(key);

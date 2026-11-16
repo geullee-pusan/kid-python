@@ -94,6 +94,7 @@ function readLine() {
 //  - 채점(__kidpy_scripted, trace=False): 쓰기 문제를 정해진 입력으로 돌린다. 질문 글은 출력에 넣지 않는다.
 const RUNNER_SOURCE = `
 import sys, json, traceback, linecache, io
+import random as __kidpy_random
 
 def __kidpy_error(e, name):
     line = None
@@ -147,14 +148,32 @@ def __kidpy_run(code):
 class __KidpyTraceLimit(Exception):
     pass
 
-def __kidpy_scripted(code, inputs_json, trace, limit=300):
+# limit: 한 줄씩 보기에서 보여 줄 줄 수의 한도. 넘으면 TraceLimit(끝나지 않는 반복을 시연할 때는 작게 준다).
+# randoms_json: 무작위 수를 정해 둘 때 쓴다. 비어 있지 않으면 random.randint가 이 값들을 차례로 돌려준다(채점과 시연이 늘 같게).
+# 채점(trace=False)에서도 줄 수를 세어, 너무 많으면(끝나지 않는 반복) TraceLimit으로 멈춘다.
+def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]"):
     name = "main.py"
     linecache.cache[name] = (len(code), None, code.splitlines(True), name)
     scope = {"__name__": "__main__"}
     inputs = [str(x) for x in json.loads(inputs_json)]
+    randoms = list(json.loads(randoms_json))
     asked = [0]
     buf = io.StringIO()
     marks = []
+    lines_run = [0]
+    picked = [0]
+    def scripted_randint(a, b):
+        value = randoms[picked[0] % len(randoms)]
+        picked[0] += 1
+        return value
+    def counter(frame, event, arg):
+        if frame.f_code.co_filename != name:
+            return None
+        if event == "line":
+            lines_run[0] += 1
+            if lines_run[0] > 200000:
+                raise __KidpyTraceLimit()
+        return counter
     # input() 대신 쓰는 함수. 한 줄씩 보기에서는 질문과 답을 출력에 남긴다(답은 \\x01 ... \\x02 로 감싸 표시한다).
     def scripted_input(prompt=""):
         asked[0] += 1
@@ -177,10 +196,12 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300):
     error = None
     old = sys.stdout
     sys.stdout = buf
+    old_randint = __kidpy_random.randint
+    if randoms:
+        __kidpy_random.randint = scripted_randint
     try:
         compiled = compile(code, name, "exec")
-        if trace:
-            sys.settrace(tracer)
+        sys.settrace(tracer if trace else counter)
         try:
             exec(compiled, scope)
         finally:
@@ -193,6 +214,7 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300):
         error = __kidpy_error(e, name)
     finally:
         sys.stdout = old
+        __kidpy_random.randint = old_randint
     total = buf.getvalue()
     final = __kidpy_vars(scope)
     steps = []
@@ -231,6 +253,7 @@ async function init(message) {
 }
 
 // message.mode: 'run'(그냥 실행), 'trace'(한 줄씩 보기), 'check'(채점). trace와 check는 message.inputs를 input()의 답으로 쓴다.
+// message.limit(한 줄씩 보기의 줄 수 한도)와 message.randoms(정해 둔 무작위 수)는 없어도 된다.
 function run(message) {
   const started = performance.now();
   if (interruptView) interruptView[0] = 0;
@@ -238,7 +261,9 @@ function run(message) {
   let result = { error: null };
   try {
     if (message.mode === 'trace' || message.mode === 'check') {
-      result = JSON.parse(runScripted(message.code, JSON.stringify(message.inputs ?? []), message.mode === 'trace'));
+      result = JSON.parse(
+        runScripted(message.code, JSON.stringify(message.inputs ?? []), message.mode === 'trace', message.limit ?? 300, JSON.stringify(message.randoms ?? [])),
+      );
     } else {
       result = JSON.parse(runUser(message.code));
     }
