@@ -3,6 +3,7 @@
 // - 말할 때는 대화창에 글자가 한 글자씩 나타난다. 자막은 늘 보인다(목소리가 없어도 수업이 된다).
 // - 선생님은 아이가 버튼을 누를 때까지 기다린다. 재촉하지 않는다.
 import { explain } from '../core/errors-ko.js';
+import { tracePace } from '../core/lesson.js';
 import { speak as speakLine, stopSpeaking, wait } from './speech.js';
 
 /**
@@ -72,17 +73,20 @@ export function createPlayer(ctx) {
     output.clear();
     ctx.ui.vars?.({});
     const result = await ctx.runner.run(code, { trace: true, inputs });
-    for (const step of result.steps ?? []) {
+    const steps = result.steps ?? [];
+    for (const [index, step] of steps.entries()) {
       if (stopped) break;
+      // 긴 반복은 앞부분만 제 속도로, 나머지는 빠르게 보여 준다.
+      const pace = tracePace(index, steps.length);
       editor.markRunLine(step.line);
-      await pause(650 / slow);
+      await pause((650 * pace) / slow);
       // input()에 넣은 답은 표시가 붙어 온다. 아이가 친 것처럼 다른 색으로 보여 준다.
       for (const piece of step.out.split(/(\x01[^\x02]*\x02)/)) {
         if (piece.startsWith('\x01')) output.append(piece.slice(1, -1), 'typed');
         else if (piece) output.append(piece);
       }
       ctx.ui.vars?.(step.vars ?? {});
-      await pause(550 / slow);
+      await pause((550 * pace) / slow);
     }
     editor.markRunLine(null);
     // 오류가 나는 코드도 그대로 보여 준다(오류 읽기 수업, 오류가 답인 예측 문제).

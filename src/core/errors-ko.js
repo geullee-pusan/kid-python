@@ -4,6 +4,7 @@
 //
 // knows: 아이가 배운 것. { variables: true }면 변수(이름표)를 배운 뒤다.
 // 변수를 배우기 전에는 모르는 이름이 나왔을 때 "따옴표가 빠진 것 같다"고만 말한다.
+// { loops: true }면 반복과 값 쌓기를 배운 뒤다(대본에 "knows": ["variables", "loops"]).
 
 import { hasBatchim } from './korean.js';
 
@@ -22,6 +23,8 @@ export function explain(error, knows = {}) {
     if (/invalid character '÷'/.test(message)) return '나누기는 빗금(/)으로 써요.';
     if (/invalid character '[≥≤]'/.test(message)) return '≥는 >= 로, ≤는 <= 로 써요. 기호 두 개를 이어 써요.';
     if (/invalid character '≠'/.test(message)) return '다르다는 != 로 써요. 느낌표와 등호를 이어 써요.';
+    // 줄여 쓰는 기호를 띄어 쓴 경우: "점수 + = 1"
+    if (/[-+*]\s+=/.test(text.replace(/"[^"]*"|'[^']*'/g, ''))) return '+= 처럼 줄여 쓰는 기호는 붙여 써요. 사이에 빈칸을 넣지 않아요.';
     // 등호를 앞에 쓴 경우: "if 키 => 130:"
     if (/=[><]/.test(text.replace(/"[^"]*"|'[^']*'/g, ''))) return '크거나 같다는 >= 로, 작거나 같다는 <= 로 써요. 등호가 뒤에 와요.';
     // else 뒤에 조건을 쓴 경우: "else if 수 > 3:", "else 수 > 3:"
@@ -81,7 +84,11 @@ export function explain(error, knows = {}) {
     if (bad) return `${bad[1]}은(는) 숫자로 바꿀 수 없어요. int( ) 안에는 숫자로 된 글자만 넣어요.`;
     return '값의 모양이 맞지 않아요.';
   }
-  if (type === 'ZeroDivisionError') return '0으로 나눌 수 없어요.';
+  if (type === 'ZeroDivisionError') {
+    // 반복을 배운 뒤에는 range가 0부터 세어서 생기는 일이 많다: "for i in range(수): 수 % i"
+    if (knows.loops) return '0으로 나눌 수 없어요. range는 0부터 세요. 나누는 수가 0이 되지 않게 1부터 시작해요.';
+    return '0으로 나눌 수 없어요.';
+  }
   if (type === 'IndexError') return '없는 자리 번호를 썼어요.';
   if (type === 'EOFError') return '입력을 받을 수 없었어요.';
   return `${type} 오류가 났어요.`;

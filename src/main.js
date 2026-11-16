@@ -307,9 +307,10 @@ async function main() {
 
   /** 지금 아이가 무엇을 배웠는지. 오류 설명의 말을 고르는 데 쓴다(변수를 배우기 전에는 "이름표"라는 말을 쓰지 않는다). */
   function knows() {
-    if (screen === 'play' && mission) return { variables: Boolean(mission.knows?.includes('variables')) };
+    if (screen === 'play' && mission) return { variables: Boolean(mission.knows?.includes('variables')), loops: Boolean(mission.knows?.includes('loops')) };
     const progress = store.get('kidpy.progress', {});
-    return { variables: LESSONS.some((m) => m.knows?.includes('variables') && progress[m.id]) };
+    const learned = (what) => LESSONS.some((m) => m.knows?.includes(what) && progress[m.id]);
+    return { variables: learned('variables'), loops: learned('loops') };
   }
 
   // 이름표 칸: 지금 어떤 이름에 어떤 값이 붙어 있는지 보여 준다. 변수를 배우는 수업부터 보인다.

@@ -4,7 +4,7 @@ import { test } from 'node:test';
 
 import { diagnoseTask, outputLines, stripStrings } from '../src/core/diagnose.js';
 import { explain } from '../src/core/errors-ko.js';
-import { allTasks, fill, lectureParts, line, missingLines, predictFeedback, splitSpoken, taskFeedback } from '../src/core/lesson.js';
+import { allTasks, fill, lectureParts, line, missingLines, predictFeedback, splitSpoken, taskFeedback, tracePace } from '../src/core/lesson.js';
 import { CURRICULUM, MISSIONS } from './missions.js';
 
 const first = MISSIONS['print-order'];
@@ -76,6 +76,20 @@ for (const m of Object.values(MISSIONS)) {
     assert.ok(m.unit && m.no && m.title && m.desc && m.minutes);
   });
 }
+
+test('한 줄씩 보기: 긴 반복은 앞부분만 제 속도로, 나머지는 빠르게 보여 준다', () => {
+  // 짧은 시연은 끝까지 제 속도
+  for (let i = 0; i < 12; i++) assert.equal(tracePace(i, 12), 1);
+  assert.equal(tracePace(15, 16), 1);
+  // 긴 시연: 앞의 14줄은 제 속도, 그 뒤는 빠르게(너무 빨라지지는 않게 0.2에서 멈춘다)
+  assert.equal(tracePace(13, 81), 1);
+  assert.equal(tracePace(14, 81), 0.2);
+  assert.ok(tracePace(14, 32) > 0.5 && tracePace(14, 32) < 0.6);
+  // 걸리는 시간(줄마다 1.2초): 81줄짜리도 40초를 넘지 않는다
+  const seconds = (total) => Array.from({ length: total }, (_, i) => 1.2 * tracePace(i, total)).reduce((a, b) => a + b, 0);
+  assert.ok(seconds(81) < 40, `81줄: ${seconds(81)}초`);
+  assert.ok(seconds(32) < 30, `32줄: ${seconds(32)}초`);
+});
 
 test('예측 문제: 고른 것에 따라 다른 말을 한다', () => {
   const q = first.predict[0];

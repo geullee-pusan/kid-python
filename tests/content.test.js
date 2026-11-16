@@ -246,6 +246,57 @@ const WRONG = [
   ['unit4-review', 'quiz', '답 = input()\nif 답 == 7:\n    print("정답")\nelse:\n    print("땡")\n답 = input()\nif 답 == 42:\n    print("정답")\nelse:\n    print("땡")\n답 = input()\nif 답 == "서울":\n    print("정답")\nelse:\n    print("땡")', 'mistake', 'quiz-str'],
   ['unit4-review', 'quiz', '답 = input()\nif 답 == "7":\n    print("정답")\nelse:\n    print("땡")', 'input-few'],
   ['unit4-review', 'quiz', '답 = int(input())\nif 답 == 7:\n    print("정답")\nelse:\n    print("땡")\n답 = int(input())\nif 답 == 42:\n    print("정답")\nelse:\n    print("땡")\n답 = int(input())\nif 답 == "서울":\n    print("정답")\nelse:\n    print("땡")', 'error'],
+  // 값 바꾸기와 세기 단원
+  ['update', 'bank', 'print(500)\nprint(1700)\nprint(2000)', 'mistake', 'need-update'],
+  ['update', 'bank', '저금 = 0\n저금 + 500\nprint(저금)\n저금 + 1200\nprint(저금)\n저금 + 300\nprint(저금)', 'line-diff'],
+  ['update', 'bank', 'print(500)\nprint(1200)\nprint(300)', 'mistake', 'bank-each'],
+  ['update', 'bank', '저금 = 0\n저금 += 500\n저금 += 1200\n저금 += 300\nprint(저금)', 'mistake', 'bank-once'],
+  ['update', 'bank', '저금 += 500\nprint(저금)', 'error'],
+  ['update', 'double', '수 = 1\nfor i in range(10):\n    수 = 수 * 2\n    print(수)', 'mistake', 'double-in'],
+  ['update', 'double', 'for i in range(10):\n    수 = 1\n    수 = 수 * 2\nprint(수)', 'mistake', 'double-reset'],
+  ['update', 'double', '수 = 1\nfor i in range(10):\n    수 = 수 + 2\nprint(수)', 'mistake', 'double-add'],
+  ['update', 'double', 'print(1024)', 'mistake', 'need-for'],
+  ['update', 'double', '수 = 1\nfor i in range(10):\n    수 *= 2\nprint(수)', 'correct'],
+  ['sum-loop', 'gauss', '합 = 0\nfor i in range(1, 100):\n    합 = 합 + i\nprint(합)', 'mistake', 'sum-99'],
+  ['sum-loop', 'gauss', '합 = 0\nfor i in range(1, 101):\n    합 = 합 + i\n    print(합)', 'mistake', 'sum-in'],
+  ['sum-loop', 'gauss', 'for i in range(1, 101):\n    합 = 0\n    합 = 합 + i\nprint(합)', 'mistake', 'sum-reset'],
+  ['sum-loop', 'gauss', 'print(5050)', 'mistake', 'need-for'],
+  ['sum-loop', 'gauss', 'for i in range(1, 101):\n    합 = 합 + i\nprint(합)', 'error'],
+  ['sum-loop', 'odd-sum', '합 = 0\nfor i in range(1, 20, 2):\n    합 += i\nprint(합)', 'mistake', 'odd-once'],
+  ['sum-loop', 'odd-sum', '합 = 0\nfor i in range(1, 20):\n    합 += i\n    print(합)', 'mistake', 'odd-all'],
+  ['count-if', 'seven', '개수 = 0\nfor i in range(1, 101):\n    개수 += 1\nprint(개수)', 'mistake', 'seven-all'],
+  ['count-if', 'seven', '개수 = 0\nfor i in range(1, 101):\n    if i % 7 == 0:\n        개수 += 1\n    print(개수)', 'mistake', 'seven-in'],
+  ['count-if', 'seven', '개수 = 0\nfor i in range(1, 101):\n    if i % 7 == 0:\n        개수 += i\nprint(개수)', 'mistake', 'seven-sum'],
+  ['count-if', 'seven', '개수 = 0\nfor i in range(101):\n    if i % 7 == 0:\n        개수 += 1\nprint(개수)', 'mistake', 'seven-zero'],
+  ['count-if', 'seven', 'print(14)', 'mistake', 'need-for'],
+  ['count-if', 'seven', '개수 = 0\nfor i in range(7, 101, 7):\n    개수 += 1\nprint(개수)', 'mistake', 'need-if'],
+  ['count-if', 'seven', '개수 = 0\nfor i in range(1, 101):\n    if i % 7 == 0:\n    개수 += 1\nprint(개수)', 'error'],
+  ['count-if', 'fizz', '합 = 0\nfor i in range(1, 101):\n    if i % 3 == 0:\n        합 += i\n    if i % 5 == 0:\n        합 += i\nprint(합)', 'mistake', 'fizz-twice'],
+  ['count-if', 'fizz', '합 = 0\nfor i in range(1, 101):\n    if i % 3 == 0 and i % 5 == 0:\n        합 += i\nprint(합)', 'mistake', 'fizz-and'],
+  ['count-if', 'fizz', '합 = 0\nfor i in range(1, 101):\n    if i % 3 == 0 or i % 5 == 0:\n        합 += 1\nprint(합)', 'mistake', 'fizz-count'],
+  ['max-product', 'biggest', '가장큰 = 0\nfor i in range(5):\n    수 = int(input())\n    가장큰 = 수\nprint(가장큰)', 'mistake', 'max-last'],
+  ['max-product', 'biggest', '가장큰 = 0\nfor i in range(5):\n    수 = int(input())\n    가장큰 += 수\nprint(가장큰)', 'mistake', 'max-sum'],
+  ['max-product', 'biggest', '가장큰 = "0"\nfor i in range(5):\n    수 = input()\n    if 수 > 가장큰:\n        가장큰 = 수\nprint(가장큰)', 'mistake', 'max-str-10'],
+  ['max-product', 'biggest', '가장큰 = 0\nfor i in range(5):\n    수 = int(input())\n    if 수 > 가장큰:\n        가장큰 = 수\n    print(가장큰)', 'mistake', 'max-in'],
+  ['max-product', 'biggest', '가장큰 = 0\nfor i in range(5):\n    수 = input()\n    if 수 > 가장큰:\n        가장큰 = 수\nprint(가장큰)', 'error'],
+  ['max-product', 'biggest', '가장큰 = 0\nfor i in range(4):\n    수 = int(input())\n    if 수 > 가장큰:\n        가장큰 = 수\nprint(가장큰)', 'input-few'],
+  ['max-product', 'factorial', '곱 = 0\nfor i in range(1, 11):\n    곱 = 곱 * i\nprint(곱)', 'mistake', 'fact-zero'],
+  ['max-product', 'factorial', '곱 = 1\nfor i in range(1, 10):\n    곱 = 곱 * i\nprint(곱)', 'mistake', 'fact-9'],
+  ['max-product', 'factorial', '곱 = 1\nfor i in range(1, 11):\n    곱 = 곱 + i\nprint(곱)', 'mistake', 'fact-sum'],
+  ['divisors', 'prime', '수 = int(input())\n개수 = 0\nfor i in range(1, 수):\n    if 수 % i == 0:\n        print(i)\n        개수 += 1\nif 개수 == 2:\n    print("소수")\nelse:\n    print("소수 아님")', 'mistake', 'div-self'],
+  ['divisors', 'prime', '수 = int(input())\n개수 = 0\nfor i in range(1, 수 + 1):\n    if 수 % i == 0:\n        print(i)\n        개수 += 1\n    if 개수 == 2:\n        print("소수")\n    else:\n        print("소수 아님")', 'mistake', 'div-in'],
+  ['divisors', 'prime', '수 = int(input())\n개수 = 0\nfor i in range(1, 수 + 1):\n    if 수 % i == 0:\n        개수 += 1\nif 개수 == 2:\n    print("소수")\nelse:\n    print("소수 아님")', 'mistake', 'div-no-list'],
+  ['divisors', 'prime', '수 = int(input())\n개수 = 0\nfor i in range(1, 수 + 1):\n    if 수 % i == 0:\n        print(i)\n        개수 += 1\nif 개수 <= 2:\n    print("소수")\nelse:\n    print("소수 아님")', 'mistake', 'div-one'],
+  ['divisors', 'prime', '수 = int(input())\n개수 = 0\nfor i in range(수):\n    if 수 % i == 0:\n        print(i)\n        개수 += 1\nif 개수 == 2:\n    print("소수")\nelse:\n    print("소수 아님")', 'error'],
+  ['divisors', 'perfect', '수 = int(input())\n합 = 0\nfor i in range(1, 수 + 1):\n    if 수 % i == 0:\n        합 += i\nif 합 == 수:\n    print("완전수")\nelse:\n    print("완전수 아님")', 'mistake', 'perfect-self'],
+  ['unit5-review', 'four', '개수 = 0\n합 = 0\nfor i in range(51):\n    if i % 4 == 0:\n        개수 += 1\n        합 += i\nprint("개수", 개수)\nprint("합", 합)', 'mistake', 'four-zero'],
+  ['unit5-review', 'four', 'print("개수", 12)\nprint("합", 312)', 'mistake', 'need-for'],
+  ['unit5-review', 'primes', '개수 = 0\nfor 수 in range(2, 101):\n    for i in range(1, 수 + 1):\n        if 수 % i == 0:\n            개수 += 1\n    if 개수 == 2:\n        print(수)', 'mistake', 'prime-reset'],
+  ['unit5-review', 'primes', 'for 수 in range(2, 101):\n    개수 = 0\n    for i in range(1, 수 + 1):\n        if 수 % i == 0:\n            개수 += 1\nif 개수 == 2:\n    print(수)', 'mistake', 'prime-if-out'],
+  ['unit5-review', 'primes', 'for 수 in range(2, 101):\n    개수 = 0\n    for i in range(1, 수 + 1):\n        if 수 % i == 0:\n            개수 += 1\n        if 개수 == 2:\n            print(수)', 'mistake', 'prime-if-deep'],
+  ['unit5-review', 'primes', 'for 수 in range(1, 101):\n    개수 = 0\n    for i in range(1, 수 + 1):\n        if 수 % i == 0:\n            개수 += 1\n    if 개수 <= 2:\n        print(수)', 'mistake', 'prime-one'],
+  ['unit5-review', 'primes', 'for 수 in range(2, 101):\n개수 = 0\nfor i in range(1, 수 + 1):\n    if 수 % i == 0:\n        개수 += 1\nif 개수 == 2:\n    print(수)', 'error'],
+  ['unit5-review', 'primes', 'for 수 in range(2, 50):\n    개수 = 0\n    for i in range(1, 수 + 1):\n        if 수 % i == 0:\n            개수 += 1\n    if 개수 == 2:\n        print(수)', 'count'],
 ];
 
 test('흔한 오답에 의도한 말이 나온다', () => {
@@ -260,6 +311,7 @@ test('흔한 오답에 의도한 말이 나온다', () => {
 
 test('파이썬이 내는 오류를 우리 설명이 알아듣는다', () => {
   const variables = { variables: true };
+  const loops = { variables: true, loops: true };
   // [코드, 오류 종류, 설명에 들어 있어야 하는 말, 아이가 배운 것]
   const cases = [
     ['print("하나")\nprint(둘)\nprint("셋")', 'NameError', /따옴표/],
@@ -304,6 +356,12 @@ test('파이썬이 내는 오류를 우리 설명이 알아듣는다', () => {
     ['키 = "135"\nif 키 >= 130:\n    print("가")', 'TypeError', /크기를 견줄 수 없어요/, variables],
     ['비 = true', 'NameError', /첫 글자만 큰 글자/, variables],
     ['x = 5\nif x == 5:\n    print("가")\nElse:\n    print("나")', 'SyntaxError', /else는 모두 작은 글자/, variables],
+    // 값 바꾸기를 배운 뒤
+    ['점수 = 5\n점수 + = 1', 'SyntaxError', /붙여 써요/, loops],
+    ['수 = 12\nfor i in range(수):\n    if 수 % i == 0:\n        print(i)', 'ZeroDivisionError', /1부터 시작/, loops],
+    ['print(5 / 0)', 'ZeroDivisionError', /^0으로 나눌 수 없어요\.$/],
+    ['합 = 합 + 1', 'NameError', /이름표가 아직 없어요/, loops],
+    ['for i in range(3):\n    합 += i\nprint(합)', 'NameError', /이름표가 아직 없어요/, loops],
   ];
   for (const [code, type, pattern, knows] of cases) {
     const ran = scripted(code, [], false);

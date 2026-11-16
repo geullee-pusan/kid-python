@@ -116,6 +116,20 @@ export function taskFeedback(script, task, diagnosis, seed = 0) {
   return scenes;
 }
 
+/**
+ * 한 줄씩 보기의 빠르기. 긴 반복은 앞의 몇 줄만 제 속도(1)로 보여 주고, 나머지는 빠르게 넘긴다.
+ * 줄마다 1.2초쯤 걸리므로, 그대로 두면 80줄짜리 시연은 1분 반이 넘는다. 뒤쪽을 합쳐 12초쯤에 맞춘다.
+ * @param {number} index 지금 보여 주는 줄의 차례(0부터)
+ * @param {number} total 보여 줄 줄의 수
+ * @returns {number} 쉬는 시간에 곱할 값(1이면 제 속도, 작을수록 빠르다)
+ */
+export function tracePace(index, total) {
+  const CALM = 14;
+  const rest = total - CALM;
+  if (index < CALM || rest <= 0) return 1;
+  return Math.max(0.2, Math.min(1, 12000 / (rest * 1200)));
+}
+
 /** 수업에 든 쓰기 문제 전부(심화 포함). 점검과 테스트에서 쓴다. */
 export function allTasks(script) {
   return [...(script.tasks ?? []), ...(script.challenge ? [script.challenge] : [])];
