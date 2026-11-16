@@ -5,6 +5,7 @@ import { loadPyodide } from './pyodide/pyodide.mjs';
 
 let pyodide = null;
 let runUser = null;
+let traceUser = null;
 let interruptView = null; // 화면이 2를 써 넣으면 파이썬에 KeyboardInterrupt가 난다
 let inputCtl = null; // [상태, 길이]. 상태 0 = 기다림, 1 = 입력 있음, 2 = 그만
 let inputBytes = null; // 입력 글자(UTF-8)
@@ -87,7 +88,22 @@ function readLine() {
 // 실행할 때마다 새 이름 공간을 쓴다(앞에서 만든 변수가 남지 않는다).
 // 오류가 나면 종류, 한 줄 설명, 줄 번호, 파이썬이 원래 보여 주는 글을 돌려준다.
 const RUNNER_SOURCE = `
-import sys, json, traceback, linecache
+import sys, json, traceback, linecache, io
+
+def __kidpy_error(e, name):
+    line = None
+    col = None
+    message = str(e)
+    if isinstance(e, SyntaxError) and e.filename == name:
+        line, col, message = e.lineno, e.offset, e.msg
+        text = "".join(traceback.format_exception_only(type(e), e))
+    else:
+        tb = e.__traceback__.tb_next if e.__traceback__ else None
+        for frame in traceback.extract_tb(tb):
+            if frame.filename == name:
+                line = frame.lineno
+        text = "".join(traceback.format_exception(type(e), e, tb))
+    return {"type": type(e).__name__, "message": message, "line": line, "col": col, "text": text}
 
 def __kidpy_run(code):
     name = "main.py"
@@ -98,19 +114,7 @@ def __kidpy_run(code):
     except SystemExit:
         pass
     except BaseException as e:
-        line = None
-        col = None
-        message = str(e)
-        if isinstance(e, SyntaxError) and e.filename == name:
-            line, col, message = e.lineno, e.offset, e.msg
-            text = "".join(traceback.format_exception_only(type(e), e))
-        else:
-            tb = e.__traceback__.tb_next if e.__traceback__ else None
-            for frame in traceback.extract_tb(tb):
-                if frame.filename == name:
-                    line = frame.lineno
-            text = "".join(traceback.format_exception(type(e), e, tb))
-        return json.dumps({"type": type(e).__name__, "message": message, "line": line, "col": col, "text": text})
+        return json.dumps(__kidpy_error(e, name))
     finally:
         try:
             sys.stdout.flush()
@@ -118,6 +122,51 @@ def __kidpy_run(code):
         except BaseException:
             pass
     return None
+
+class __KidpyTraceLimit(Exception):
+    pass
+
+# 한 줄씩 실행해 보이기(강의 시연, 예측 문제 확인)에 쓴다.
+# 줄을 실행하기 직전마다 "몇 번째 줄인지"와 "그때까지 나온 출력의 길이"를 적어 두고,
+# 끝난 뒤 줄마다 그 줄이 내보낸 출력을 잘라서 돌려준다.
+def __kidpy_trace(code, limit=300):
+    name = "main.py"
+    linecache.cache[name] = (len(code), None, code.splitlines(True), name)
+    scope = {"__name__": "__main__"}
+    buf = io.StringIO()
+    marks = []
+    def tracer(frame, event, arg):
+        if frame.f_code.co_filename != name:
+            return None
+        if event == "line":
+            if len(marks) >= limit:
+                raise __KidpyTraceLimit()
+            marks.append((frame.f_lineno, len(buf.getvalue())))
+        return tracer
+    error = None
+    old = sys.stdout
+    sys.stdout = buf
+    try:
+        compiled = compile(code, name, "exec")
+        sys.settrace(tracer)
+        try:
+            exec(compiled, scope)
+        finally:
+            sys.settrace(None)
+    except SystemExit:
+        pass
+    except __KidpyTraceLimit:
+        error = {"type": "TraceLimit", "message": "too many steps", "line": None, "col": None, "text": ""}
+    except BaseException as e:
+        error = __kidpy_error(e, name)
+    finally:
+        sys.stdout = old
+    total = buf.getvalue()
+    steps = []
+    for i, (line, pos) in enumerate(marks):
+        end = marks[i + 1][1] if i + 1 < len(marks) else len(total)
+        steps.append({"line": line, "out": total[pos:end]})
+    return json.dumps({"steps": steps, "output": total, "error": error})
 `;
 
 async function init(message) {
@@ -135,6 +184,7 @@ async function init(message) {
   if (interruptView) pyodide.setInterruptBuffer(interruptView);
   pyodide.runPython(RUNNER_SOURCE);
   runUser = pyodide.globals.get('__kidpy_run');
+  traceUser = pyodide.globals.get('__kidpy_trace');
   const python = pyodide.runPython('import sys; sys.version.split()[0]');
   postMessage({
     type: 'ready',
@@ -150,16 +200,23 @@ function run(message) {
   if (interruptView) interruptView[0] = 0;
   if (inputCtl) Atomics.store(inputCtl, 0, 0);
   let error = null;
+  let steps = null;
+  let output = null;
   try {
-    const result = runUser(message.code);
-    if (result) error = JSON.parse(result);
+    if (message.trace) {
+      const traced = JSON.parse(traceUser(message.code));
+      ({ steps, output, error } = traced);
+    } else {
+      const result = runUser(message.code);
+      if (result) error = JSON.parse(result);
+    }
   } catch (e) {
     // 여기로 오면 파이썬 안에서 잡지 못한 오류다(실행기 자체의 문제일 수 있다).
     error = { type: e && e.type ? e.type : 'InternalError', message: String(e && e.message ? e.message : e), line: null, col: null, text: String(e) };
   }
   if (interruptView) interruptView[0] = 0;
   flush(true); // 마지막 출력은 꼭 보낸다
-  postMessage({ type: 'done', id: message.id, error, ms: Math.round(performance.now() - started) });
+  postMessage({ type: 'done', id: message.id, error, steps, output, ms: Math.round(performance.now() - started) });
 }
 
 self.onmessage = (event) => {

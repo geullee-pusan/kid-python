@@ -79,7 +79,7 @@ export class Runner {
     } else if (message.type === 'done') {
       const current = this.current;
       if (!current || current.id !== message.id) return;
-      this.finish({ error: message.error, ms: message.ms, hardStop: false });
+      this.finish({ error: message.error, ms: message.ms, hardStop: false, steps: message.steps, output: message.output });
     }
   }
 
@@ -88,19 +88,22 @@ export class Runner {
     this.hooks.onState(state, info);
   }
 
-  /** 코드를 돌린다. 끝나면 { ok, stopped, hardStop, error, ms, output }을 돌려준다. */
-  async run(code) {
+  /**
+   * 코드를 돌린다. 끝나면 { ok, stopped, hardStop, error, ms, output }을 돌려준다.
+   * trace: true면 화면에 내보내지 않고, 줄마다 무엇이 나왔는지를 steps: [{ line, out }]로 함께 돌려준다.
+   */
+  async run(code, { trace = false } = {}) {
     await this.ready;
     if (this.current) throw new Error('이미 돌아가는 프로그램이 있어요');
     const id = this.nextId++;
     this.setState('running');
     return new Promise((resolve) => {
       this.current = { id, resolve, output: '', stopRequested: false, stopTimer: null, started: performance.now() };
-      this.worker.postMessage({ type: 'run', id, code });
+      this.worker.postMessage({ type: 'run', id, code, trace });
     });
   }
 
-  finish({ error, ms, hardStop }) {
+  finish({ error, ms, hardStop, steps = null, output = null }) {
     const current = this.current;
     this.current = null;
     if (current.stopTimer) clearTimeout(current.stopTimer);
@@ -113,7 +116,8 @@ export class Runner {
       // 멈춤을 눌러서 난 오류(KeyboardInterrupt, EOFError)는 오류로 보여 주지 않는다.
       error: stopped ? null : error,
       ms,
-      output: current.output,
+      output: output ?? current.output,
+      steps,
     });
   }
 

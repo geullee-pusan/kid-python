@@ -1,7 +1,7 @@
 {
-  "name": "파이썬 시험판",
+  "name": "파이썬 첫걸음",
   "short_name": "파이썬",
-  "description": "기술 확인용 시험판 (0단계)",
+  "description": "엔트리에서 파이썬으로",
   "lang": "ko",
   "start_url": "./",
   "scope": "./",

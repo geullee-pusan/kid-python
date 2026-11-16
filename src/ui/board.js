@@ -1,0 +1,113 @@
+// 칠판. 엔트리 블록과 파이썬 문장을 나란히 보여 주고, 글 카드, 예측 문제, 쓰기 문제를 적는다.
+// 엔트리 블록은 우리가 그린 단순한 그림이다(엔트리의 그림 파일을 쓰지 않는다). 색만으로 뜻을 전하지 않게 글자를 함께 쓴다.
+
+function el(tag, className, text) {
+  const e = document.createElement(tag);
+  if (className) e.className = className;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+/** 엔트리 블록 한 줄. parts: 글자, { in: '안녕!' }(값 칸), { drop: '말하기' }(목록 칸) */
+function entryBlock(block) {
+  const row = el('div', `eb eb-${block.cat}`);
+  for (const part of block.parts) {
+    if (typeof part === 'string') row.append(el('span', 'eb-text', part));
+    else if (part.in !== undefined) row.append(el('span', 'eb-in', part.in));
+    else if (part.drop !== undefined) row.append(el('span', 'eb-drop', `${part.drop} ▾`));
+  }
+  return row;
+}
+
+function codeBlock(code) {
+  const pre = el('pre', 'board-code');
+  pre.textContent = code;
+  return pre;
+}
+
+export function createBoard(root) {
+  root.classList.add('board');
+
+  function show(...children) {
+    root.replaceChildren(...children);
+  }
+
+  return {
+    clear() {
+      show();
+    },
+    /** 엔트리 블록 ↔ 파이썬 문장 */
+    pair({ entry, python, note }) {
+      const left = el('div', 'pair-side');
+      left.append(el('div', 'pair-label', '엔트리'));
+      const stack = el('div', 'eb-stack');
+      for (const block of entry) stack.append(entryBlock(block));
+      left.append(stack);
+      const right = el('div', 'pair-side');
+      right.append(el('div', 'pair-label', '파이썬'), codeBlock(python));
+      const pair = el('div', 'pair');
+      pair.append(left, el('div', 'pair-arrow', '→'), right);
+      const children = [pair];
+      if (note) children.push(el('p', 'board-note', note));
+      show(...children);
+    },
+    /** 글 카드: 제목과 줄 목록, 또는 코드 */
+    card({ title, items, code }) {
+      const children = [el('h3', 'board-title', title)];
+      if (items) {
+        const list = el('ul', 'board-items');
+        for (const item of items) list.append(el('li', '', item));
+        children.push(list);
+      }
+      if (code) children.push(codeBlock(code));
+      show(...children);
+    },
+    /**
+     * 예측 문제: 코드와 보기. 고르면 onPick(번호)를 부른다.
+     * 돌려주는 mark(번호, 맞음)로 고른 보기에 ○ 또는 △를 붙이고 더 못 고르게 한다.
+     */
+    predict({ no, total, code, choices, onPick }) {
+      const title = el('h3', 'board-title', `예측 ${no} / ${total}`);
+      const grid = el('div', 'choices');
+      const buttons = choices.map((choice, index) => {
+        const button = el('button', 'choice');
+        button.type = 'button';
+        button.append(el('span', 'choice-key', String(index + 1)), el('pre', 'choice-text', choice.text), el('span', 'choice-mark'));
+        button.addEventListener('click', () => onPick(index));
+        grid.append(button);
+        return button;
+      });
+      show(title, el('p', 'board-ask', '실행하면 출력 칸에 무엇이 나올까요?'), codeBlock(code), grid);
+      return {
+        mark(index, correct) {
+          for (const button of buttons) button.disabled = true;
+          buttons[index].classList.add(correct ? 'ok' : 'retry');
+          buttons[index].querySelector('.choice-mark').textContent = correct ? '○ 맞음' : '△ 다시 보기';
+        },
+        showAnswer(index) {
+          buttons[index].classList.add('answer');
+          if (!buttons[index].querySelector('.choice-mark').textContent) buttons[index].querySelector('.choice-mark').textContent = '← 실제 출력';
+        },
+      };
+    },
+    /** 쓰기 문제: 할 일 목록 */
+    task({ title, story, steps }) {
+      const list = el('ol', 'board-steps');
+      for (const step of steps) list.append(el('li', '', step));
+      show(el('h3', 'board-title', title), el('p', 'board-story', story), list);
+    },
+    /** 쓰기 문제 아래에 힌트 카드를 덧붙인다 */
+    appendHint({ title, code }) {
+      const box = el('div', 'board-hint');
+      box.append(el('h4', '', title), codeBlock(code));
+      root.append(box);
+      box.scrollIntoView({ block: 'nearest' });
+    },
+    /** 마지막 화면 */
+    done({ title, items }) {
+      const list = el('ul', 'board-items');
+      for (const item of items) list.append(el('li', '', item));
+      show(el('h3', 'board-title', title), list);
+    },
+  };
+}

@@ -2,20 +2,26 @@
   "name": "kid-python",
   "version": "0.0.0",
   "private": true,
-  "description": "엔트리에서 파이썬으로 넘어가는 아이를 위한 학습 앱 (0단계: 기술 확인용 시험판)",
+  "description": "블록 코딩에서 파이썬으로 넘어가는 초등학생을 위한 학습 앱",
   "type": "module",
   "scripts": {
     "runtime": "node scripts/copy-runtime.mjs",
     "dev": "npm run runtime && vite",
     "build": "npm run runtime && vite build && node scripts/finish-build.mjs",
     "preview": "vite preview --port 4175 --strictPort",
-    "tablet": "vite preview --port 4175 --strictPort --host"
+    "tablet": "vite preview --port 4175 --strictPort --host",
+    "test": "node --test \"tests/**/*.test.js\""
   },
   "engines": {
     "node": ">=22.12.0"
   },
   "dependencies": {
+    "@codemirror/autocomplete": "6.20.4",
+    "@codemirror/commands": "6.11.1",
     "@codemirror/lang-python": "6.2.1",
+    "@codemirror/language": "6.13.1",
+    "@codemirror/state": "6.7.6",
+    "@codemirror/view": "6.43.15",
     "codemirror": "6.0.2",
     "pyodide": "314.0.8"
   },
