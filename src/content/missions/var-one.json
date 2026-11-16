@@ -1,0 +1,186 @@
+{
+  "_설명": "변수 단원 2번 수업. 이 나이에서 흔한 오개념 두 가지를 겨냥한다: 변수가 값을 여러 개 기억한다, 한쪽을 바꾸면 다른 쪽도 따라 바뀐다(근거 보고서 2절). 이름표 칸으로 줄마다 값이 어떻게 바뀌는지 보여 준다.",
+  "id": "var-one",
+  "unit": "변수",
+  "no": 2,
+  "title": "이름표는 값 하나만 가리킨다",
+  "desc": "같은 이름에 값을 다시 넣으면 어떻게 되는지 봐요.",
+  "minutes": 15,
+  "knows": ["variables"],
+  "showVars": true,
+  "learned": [
+    { "rule": "같은 이름에 다시 넣으면 앞의 값은 사라져요.", "code": "점수 = 5\n점수 = 8" },
+    { "rule": "b = a 는 그때 a의 값을 b에도 붙여요. 나중에 a를 바꿔도 b는 그대로예요.", "code": "b = a" },
+    { "rule": "두 값을 맞바꿀 때는 하나를 다른 이름표에 맡겨 둬요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["오늘은 이름표에 값을 다시 넣으면 어떻게 되는지 봐요."],
+    "same-entry": ["엔트리에서도 정하기를 다시 하면 값이 바뀌었어요. 파이썬도 같아요."],
+    "again-after": ["이름표는 값을 하나만 가리켜요. 다시 넣으면 앞의 값은 사라져요."],
+    "copy-intro": ["이번에는 이름표를 하나 더 만들어요."],
+    "copy-think": ["실행하기 전에 생각해 봐요. 마지막에 b는 얼마일까요?"],
+    "copy-after-1": ["둘째 줄을 할 때 a는 [3|삼]이었어요. 그래서 b에도 [3|삼]이 붙었어요."],
+    "copy-after-2": ["그 뒤에 a를 [10|십]으로 바꿔도 b는 따라 바뀌지 않아요. b는 그대로 [3|삼]이에요."],
+    "swap-intro": ["두 이름표의 값을 맞바꾸려면 어떻게 할까요? 이렇게 하면 될까요?"],
+    "swap-fail": ["둘 다 [2|이]가 됐어요. 셋째 줄에서 a에 있던 [1|일]이 사라져 버렸기 때문이에요."],
+    "swap-idea": ["사라지기 전에 다른 이름표에 맡겨 두면 돼요."],
+    "swap-ok": ["이번에는 맞바꿔졌어요."],
+    "summary": ["정리해요. 이름표는 값 하나만 가리켜요. 다시 넣으면 바뀌고, 다른 이름표는 따라 바뀌지 않아요."],
+
+    "q1-right": ["맞아요. 다시 넣으면 앞의 값은 사라지고 새 값만 남아요."],
+    "q1-first": ["처음 값은 남지 않아요. 다시 넣으면 바뀌어요."],
+    "q1-sum": ["이름표는 값을 모으지 않아요. 하나만 가리켜요."],
+    "q1-explain": ["[5|오]를 넣었다가 [8|팔]을 다시 넣었어요. 남는 건 마지막에 넣은 [8|팔]이에요."],
+    "q2-right": ["맞아요. b에는 그때 a의 값 [3|삼]이 붙었고, a가 바뀌어도 그대로예요."],
+    "q2-follow": ["b는 a를 따라 바뀌지 않아요. 둘째 줄을 할 때의 값만 옮겨 와요."],
+    "q2-name": ["따옴표가 없으니 a라는 글자가 아니라 a의 값이 들어가요."],
+    "q2-explain": ["둘째 줄에서 b에 [3|삼]이 붙어요. 셋째 줄에서 a만 [10|십]으로 바뀌어요. b는 그대로 [3|삼]이에요."],
+    "q3-right": ["맞아요. 나는 만들 때 한 번 계산돼서 [3|삼]이에요. 가가 바뀌어도 다시 계산하지 않아요."],
+    "q3-recalc": ["나는 만들 때 한 번만 계산돼요. 가가 나중에 바뀌어도 다시 계산하지 않아요."],
+    "q3-old": ["가에는 [7|칠]을 다시 넣었어요. 앞의 값 [2|이]는 사라졌어요."],
+    "q3-explain": ["둘째 줄에서 나는 [2 + 1|이 더하기 일]로 [3|삼]이 돼요. 셋째 줄에서 가만 [7|칠]로 바뀌어요."],
+
+    "task-how": ["가운데에 맞바꾸는 코드를 써요. 다 쓰면 '제출'을 눌러요."],
+    "praise-swap": ["값을 맡겨 둘 이름표를 만들어서 맞바꿨어요."],
+    "swap-direct": ["답은 맞아요. 그런데 글자를 다시 쓰지 말고, 이름표끼리 값을 옮겨서 바꿔 봐요."],
+    "swap-lost-a": ["둘 다 귤이 됐어요. 사과가 사라지기 전에 다른 이름표에 맡겨 둬요."],
+    "swap-lost-b": ["둘 다 사과가 됐어요. 귤이 사라지기 전에 다른 이름표에 맡겨 둬요."],
+    "hint-1": ["이름표가 하나 더 필요해요."],
+    "hint-2": ["한쪽 값을 새 이름표에 맡겨 두고, 그다음에 옮겨요. 모두 세 줄이에요."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. 이름이 달라요. 이걸 보고 써 봐요."],
+    "praise-short": ["쉼표로 두 이름표를 한 번에 바꿨어요."],
+    "short-how": ["답은 맞아요. 이번에는 맡겨 두는 이름표 없이, 쉼표를 써서 한 줄로 바꿔 봐요."],
+    "short-hint": ["왼쪽에 이름 두 개를 쉼표로 쓰고, 등호 오른쪽에는 순서를 바꿔서 써요."],
+
+    "done-1": ["오늘은 이름표가 값을 하나만 가리킨다는 것을 배웠어요."],
+    "done-2": ["다시 넣으면 앞의 값은 사라져요. 필요하면 다른 이름표에 맡겨 둬요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      {
+        "pair": {
+          "entry": [
+            { "cat": "data", "parts": [{ "drop": "점수" }, "를", { "in": "5" }, "(으)로 정하기"] },
+            { "cat": "data", "parts": [{ "drop": "점수" }, "를", { "in": "8" }, "(으)로 정하기"] }
+          ],
+          "python": "점수 = 5\n점수 = 8"
+        }
+      },
+      { "say": "same-entry", "pose": "point" },
+      { "type": "점수 = 5\nprint(점수)\n점수 = 8\nprint(점수)" },
+      { "say": "watch-vars" },
+      { "trace": "점수 = 5\nprint(점수)\n점수 = 8\nprint(점수)" },
+      { "say": "again-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "copy-intro" },
+      { "type": "a = 3\nb = a\na = 10\nprint(a)\nprint(b)" },
+      { "say": "copy-think" },
+      { "trace": "a = 3\nb = a\na = 10\nprint(a)\nprint(b)" },
+      { "say": "copy-after-1" },
+      { "say": "copy-after-2" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "x = 1\nx = 2\nprint(x)" } },
+      { "follow": { "code": "x = 1\nx = 2\nprint(x)", "expect": ["2"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "swap-intro" },
+      { "type": "a = 1\nb = 2\na = b\nb = a\nprint(a, b)" },
+      { "trace": "a = 1\nb = 2\na = b\nb = a\nprint(a, b)" },
+      { "say": "swap-fail" },
+      { "say": "swap-idea" },
+      { "type": "a = 1\nb = 2\n맡김 = a\na = b\nb = 맡김\nprint(a, b)" },
+      { "trace": "a = 1\nb = 2\n맡김 = a\na = b\nb = 맡김\nprint(a, b)" },
+      { "say": "swap-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["다시 넣으면 앞의 값은 사라진다", "b = a 는 그때의 값만 옮긴다. 따라 바뀌지 않는다", "맞바꿀 때는 하나를 맡겨 둔다"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "x = 5\nx = 8\nprint(x)",
+      "answer": 2,
+      "choices": [
+        { "text": "5", "say": "q1-first" },
+        { "text": "13", "say": "q1-sum" },
+        { "text": "8", "say": "q1-right" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "a = 3\nb = a\na = 10\nprint(b)",
+      "answer": 0,
+      "choices": [
+        { "text": "3", "say": "q2-right" },
+        { "text": "10", "say": "q2-follow" },
+        { "text": "a", "say": "q2-name" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "가 = 2\n나 = 가 + 1\n가 = 7\nprint(가, 나)",
+      "answer": 1,
+      "choices": [
+        { "text": "7 8", "say": "q3-recalc" },
+        { "text": "7 3", "say": "q3-right" },
+        { "text": "2 3", "say": "q3-old" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "swap",
+      "title": "맞바꾸기",
+      "story": "왼손에 사과, 오른손에 귤을 들고 있어요. 두 손의 것을 맞바꿔요.",
+      "steps": ["가운데에 코드를 써서 두 이름표의 값을 맞바꿔요.", "첫 두 줄과 마지막 줄은 고치지 않아요."],
+      "start": "왼손 = \"사과\"\n오른손 = \"귤\"\n\n\n\nprint(왼손, 오른손)",
+      "expect": ["귤 사과"],
+      "show": true,
+      "checks": [
+        { "pattern": "왼손\\s*=\\s*오른손|오른손\\s*=\\s*왼손|,\\s*(왼손|오른손)\\s*=", "say": "swap-direct" },
+        { "pattern": "print\\(\\s*왼손\\s*,\\s*오른손\\s*\\)", "say": "swap-direct" }
+      ],
+      "mistakes": [
+        { "output": "^귤 귤$", "say": "swap-lost-a" },
+        { "output": "^사과 사과$", "say": "swap-lost-b" }
+      ],
+      "praise": "praise-swap",
+      "solution": "왼손 = \"사과\"\n오른손 = \"귤\"\n\n맡김 = 왼손\n왼손 = 오른손\n오른손 = 맡김\n\nprint(왼손, 오른손)",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "a = 1\nb = 2\n맡김 = a\na = b\nb = 맡김" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "swap-short",
+    "title": "심화: 한 줄로 맞바꾸기",
+    "story": "파이썬에서는  a, b = b, a  라고 쓰면 한 줄로 맞바꿀 수 있어요.",
+    "steps": ["맡겨 두는 이름표 없이, 한 줄로 맞바꿔요."],
+    "start": "왼손 = \"사과\"\n오른손 = \"귤\"\n\n\nprint(왼손, 오른손)",
+    "expect": ["귤 사과"],
+    "show": true,
+    "checks": [{ "pattern": "왼손\\s*,\\s*오른손\\s*=\\s*오른손\\s*,\\s*왼손|오른손\\s*,\\s*왼손\\s*=\\s*왼손\\s*,\\s*오른손", "say": "short-how" }],
+    "praise": "praise-short",
+    "solution": "왼손 = \"사과\"\n오른손 = \"귤\"\n\n왼손, 오른손 = 오른손, 왼손\n\nprint(왼손, 오른손)",
+    "hints": [{ "say": "short-hint" }]
+  }
+}

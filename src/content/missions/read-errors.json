@@ -76,7 +76,7 @@
       { "say": "name-intro" },
       { "type": "print(\"하나\")\nprint(둘)\nprint(\"셋\")" },
       { "say": "watch-run" },
-      { "trace": "print(\"하나\")\nprint(둘)\nprint(\"셋\")" },
+      { "trace": "print(\"하나\")\nprint(둘)\nprint(\"셋\")", "expectError": "NameError" },
       { "say": "name-after-1" },
       { "say": "name-after-2", "pose": "point" },
       { "say": "name-after-3" },
@@ -89,7 +89,7 @@
     [
       { "say": "syntax-intro" },
       { "type": "print(\"하나\")\nprint(\"둘\"" },
-      { "trace": "print(\"하나\")\nprint(\"둘\"" },
+      { "trace": "print(\"하나\")\nprint(\"둘\"", "expectError": "SyntaxError" },
       { "say": "syntax-after-1" },
       { "say": "syntax-after-2", "pose": "point" },
       { "say": "syntax-after-3" }

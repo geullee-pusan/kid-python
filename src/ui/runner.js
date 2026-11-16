@@ -79,7 +79,7 @@ export class Runner {
     } else if (message.type === 'done') {
       const current = this.current;
       if (!current || current.id !== message.id) return;
-      this.finish({ error: message.error, ms: message.ms, hardStop: false, steps: message.steps, output: message.output });
+      this.finish({ error: message.error, ms: message.ms, hardStop: false, steps: message.steps, output: message.output, vars: message.vars, unused: message.unused });
     }
   }
 
@@ -90,20 +90,22 @@ export class Runner {
 
   /**
    * 코드를 돌린다. 끝나면 { ok, stopped, hardStop, error, ms, output }을 돌려준다.
-   * trace: true면 화면에 내보내지 않고, 줄마다 무엇이 나왔는지를 steps: [{ line, out }]로 함께 돌려준다.
+   * trace: true면 화면에 내보내지 않고, 줄마다 무엇이 나왔는지와 변수 값을 steps: [{ line, out, vars }]로 함께 돌려준다.
+   * check: true면 채점용으로 돌린다(화면에 내보내지 않고, 질문 글은 출력에 넣지 않는다).
+   * inputs: trace와 check에서 input()이 받을 답들. 다 쓰고도 또 물으면 EOFError가 난다. 남으면 unused에 개수가 온다.
    */
-  async run(code, { trace = false } = {}) {
+  async run(code, { trace = false, check = false, inputs = [] } = {}) {
     await this.ready;
     if (this.current) throw new Error('이미 돌아가는 프로그램이 있어요');
     const id = this.nextId++;
     this.setState('running');
     return new Promise((resolve) => {
       this.current = { id, resolve, output: '', stopRequested: false, stopTimer: null, started: performance.now() };
-      this.worker.postMessage({ type: 'run', id, code, trace });
+      this.worker.postMessage({ type: 'run', id, code, mode: trace ? 'trace' : check ? 'check' : 'run', inputs });
     });
   }
 
-  finish({ error, ms, hardStop, steps = null, output = null }) {
+  finish({ error, ms, hardStop, steps = null, output = null, vars = {}, unused = 0 }) {
     const current = this.current;
     this.current = null;
     if (current.stopTimer) clearTimeout(current.stopTimer);
@@ -118,6 +120,8 @@ export class Runner {
       ms,
       output: output ?? current.output,
       steps,
+      vars,
+      unused,
     });
   }
 

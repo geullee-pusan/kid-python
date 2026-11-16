@@ -1,13 +1,45 @@
 {
   "_설명": "처음 화면의 수업 목록. 순서와 내용은 docs/커리큘럼.md를 따른다(단원 순서는 임시). lessons에는 src/content/missions/의 id를 적는다. lessons가 없는 단원은 이름만 '앞으로 배울 것'에 나온다. more가 true면 그 단원에 수업이 더 생길 예정이라는 뜻이다.",
   "units": [
-    { "title": "출력과 순서", "lessons": ["print-order", "calc", "div-mod", "print-many", "read-errors", "unit1-review"] },
-    { "title": "변수" },
-    { "title": "정해진 횟수만큼 반복" },
-    { "title": "조건" },
-    { "title": "값 바꾸기와 세기" },
-    { "title": "조건이 맞는 동안 반복" },
-    { "title": "리스트" },
-    { "title": "함수" }
+    {
+      "title": "출력과 순서",
+      "lessons": [
+        "print-order",
+        "calc",
+        "div-mod",
+        "print-many",
+        "read-errors",
+        "unit1-review"
+      ]
+    },
+    {
+      "title": "변수",
+      "lessons": [
+        "var-name",
+        "var-one",
+        "input",
+        "str-int",
+        "str-ops",
+        "unit2-review"
+      ]
+    },
+    {
+      "title": "정해진 횟수만큼 반복"
+    },
+    {
+      "title": "조건"
+    },
+    {
+      "title": "값 바꾸기와 세기"
+    },
+    {
+      "title": "조건이 맞는 동안 반복"
+    },
+    {
+      "title": "리스트"
+    },
+    {
+      "title": "함수"
+    }
   ]
 }

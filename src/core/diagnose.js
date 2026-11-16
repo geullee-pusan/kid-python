@@ -6,6 +6,8 @@
 //  compute   파이썬이 계산해야 하는 식들 [{ literal: "12 + 30", pattern: "12\\s*\\+\\s*30" }]
 //            - 출력은 맞는데 코드(따옴표 밖)에 pattern이 없으면: 답을 직접 적은 것(not-computed)
 //            - 출력에 literal이 글자 그대로 나왔으면: 식을 따옴표 안에 넣은 것(quoted-calc)
+//  checks    출력이 맞아도 코드(따옴표 밖)에 꼭 있어야 하는 것 [{ pattern: "정규식", say: "대사 열쇠" }]
+//  cases     입력을 받는 문제의 채점용 입력과 기대 출력 [{ inputs: [...], expect: [...] }] (화면 쪽에서 하나씩 돌린다)
 //  mistakes  이 문제에서 흔한 실수 [{ code: "정규식", output: "정규식", say: "대사 열쇠" }]
 //            - 출력이 틀렸을 때, 코드(따옴표 밖)와 출력이 정규식에 맞으면 그 대사로 알려 준다
 
@@ -45,6 +47,9 @@ export function diagnoseTask(task, code, run) {
   if (same) {
     const missing = compute.find((item) => !new RegExp(item.pattern).test(bare));
     if (missing) return { kind: 'not-computed', vars: { calc: missing.literal } };
+    // 출력은 맞지만 배운 방법을 쓰지 않은 경우(예: 이름표를 쓰지 않고 숫자를 바로 곱함)
+    const skipped = (task.checks ?? []).find((rule) => !new RegExp(rule.pattern).test(bare));
+    if (skipped) return { kind: 'mistake', say: skipped.say };
     return { kind: 'correct' };
   }
   if (got.length === 0) return { kind: 'no-output' };

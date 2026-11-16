@@ -59,7 +59,7 @@ function toScene(script, spec, seed) {
   if (spec.card) return { kind: 'board-card', ...spec.card };
   if (spec.clearBoard) return { kind: 'board-clear' };
   if (spec.type !== undefined) return { kind: 'code-type', code: spec.type };
-  if (spec.trace !== undefined) return { kind: 'trace', code: spec.trace };
+  if (spec.trace !== undefined) return { kind: 'trace', code: spec.trace, inputs: spec.inputs ?? [] };
   // 따라 하기: say는 아이가 치는 동안 선생님이 하는 말이다(말이 끝나기를 기다리지 않고 바로 칠 수 있다).
   if (spec.follow) return { kind: 'follow', ...spec.follow, say: (spec.follow.say ?? []).map((key) => line(script, key, seed)) };
   if (spec.check) {
@@ -97,7 +97,7 @@ export function predictFeedback(script, question, choiceIndex, seed = 0) {
 
 /** 예측 문제: 실행해서 확인하는 장면 */
 export function predictRevealScenes(script, question, seed = 0) {
-  return [line(script, 'predict-run', seed), { kind: 'trace', code: question.code }];
+  return [line(script, 'predict-run', seed), { kind: 'trace', code: question.code, inputs: question.inputs ?? [] }];
 }
 
 /** 쓰기 문제: 채점 뒤 선생님 말. diagnosis는 src/core/diagnose.js의 결과다. */
@@ -108,9 +108,12 @@ export function taskFeedback(script, task, diagnosis, seed = 0) {
     if (task.praise) scenes.push(line(script, task.praise, seed));
     return scenes;
   }
-  if (diagnosis.kind === 'error') return [{ kind: 'say', key: 'task-error', text: diagnosis.text, speech: diagnosis.text, pose: 'talk' }];
-  if (diagnosis.kind === 'mistake') return [line(script, diagnosis.say, seed)];
-  return [line(script, `task-${diagnosis.kind}`, seed, diagnosis.vars)];
+  // 정해진 입력으로 채점했을 때는 어떤 입력에서 틀렸는지 먼저 알려 준다.
+  const scenes = diagnosis.inputs?.length ? [line(script, 'task-case', seed, { inputs: diagnosis.inputs.join(', ') })] : [];
+  if (diagnosis.kind === 'error') scenes.push({ kind: 'say', key: 'task-error', text: diagnosis.text, speech: diagnosis.text, pose: 'talk' });
+  else if (diagnosis.kind === 'mistake') scenes.push(line(script, diagnosis.say, seed));
+  else scenes.push(line(script, `task-${diagnosis.kind}`, seed, diagnosis.vars));
+  return scenes;
 }
 
 /** 수업에 든 쓰기 문제 전부(심화 포함). 점검과 테스트에서 쓴다. */
@@ -125,7 +128,7 @@ export function missingLines(script) {
     'task-intro', 'task-next', 'task-how', 'task-correct-first', 'task-correct', 'skip-ok', 'lecture-back', 'done-bye',
     'challenge-ask', 'challenge-intro', 'challenge-skip',
   ]);
-  for (const kind of ['not-computed', 'quoted-calc', 'order', 'count', 'spacing', 'line-diff', 'no-output']) used.add(`task-${kind}`);
+  for (const kind of ['not-computed', 'quoted-calc', 'order', 'count', 'spacing', 'line-diff', 'no-output', 'input-few', 'input-many', 'case']) used.add(`task-${kind}`);
   const walk = (spec) => {
     if (spec.say) used.add(spec.say);
     for (const key of spec.follow?.say ?? []) used.add(key);
@@ -143,6 +146,7 @@ export function missingLines(script) {
     if (task.praise) used.add(task.praise);
     for (const hint of task.hints ?? []) used.add(hint.say);
     for (const mistake of task.mistakes ?? []) used.add(mistake.say);
+    for (const rule of task.checks ?? []) used.add(rule.say);
   }
   for (const key of script.done ?? []) used.add(key);
   return [...used].filter((key) => !script.lines[key]);

@@ -1,0 +1,196 @@
+{
+  "_설명": "변수 단원 1번 수업. 엔트리 블록 '[변수] 를 (10) (으)로 정하기', '[변수] 값'은 docs.playentry.org/user/block_variable.html 에서 확인했다(2026-11-16). 변수는 '이름표'로 설명한다(다시 넣는 상황에서 상자 비유보다 결과가 좋았다는 근거: 근거 보고서 2절). showVars가 true인 수업은 편집기 아래에 이름표 칸이 보인다.",
+  "id": "var-name",
+  "unit": "변수",
+  "no": 1,
+  "title": "값에 이름 붙이기",
+  "desc": "값에 이름표를 붙여 두고, 이름으로 꺼내 써요.",
+  "minutes": 15,
+  "knows": ["variables"],
+  "showVars": true,
+  "learned": [
+    { "rule": "이름 = 값 이라고 쓰면 값에 이름표가 붙어요. 이걸 변수라고 해요.", "code": "나이 = 9" },
+    { "rule": "이름을 쓰면 그 값이 나와요. 따옴표를 붙이면 그냥 글자예요.", "code": "print(나이)" },
+    { "rule": "= 는 같다는 뜻이 아니에요. 오른쪽 값을 왼쪽 이름에 넣는다는 뜻이에요." },
+    { "rule": "이름표는 쓰기 전에 먼저 만들어야 해요." },
+    { "rule": "이름에는 빈칸을 쓸 수 없고, 숫자로 시작할 수 없어요.", "code": "내_나이 = 9" }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["오늘은 값에 이름을 붙여요. 이걸 변수라고 해요."],
+    "entry-set": ["엔트리에서는 변수를 정하기 블록으로 값을 넣었어요."],
+    "py-assign": ["파이썬에서는 이름을 쓰고, 등호를 쓰고, 값을 써요."],
+    "eq-meaning": ["여기서 등호는 같다는 뜻이 아니에요. 오른쪽 값을 왼쪽 이름에 넣는다는 뜻이에요."],
+    "label": ["값에 이름표를 붙인다고 생각하면 돼요."],
+    "after-1": ["첫 줄에서 [9|구]에 나이라는 이름표가 붙었어요. 둘째 줄은 나이를 찾아서 [9|구]를 내보냈어요."],
+    "quote-intro": ["따옴표가 있을 때와 없을 때를 비교해 봐요."],
+    "quote-after": ["따옴표가 없으면 이름표를 찾아서 값을 내보내요. 따옴표가 있으면 그냥 나이라는 글자예요."],
+    "calc-intro": ["이름표로 계산도 할 수 있어요."],
+    "calc-after": ["이름표 자리에 값이 들어가서 [6 * 4|육 곱하기 사]가 됐어요."],
+    "before-intro": ["아직 만들지 않은 이름을 쓰면 어떻게 될까요?"],
+    "before-after": ["파이썬은 위에서 아래로 해요. 첫 줄을 할 때는 점수라는 이름표가 아직 없어요. 그래서 오류가 났어요."],
+    "before-rule": ["이름표는 쓰기 전에 먼저 만들어야 해요."],
+    "name-rules": ["이름을 지을 때는 규칙이 두 가지 있어요. 빈칸을 쓸 수 없고, 숫자로 시작할 수 없어요."],
+    "summary": ["정리해요. 이름, 등호, 값. 이름을 쓰면 값이 나오고, 쓰기 전에 먼저 만들어요."],
+
+    "q1-right": ["맞아요. 따옴표가 있으면 글자, 없으면 이름표의 값이에요."],
+    "q1-both-value": ["첫 [print|프린트]에는 따옴표가 있어요. 그래서 나이라는 글자가 그대로 나와요."],
+    "q1-both-text": ["둘째 [print|프린트]에는 따옴표가 없어요. 이름표를 찾아서 값을 내보내요."],
+    "q1-explain": ["따옴표가 있으면 글자 그대로, 없으면 이름표의 값이 나와요."],
+    "q2-right": ["맞아요. 첫 줄을 할 때는 아직 키라는 이름표가 없어요."],
+    "q2-value": ["파이썬은 위에서 아래로 해요. 첫 줄을 할 때는 아직 키가 없어요."],
+    "q2-text": ["따옴표가 없으니 이름표를 찾아요. 그런데 아직 만들지 않았어요."],
+    "q2-explain": ["이름표를 만들기 전에 쓰려고 해서 오류가 나요. 만드는 줄이 먼저 와야 해요."],
+    "q3-right": ["맞아요. 이름표 자리에 값이 들어가서 계산돼요. 쉼표로 늘어놓았으니 한 줄이에요."],
+    "q3-text": ["따옴표가 없어요. 이름표의 값으로 계산해요."],
+    "q3-lines": ["[print|프린트]가 하나예요. 쉼표로 늘어놓은 값은 한 줄에 나와요."],
+    "q3-explain": ["[5 + 3|오 더하기 삼]은 [8|팔], [5 * 3|오 곱하기 삼]은 [15|십오]. 한 줄에 나란히 나와요."],
+
+    "praise-area": ["이름표 두 개를 만들고, 그 이름으로 계산했어요."],
+    "area-names": ["답은 맞아요. 그런데 이름표를 써 봐요. 가로와 세로에 값을 넣고, 그 이름으로 곱해요."],
+    "hint-1": ["세 줄이면 돼요. 이름표 두 개를 만들고, 한 줄로 내보내요."],
+    "hint-2": ["이름, 등호, 값 차례로 써요. 곱할 때는 숫자 대신 이름을 써요."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. 이름과 계산이 달라요. 이걸 보고 고쳐 봐요."],
+    "praise-reuse": ["값 한 곳만 바꿔서 두 계산을 모두 바꿨어요. 이름표의 좋은 점이에요."],
+    "reuse-one": ["답은 맞아요. 그런데 첫 줄의 값 한 곳만 바꿔도 돼요. 아래 두 줄은 그대로 두어요."],
+    "reuse-hint": ["첫 줄의 숫자만 바꾸고 실행해 봐요."],
+
+    "done-1": ["오늘은 값에 이름표를 붙이는 법을 배웠어요."],
+    "done-2": ["이름, 등호, 값. 이름을 쓰면 그 값이 나와요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      {
+        "pair": {
+          "entry": [{ "cat": "data", "parts": [{ "drop": "나이" }, "를", { "in": "9" }, "(으)로 정하기"] }],
+          "python": "나이 = 9"
+        }
+      },
+      { "say": "entry-set", "pose": "point" },
+      { "say": "py-assign", "pose": "point" },
+      { "say": "eq-meaning" },
+      { "say": "label" },
+      { "say": "type-first" },
+      { "type": "나이 = 9\nprint(나이)" },
+      { "say": "watch-vars" },
+      { "trace": "나이 = 9\nprint(나이)" },
+      { "say": "after-1" }
+    ],
+    [
+      {
+        "pair": {
+          "entry": [{ "cat": "data", "parts": [{ "drop": "나이" }, "값"] }],
+          "python": "나이",
+          "note": "따옴표 없이 이름만 쓰면 그 값이 된다"
+        }
+      },
+      { "say": "quote-intro" },
+      { "type": "나이 = 9\nprint(나이)\nprint(\"나이\")" },
+      { "trace": "나이 = 9\nprint(나이)\nprint(\"나이\")" },
+      { "say": "quote-after" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "키 = 130\nprint(키)" } },
+      { "follow": { "code": "키 = 130\nprint(키)", "expect": ["130"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "calc-intro" },
+      { "type": "가로 = 6\n세로 = 4\nprint(가로 * 세로)" },
+      { "trace": "가로 = 6\n세로 = 4\nprint(가로 * 세로)" },
+      { "say": "calc-after" }
+    ],
+    [
+      { "say": "before-intro" },
+      { "type": "print(점수)\n점수 = 100" },
+      { "trace": "print(점수)\n점수 = 100", "expectError": "NameError" },
+      { "say": "before-after" },
+      { "say": "before-rule" }
+    ],
+    [
+      { "card": { "title": "이름 짓는 규칙", "items": ["빈칸을 쓸 수 없어요:  내 나이 ✗  →  내_나이 ○", "숫자로 시작할 수 없어요:  2반 ✗  →  반2 ○", "한글, 영어, 숫자, 밑줄(_)을 쓸 수 있어요"] } },
+      { "say": "name-rules" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["이름 = 값:  나이 = 9", "이름을 쓰면 값이 나온다:  print(나이)", "= 는 '넣는다'는 뜻", "쓰기 전에 먼저 만든다", "이름에 빈칸 ✗, 숫자로 시작 ✗"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "나이 = 9\nprint(\"나이\")\nprint(나이)",
+      "answer": 1,
+      "choices": [
+        { "text": "9\n9", "say": "q1-both-value" },
+        { "text": "나이\n9", "say": "q1-right" },
+        { "text": "나이\n나이", "say": "q1-both-text" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "print(키)\n키 = 130",
+      "outcome": { "output": [], "error": "NameError" },
+      "answer": 2,
+      "choices": [
+        { "text": "130", "say": "q2-value" },
+        { "text": "키", "say": "q2-text" },
+        { "text": "(오류만 나온다)", "say": "q2-right" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "가로 = 5\n세로 = 3\nprint(가로 + 세로, 가로 * 세로)",
+      "answer": 0,
+      "choices": [
+        { "text": "8 15", "say": "q3-right" },
+        { "text": "가로 + 세로 가로 * 세로", "say": "q3-text" },
+        { "text": "8\n15", "say": "q3-lines" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "area",
+      "title": "넓이 구하기",
+      "story": "가로가 12, 세로가 7인 네모가 있어요.",
+      "steps": ["가로라는 이름에 12를 넣어요.", "세로라는 이름에 7을 넣어요.", "두 이름을 곱해서 넓이를 내보내요."],
+      "expect": ["84"],
+      "checks": [
+        { "pattern": "가로\\s*=\\s*12", "say": "area-names" },
+        { "pattern": "세로\\s*=\\s*7", "say": "area-names" },
+        { "pattern": "가로\\s*\\*\\s*세로|세로\\s*\\*\\s*가로", "say": "area-names" }
+      ],
+      "praise": "praise-area",
+      "solution": "가로 = 12\n세로 = 7\nprint(가로 * 세로)",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "밑변 = 10\n높이 = 3\nprint(밑변 + 높이)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "reuse",
+    "title": "심화: 값만 바꾸기",
+    "story": "이름표를 쓰면 값 한 곳만 고쳐도 계산이 모두 바뀌어요.",
+    "steps": ["한 변이 9인 네모의 둘레와 넓이가 나오게 고쳐요.", "고칠 곳은 한 군데뿐이에요."],
+    "start": "한변 = 5\nprint(\"둘레\", 한변 * 4)\nprint(\"넓이\", 한변 * 한변)",
+    "expect": ["둘레 36", "넓이 81"],
+    "show": true,
+    "checks": [{ "pattern": "한변\\s*=\\s*9\\b[\\s\\S]*한변\\s*\\*\\s*4[\\s\\S]*한변\\s*\\*\\s*한변", "say": "reuse-one" }],
+    "praise": "praise-reuse",
+    "solution": "한변 = 9\nprint(\"둘레\", 한변 * 4)\nprint(\"넓이\", 한변 * 한변)",
+    "hints": [{ "say": "reuse-hint" }]
+  }
+}

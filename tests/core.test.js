@@ -65,6 +65,10 @@ for (const m of Object.values(MISSIONS)) {
       for (const kind of ['not-computed', 'quoted-calc', 'order', 'count']) assert.ok(taskFeedback(m, task, { kind, vars })[0].text);
       for (const kind of ['spacing', 'line-diff']) assert.ok(taskFeedback(m, task, { kind, vars: { ...vars, want: '노포', got: '노표' } })[0].text);
       assert.ok(taskFeedback(m, task, { kind: 'no-output' })[0].text);
+      assert.ok(taskFeedback(m, task, { kind: 'input-few', vars: { want: 2, got: 1 } })[0].text);
+      assert.ok(taskFeedback(m, task, { kind: 'input-many', vars: { want: 1 } })[0].text);
+      assert.equal(taskFeedback(m, task, { kind: 'no-output', inputs: ['하늘', '수학'] }).length, 2, '어떤 입력에서 틀렸는지 먼저 말한다');
+      for (const rule of task.checks ?? []) assert.ok(taskFeedback(m, task, { kind: 'mistake', say: rule.say })[0].text);
       for (const mistake of task.mistakes ?? []) assert.ok(taskFeedback(m, task, { kind: 'mistake', say: mistake.say })[0].text);
     }
   });

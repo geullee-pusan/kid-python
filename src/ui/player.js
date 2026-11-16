@@ -67,22 +67,28 @@ export function createPlayer(ctx) {
   }
 
   /** 코드를 한 줄씩 실행해 보인다: 실행하는 줄을 표시하고, 그 줄이 내보낸 글자를 출력 창에 더한다. */
-  async function trace(code) {
+  async function trace(code, inputs = []) {
     if (editor.getCode() !== code) editor.setCode(code);
     output.clear();
-    const result = await ctx.runner.run(code, { trace: true });
+    ctx.ui.vars?.({});
+    const result = await ctx.runner.run(code, { trace: true, inputs });
     for (const step of result.steps ?? []) {
       if (stopped) break;
       editor.markRunLine(step.line);
       await pause(650 / slow);
-      if (step.out) output.append(step.out);
+      // input()에 넣은 답은 표시가 붙어 온다. 아이가 친 것처럼 다른 색으로 보여 준다.
+      for (const piece of step.out.split(/(\x01[^\x02]*\x02)/)) {
+        if (piece.startsWith('\x01')) output.append(piece.slice(1, -1), 'typed');
+        else if (piece) output.append(piece);
+      }
+      ctx.ui.vars?.(step.vars ?? {});
       await pause(550 / slow);
     }
     editor.markRunLine(null);
     // 오류가 나는 코드도 그대로 보여 준다(오류 읽기 수업, 오류가 답인 예측 문제).
     if (result.error && !stopped) {
       const at = result.error.line ? ` (${result.error.line}번 줄)` : '';
-      output.append(`\n${explain(result.error)}${at}\n`, 'ko');
+      output.append(`\n${explain(result.error, ctx.knows?.())}${at}\n`, 'ko');
       output.append(result.error.text, 'err');
       if (result.error.line) editor.markErrorLine(result.error.line);
       await pause(900 / slow);
@@ -111,6 +117,7 @@ export function createPlayer(ctx) {
         case 'code-type':
           teacher.pose('demo');
           output.clear();
+          ctx.ui.vars?.({}); // 새 코드를 치기 시작하면 앞 예제의 이름표는 지운다
           editor.setLocked(true);
           await editor.typeCode(scene.code, 55 / slow / speed);
           teacher.pose('idle');
@@ -118,7 +125,7 @@ export function createPlayer(ctx) {
         case 'trace':
           teacher.pose('point');
           editor.setLocked(true);
-          await trace(scene.code);
+          await trace(scene.code, scene.inputs);
           teacher.pose('idle');
           break;
         case 'follow': {

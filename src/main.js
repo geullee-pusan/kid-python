@@ -8,6 +8,7 @@ import look from './content/teacher-look.json';
 import teacherVoice from './content/teacher.json';
 import { diagnoseTask, outputLines } from './core/diagnose.js';
 import { explain } from './core/errors-ko.js';
+import { hasBatchim } from './core/korean.js';
 import { lectureParts, line, mergeScript, predictAskScenes, predictFeedback, predictRevealScenes, taskFeedback } from './core/lesson.js';
 import { createBoard } from './ui/board.js';
 import { createConsole } from './ui/console.js';
@@ -57,6 +58,11 @@ const store = {
     }
   },
 };
+
+/** 답 목록을 말로: ["하늘", "수학"] → "하늘, 수학이라고", ["9"] → "9라고" */
+function asAnswer(inputs) {
+  return `${inputs.join(', ')}${hasBatchim(inputs[inputs.length - 1]) ? '이라고' : '라고'}`;
+}
 
 /** "처음으로"를 눌러 수업을 그만둘 때 흐름을 한 번에 빠져나오려고 던진다. */
 class Stop extends Error {}
@@ -131,12 +137,12 @@ async function main() {
       out.append('\n■ 멈췄어요\n', 'note');
     } else if (result.error) {
       const at = result.error.line ? ` (${result.error.line}번 줄)` : '';
-      out.append(`\n${explain(result.error)}${at}\n`, 'ko');
+      out.append(`\n${explain(result.error, knows())}${at}\n`, 'ko');
       out.append(result.error.text, 'err');
       if (result.error.line) editor.markErrorLine(result.error.line);
     }
     log('run', { ...where, code, ok: result.ok, error: result.error ? { type: result.error.type, line: result.error.line, message: result.error.message } : null, ms: result.ms });
-    return { code, output: result.output, error: result.error, stopped: result.stopped };
+    return { code, output: result.output, error: result.error, stopped: result.stopped, vars: result.vars };
   }
 
   function showScreen(name) {
@@ -294,6 +300,32 @@ async function main() {
   let draftSaving = null; // 지금 쓰는 코드를 저장할 자리(문제마다 따로). null이면 저장하지 않는다
   const draftKey = () => `kidpy.draft.${mission.id}`;
 
+  /** 지금 아이가 무엇을 배웠는지. 오류 설명의 말을 고르는 데 쓴다(변수를 배우기 전에는 "이름표"라는 말을 쓰지 않는다). */
+  function knows() {
+    if (screen === 'play' && mission) return { variables: Boolean(mission.knows?.includes('variables')) };
+    const progress = store.get('kidpy.progress', {});
+    return { variables: LESSONS.some((m) => m.knows?.includes('variables') && progress[m.id]) };
+  }
+
+  // 이름표 칸: 지금 어떤 이름에 어떤 값이 붙어 있는지 보여 준다. 변수를 배우는 수업부터 보인다.
+  let shownVars = {};
+  function showVars(vars) {
+    const panel = $('vars');
+    panel.hidden = !mission?.showVars;
+    if (panel.hidden) return;
+    const list = $('vars-list');
+    list.replaceChildren();
+    const names = Object.keys(vars);
+    if (names.length === 0) list.append(el('span', 'vars-empty', '아직 없어요'));
+    for (const name of names) {
+      // 새로 생겼거나 값이 바뀐 이름표는 잠깐 눈에 띄게 한다.
+      const chip = el('span', `var${shownVars[name] !== vars[name] ? ' changed' : ''}`);
+      chip.append(el('b', '', name), el('span', 'var-arrow', '→'), el('code', '', vars[name]));
+      list.append(chip);
+    }
+    shownVars = vars;
+  }
+
   // 버튼 누르기를 기다리는 틀
   const clicks = new EventTarget();
   const press = (id) => clicks.dispatchEvent(new CustomEvent('press', { detail: id }));
@@ -374,7 +406,10 @@ async function main() {
   async function runUser() {
     if (!canRun) return null;
     const ran = await runCode(editor, lessonConsole, { mission: mission.id, phase: currentPhase });
-    if (ran) lastRun = ran;
+    if (ran) {
+      lastRun = ran;
+      showVars(ran.vars ?? {});
+    }
     if (canRun) editor.focus();
     return ran;
   }
@@ -391,7 +426,8 @@ async function main() {
     caption,
     voice: teacherVoice.voice,
     speed,
-    ui: { follow, check },
+    ui: { follow, check, vars: showVars },
+    knows,
   });
   const say = (key, vars) => player.play([line(mission, key, seed, vars)]);
 
@@ -423,6 +459,7 @@ async function main() {
     lastRun = null;
     editor.setCode('');
     lessonConsole.clear();
+    showVars({});
     allowRun(true);
     show('done', 'skip');
     background(scene.say ?? []);
@@ -433,7 +470,7 @@ async function main() {
         hush();
         if (pressed === 'skip') return 'stop';
         const ran = lastRun;
-        const same = ran && !ran.error && outputLines(ran.output).join('\n') === scene.expect.join('\n');
+        const same = ran && !ran.error && (scene.match ? new RegExp(scene.match).test(ran.output) : outputLines(ran.output).join('\n') === scene.expect.join('\n'));
         log('follow', { mission: mission.id, ok: Boolean(same), tries, code: editor.getCode() });
         if (same) return 'done';
         tries += 1;
@@ -441,11 +478,11 @@ async function main() {
         if (tries >= 3) {
           // 막다른 길을 만들지 않는다. 세 번째에는 선생님이 다시 보여 주고 넘어간다.
           await say('follow-show');
-          await player.play([{ kind: 'code-type', code: scene.code }, { kind: 'trace', code: scene.code }]);
+          await player.play([{ kind: 'code-type', code: scene.code }, { kind: 'trace', code: scene.code, inputs: scene.inputs ?? [] }]);
           return 'done';
         }
         if (!ran) await say('follow-not-run');
-        else if (ran.error) await player.say(explain(ran.error));
+        else if (ran.error) await player.say(explain(ran.error, knows()));
         else await say('follow-different');
         if (player.stopped) return 'stop';
         allowRun(true);
@@ -504,7 +541,8 @@ async function main() {
       lessonConsole.clear();
       let pick;
       const picked = new Promise((resolve) => (pick = resolve));
-      const marks = board.predict({ no: index + 1, total, code: question.code, choices: question.choices, onPick: pick });
+      showVars({});
+      const marks = board.predict({ no: index + 1, total, code: question.code, choices: question.choices, ask: question.ask, onPick: pick });
       // 묻는 말이 끝나기를 기다리지 않고 바로 고를 수 있다.
       background(predictAskScenes(mission, question, seed));
       const choice = await orAbort(picked);
@@ -525,16 +563,68 @@ async function main() {
     }
   }
 
+  /** 제출한 코드를 채점한다. 입력을 받는 문제(cases)는 정해진 입력들로 하나씩 돌려 본다. 도중에 멈췄으면 null. */
+  async function grade(task) {
+    if (!task.cases) {
+      const ran = await runUser();
+      if (!ran || ran.stopped) return null;
+      const diagnosis = diagnoseTask(task, ran.code, ran);
+      if (diagnosis.kind === 'error') diagnosis.text = explain(ran.error, knows());
+      return { ran, diagnosis };
+    }
+    if (!isReady()) return null;
+    const code = editor.getCode();
+    activeConsole = lessonConsole;
+    lessonConsole.clear();
+    editor.markErrorLine(null);
+    let diagnosis = { kind: 'correct' };
+    for (const one of task.cases) {
+      const result = await runner.run(code, { check: true, inputs: one.inputs });
+      if (result.stopped) return null;
+      // 무엇을 넣어 돌려 봤는지 아이가 볼 수 있게 출력 칸에 남긴다.
+      lessonConsole.append(`▶ ${asAnswer(one.inputs)} 답해 봤어요\n`, 'note');
+      lessonConsole.append(result.output ?? '');
+      showVars(result.vars ?? {});
+      if (result.error?.type === 'EOFError') {
+        diagnosis = { kind: 'input-many', vars: { want: one.inputs.length } };
+      } else if (result.error) {
+        const at = result.error.line ? ` (${result.error.line}번 줄)` : '';
+        lessonConsole.append(`\n${explain(result.error, knows())}${at}\n`, 'ko');
+        lessonConsole.append(result.error.text, 'err');
+        if (result.error.line) editor.markErrorLine(result.error.line);
+        diagnosis = { kind: 'error', text: explain(result.error, knows()) };
+      } else if (result.unused > 0) {
+        diagnosis = { kind: 'input-few', vars: { want: one.inputs.length, got: one.inputs.length - result.unused } };
+      } else {
+        diagnosis = diagnoseTask({ ...task, expect: one.expect }, code, result);
+      }
+      if (diagnosis.kind !== 'correct') {
+        diagnosis.inputs = one.inputs;
+        break;
+      }
+      lessonConsole.append('\n');
+    }
+    return { ran: { code }, diagnosis };
+  }
+
   /** 쓰기 문제 하나. 통과하면 { attempts, hints, first, code }, 심화 문제를 그만두면 null을 돌려준다. */
   async function runTask(task, { index = 0, total = 1, optional = false } = {}) {
     const key = `${draftKey()}.${task.id}`;
     const hasLecture = Boolean(mission.lecture?.length);
-    const showTask = () => board.task({ ...task, title: total > 1 ? `${task.title} (${index + 1} / ${total})` : task.title, want: task.show ? task.expect : null });
+    const sample = task.cases?.[0];
+    const showTask = () =>
+      board.task({
+        ...task,
+        title: total > 1 ? `${task.title} (${index + 1} / ${total})` : task.title,
+        want: task.show ? (sample ? sample.expect : task.expect) : null,
+        wantNote: task.show && sample ? `${asAnswer(sample.inputs)} 답했을 때 이렇게 나와야 해요` : null,
+      });
     showTask();
     // 쓰던 것이 있으면 이어서, 없으면 문제에 딸린 시작 코드(고치기 문제)로 시작한다.
     editor.setCode(store.get(key, '') || task.start || '');
     lessonConsole.clear();
     editor.markErrorLine(null);
+    showVars({});
     draftSaving = key;
     lastRun = null;
     // 선생님이 설명하는 동안에도 바로 쓰기 시작할 수 있다.
@@ -587,10 +677,9 @@ async function main() {
       }
       // 제출: 지금 코드를 새로 실행해서 채점한다.
       attempts += 1;
-      const ran = await runUser();
-      if (!ran || ran.stopped) continue;
-      const diagnosis = diagnoseTask(task, ran.code, ran);
-      if (diagnosis.kind === 'error') diagnosis.text = explain(ran.error);
+      const graded = await grade(task);
+      if (!graded) continue;
+      const { ran, diagnosis } = graded;
       if (diagnosis.kind === 'correct') diagnosis.first = attempts === 1 && hintLevel === 0;
       log('submit', { mission: mission.id, task: task.id, attempt: attempts, hints: hintLevel, kind: diagnosis.kind, say: diagnosis.say, code: ran.code });
       allowRun(false);
@@ -681,6 +770,8 @@ async function main() {
     activeConsole = lessonConsole;
     setPhase('');
     currentPhase = 'intro';
+    shownVars = {};
+    showVars({});
     const about = [mission.desc, `${mission.minutes}분쯤 걸려요.`];
     if (hasLecture) about.push('강의는 언제든 건너뛸 수 있어요.');
     board.card({ title: `${mission.no}. ${mission.title}`, items: about });

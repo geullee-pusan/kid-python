@@ -5,7 +5,7 @@ import { loadPyodide } from './pyodide/pyodide.mjs';
 
 let pyodide = null;
 let runUser = null;
-let traceUser = null;
+let runScripted = null;
 let interruptView = null; // 화면이 2를 써 넣으면 파이썬에 KeyboardInterrupt가 난다
 let inputCtl = null; // [상태, 길이]. 상태 0 = 기다림, 1 = 입력 있음, 2 = 그만
 let inputBytes = null; // 입력 글자(UTF-8)
@@ -87,6 +87,11 @@ function readLine() {
 // ---- 파이썬 쪽 실행 함수 ----
 // 실행할 때마다 새 이름 공간을 쓴다(앞에서 만든 변수가 남지 않는다).
 // 오류가 나면 종류, 한 줄 설명, 줄 번호, 파이썬이 원래 보여 주는 글을 돌려준다.
+// 돌리는 방법은 세 가지다.
+//  - 그냥 실행(__kidpy_run): 아이가 실행 버튼을 눌렀을 때. 출력은 바로 화면으로 가고, input()은 아이의 답을 기다린다.
+//  - 한 줄씩 보기(__kidpy_scripted, trace=True): 강의 시연과 예측 문제 확인. 줄마다 출력과 변수 값을 적어 둔다.
+//    input()에는 대본에 적힌 답을 넣고, 질문과 답이 출력에 함께 보이게 한다.
+//  - 채점(__kidpy_scripted, trace=False): 쓰기 문제를 정해진 입력으로 돌린다. 질문 글은 출력에 넣지 않는다.
 const RUNNER_SOURCE = `
 import sys, json, traceback, linecache, io
 
@@ -105,50 +110,77 @@ def __kidpy_error(e, name):
         text = "".join(traceback.format_exception(type(e), e, tb))
     return {"type": type(e).__name__, "message": message, "line": line, "col": col, "text": text}
 
+# 변수 표에 보여 줄 값들. 글자는 따옴표를 붙여서(큰따옴표로) 숫자와 구분되게 한다.
+def __kidpy_vars(scope):
+    out = {}
+    for key, value in list(scope.items()):
+        if key.startswith("__") or callable(value) or isinstance(value, type(sys)):
+            continue
+        try:
+            text = json.dumps(value, ensure_ascii=False) if isinstance(value, str) else repr(value)
+        except Exception:
+            text = "?"
+        if len(text) > 48:
+            text = text[:45] + "..."
+        out[key] = text
+    return out
+
 def __kidpy_run(code):
     name = "main.py"
     linecache.cache[name] = (len(code), None, code.splitlines(True), name)
     scope = {"__name__": "__main__"}
+    error = None
     try:
         exec(compile(code, name, "exec"), scope)
     except SystemExit:
         pass
     except BaseException as e:
-        return json.dumps(__kidpy_error(e, name))
+        error = __kidpy_error(e, name)
     finally:
         try:
             sys.stdout.flush()
             sys.stderr.flush()
         except BaseException:
             pass
-    return None
+    return json.dumps({"error": error, "vars": __kidpy_vars(scope)})
 
 class __KidpyTraceLimit(Exception):
     pass
 
-# 한 줄씩 실행해 보이기(강의 시연, 예측 문제 확인)에 쓴다.
-# 줄을 실행하기 직전마다 "몇 번째 줄인지"와 "그때까지 나온 출력의 길이"를 적어 두고,
-# 끝난 뒤 줄마다 그 줄이 내보낸 출력을 잘라서 돌려준다.
-def __kidpy_trace(code, limit=300):
+def __kidpy_scripted(code, inputs_json, trace, limit=300):
     name = "main.py"
     linecache.cache[name] = (len(code), None, code.splitlines(True), name)
     scope = {"__name__": "__main__"}
+    inputs = [str(x) for x in json.loads(inputs_json)]
+    asked = [0]
     buf = io.StringIO()
     marks = []
+    # input() 대신 쓰는 함수. 한 줄씩 보기에서는 질문과 답을 출력에 남긴다(답은 \\x01 ... \\x02 로 감싸 표시한다).
+    def scripted_input(prompt=""):
+        asked[0] += 1
+        if not inputs:
+            raise EOFError("no more input")
+        value = inputs.pop(0)
+        if trace:
+            buf.write(str(prompt))
+            buf.write(chr(1) + value + chr(2) + chr(10))
+        return value
+    scope["input"] = scripted_input
     def tracer(frame, event, arg):
         if frame.f_code.co_filename != name:
             return None
         if event == "line":
             if len(marks) >= limit:
                 raise __KidpyTraceLimit()
-            marks.append((frame.f_lineno, len(buf.getvalue())))
+            marks.append((frame.f_lineno, len(buf.getvalue()), __kidpy_vars(frame.f_globals)))
         return tracer
     error = None
     old = sys.stdout
     sys.stdout = buf
     try:
         compiled = compile(code, name, "exec")
-        sys.settrace(tracer)
+        if trace:
+            sys.settrace(tracer)
         try:
             exec(compiled, scope)
         finally:
@@ -162,11 +194,14 @@ def __kidpy_trace(code, limit=300):
     finally:
         sys.stdout = old
     total = buf.getvalue()
+    final = __kidpy_vars(scope)
     steps = []
-    for i, (line, pos) in enumerate(marks):
+    for i, (line, pos, _) in enumerate(marks):
         end = marks[i + 1][1] if i + 1 < len(marks) else len(total)
-        steps.append({"line": line, "out": total[pos:end]})
-    return json.dumps({"steps": steps, "output": total, "error": error})
+        # 이 줄을 실행한 뒤의 변수 값 = 다음 줄을 실행하기 직전의 값(마지막 줄이면 끝났을 때의 값)
+        after = marks[i + 1][2] if i + 1 < len(marks) else final
+        steps.append({"line": line, "out": total[pos:end], "vars": after})
+    return json.dumps({"steps": steps, "output": total, "error": error, "vars": final, "asked": asked[0], "unused": len(inputs)})
 `;
 
 async function init(message) {
@@ -184,7 +219,7 @@ async function init(message) {
   if (interruptView) pyodide.setInterruptBuffer(interruptView);
   pyodide.runPython(RUNNER_SOURCE);
   runUser = pyodide.globals.get('__kidpy_run');
-  traceUser = pyodide.globals.get('__kidpy_trace');
+  runScripted = pyodide.globals.get('__kidpy_scripted');
   const python = pyodide.runPython('import sys; sys.version.split()[0]');
   postMessage({
     type: 'ready',
@@ -195,28 +230,34 @@ async function init(message) {
   });
 }
 
+// message.mode: 'run'(그냥 실행), 'trace'(한 줄씩 보기), 'check'(채점). trace와 check는 message.inputs를 input()의 답으로 쓴다.
 function run(message) {
   const started = performance.now();
   if (interruptView) interruptView[0] = 0;
   if (inputCtl) Atomics.store(inputCtl, 0, 0);
-  let error = null;
-  let steps = null;
-  let output = null;
+  let result = { error: null };
   try {
-    if (message.trace) {
-      const traced = JSON.parse(traceUser(message.code));
-      ({ steps, output, error } = traced);
+    if (message.mode === 'trace' || message.mode === 'check') {
+      result = JSON.parse(runScripted(message.code, JSON.stringify(message.inputs ?? []), message.mode === 'trace'));
     } else {
-      const result = runUser(message.code);
-      if (result) error = JSON.parse(result);
+      result = JSON.parse(runUser(message.code));
     }
   } catch (e) {
     // 여기로 오면 파이썬 안에서 잡지 못한 오류다(실행기 자체의 문제일 수 있다).
-    error = { type: e && e.type ? e.type : 'InternalError', message: String(e && e.message ? e.message : e), line: null, col: null, text: String(e) };
+    result = { error: { type: e && e.type ? e.type : 'InternalError', message: String(e && e.message ? e.message : e), line: null, col: null, text: String(e) } };
   }
   if (interruptView) interruptView[0] = 0;
   flush(true); // 마지막 출력은 꼭 보낸다
-  postMessage({ type: 'done', id: message.id, error, steps, output, ms: Math.round(performance.now() - started) });
+  postMessage({
+    type: 'done',
+    id: message.id,
+    error: result.error ?? null,
+    steps: result.steps ?? null,
+    output: result.output ?? null,
+    vars: result.vars ?? {},
+    unused: result.unused ?? 0,
+    ms: Math.round(performance.now() - started),
+  });
 }
 
 self.onmessage = (event) => {

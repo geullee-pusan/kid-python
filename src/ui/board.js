@@ -66,8 +66,8 @@ export function createBoard(root) {
      * 예측 문제: 코드와 보기. 고르면 onPick(번호)를 부른다.
      * 돌려주는 mark(번호, 맞음)로 고른 보기에 ○ 또는 △를 붙이고 더 못 고르게 한다.
      */
-    predict({ no, total, code, choices, onPick }) {
-      return this.choice({ title: `예측 ${no} / ${total}`, ask: '실행하면 출력 칸에 무엇이 나올까요?', code, choices, onPick });
+    predict({ no, total, code, choices, onPick, ask }) {
+      return this.choice({ title: `예측 ${no} / ${total}`, ask: ask ?? '실행하면 출력 칸에 무엇이 나올까요?', code, choices, onPick });
     },
     /** 보기 가운데 하나를 고르는 문제(예측 문제, 강의 중 확인 문제). code는 없어도 된다. */
     choice({ title, ask, code, choices, onPick }) {
@@ -98,7 +98,7 @@ export function createBoard(root) {
       };
     },
     /** 쓰기 문제: 할 일 목록 */
-    task({ title, story, steps, want }) {
+    task({ title, story, steps, want, wantNote }) {
       const list = el('ol', 'board-steps');
       for (const step of steps) list.append(el('li', '', step));
       const children = [el('h3', 'board-title', title)];
@@ -107,7 +107,7 @@ export function createBoard(root) {
       // want: 나와야 하는 출력을 그대로 보여 줄 때(띄어쓰기까지 맞춰야 하는 문제)
       if (want) {
         const box = el('div', 'board-want');
-        box.append(el('div', 'pair-label', '이렇게 나와야 해요'), codeBlock(want.join('\n')));
+        box.append(el('div', 'pair-label', wantNote ?? '이렇게 나와야 해요'), codeBlock(want.join('\n')));
         children.push(box);
       }
       show(...children);
