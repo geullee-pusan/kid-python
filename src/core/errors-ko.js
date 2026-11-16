@@ -7,6 +7,11 @@ const HANGUL = /[ㄱ-ㆎ가-힣]/;
 export function explain(error) {
   const { type, message } = error;
   if (type === 'SyntaxError') {
+    // 곱하기를 x나 ×로, 나누기를 ÷로 쓴 경우. 파이썬의 글만으로는 알 수 없어서 오류가 난 줄(text)도 본다.
+    if (/invalid character '×'/.test(message) || (/forgot a comma|invalid syntax/.test(message) && /\d\s*[xX]\s*\d/.test(error.text ?? ''))) {
+      return '곱하기는 x가 아니라 별표(*)로 써요.';
+    }
+    if (/invalid character '÷'/.test(message)) return '나누기는 빗금(/)으로 써요.';
     if (/expected ':'/.test(message)) return '줄 끝에 콜론(:)이 빠졌어요.';
     if (/was never closed/.test(message)) return '여는 괄호를 닫지 않았어요. 닫는 괄호 )를 써요.';
     if (/unmatched '\)'/.test(message)) return '닫는 괄호가 하나 더 많아요.';

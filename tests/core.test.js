@@ -1,17 +1,13 @@
 // 순수 함수 테스트: 대사 틀, 대본 점검, 채점과 오답 짐작, 오류 설명.
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
-import { dirname, join } from 'node:path';
 import { test } from 'node:test';
-import { fileURLToPath } from 'node:url';
 
 import { diagnoseTask, outputLines, stripStrings } from '../src/core/diagnose.js';
 import { explain } from '../src/core/errors-ko.js';
-import { fill, lectureParts, line, missingLines, predictFeedback, splitSpoken, taskFeedback, hintScenes } from '../src/core/lesson.js';
+import { allTasks, fill, lectureParts, line, missingLines, predictFeedback, splitSpoken, taskFeedback } from '../src/core/lesson.js';
+import { CURRICULUM, MISSIONS } from './missions.js';
 
-const missionsDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'content', 'missions');
-const missions = readdirSync(missionsDir).map((file) => JSON.parse(readFileSync(join(missionsDir, file), 'utf8')));
-const mission = missions.find((m) => m.id === 'print-order');
+const first = MISSIONS['print-order'];
 
 test('대사 틀: 조사를 받침에 맞춰 고른다', () => {
   assert.equal(fill('{a를} 써요', { a: '12 + 30' }), '12 + 30을 써요');
@@ -25,51 +21,76 @@ test('자막과 읽을 말을 가른다', () => {
 });
 
 test('같은 시드면 같은 말을 한다', () => {
-  assert.equal(line(mission, 'greet', 1).text, line(mission, 'greet', 1).text);
+  assert.equal(line(first, 'greet', 1).text, line(first, 'greet', 1).text);
 });
 
-for (const m of missions) {
-  test(`대본 ${m.id}: 장면이 가리키는 대사가 모두 있다`, () => {
+test('수업 제목이 대사에 들어가고, 읽는 말은 따로 간다', () => {
+  const scene = line(first, 'intro-ask');
+  assert.match(scene.text, /^print로 말하기 수업이에요/);
+  assert.match(scene.speech, /^프린트로 말하기 수업이에요/);
+});
+
+test('수업 목록의 수업이 모두 있고, 단원 안에서 번호가 차례대로다', () => {
+  for (const unit of CURRICULUM.units) {
+    (unit.lessons ?? []).forEach((id, index) => {
+      assert.ok(MISSIONS[id], `수업이 없어요: ${id}`);
+      assert.equal(MISSIONS[id].unit, unit.title);
+      assert.equal(MISSIONS[id].no, index + 1);
+    });
+  }
+});
+
+for (const m of Object.values(MISSIONS)) {
+  test(`대본 ${m.id}: 장면과 문제가 가리키는 대사가 모두 있다`, () => {
     assert.deepEqual(missingLines(m), []);
   });
   test(`대본 ${m.id}: 강의가 장면으로 바뀐다`, () => {
-    const parts = lectureParts(m, 0);
-    assert.ok(parts.length > 0);
-    for (const part of parts) for (const scene of part) assert.ok(scene.kind);
+    for (const part of lectureParts(m, 0)) for (const scene of part) assert.ok(scene.kind);
   });
   test(`대본 ${m.id}: 예측 문제마다 정답이 하나 있고 보기가 서로 다르다`, () => {
-    for (const q of m.predict) {
-      assert.ok(q.choices[q.answer]);
-      assert.equal(new Set(q.choices.map((c) => c.text)).size, q.choices.length);
+    for (const q of m.predict ?? []) {
+      assert.ok(q.choices[q.answer], `${q.id}: 정답 번호`);
+      assert.equal(new Set(q.choices.map((c) => c.text)).size, q.choices.length, `${q.id}: 보기가 겹쳐요`);
+      assert.ok(m.lines[q.explain], `${q.id}: 설명 대사`);
     }
   });
-  test(`대본 ${m.id}: 힌트와 채점 뒤 대사가 만들어진다`, () => {
-    m.hints.forEach((_, level) => assert.ok(hintScenes(m, level).length > 0));
-    const vars = { calc: '12 + 30', got: 2, want: 3, no: 1 };
-    for (const kind of ['not-computed', 'quoted-calc', 'order', 'count', 'spacing', 'line-diff', 'no-output']) {
-      assert.ok(taskFeedback(m, { kind, vars: { ...vars, want: kind === 'count' ? 3 : '노포', got: kind === 'count' ? 2 : '노표' } })[0].text);
+  test(`대본 ${m.id}: 쓰기 문제마다 필요한 것이 있고, 채점 뒤 대사가 만들어진다`, () => {
+    assert.ok((m.tasks ?? []).length > 0, '쓰기 문제가 하나는 있어야 해요');
+    const ids = allTasks(m).map((t) => t.id);
+    assert.equal(new Set(ids).size, ids.length, '문제 id가 겹쳐요');
+    for (const task of allTasks(m)) {
+      assert.ok(task.id && task.title && task.steps.length && task.expect.length && task.solution, `${task.id}: 빠진 것`);
+      const vars = { calc: '12 + 30', got: 2, want: 3, no: '첫째' };
+      assert.ok(taskFeedback(m, task, { kind: 'correct', first: true }).length >= 2);
+      for (const kind of ['not-computed', 'quoted-calc', 'order', 'count']) assert.ok(taskFeedback(m, task, { kind, vars })[0].text);
+      for (const kind of ['spacing', 'line-diff']) assert.ok(taskFeedback(m, task, { kind, vars: { ...vars, want: '노포', got: '노표' } })[0].text);
+      assert.ok(taskFeedback(m, task, { kind: 'no-output' })[0].text);
+      for (const mistake of task.mistakes ?? []) assert.ok(taskFeedback(m, task, { kind: 'mistake', say: mistake.say })[0].text);
     }
+  });
+  test(`대본 ${m.id}: 처음 화면에 필요한 것이 있다`, () => {
+    assert.ok(m.unit && m.no && m.title && m.desc && m.minutes);
   });
 }
 
 test('예측 문제: 고른 것에 따라 다른 말을 한다', () => {
-  const q = mission.predict[0];
-  assert.equal(predictFeedback(mission, q, q.answer).correct, true);
-  const wrong = predictFeedback(mission, q, 1);
+  const q = first.predict[0];
+  assert.equal(predictFeedback(first, q, q.answer).correct, true);
+  const wrong = predictFeedback(first, q, 1);
   assert.equal(wrong.correct, false);
   assert.match(wrong.scenes[0].text, /가나다/);
 });
 
 test('출력 줄 나누기와 따옴표 지우기', () => {
   assert.deepEqual(outputLines('노포 \n범어사\n\n'), ['노포', '범어사']);
+  assert.deepEqual(outputLines('노포\n\n남산\n'), ['노포', '', '남산']);
   assert.equal(stripStrings('print("12 + 30")  # 12 + 30').includes('12'), false);
-  assert.equal(stripStrings("print(12 + 30)").includes('12 + 30'), true);
+  assert.equal(stripStrings('print(12 + 30)').includes('12 + 30'), true);
 });
 
 test('쓰기 문제 채점: 정답과 흔한 오답을 가려낸다', () => {
-  const task = mission.task;
-  const run = (output, error = null) => ({ output, error });
-  const kind = (code, output, error) => diagnoseTask(task, code, run(output, error)).kind;
+  const task = first.tasks[0];
+  const kind = (code, output, error = null) => diagnoseTask(task, code, { output, error }).kind;
 
   assert.equal(kind('print("노포")\nprint("범어사")\nprint(12 + 30)', '노포\n범어사\n42\n'), 'correct');
   assert.equal(kind('print("노포")\nprint("범어사")\nprint(30+12)', '노포\n범어사\n42\n'), 'correct');
@@ -92,7 +113,7 @@ test('쓰기 문제 채점: 정답과 흔한 오답을 가려낸다', () => {
   assert.equal(kind('print(노포)', '', { type: 'NameError', message: "name '노포' is not defined" }), 'error');
 });
 
-test('오류 설명: 첫 미션에서 나올 만한 실수', () => {
+test('오류 설명: 첫 단원에서 나올 만한 실수', () => {
   assert.match(explain({ type: 'NameError', message: "name '노포' is not defined" }), /따옴표/);
   assert.match(explain({ type: 'NameError', message: "name 'Print' is not defined" }), /작은 글자/);
   assert.match(explain({ type: 'SyntaxError', message: "'(' was never closed" }), /괄호/);
@@ -100,4 +121,8 @@ test('오류 설명: 첫 미션에서 나올 만한 실수', () => {
   assert.match(explain({ type: 'SyntaxError', message: "invalid character '“' (U+201C)" }), /한\/영/);
   assert.match(explain({ type: 'SyntaxError', message: "Missing parentheses in call to 'print'. Did you mean print(...)?" }), /괄호/);
   assert.match(explain({ type: 'IndentationError', message: 'unexpected indent' }), /빈칸/);
+  // 곱하기를 x로 쓴 경우: 파이썬의 글에는 "쉼표를 잊었나요?"라고 나오지만, 코드 줄을 보고 곱하기 기호를 알려 준다
+  assert.match(explain({ type: 'SyntaxError', message: 'invalid syntax. Perhaps you forgot a comma?', text: '  File "main.py", line 2\n    print(3 x 4)\n          ^^^^^\nSyntaxError: invalid syntax. Perhaps you forgot a comma?\n' }), /별표/);
+  assert.match(explain({ type: 'SyntaxError', message: "invalid character '×' (U+00D7)" }), /별표/);
+  assert.match(explain({ type: 'ZeroDivisionError', message: 'division by zero' }), /0으로/);
 });

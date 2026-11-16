@@ -1,14 +1,16 @@
-// 미션 대본(src/content/missions/*.json)을 화면이 재생할 "장면" 목록으로 바꾼다. 순수 함수다.
+// 수업 대본(src/content/missions/*.json)을 화면이 재생할 "장면" 목록으로 바꾼다. 순수 함수다.
 // 틀은 주산 앱 JUSAN의 lesson.js를 따랐다: 대본(데이터) → 장면(이 파일) → 재생기(src/ui/player.js).
 //
 // 장면 종류
 //  say          대사 { text(자막), speech(읽을 말), pose }
 //  board-pair   칠판에 엔트리 블록과 파이썬 문장을 나란히 { entry, python, note }
-//  board-card   칠판에 글 카드 { title, items }
+//  board-card   칠판에 글 카드 { title, items, code }
 //  board-clear  칠판 지우기
 //  code-type    편집기에 코드를 한 글자씩 친다 { code }
 //  trace        편집기의 코드를 한 줄씩 실행해 보인다 { code }
-//  follow       아이가 따라 치고 실행한 뒤 "다 했어요"를 누를 때까지 기다린다 { code, expect }
+//  follow       아이가 따라 치고 실행한 뒤 "다 했어요"를 누를 때까지 기다린다 { code, expect, say }
+//  check        강의 중에 묻는 확인 문제 { title, ask, choices, answer, right, teach }
+//               맞히면 right 장면만, 틀리면 teach 장면(설명)을 재생한다. 이미 아는 것은 설명을 건너뛰게 하려는 것이다.
 //  nod          끄덕이기
 import { hasBatchim } from './korean.js';
 import { createRng, seedFrom } from './rng.js';
@@ -36,12 +38,17 @@ export function splitSpoken(text) {
   return { caption: text.replace(pattern, '$1'), speech: text.replace(pattern, '$2') };
 }
 
+/** 수업 대본에 함께 쓰는 대사(common.json)를 합친다. 수업에 같은 열쇠가 있으면 수업 것이 이긴다. */
+export function mergeScript(script, common) {
+  return { ...script, lines: { ...common.lines, ...script.lines } };
+}
+
 /** 대사 한 줄. 같은 상황의 말이 여러 개면 시드로 고른다(같은 수업은 같은 말을 한다). */
 export function line(script, key, seed = 0, vars = {}, pose = 'talk') {
   const list = script.lines[key];
-  if (!list) throw new Error(`대사가 없어요: ${key}`);
+  if (!list) throw new Error(`대사가 없어요: ${script.id} / ${key}`);
   const pick = list[Math.floor(createRng(seedFrom(script.id, key, seed))() * list.length)];
-  const { caption, speech } = splitSpoken(fill(pick, vars));
+  const { caption, speech } = splitSpoken(fill(pick, { title: script.titleSay ?? script.title, ...vars }));
   return { kind: 'say', key, text: caption, speech, pose };
 }
 
@@ -55,18 +62,22 @@ function toScene(script, spec, seed) {
   if (spec.trace !== undefined) return { kind: 'trace', code: spec.trace };
   // 따라 하기: say는 아이가 치는 동안 선생님이 하는 말이다(말이 끝나기를 기다리지 않고 바로 칠 수 있다).
   if (spec.follow) return { kind: 'follow', ...spec.follow, say: (spec.follow.say ?? []).map((key) => line(script, key, seed)) };
+  if (spec.check) {
+    return {
+      kind: 'check',
+      ...spec.check,
+      ask: line(script, spec.check.ask, seed),
+      right: (spec.check.right ?? []).map((s) => toScene(script, s, seed)),
+      teach: (spec.check.teach ?? []).map((s) => toScene(script, s, seed)),
+    };
+  }
   if (spec.nod) return { kind: 'nod' };
   throw new Error(`모르는 장면 표시예요: ${JSON.stringify(spec)}`);
 }
 
 /** 강의: 부분들의 목록. 부분 하나는 장면 목록이다. */
 export function lectureParts(script, seed = 0) {
-  return script.lecture.map((part) => part.map((spec) => toScene(script, spec, seed)));
-}
-
-/** 따라 하기에서 출력이 선생님 것과 다를 때 */
-export function followRetryScenes(script, seed = 0) {
-  return [line(script, 'follow-different', seed)];
+  return (script.lecture ?? []).map((part) => part.map((spec) => toScene(script, spec, seed)));
 }
 
 /** 예측 문제: 묻는 장면 */
@@ -90,37 +101,49 @@ export function predictRevealScenes(script, question, seed = 0) {
 }
 
 /** 쓰기 문제: 채점 뒤 선생님 말. diagnosis는 src/core/diagnose.js의 결과다. */
-export function taskFeedback(script, diagnosis, seed = 0) {
-  if (diagnosis.kind === 'correct') return [{ kind: 'nod' }, line(script, diagnosis.first ? 'task-correct-first' : 'task-correct', seed)];
+export function taskFeedback(script, task, diagnosis, seed = 0) {
+  if (diagnosis.kind === 'correct') {
+    // 칭찬은 구체적으로: 문제에 praise가 있으면 무엇을 잘했는지 이어서 말한다.
+    const scenes = [{ kind: 'nod' }, line(script, diagnosis.first ? 'task-correct-first' : 'task-correct', seed)];
+    if (task.praise) scenes.push(line(script, task.praise, seed));
+    return scenes;
+  }
   if (diagnosis.kind === 'error') return [{ kind: 'say', key: 'task-error', text: diagnosis.text, speech: diagnosis.text, pose: 'talk' }];
+  if (diagnosis.kind === 'mistake') return [line(script, diagnosis.say, seed)];
   return [line(script, `task-${diagnosis.kind}`, seed, diagnosis.vars)];
 }
 
-/** 힌트: 단계가 올라갈수록 자세해진다. 마지막 단계도 정답은 아니고 비슷한 예제다. */
-export function hintScenes(script, level, seed = 0) {
-  const hint = script.hints[Math.min(level, script.hints.length - 1)];
-  const scenes = [line(script, hint.say, seed)];
-  if (hint.card) scenes.unshift({ kind: 'board-card', ...hint.card });
-  return scenes;
+/** 수업에 든 쓰기 문제 전부(심화 포함). 점검과 테스트에서 쓴다. */
+export function allTasks(script) {
+  return [...(script.tasks ?? []), ...(script.challenge ? [script.challenge] : [])];
 }
 
-/** 대본 점검: 장면이 가리키는 대사가 모두 있는가. 테스트에서 쓴다. */
+/** 대본 점검: 장면과 문제가 가리키는 대사가 모두 있는가. 테스트에서 쓴다. */
 export function missingLines(script) {
   const used = new Set([
-    'intro-ask', 'follow-different', 'follow-not-run', 'follow-show', 'predict-ask', 'predict-run',
-    'task-intro', 'task-how', 'task-correct-first', 'task-correct', 'skip-ok', 'lecture-back', 'done-1', 'done-2', 'done-bye',
+    'intro-ask', 'intro-solve', 'follow-different', 'follow-not-run', 'follow-show', 'predict-ask', 'predict-run',
+    'task-intro', 'task-next', 'task-how', 'task-correct-first', 'task-correct', 'skip-ok', 'lecture-back', 'done-bye',
+    'challenge-ask', 'challenge-intro', 'challenge-skip',
   ]);
-  for (const part of script.lecture) {
-    for (const spec of part) {
-      if (spec.say) used.add(spec.say);
-      for (const key of spec.follow?.say ?? []) used.add(key);
+  for (const kind of ['not-computed', 'quoted-calc', 'order', 'count', 'spacing', 'line-diff', 'no-output']) used.add(`task-${kind}`);
+  const walk = (spec) => {
+    if (spec.say) used.add(spec.say);
+    for (const key of spec.follow?.say ?? []) used.add(key);
+    if (spec.check) {
+      used.add(spec.check.ask);
+      for (const s of [...(spec.check.right ?? []), ...(spec.check.teach ?? [])]) walk(s);
     }
-  }
-  for (const question of script.predict) {
+  };
+  for (const part of script.lecture ?? []) for (const spec of part) walk(spec);
+  for (const question of script.predict ?? []) {
     used.add(question.explain);
     for (const choice of question.choices) used.add(choice.say);
   }
-  for (const hint of script.hints) used.add(hint.say);
-  for (const kind of ['not-computed', 'quoted-calc', 'order', 'count', 'spacing', 'line-diff', 'no-output']) used.add(`task-${kind}`);
+  for (const task of allTasks(script)) {
+    if (task.praise) used.add(task.praise);
+    for (const hint of task.hints ?? []) used.add(hint.say);
+    for (const mistake of task.mistakes ?? []) used.add(mistake.say);
+  }
+  for (const key of script.done ?? []) used.add(key);
   return [...used].filter((key) => !script.lines[key]);
 }

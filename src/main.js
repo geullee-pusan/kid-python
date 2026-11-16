@@ -8,7 +8,7 @@ import look from './content/teacher-look.json';
 import teacherVoice from './content/teacher.json';
 import { diagnoseTask, outputLines } from './core/diagnose.js';
 import { explain } from './core/errors-ko.js';
-import { lectureParts, line, predictAskScenes, predictFeedback, predictRevealScenes, taskFeedback } from './core/lesson.js';
+import { lectureParts, line, mergeScript, predictAskScenes, predictFeedback, predictRevealScenes, taskFeedback } from './core/lesson.js';
 import { createBoard } from './ui/board.js';
 import { createConsole } from './ui/console.js';
 import { createEditor } from './ui/editor.js';
@@ -21,7 +21,13 @@ import { createTeacher } from './ui/teacher-view.js';
 
 // 수업 대본을 모두 읽어 둔다.
 const missionFiles = import.meta.glob('./content/missions/*.json', { eager: true, import: 'default' });
-const MISSIONS = Object.fromEntries(Object.values(missionFiles).map((mission) => [mission.id, mission]));
+// common.json은 여러 수업이 함께 쓰는 대사다.
+const common = missionFiles['./content/missions/common.json'];
+const MISSIONS = Object.fromEntries(
+  Object.entries(missionFiles)
+    .filter(([path]) => !path.endsWith('common.json'))
+    .map(([, mission]) => [mission.id, mergeScript(mission, common)]),
+);
 /** 지금 열려 있는 수업들을 단원 순서대로 */
 const LESSONS = curriculum.units.flatMap((unit) => (unit.lessons ?? []).map((id) => MISSIONS[id]));
 
@@ -217,7 +223,8 @@ async function main() {
       open.type = 'button';
       open.dataset.needsPython = '';
       const lines = work.code.split('\n').filter((text) => text.trim()).length;
-      open.append(el('span', 'work-title', work.name), el('span', 'work-note', `${lines}줄 · ${work.updatedAt.slice(5, 10).replace('-', '월 ')}일`));
+      const when = new Date(work.updatedAt); // 저장은 세계 표준시로, 보여 줄 때는 이 기기의 날짜로
+      open.append(el('span', 'work-title', work.name), el('span', 'work-note', `${lines}줄 · ${when.getMonth() + 1}월 ${when.getDate()}일`));
       open.addEventListener('click', () => openStudio(work.id));
       // 지우기는 두 번 눌러야 된다(한 번 누르면 "정말 지워요?"로 바뀐다).
       const remove = el('button', 'btn small work-remove', '지우기');
@@ -244,12 +251,12 @@ async function main() {
     // 찾아보기: 끝낸 수업에서 배운 것만 모은다
     const reference = $('reference');
     reference.replaceChildren();
-    const learnedFrom = LESSONS.filter((mission) => progress[mission.id]);
+    const learnedFrom = LESSONS.filter((mission) => progress[mission.id] && mission.learned?.length);
     if (learnedFrom.length === 0) reference.append(el('p', 'empty', '수업을 끝내면 배운 것이 여기에 쌓여요.'));
     for (const mission of learnedFrom) {
       const box = el('div', 'ref-group');
       box.append(el('h3', '', `${mission.no}. ${mission.title}`));
-      for (const item of mission.learned) {
+      for (const item of mission.learned ?? []) {
         const row = el('div', 'ref-item');
         row.append(el('p', '', item.rule));
         if (item.code) row.append(el('pre', 'board-code', item.code));
@@ -284,7 +291,7 @@ async function main() {
   let currentPhase = 'home';
   let canRun = false; // 아이가 실행해도 되는 때(따라 하기, 쓰기 문제)
   let lastRun = null; // 아이가 마지막으로 실행한 결과
-  let draftSaving = false;
+  let draftSaving = null; // 지금 쓰는 코드를 저장할 자리(문제마다 따로). null이면 저장하지 않는다
   const draftKey = () => `kidpy.draft.${mission.id}`;
 
   // 버튼 누르기를 기다리는 틀
@@ -303,25 +310,31 @@ async function main() {
       clicks.addEventListener('press', onPress);
     });
   }
-  /** 다른 일(보기 고르기)을 기다리되, 수업을 그만두면 Stop을 던진다. */
-  function orAbort(promise) {
+  /**
+   * 다른 일(보기 고르기)과 버튼 누르기 가운데 먼저 일어난 것을 돌려준다: { value } 또는 { pressed }.
+   * 수업을 그만두면 Stop을 던진다.
+   */
+  function firstOf(promise, ...ids) {
     return new Promise((resolve, reject) => {
       const onPress = (event) => {
-        if (event.detail !== 'abort') return;
+        const id = event.detail;
+        if (id !== 'abort' && !ids.includes(id)) return;
         clicks.removeEventListener('press', onPress);
-        reject(new Stop());
+        if (id === 'abort') reject(new Stop());
+        else resolve({ pressed: id });
       };
       clicks.addEventListener('press', onPress);
       promise.then((value) => {
         clicks.removeEventListener('press', onPress);
-        resolve(value);
+        resolve({ value });
       });
     });
   }
-  const PRESSABLE = ['with-lecture', 'solve-now', 'done', 'submit', 'next', 'hint', 'finish', 'lecture-again'];
+  const orAbort = (promise) => firstOf(promise).then((result) => result.value);
+  const PRESSABLE = ['with-lecture', 'solve-now', 'challenge-yes', 'challenge-no', 'give-up', 'done', 'submit', 'next', 'hint', 'finish', 'lecture-again'];
   for (const id of PRESSABLE) $(id).addEventListener('click', () => press(id));
 
-  const FOOTER = ['with-lecture', 'solve-now', 'done', 'submit', 'next', 'hint', 'finish', 'skip'];
+  const FOOTER = ['with-lecture', 'solve-now', 'challenge-yes', 'challenge-no', 'give-up', 'done', 'submit', 'next', 'hint', 'finish', 'skip'];
   /** 아래 줄과 위 줄에서 지금 쓸 버튼만 보인다 */
   function show(...ids) {
     for (const id of FOOTER) $(id).hidden = !ids.includes(id);
@@ -337,7 +350,7 @@ async function main() {
     const running = isRunning() && screen === 'play';
     $('run').disabled = !canRun || !isReady();
     $('stop').disabled = !canRun || !running;
-    for (const id of ['submit', 'hint', 'done', 'lecture-again']) $(id).disabled = running && canRun;
+    for (const id of ['submit', 'hint', 'done', 'lecture-again', 'give-up']) $(id).disabled = running && canRun;
     lessonConsole.askInput(runner.state === 'waiting-input' && canRun && screen === 'play');
     $('lock-note').textContent = canRun ? '' : '선생님이 쓰는 중이에요';
   }
@@ -346,7 +359,7 @@ async function main() {
     parent: $('editor'),
     doc: '',
     onChange(code) {
-      if (draftSaving) store.set(draftKey(), code);
+      if (draftSaving) store.set(draftSaving, code);
     },
     onRun: () => runUser(),
   });
@@ -378,7 +391,7 @@ async function main() {
     caption,
     voice: teacherVoice.voice,
     speed,
-    ui: { follow },
+    ui: { follow, check },
   });
   const say = (key, vars) => player.play([line(mission, key, seed, vars)]);
 
@@ -444,6 +457,21 @@ async function main() {
     }
   }
 
+  /** 강의 중 확인 문제: 고른 보기 번호를 돌려준다. 강의를 건너뛰면 'stop'. */
+  async function check(scene) {
+    let pick;
+    const picked = new Promise((resolve) => (pick = resolve));
+    const marks = board.choice({ title: scene.title, ask: scene.text, choices: scene.choices.map((text) => ({ text })), onPick: pick });
+    show('skip');
+    background([scene.ask]);
+    const result = await firstOf(picked, 'skip');
+    hush();
+    if (result.pressed) return 'stop';
+    marks.mark(result.value, result.value === scene.answer);
+    log('check', { mission: mission.id, title: scene.title, choice: result.value, correct: result.value === scene.answer });
+    return result.value;
+  }
+
   async function lecture() {
     currentPhase = 'lecture';
     setPhase('lecture');
@@ -477,9 +505,10 @@ async function main() {
       let pick;
       const picked = new Promise((resolve) => (pick = resolve));
       const marks = board.predict({ no: index + 1, total, code: question.code, choices: question.choices, onPick: pick });
-      await player.play(predictAskScenes(mission, question, seed));
-      checkAbort();
+      // 묻는 말이 끝나기를 기다리지 않고 바로 고를 수 있다.
+      background(predictAskScenes(mission, question, seed));
       const choice = await orAbort(picked);
+      hush();
       const feedback = predictFeedback(mission, question, choice, seed);
       marks.mark(choice, feedback.correct);
       log('predict', { mission: mission.id, question: question.id, choice, correct: feedback.correct });
@@ -496,28 +525,44 @@ async function main() {
     }
   }
 
-  async function task() {
-    currentPhase = 'task';
-    setPhase('task');
-    board.task(mission.task);
-    editor.setCode(store.get(draftKey(), ''));
+  /** 쓰기 문제 하나. 통과하면 { attempts, hints, first, code }, 심화 문제를 그만두면 null을 돌려준다. */
+  async function runTask(task, { index = 0, total = 1, optional = false } = {}) {
+    const key = `${draftKey()}.${task.id}`;
+    const hasLecture = Boolean(mission.lecture?.length);
+    const showTask = () => board.task({ ...task, title: total > 1 ? `${task.title} (${index + 1} / ${total})` : task.title, want: task.show ? task.expect : null });
+    showTask();
+    // 쓰던 것이 있으면 이어서, 없으면 문제에 딸린 시작 코드(고치기 문제)로 시작한다.
+    editor.setCode(store.get(key, '') || task.start || '');
     lessonConsole.clear();
-    draftSaving = true;
+    editor.markErrorLine(null);
+    draftSaving = key;
     lastRun = null;
     // 선생님이 설명하는 동안에도 바로 쓰기 시작할 수 있다.
     allowRun(true);
-    background([line(mission, 'task-intro', seed), line(mission, 'task-how', seed)]);
+    const opening = optional ? ['challenge-intro'] : index === 0 ? ['task-intro', 'task-how'] : ['task-next'];
+    background(opening.map((k) => line(mission, k, seed)));
+    const hints = task.hints ?? [];
+    const buttons = ['submit'];
+    if (hints.length) buttons.push('hint');
+    if (optional) buttons.push('give-up');
+    else if (hasLecture) buttons.push('lecture-again');
     let attempts = 0;
     let hintLevel = 0;
     for (;;) {
-      show('submit', 'hint', 'lecture-again');
+      show(...buttons);
       refreshRun();
-      const pressed = await nextPress('submit', 'hint', 'lecture-again');
+      const pressed = await nextPress(...buttons);
       hush();
+      if (pressed === 'give-up') {
+        log('challenge-give-up', { mission: mission.id, task: task.id, attempts, code: editor.getCode() });
+        draftSaving = null;
+        allowRun(false);
+        return null;
+      }
       if (pressed === 'hint') {
-        const level = Math.min(hintLevel, mission.hints.length - 1);
-        const hint = mission.hints[level];
-        log('hint', { mission: mission.id, level, code: editor.getCode() });
+        const level = Math.min(hintLevel, hints.length - 1);
+        const hint = hints[level];
+        log('hint', { mission: mission.id, task: task.id, level, code: editor.getCode() });
         if (hint.card) board.appendHint(hint.card);
         await say(hint.say);
         checkAbort();
@@ -527,12 +572,12 @@ async function main() {
       }
       if (pressed === 'lecture-again') {
         const draft = editor.getCode();
-        draftSaving = false;
+        draftSaving = null;
         await lecture();
-        board.task(mission.task);
+        showTask();
         editor.setCode(draft);
         lessonConsole.clear();
-        draftSaving = true;
+        draftSaving = key;
         currentPhase = 'task';
         setPhase('task');
         await say('lecture-back');
@@ -544,37 +589,74 @@ async function main() {
       attempts += 1;
       const ran = await runUser();
       if (!ran || ran.stopped) continue;
-      const diagnosis = diagnoseTask(mission.task, ran.code, ran);
+      const diagnosis = diagnoseTask(task, ran.code, ran);
       if (diagnosis.kind === 'error') diagnosis.text = explain(ran.error);
       if (diagnosis.kind === 'correct') diagnosis.first = attempts === 1 && hintLevel === 0;
-      log('submit', { mission: mission.id, attempt: attempts, hints: hintLevel, kind: diagnosis.kind, code: ran.code });
+      log('submit', { mission: mission.id, task: task.id, attempt: attempts, hints: hintLevel, kind: diagnosis.kind, say: diagnosis.say, code: ran.code });
       allowRun(false);
       show();
-      await player.play(taskFeedback(mission, diagnosis, seed));
+      await player.play(taskFeedback(mission, task, diagnosis, seed));
       checkAbort();
       if (diagnosis.kind === 'correct') {
-        draftSaving = false;
-        return { attempts, hints: hintLevel, first: diagnosis.first };
+        draftSaving = null;
+        store.set(key, '');
+        return { attempts, hints: hintLevel, first: diagnosis.first, code: ran.code };
       }
       allowRun(true);
     }
   }
 
-  async function finish(result) {
+  async function tasks() {
+    currentPhase = 'task';
+    setPhase('task');
+    const results = [];
+    for (const [index, task] of mission.tasks.entries()) results.push(await runTask(task, { index, total: mission.tasks.length }));
+    return results;
+  }
+
+  /** 심화 문제: 풀지 말지는 아이가 고른다. 풀다가 그만둬도 된다. */
+  async function challenge() {
+    if (!mission.challenge) return null;
+    allowRun(false);
+    show('challenge-yes', 'challenge-no');
+    background([line(mission, 'challenge-ask', seed)]);
+    const pressed = await nextPress('challenge-yes', 'challenge-no');
+    hush();
+    log('challenge-choice', { mission: mission.id, yes: pressed === 'challenge-yes' });
+    if (pressed === 'challenge-no') {
+      show();
+      await say('challenge-skip');
+      checkAbort();
+      return null;
+    }
+    return runTask(mission.challenge, { optional: true });
+  }
+
+  async function finish(results, extra) {
     currentPhase = 'done';
     setPhase('');
     allowRun(false);
     show();
-    board.done({ title: '오늘 배운 것', items: mission.learned.map((item) => (item.code ? `${item.rule}  ${item.code}` : item.rule)) });
+    const learned = mission.learned ?? [];
+    board.done(
+      mission.doneCard ?? { title: '오늘 배운 것', items: learned.map((item) => (item.code ? `${item.rule}  ${item.code}` : item.rule)) },
+    );
+    const first = results.every((r) => r.first);
+    const summary = { attempts: results.reduce((n, r) => n + r.attempts, 0), hints: results.reduce((n, r) => n + r.hints, 0), first, challenge: Boolean(extra) };
     const progress = store.get('kidpy.progress', {});
-    progress[mission.id] = { doneAt: new Date().toISOString(), ...result };
+    progress[mission.id] = { doneAt: new Date().toISOString(), ...summary };
     store.set('kidpy.progress', progress);
-    store.set(draftKey(), '');
-    log('mission-done', { mission: mission.id, ...result });
-    if (result.first) await teacher.jump(); // 크게 기뻐하는 건 한 번에 해낸 순간뿐이다
-    await say('done-1');
-    await say('done-2');
-    await say('done-bye');
+    // 만들기 과제로 쓴 프로그램은 "만들기"에 넣어 둔다(같은 이름이 있으면 그대로 둔다).
+    if (mission.saveAs) {
+      const works = store.get('kidpy.works', []);
+      if (!works.some((w) => w.name === mission.saveAs)) {
+        works.push({ id: `w-${Date.now().toString(36)}`, name: mission.saveAs, code: results[results.length - 1].code, updatedAt: new Date().toISOString() });
+        store.set('kidpy.works', works);
+      }
+    }
+    log('mission-done', { mission: mission.id, ...summary });
+    if (first) await teacher.jump(); // 크게 기뻐하는 건 한 번에 해낸 순간뿐이다
+    for (const key of mission.done ?? ['done-bye']) await say(key);
     checkAbort();
     flushLog();
     show('finish');
@@ -590,11 +672,18 @@ async function main() {
     setMuted(!$('sound').checked || speed > 1);
     $('where-line').textContent = mission.unit;
     $('where-title').textContent = `${mission.no}. ${mission.title}`;
+    const hasLecture = Boolean(mission.lecture?.length);
+    for (const item of $('phases').children) {
+      if (item.dataset.phase === 'lecture') item.hidden = !hasLecture;
+      if (item.dataset.phase === 'predict') item.hidden = !mission.predict?.length;
+    }
     showScreen('play');
     activeConsole = lessonConsole;
     setPhase('');
     currentPhase = 'intro';
-    board.card({ title: `${mission.no}. ${mission.title}`, items: [mission.desc, `${mission.minutes}분쯤 걸려요.`, '강의는 언제든 건너뛸 수 있어요.'] });
+    const about = [mission.desc, `${mission.minutes}분쯤 걸려요.`];
+    if (hasLecture) about.push('강의는 언제든 건너뛸 수 있어요.');
+    board.card({ title: `${mission.no}. ${mission.title}`, items: about });
     caption.textContent = '';
     editor.setCode('');
     lessonConsole.clear();
@@ -604,23 +693,29 @@ async function main() {
     try {
       await voicesReady();
       checkAbort();
-      // 버튼을 먼저 보여 주고, 선생님은 그동안 묻는다.
-      show('with-lecture', 'solve-now');
-      background([line(mission, 'intro-ask', seed)]);
-      const choice = await nextPress('with-lecture', 'solve-now');
-      hush();
-      log('mission-choice', { mission: mission.id, withLecture: choice === 'with-lecture' });
-      show();
-      if (choice === 'with-lecture') await lecture();
-      await predict();
-      const result = await task();
-      await finish(result);
+      if (hasLecture) {
+        // 버튼을 먼저 보여 주고, 선생님은 그동안 묻는다.
+        show('with-lecture', 'solve-now');
+        background([line(mission, 'intro-ask', seed)]);
+        const choice = await nextPress('with-lecture', 'solve-now');
+        hush();
+        log('mission-choice', { mission: mission.id, withLecture: choice === 'with-lecture' });
+        show();
+        if (choice === 'with-lecture') await lecture();
+      } else {
+        await say('intro-solve');
+        checkAbort();
+      }
+      if (mission.predict?.length) await predict();
+      const results = await tasks();
+      const extra = await challenge();
+      await finish(results, extra);
     } catch (error) {
       if (!(error instanceof Stop)) throw error;
       log('mission-abort', { mission: mission.id, phase: currentPhase });
     }
     allowRun(false);
-    draftSaving = false;
+    draftSaving = null;
     currentPhase = 'home';
     goHome();
   }

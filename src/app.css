@@ -611,6 +611,26 @@ a.btn {
   background: #d6336c;
 }
 
+.eb-calc {
+  background: #c2410c;
+}
+
+.eb-flow {
+  background: #0c7c91;
+}
+
+.eb-data {
+  background: #862e9c;
+}
+
+.eb-judge {
+  background: #364fc7;
+}
+
+.board-want {
+  margin-top: 12px;
+}
+
 .eb-in,
 .eb-drop {
   padding: 1px 9px;

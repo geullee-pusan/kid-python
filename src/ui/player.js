@@ -2,6 +2,7 @@
 // 틀은 주산 앱 JUSAN의 player.js를 따랐다. 주판 대신 편집기와 출력 창을 움직인다.
 // - 말할 때는 대화창에 글자가 한 글자씩 나타난다. 자막은 늘 보인다(목소리가 없어도 수업이 된다).
 // - 선생님은 아이가 버튼을 누를 때까지 기다린다. 재촉하지 않는다.
+import { explain } from '../core/errors-ko.js';
 import { speak as speakLine, stopSpeaking, wait } from './speech.js';
 
 /**
@@ -78,6 +79,14 @@ export function createPlayer(ctx) {
       await pause(550 / slow);
     }
     editor.markRunLine(null);
+    // 오류가 나는 코드도 그대로 보여 준다(오류 읽기 수업, 오류가 답인 예측 문제).
+    if (result.error && !stopped) {
+      const at = result.error.line ? ` (${result.error.line}번 줄)` : '';
+      output.append(`\n${explain(result.error)}${at}\n`, 'ko');
+      output.append(result.error.text, 'err');
+      if (result.error.line) editor.markErrorLine(result.error.line);
+      await pause(900 / slow);
+    }
     return result;
   }
 
@@ -116,6 +125,17 @@ export function createPlayer(ctx) {
           teacher.pose('idle');
           const answer = await ctx.ui.follow(scene);
           if (answer === 'stop') stopped = true;
+          break;
+        }
+        case 'check': {
+          // 강의 중 확인 문제: 맞히면 설명을 건너뛰고, 틀리면 설명한다.
+          teacher.pose('idle');
+          const picked = await ctx.ui.check(scene);
+          if (picked === 'stop') {
+            stopped = true;
+            break;
+          }
+          if (!(await play(picked === scene.answer ? scene.right : scene.teach))) return false;
           break;
         }
         case 'nod':

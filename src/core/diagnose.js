@@ -1,5 +1,13 @@
 // 쓰기 문제 채점과 오답 짐작. 순수 함수다.
 // 틀렸을 때 "틀렸어요"만 말하지 않고, 무엇을 놓쳤는지 짐작해서 알려 주려는 것이다.
+//
+// 문제(task)에 적는 것
+//  expect    나와야 하는 출력(줄 목록)
+//  compute   파이썬이 계산해야 하는 식들 [{ literal: "12 + 30", pattern: "12\\s*\\+\\s*30" }]
+//            - 출력은 맞는데 코드(따옴표 밖)에 pattern이 없으면: 답을 직접 적은 것(not-computed)
+//            - 출력에 literal이 글자 그대로 나왔으면: 식을 따옴표 안에 넣은 것(quoted-calc)
+//  mistakes  이 문제에서 흔한 실수 [{ code: "정규식", output: "정규식", say: "대사 열쇠" }]
+//            - 출력이 틀렸을 때, 코드(따옴표 밖)와 출력이 정규식에 맞으면 그 대사로 알려 준다
 
 /** 출력을 줄 목록으로. 줄 끝 빈칸과 맨 끝 빈 줄은 뺀다. */
 export function outputLines(output) {
@@ -20,29 +28,35 @@ const squeeze = (text) => text.replace(/\s+/g, '');
 const ORDINAL = ['첫째', '둘째', '셋째', '넷째', '다섯째', '여섯째', '일곱째', '여덟째', '아홉째', '열째'];
 
 /**
- * @param {{expect: string[], mustCompute?: {pattern: string, literal: string}}} task
+ * @param {{expect: string[], compute?: {literal: string, pattern: string}[], mistakes?: {code?: string, output?: string, say: string}[]}} task
  * @param {string} code 아이가 쓴 코드
  * @param {{error: object|null, output: string}} run 실행 결과
- * @returns {{kind: string, vars?: object}} kind: correct, error, no-output, not-computed, quoted-calc, order, count, spacing, line-diff
+ * @returns {{kind: string, vars?: object, say?: string}}
+ *   kind: correct, error, no-output, not-computed, quoted-calc, mistake(say에 대사 열쇠), order, count, spacing, line-diff
  */
 export function diagnoseTask(task, code, run) {
   if (run.error) return { kind: 'error' };
   const got = outputLines(run.output);
   const want = task.expect;
-  if (got.length === 0) return { kind: 'no-output' };
+  const bare = stripStrings(code);
+  const compute = task.compute ?? [];
 
   const same = got.length === want.length && got.every((line, i) => line === want[i]);
   if (same) {
-    if (task.mustCompute && !new RegExp(task.mustCompute.pattern).test(stripStrings(code))) {
-      return { kind: 'not-computed', vars: { calc: task.mustCompute.literal } };
-    }
+    const missing = compute.find((item) => !new RegExp(item.pattern).test(bare));
+    if (missing) return { kind: 'not-computed', vars: { calc: missing.literal } };
     return { kind: 'correct' };
   }
+  if (got.length === 0) return { kind: 'no-output' };
+
+  // 이 문제에서 흔한 실수
+  const text = got.join('\n');
+  const mistake = (task.mistakes ?? []).find((m) => (!m.code || new RegExp(m.code).test(bare)) && (!m.output || new RegExp(m.output).test(text)));
+  if (mistake) return { kind: 'mistake', say: mistake.say };
 
   // 계산할 것을 따옴표 안에 넣어 글자 그대로 나온 경우
-  if (task.mustCompute && got.some((line) => squeeze(line) === squeeze(task.mustCompute.literal))) {
-    return { kind: 'quoted-calc', vars: { calc: task.mustCompute.literal } };
-  }
+  const quoted = compute.find((item) => got.some((line) => squeeze(line).includes(squeeze(item.literal))));
+  if (quoted) return { kind: 'quoted-calc', vars: { calc: quoted.literal } };
   // 줄은 다 맞는데 순서만 다른 경우
   if (got.length === want.length && [...got].sort().join('\n') === [...want].sort().join('\n')) return { kind: 'order' };
   if (got.length !== want.length) return { kind: 'count', vars: { got: got.length, want: want.length } };
