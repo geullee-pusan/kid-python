@@ -190,8 +190,13 @@ async function main() {
     const list = $('lessons');
     list.replaceChildren();
     for (const unit of curriculum.units.filter((u) => u.lessons)) {
-      const box = el('div', 'unit');
-      box.append(el('h3', '', unit.title));
+      // 수업을 모두 끝낸 단원은 접어 둔다(누르면 펼쳐진다). 목록이 길어져도 지금 할 단원이 바로 보이게 하려는 것이다.
+      const allDone = unit.lessons.every((id) => progress[id]);
+      const box = el('details', 'unit');
+      box.open = !allDone;
+      const head = el('summary', 'unit-head');
+      head.append(el('h3', '', unit.title), el('span', 'unit-note', allDone ? `✓ ${unit.lessons.length}편 모두 끝냄` : ''));
+      box.append(head);
       const items = el('ul', 'unit-lessons');
       for (const id of unit.lessons ?? []) {
         const mission = MISSIONS[id];

@@ -1,0 +1,195 @@
+{
+  "_설명": "정해진 횟수만큼 반복 단원 4번 수업. range(시작, 끝)과 range(시작, 끝, 건너뛰기)를 다룬다. 겨냥하는 오개념: 끝 수도 나온다. 음수는 학교에서 아직 배우지 않았으므로 -1은 '하나씩 줄어든다'는 표시로만 설명하고 음수 계산은 묻지 않는다.",
+  "id": "range-more",
+  "unit": "정해진 횟수만큼 반복",
+  "no": 4,
+  "title": "range 더 쓰기",
+  "titleSay": "[range|레인지] 더 쓰기",
+  "desc": "1부터 세기, 건너뛰며 세기, 거꾸로 세기를 배워요.",
+  "minutes": 15,
+  "knows": ["variables"],
+  "showVars": true,
+  "learned": [
+    { "rule": "range(1, 6)은 1부터 5까지예요. 끝 수 6은 나오지 않아요.", "code": "for i in range(1, 6):\n    print(i)" },
+    { "rule": "셋째 수를 넣으면 그만큼 건너뛰어요.", "code": "for i in range(0, 10, 2):\n    print(i)" },
+    { "rule": "셋째 수가 -1이면 하나씩 줄어들어요.", "code": "for i in range(5, 0, -1):\n    print(i)" }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["오늘은 [range|레인지]에 수를 두 개, 세 개 넣어 봐요."],
+    "two-intro": ["지난 수업에서는 [1|일]부터 세려고 [i|아이]에 [1|일]을 더했어요. 더 쉬운 방법이 있어요."],
+    "two-after": ["[range(1, 6)|레인지 일 쉼표 육]은 [1|일]부터 시작해서 [6|육] 바로 앞에서 멈춰요."],
+    "two-end": ["끝 수는 나오지 않아요. [5|오]까지 세려면 끝에 [6|육]을 써요."],
+    "two-same": ["[range(5)|레인지 오]가 [5|오] 앞에서 멈춘 것과 같아요. [range|레인지]는 늘 끝 수 앞에서 멈춰요."],
+    "check-ask": ["하나 물어볼게요. [1|일]부터 [10|십]까지 세려면 어떻게 쓸까요?"],
+    "check-right": ["맞아요. [10|십]까지 나오려면 끝을 [11|십일]로 해요."],
+    "check-teach-1": ["끝 수는 나오지 않아요. [range(1, 10)|레인지 일 쉼표 십]은 [9|구]에서 멈춰요."],
+    "check-teach-2": ["[10|십]까지 나오게 하려면 하나 더 큰 수, [11|십일]을 끝에 써요."],
+    "follow-ok": ["좋아요. [3|삼]부터 [6|육]까지 나왔어요. 끝 수 [7|칠]은 나오지 않았어요."],
+    "step-intro": ["수를 세 개 넣으면, 셋째 수만큼 건너뛰어요."],
+    "step-after": ["[2|이]씩 건너뛰었어요. [10|십]은 끝 수라서 나오지 않아요."],
+    "down-intro": ["셋째 수를 [-1|빼기 일]로 하면 거꾸로 세요."],
+    "down-after": ["[5|오]부터 하나씩 줄어들었어요. 이번에도 끝 수 [0|영]은 나오지 않아요."],
+    "down-mean": ["[-1|빼기 일]은 하나씩 줄어든다는 표시예요. 거꾸로 셀 때는 시작에 큰 수를 써요."],
+    "summary": ["정리해요. 시작, 끝, 건너뛰기. 끝 수는 늘 나오지 않아요."],
+
+    "q1-right": ["맞아요. [2|이]부터 시작해서 [5|오] 앞에서 멈춰요."],
+    "q1-end": ["끝 수 [5|오]는 나오지 않아요. [4|사]에서 멈춰요."],
+    "q1-zero": ["첫째 수가 시작이에요. [2|이]부터 세요."],
+    "q1-explain": ["[2|이]부터 시작해서 [5|오] 바로 앞, [4|사]까지예요."],
+    "q2-right": ["맞아요. [1|일]부터 [3|삼]씩 건너뛰어요. [10|십]은 끝 수라서 나오지 않아요."],
+    "q2-end": ["[10|십]은 끝 수예요. 끝 수는 나오지 않아요."],
+    "q2-start": ["시작은 [1|일]이에요. [1|일]에서 [3|삼]씩 건너뛰면 [4|사], [7|칠]이에요."],
+    "q2-explain": ["[1|일]에서 시작해서 [3|삼]씩 건너뛰어요. [1, 4, 7|일, 사, 칠]. 다음은 [10|십]인데 끝 수라서 멈춰요."],
+    "q3-right": ["맞아요. [3|삼]부터 하나씩 줄어들고, 끝 수 [0|영]은 나오지 않아요."],
+    "q3-end": ["끝 수 [0|영]은 나오지 않아요. [1|일]에서 멈춰요."],
+    "q3-up": ["셋째 수가 [-1|빼기 일]이에요. [3|삼]부터 하나씩 줄어들어요."],
+    "q3-explain": ["[3|삼]부터 하나씩 줄어들어요. [3, 2, 1|삼, 이, 일]. 끝 수 [0|영] 앞에서 멈춰요."],
+
+    "praise-times": ["[range|레인지]로 [1|일]부터 [9|구]까지 세서 [7|칠]단을 만들었어요."],
+    "times-zero": ["[7 x 0|칠 곱하기 영]부터 나왔어요. [range|레인지]의 시작을 [1|일]로 해요."],
+    "times-short": ["[7 x 8|칠 곱하기 팔]에서 끝났어요. 끝 수는 나오지 않아요. [9|구]까지 하려면 끝을 [10|십]으로 해요."],
+    "times-long": ["[7 x 10|칠 곱하기 십]까지 나왔어요. 끝을 [10|십]으로 하면 [9|구]까지만 나와요."],
+    "hint-1": ["[range|레인지]에 시작과 끝을 넣어서 [i|아이]가 [1|일]부터 [9|구]까지 되게 해요."],
+    "hint-2": ["한 줄에 다섯 가지를 쉼표로 이어요. [7|칠], 따옴표 안에 든 [x|엑스], [i|아이], 따옴표 안에 든 등호, 그리고 [7 * i|칠 곱하기 아이]. 계산은 별표로 해요."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. [2|이]단을 [3|삼]까지만 한 예제예요. 이걸 보고 써 봐요."],
+    "praise-down": ["큰 수에서 시작해서 [3|삼]씩 줄어들게 했어요. 끝 줄도 반복 밖에 잘 뒀어요."],
+    "down-end-in": ["끝이 여러 번 나왔어요. 끝 줄은 들여쓰지 않아요."],
+    "down-short": ["[3|삼]이 나오지 않았어요. 끝 수는 나오지 않아요. 끝을 [3|삼]보다 작은 수로 해요."],
+    "down-zero": ["[0|영]까지 나왔어요. [3|삼]에서 멈추게 끝 수를 바꿔 봐요."],
+    "down-hint-1": ["시작은 [30|삼십], 셋째 수는 [-3|빼기 삼]이에요."],
+    "down-hint-2": ["끝 수는 나오지 않아요. [3|삼]까지 나오게 하려면 끝을 [0|영]으로 해요."],
+
+    "done-1": ["오늘은 [range|레인지]에 시작과 끝, 건너뛰기를 넣는 법을 배웠어요."],
+    "done-2": ["끝 수는 나오지 않아요. 이것만 기억하면 돼요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "range(시작, 끝)", "items": ["시작 수부터 센다", "끝 수 바로 앞에서 멈춘다"] } },
+      { "say": "two-intro" },
+      { "type": "for i in range(1, 6):\n    print(i)" },
+      { "say": "watch-run" },
+      { "trace": "for i in range(1, 6):\n    print(i)" },
+      { "say": "two-after" },
+      { "say": "two-end" },
+      { "say": "two-same" }
+    ],
+    [
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "1부터 10까지 세려면?",
+          "ask": "check-ask",
+          "choices": ["range(1, 11)", "range(1, 10)"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "for i in range(3, 7):\n    print(i)" } },
+      { "follow": { "code": "for i in range(3, 7):\n    print(i)", "expect": ["3", "4", "5", "6"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "range(시작, 끝, 건너뛰기)", "items": ["셋째 수만큼 건너뛰며 센다", "끝 수는 이번에도 나오지 않는다"] } },
+      { "say": "step-intro" },
+      { "type": "for i in range(0, 10, 2):\n    print(i)" },
+      { "trace": "for i in range(0, 10, 2):\n    print(i)" },
+      { "say": "step-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "down-intro" },
+      { "type": "for i in range(5, 0, -1):\n    print(i)\nprint(\"발사\")" },
+      { "trace": "for i in range(5, 0, -1):\n    print(i)\nprint(\"발사\")" },
+      { "say": "down-after" },
+      { "say": "down-mean" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["range(5)  →  0, 1, 2, 3, 4", "range(1, 6)  →  1, 2, 3, 4, 5", "range(0, 10, 2)  →  0, 2, 4, 6, 8", "range(5, 0, -1)  →  5, 4, 3, 2, 1", "끝 수는 늘 나오지 않는다"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "for i in range(2, 5):\n    print(i)",
+      "answer": 1,
+      "choices": [
+        { "text": "2\n3\n4\n5", "say": "q1-end" },
+        { "text": "2\n3\n4", "say": "q1-right" },
+        { "text": "0\n1\n2\n3\n4", "say": "q1-zero" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "for i in range(1, 10, 3):\n    print(i)",
+      "answer": 2,
+      "choices": [
+        { "text": "1\n4\n7\n10", "say": "q2-end" },
+        { "text": "3\n6\n9", "say": "q2-start" },
+        { "text": "1\n4\n7", "say": "q2-right" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "for i in range(3, 0, -1):\n    print(i)",
+      "answer": 0,
+      "choices": [
+        { "text": "3\n2\n1", "say": "q3-right" },
+        { "text": "3\n2\n1\n0", "say": "q3-end" },
+        { "text": "1\n2\n3", "say": "q3-up" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "times",
+      "title": "7단 외우기",
+      "story": "구구단 7단을 파이썬에게 시켜요.",
+      "steps": ["for와 range(시작, 끝)을 써요.", "아래처럼 아홉 줄이 나오게 해요."],
+      "expect": ["7 x 1 = 7", "7 x 2 = 14", "7 x 3 = 21", "7 x 4 = 28", "7 x 5 = 35", "7 x 6 = 42", "7 x 7 = 49", "7 x 8 = 56", "7 x 9 = 63"],
+      "show": true,
+      "checks": [{ "pattern": "for\\s+\\S+\\s+in\\s+range\\s*\\(", "say": "need-for" }],
+      "mistakes": [
+        { "output": "^7 x 0 = 0", "say": "times-zero" },
+        { "output": "7 x 8 = 56$", "say": "times-short" },
+        { "output": "7 x 10 = 70$", "say": "times-long" }
+      ],
+      "praise": "praise-times",
+      "solution": "for i in range(1, 10):\n    print(7, \"x\", i, \"=\", 7 * i)",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "for i in range(1, 4):\n    print(2, \"x\", i, \"=\", 2 * i)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "down3",
+    "title": "심화: 3씩 거꾸로 세기",
+    "story": "30에서 시작해서 3씩 줄여 가며 3까지 세고, 마지막에 \"끝\"을 내보내요.",
+    "steps": ["30, 27, 24, … , 6, 3 을 한 줄에 하나씩 내보내요.", "마지막 줄에 \"끝\"을 한 번 내보내요."],
+    "expect": ["30", "27", "24", "21", "18", "15", "12", "9", "6", "3", "끝"],
+    "checks": [{ "pattern": "for\\s+\\S+\\s+in\\s+range\\s*\\(", "say": "need-for" }],
+    "mistakes": [
+      { "output": "끝\\n[\\s\\S]*끝", "say": "down-end-in" },
+      { "output": "(^|\\n)3\\n0(\\n|$)", "say": "down-zero" },
+      { "output": "(^|\\n)6(\\n끝)?$", "say": "down-short" }
+    ],
+    "praise": "praise-down",
+    "solution": "for i in range(30, 0, -3):\n    print(i)\nprint(\"끝\")",
+    "hints": [{ "say": "down-hint-1" }, { "say": "down-hint-2" }]
+  }
+}

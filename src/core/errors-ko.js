@@ -34,11 +34,15 @@ export function explain(error, knows = {}) {
     if (knows.variables && /^\s*\d+[^\s\d=()+\-*/%.,"'#]+\s*=[^=]/m.test(text)) return '이름은 숫자로 시작할 수 없어요. 글자로 시작하게 바꿔요.';
     // 이름에 빈칸을 넣은 경우: "내 나이 = 9"
     if (knows.variables && /^\s*[^\s=()"'#]+\s+[^\s=()"'#]+\s*=[^=]/m.test(text)) return '이름에는 빈칸을 쓸 수 없어요. 붙여 쓰거나 밑줄(_)로 이어요.';
+    // for를 큰 글자로 시작한 경우: "For i in range(3):"
+    if (/^\s*F[oO][rR]\s/m.test(text) || /^\s*fOR\s|^\s*FOR\s/m.test(text)) return 'for는 모두 작은 글자로 써요.';
     if (/forgot a comma/.test(message)) return '따옴표로 감싸지 않은 글자가 있거나, 쉼표가 빠진 것 같아요.';
     return '파이썬이 읽을 수 없는 문장이에요. 괄호와 따옴표를 확인해 봐요.';
   }
   if (type === 'IndentationError' || type === 'TabError') {
-    if (/unexpected indent/.test(message)) return '줄 앞에 빈칸이 있어요. 줄의 맨 앞에서 시작해요.';
+    if (/expected an indented block/.test(message)) return '콜론(:) 다음 줄은 들여써야 해요. 줄 앞에 빈칸 4개를 넣어요.';
+    if (/unindent does not match/.test(message)) return '들여쓰기의 빈칸 수가 위의 줄과 맞지 않아요. 같은 묶음은 같은 만큼 들여써요.';
+    if (/unexpected indent/.test(message)) return '줄 앞에 빈칸이 있어요. 들여쓸 줄이 아니면 줄의 맨 앞에서 시작해요.';
     return '들여쓰기가 맞지 않아요.';
   }
   if (type === 'NameError') {
@@ -54,6 +58,7 @@ export function explain(error, knows = {}) {
   if (type === 'TypeError') {
     if (/can only concatenate str|unsupported operand type\(s\) for \+/.test(message)) return '글자와 숫자는 더하기(+)로 이을 수 없어요. 숫자로 계산하려면 int( )로, 글자로 이으려면 str( )로 바꿔요.';
     if (/unsupported operand type\(s\) for [-/*%]|can't multiply sequence/.test(message)) return '글자로는 이 계산을 할 수 없어요. int( )로 숫자로 바꿔요.';
+    if (/cannot be interpreted as an integer/.test(message)) return 'range( ) 안에는 숫자를 넣어요. 글자라면 int( )로 숫자로 바꿔요.';
     if (/missing \d+ required positional argument|takes \d+ positional argument/.test(message)) return '괄호 안에 넣은 값의 개수가 맞지 않아요.';
     return '종류가 맞지 않는 값끼리 계산하려고 했어요.';
   }

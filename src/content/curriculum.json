@@ -24,7 +24,15 @@
       ]
     },
     {
-      "title": "정해진 횟수만큼 반복"
+      "title": "정해진 횟수만큼 반복",
+      "lessons": [
+        "for-loop",
+        "loop-body",
+        "loop-i",
+        "range-more",
+        "loop-pattern",
+        "unit3-review"
+      ]
     },
     {
       "title": "조건"

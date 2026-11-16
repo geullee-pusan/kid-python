@@ -1,0 +1,183 @@
+{
+  "_설명": "정해진 횟수만큼 반복 단원 2번 수업. 어디까지가 되풀이되는지(들여쓰기 범위)를 다룬다. 겨냥하는 오개념: 반복 아래 줄은 모두 되풀이된다, 들여쓴 두 줄은 가가 나나 차례로 나온다.",
+  "id": "loop-body",
+  "unit": "정해진 횟수만큼 반복",
+  "no": 2,
+  "title": "반복 안과 밖",
+  "desc": "어디까지가 되풀이되는지 알아봐요.",
+  "minutes": 15,
+  "knows": ["variables"],
+  "showVars": true,
+  "learned": [
+    { "rule": "들여쓴 줄만 되풀이해요." },
+    { "rule": "들여쓰기를 멈추면 반복 밖이에요. 반복이 다 끝난 뒤에 한 번만 해요.", "code": "for i in range(3):\n    print(\"칙칙폭폭\")\nprint(\"도착\")" },
+    { "rule": "들여쓴 줄이 여러 개면, 한 묶음으로 차례로 되풀이해요.", "code": "for i in range(2):\n    print(\"가\")\n    print(\"나\")" }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["오늘은 어디까지가 되풀이되는지 봐요."],
+    "entry-wrap": ["엔트리에서는 반복하기 블록이 감싼 것만 되풀이했어요."],
+    "py-indent": ["파이썬에서는 들여쓴 줄만 되풀이해요. 들여쓰기가 감싸는 것과 같아요."],
+    "out-after": ["칙칙폭폭은 세 번, 도착은 한 번 나왔어요."],
+    "out-why": ["도착은 들여쓰지 않았어요. 그래서 반복 밖이에요. 반복이 다 끝난 뒤에 한 번만 해요."],
+    "two-intro": ["들여쓴 줄이 두 개면 어떻게 될까요?"],
+    "two-after": ["가 나, 가 나 차례로 나왔어요. 들여쓴 줄들을 한 묶음으로 되풀이해요."],
+    "two-not": ["가를 다 한 다음에 나를 하는 게 아니에요. 한 묶음을 끝까지 하고, 다시 처음으로 올라가요."],
+    "follow-dedent": ["따라 쳐 봐요. 마지막 줄은 들여쓰지 않아요. 줄 앞에서 [Backspace|백스페이스]를 눌러 맨 앞으로 가요."],
+    "miss-intro": ["들여쓰기를 빼먹으면 어떻게 될까요?"],
+    "miss-after": ["[IndentationError|인덴테이션 에러]는 들여쓰기가 틀렸다는 뜻이에요. [for|포] 줄 다음 줄은 꼭 들여써야 해요."],
+    "summary": ["정리해요. 들여쓴 줄만 되풀이. 들여쓰기를 멈추면 반복 밖. 여러 줄은 한 묶음으로."],
+
+    "q1-right": ["맞아요. 가는 세 번, 나는 반복이 끝난 뒤에 한 번 나와요."],
+    "q1-all": ["나는 들여쓰지 않았어요. 반복 밖이라 한 번만 나와요."],
+    "q1-once": ["가는 들여썼으니 세 번 되풀이해요."],
+    "q1-explain": ["들여쓴 가만 세 번 되풀이해요. 나는 반복이 끝난 뒤에 한 번 나와요."],
+    "q2-right": ["맞아요. 들여쓴 두 줄을 한 묶음으로 두 번 되풀이해요."],
+    "q2-grouped": ["가를 다 한 다음에 나를 하지 않아요. 가 나 한 묶음을 하고, 다시 가 나를 해요."],
+    "q2-once": ["두 줄 모두 들여썼어요. 둘 다 두 번씩 되풀이해요."],
+    "q2-explain": ["가 나 한 묶음을 하고, 다시 올라가서 가 나를 한 번 더 해요."],
+    "q3-right": ["맞아요. 시작은 반복 앞에서 한 번, 가 나는 두 번, 끝은 반복 뒤에서 한 번이에요."],
+    "q3-end-in": ["끝은 들여쓰지 않았어요. 반복이 다 끝난 뒤에 한 번만 나와요."],
+    "q3-grouped": ["가 나를 한 묶음으로 되풀이해요. 가 가 나 나가 아니에요."],
+    "q3-explain": ["들여쓴 가 나만 두 번 되풀이해요. 시작과 끝은 반복 밖이라 한 번씩이에요."],
+
+    "praise-train": ["반복 앞, 반복 안, 반복 뒤를 정확히 나눴어요."],
+    "train-arrive": ["도착이 여러 번 나왔어요. 도착 줄은 들여쓰지 말고, 반복 밖에 둬요."],
+    "train-start": ["출발이 여러 번 나왔어요. 출발 줄은 [for|포] 줄보다 위에 써요."],
+    "hint-1": ["네 줄이면 돼요. 출발, [for|포] 줄, 들여쓴 칙칙폭폭, 도착."],
+    "hint-2": ["칙칙폭폭만 들여써요. 출발과 도착은 줄의 맨 앞에서 시작해요."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. 글자와 횟수가 달라요. 이걸 보고 써 봐요."],
+    "praise-tug": ["반복 두 개 사이와 앞뒤에 한 번만 하는 줄을 잘 넣었어요."],
+    "tug-hint-1": ["[for|포]를 두 번 써요. 그 사이에 쉬고를 한 줄 넣어요."],
+    "tug-hint-2": ["준비, 쉬고, 끝은 들여쓰지 않아요. 영차만 들여써요."],
+
+    "done-1": ["오늘은 반복 안과 밖을 구분하는 법을 배웠어요."],
+    "done-2": ["들여쓴 줄만 되풀이해요. 들여쓰기를 멈추면 반복 밖이에요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      {
+        "pair": {
+          "entry": [
+            { "cat": "flow", "parts": [{ "in": "3" }, "번 반복하기"] },
+            { "cat": "looks", "indent": 1, "parts": [{ "in": "칙칙폭폭" }, "을(를)", { "drop": "말하기" }] },
+            { "cat": "looks", "parts": [{ "in": "도착" }, "을(를)", { "drop": "말하기" }] }
+          ],
+          "python": "for i in range(3):\n    print(\"칙칙폭폭\")\nprint(\"도착\")"
+        }
+      },
+      { "say": "entry-wrap", "pose": "point" },
+      { "say": "py-indent", "pose": "point" },
+      { "type": "for i in range(3):\n    print(\"칙칙폭폭\")\nprint(\"도착\")" },
+      { "say": "watch-run" },
+      { "trace": "for i in range(3):\n    print(\"칙칙폭폭\")\nprint(\"도착\")" },
+      { "say": "out-after" },
+      { "say": "out-why" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "two-intro" },
+      { "type": "for i in range(2):\n    print(\"가\")\n    print(\"나\")" },
+      { "trace": "for i in range(2):\n    print(\"가\")\n    print(\"나\")" },
+      { "say": "two-after" },
+      { "say": "two-not" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "print(\"출발\")\nfor i in range(2):\n    print(\"칙칙폭폭\")\nprint(\"도착\")" } },
+      {
+        "follow": {
+          "code": "print(\"출발\")\nfor i in range(2):\n    print(\"칙칙폭폭\")\nprint(\"도착\")",
+          "expect": ["출발", "칙칙폭폭", "칙칙폭폭", "도착"],
+          "say": ["follow-dedent", "follow-done"]
+        }
+      },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "miss-intro" },
+      { "type": "for i in range(3):\nprint(\"안녕\")" },
+      { "trace": "for i in range(3):\nprint(\"안녕\")", "expectError": "IndentationError" },
+      { "say": "miss-after" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["들여쓴 줄만 되풀이한다", "들여쓰기를 멈추면 반복 밖: 다 끝난 뒤에 한 번", "들여쓴 줄이 여러 개면 한 묶음으로 되풀이한다"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "for i in range(3):\n    print(\"가\")\nprint(\"나\")",
+      "answer": 0,
+      "choices": [
+        { "text": "가\n가\n가\n나", "say": "q1-right" },
+        { "text": "가\n나\n가\n나\n가\n나", "say": "q1-all" },
+        { "text": "가\n나", "say": "q1-once" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "for i in range(2):\n    print(\"가\")\n    print(\"나\")",
+      "answer": 1,
+      "choices": [
+        { "text": "가\n가\n나\n나", "say": "q2-grouped" },
+        { "text": "가\n나\n가\n나", "say": "q2-right" },
+        { "text": "가\n나", "say": "q2-once" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "print(\"시작\")\nfor i in range(2):\n    print(\"가\")\n    print(\"나\")\nprint(\"끝\")",
+      "answer": 2,
+      "choices": [
+        { "text": "시작\n가\n나\n끝\n가\n나\n끝", "say": "q3-end-in" },
+        { "text": "시작\n가\n가\n나\n나\n끝", "say": "q3-grouped" },
+        { "text": "시작\n가\n나\n가\n나\n끝", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "train",
+      "title": "기차 놀이",
+      "story": "기차가 출발해서, 칙칙폭폭 달리다가, 도착해요.",
+      "steps": ["아래처럼 여섯 줄이 나오게 해요.", "칙칙폭폭은 for로 되풀이해요."],
+      "expect": ["출발", "칙칙폭폭", "칙칙폭폭", "칙칙폭폭", "칙칙폭폭", "도착"],
+      "show": true,
+      "checks": [{ "pattern": "for\\s+\\S+\\s+in\\s+range\\s*\\(", "say": "need-for" }],
+      "mistakes": [
+        { "output": "도착\\n[\\s\\S]*도착", "say": "train-arrive" },
+        { "output": "출발\\n[\\s\\S]*출발", "say": "train-start" }
+      ],
+      "praise": "praise-train",
+      "solution": "print(\"출발\")\nfor i in range(4):\n    print(\"칙칙폭폭\")\nprint(\"도착\")",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "print(\"하나\")\nfor i in range(2):\n    print(\"둘\")\nprint(\"셋\")" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "tug",
+    "title": "심화: 줄다리기",
+    "story": "줄다리기를 해요. 세 번 당기고, 한 번 쉬고, 다시 세 번 당겨요.",
+    "steps": ["아래처럼 아홉 줄이 나오게 해요.", "영차는 for로 되풀이해요."],
+    "expect": ["준비", "영차", "영차", "영차", "쉬고", "영차", "영차", "영차", "끝"],
+    "show": true,
+    "checks": [{ "pattern": "for\\s+\\S+\\s+in\\s+range\\s*\\(", "say": "need-for" }],
+    "praise": "praise-tug",
+    "solution": "print(\"준비\")\nfor i in range(3):\n    print(\"영차\")\nprint(\"쉬고\")\nfor i in range(3):\n    print(\"영차\")\nprint(\"끝\")",
+    "hints": [{ "say": "tug-hint-1" }, { "say": "tug-hint-2" }]
+  }
+}

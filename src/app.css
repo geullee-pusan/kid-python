@@ -243,6 +243,24 @@ a.btn {
   opacity: 0.92;
 }
 
+.unit-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-height: 40px;
+  cursor: pointer;
+}
+
+.unit-head h3 {
+  display: inline;
+}
+
+.unit-note {
+  color: var(--good);
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .unit-lessons,
 .works {
   margin: 0;

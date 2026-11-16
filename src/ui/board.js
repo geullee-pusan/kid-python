@@ -11,6 +11,8 @@ function el(tag, className, text) {
 /** 엔트리 블록 한 줄. parts: 글자, { in: '안녕!' }(값 칸), { drop: '말하기' }(목록 칸) */
 function entryBlock(block) {
   const row = el('div', `eb eb-${block.cat}`);
+  // indent: 반복하기나 만일 블록이 감싼 블록은 안쪽으로 들여서 보여 준다.
+  if (block.indent) row.style.marginLeft = `${block.indent * 26}px`;
   for (const part of block.parts) {
     if (typeof part === 'string') row.append(el('span', 'eb-text', part));
     else if (part.in !== undefined) row.append(el('span', 'eb-in', part.in));

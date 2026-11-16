@@ -10,6 +10,7 @@
 //  cases     입력을 받는 문제의 채점용 입력과 기대 출력 [{ inputs: [...], expect: [...] }] (화면 쪽에서 하나씩 돌린다)
 //  mistakes  이 문제에서 흔한 실수 [{ code: "정규식", output: "정규식", say: "대사 열쇠" }]
 //            - 출력이 틀렸을 때, 코드(따옴표 밖)와 출력이 정규식에 맞으면 그 대사로 알려 준다
+//            - want: 나와야 하는 출력이 이 정규식에 맞을 때만 본다(입력이 여러 가지인 문제에서 어느 입력 때의 실수인지 가리려고)
 
 /** 출력을 줄 목록으로. 줄 끝 빈칸과 맨 끝 빈 줄은 뺀다. */
 export function outputLines(output) {
@@ -56,7 +57,10 @@ export function diagnoseTask(task, code, run) {
 
   // 이 문제에서 흔한 실수
   const text = got.join('\n');
-  const mistake = (task.mistakes ?? []).find((m) => (!m.code || new RegExp(m.code).test(bare)) && (!m.output || new RegExp(m.output).test(text)));
+  const wanted = want.join('\n');
+  const mistake = (task.mistakes ?? []).find(
+    (m) => (!m.code || new RegExp(m.code).test(bare)) && (!m.output || new RegExp(m.output).test(text)) && (!m.want || new RegExp(m.want).test(wanted)),
+  );
   if (mistake) return { kind: 'mistake', say: mistake.say };
 
   // 계산할 것을 따옴표 안에 넣어 글자 그대로 나온 경우
