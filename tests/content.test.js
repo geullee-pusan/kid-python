@@ -54,7 +54,7 @@ function grade(task, code) {
     if (ran.error?.type === 'EOFError') diagnosis = { kind: 'input-many' };
     else if (ran.error) diagnosis = { kind: 'error', error: ran.error };
     else if (ran.unused > 0) diagnosis = { kind: 'input-few' };
-    else diagnosis = diagnoseTask({ ...task, expect: one.expect }, code, ran);
+    else diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, ran);
     if (diagnosis.kind !== 'correct') {
       diagnosis.inputs = one.inputs;
       break;
@@ -210,6 +210,42 @@ const WRONG = [
   ['unit3-review', 'table', '단 = int(input())\nfor i in range(10):\n    print(단, "x", i, "=", 단 * i)', 'mistake', 'table-zero'],
   ['unit3-review', 'table', 'for i in range(1, 10):\n    print(3, "x", i, "=", 3 * i)', 'input-few'],
   ['unit3-review', 'table', '단 = input()\nfor i in range(1, 단):\n    print(단)', 'error'],
+  // 조건 단원
+  ['if-then', 'ride', '키 = int(input())\nprint("탈 수 있어요")\nprint("다음 손님")', 'mistake', 'ride-always'],
+  ['if-then', 'ride', '키 = int(input())\nif 키 >= 130:\n    print("탈 수 있어요")\n    print("다음 손님")', 'mistake', 'ride-next-in'],
+  ['if-then', 'ride', '키 = int(input())\nif 키 > 130:\n    print("탈 수 있어요")\nprint("다음 손님")', 'mistake', 'ride-edge'],
+  ['if-then', 'ride', '키 = input()\nif 키 >= 130:\n    print("탈 수 있어요")\nprint("다음 손님")', 'error'],
+  ['if-then', 'ride', '키 = int(input())\nif 키 >= 130\n    print("탈 수 있어요")\nprint("다음 손님")', 'error'],
+  ['if-then', 'ride', 'print("탈 수 있어요")\nprint("다음 손님")', 'input-few'],
+  ['if-then', 'two-ifs', '키 = int(input())\nif 키 >= 130:\n    print("탈 수 있어요")\nprint("다음에 타요")', 'mistake', 'two-both'],
+  ['if-then', 'two-ifs', '키 = int(input())\nif 키 > 130:\n    print("탈 수 있어요")\nif 키 < 130:\n    print("다음에 타요")', 'mistake', 'two-none'],
+  ['equal', 'password', '암호 = input()\nif 암호 == "참깨":\n    print("문이 열려요")\nprint("틀렸어요")', 'mistake', 'pw-both'],
+  ['equal', 'password', '암호 = input()\nif 암호 == 참깨:\n    print("문이 열려요")', 'error'],
+  ['equal', 'password', '암호 = input()\nif 암호 = "참깨":\n    print("문이 열려요")', 'error'],
+  ['equal', 'password', '암호 = input()\nif 암호 == "참깨":\n    print("문이 열려요")', 'mistake', 'pw-miss'],
+  ['equal', 'password', '암호 = input()\nif 암호 == "참 깨":\n    print("문이 열려요")', 'mistake', 'pw-none'],
+  ['equal', 'add-quiz', '답 = input()\nif 답 == 13:\n    print("정답")\nif 답 != 13:\n    print("아쉬워요")', 'mistake', 'quiz-str'],
+  ['if-else', 'even', '수 = int(input())\nif 수 % 2 == 0:\n    print("짝수")\nif 수 % 2 != 0:\n    print("홀수")', 'mistake', 'need-else'],
+  ['if-else', 'even', '수 = int(input())\nif 수 / 2 == 0:\n    print("짝수")\nelse:\n    print("홀수")', 'mistake', 'even-slash'],
+  ['if-else', 'even', '수 = int(input())\nif 수 % 2 == 1:\n    print("짝수")\nelse:\n    print("홀수")', 'line-diff'],
+  ['if-else', 'even', '수 = int(input())\nif 수 % 2 == 0:\n    print("짝수")\nelse 수 % 2 == 1:\n    print("홀수")', 'error'],
+  ['if-else', 'bigger', '가 = input()\n나 = input()\nif 가 > 나:\n    print(가)\nelse:\n    print(나)', 'mistake', 'big-str'],
+  ['elif', 'fee', '나이 = int(input())\nif 나이 < 8:\n    print("무료")\nif 나이 < 14:\n    print("1000원")\nelse:\n    print("3000원")', 'mistake', 'fee-both'],
+  ['elif', 'fee', '나이 = int(input())\nif 나이 < 14:\n    print("1000원")\nelif 나이 < 8:\n    print("무료")\nelse:\n    print("3000원")', 'mistake', 'fee-order'],
+  ['elif', 'fee', '나이 = int(input())\nif 나이 <= 8:\n    print("무료")\nelif 나이 < 14:\n    print("1000원")\nelse:\n    print("3000원")', 'mistake', 'fee-edge8'],
+  ['elif', 'fee', '나이 = int(input())\nif 나이 < 8:\n    print("무료")\nelif 나이 <= 14:\n    print("1000원")\nelse:\n    print("3000원")', 'mistake', 'fee-edge14'],
+  ['elif', 'fee', '나이 = int(input())\nif 나이 < 8:\n    print("무료")\nelse:\n    if 나이 < 14:\n        print("1000원")\n    else:\n        print("3000원")', 'mistake', 'need-elif'],
+  ['elif', 'compare', '가 = int(input())\n나 = int(input())\nif 가 > 나:\n    print("첫째가 커요")\nelse:\n    print("둘째가 커요")', 'line-diff'],
+  ['bool', 'gate', '키 = int(input())\n나이 = int(input())\nif 키 >= 130 or 나이 >= 8:\n    print("통과")\nelse:\n    print("다음에")', 'mistake', 'gate-or'],
+  ['bool', 'gate', '나이 = int(input())\n키 = int(input())\nif 키 >= 130 and 나이 >= 8:\n    print("통과")\nelse:\n    print("다음에")', 'mistake', 'gate-miss'],
+  ['bool', 'gate', '키 = int(input())\n나이 = int(input())\nif 키 > 130 and 나이 > 8:\n    print("통과")\nelse:\n    print("다음에")', 'mistake', 'gate-miss'],
+  ['bool', 'leap', '해 = int(input())\nif 해 % 4 == 0:\n    print("윤년")\nelse:\n    print("평년")', 'mistake', 'leap-100'],
+  ['bool', 'leap', '해 = int(input())\nif 해 % 100 == 0:\n    print("평년")\nelif 해 % 4 == 0:\n    print("윤년")\nelse:\n    print("평년")', 'mistake', 'leap-400'],
+  ['bool', 'leap', '해 = int(input())\nif 해 % 4 == 0 and 해 % 100 != 0 or 해 % 400 == 0:\n    print("윤년")\nelse:\n    print("평년")', 'correct'],
+  ['unit4-review', 'exam', '점수 = int(input())\nif 점수 > 60:\n    print("합격")\nelse:\n    print("불합격")', 'mistake', 'exam-edge'],
+  ['unit4-review', 'quiz', '답 = input()\nif 답 == 7:\n    print("정답")\nelse:\n    print("땡")\n답 = input()\nif 답 == 42:\n    print("정답")\nelse:\n    print("땡")\n답 = input()\nif 답 == "서울":\n    print("정답")\nelse:\n    print("땡")', 'mistake', 'quiz-str'],
+  ['unit4-review', 'quiz', '답 = input()\nif 답 == "7":\n    print("정답")\nelse:\n    print("땡")', 'input-few'],
+  ['unit4-review', 'quiz', '답 = int(input())\nif 답 == 7:\n    print("정답")\nelse:\n    print("땡")\n답 = int(input())\nif 답 == 42:\n    print("정답")\nelse:\n    print("땡")\n답 = int(input())\nif 답 == "서울":\n    print("정답")\nelse:\n    print("땡")', 'error'],
 ];
 
 test('흔한 오답에 의도한 말이 나온다', () => {
@@ -253,6 +289,21 @@ test('파이썬이 내는 오류를 우리 설명이 알아듣는다', () => {
     ['For i in range(3):\n    print(i)', 'SyntaxError', /작은 글자/, variables],
     ['for i in range("3"):\n    print(i)', 'TypeError', /range\( \) 안에는 숫자/, variables],
     ['for i in range(3):\n    print(I)', 'NameError', /이름표가 아직 없어요/, variables],
+    // 조건을 배운 뒤
+    ['x = 5\nif x = 5:\n    print("다섯")', 'SyntaxError', /등호 두 개/, variables],
+    ['x = 5\nif x == 5\n    print("다섯")', 'SyntaxError', /콜론/, variables],
+    ['x = 5\nif x => 5:\n    print("다섯")', 'SyntaxError', /등호가 뒤에/, variables],
+    ['x = 5\nif x =< 5:\n    print("다섯")', 'SyntaxError', /등호가 뒤에/, variables],
+    ['x = 5\nif x ≥ 5:\n    print("다섯")', 'SyntaxError', />= 로/, variables],
+    ['x = 5\nif x ≠ 5:\n    print("다섯")', 'SyntaxError', /!= 로/, variables],
+    ['x = 5\nIf x == 5:\n    print("다섯")', 'SyntaxError', /if는 모두 작은 글자/, variables],
+    ['x = 5\nif x == 5:\n    print("가")\nelse x != 5:\n    print("나")', 'SyntaxError', /else 뒤에는 조건을 쓰지 않아요/, variables],
+    ['x = 5\nif x == 5:\n    print("가")\nelse if x == 6:\n    print("나")', 'SyntaxError', /elif/, variables],
+    ['x = 5\nif x == 5:\n    print("가")\n    else:\n    print("나")', 'SyntaxError', /줄의 앞을 맞춰/, variables],
+    ['x = 5\nif x == 5:\nprint("가")', 'IndentationError', /들여써야/, variables],
+    ['키 = "135"\nif 키 >= 130:\n    print("가")', 'TypeError', /크기를 견줄 수 없어요/, variables],
+    ['비 = true', 'NameError', /첫 글자만 큰 글자/, variables],
+    ['x = 5\nif x == 5:\n    print("가")\nElse:\n    print("나")', 'SyntaxError', /else는 모두 작은 글자/, variables],
   ];
   for (const [code, type, pattern, knows] of cases) {
     const ran = scripted(code, [], false);

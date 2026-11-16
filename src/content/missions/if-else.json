@@ -1,0 +1,201 @@
+{
+  "_설명": "조건 단원 3번 수업. 엔트리 블록 '만일 <참> (이)라면 아니면'은 docs.playentry.org/user/block_flow.html 에서 확인했다(2026-11-16). 겨냥하는 오개념: if와 else가 둘 다 실행된다(근거 보고서 2절).",
+  "id": "if-else",
+  "unit": "조건",
+  "no": 3,
+  "title": "if와 else",
+  "titleSay": "[if|이프]와 [else|엘스]",
+  "desc": "맞을 때와 아닐 때, 둘 중 하나를 고르게 해요.",
+  "minutes": 15,
+  "knows": ["variables"],
+  "showVars": true,
+  "learned": [
+    { "rule": "else: 는 '아니면'이에요. 조건이 맞지 않을 때 하는 일을 써요.", "code": "if 수 >= 5:\n    print(\"커요\")\nelse:\n    print(\"작아요\")" },
+    { "rule": "if 쪽과 else 쪽 가운데 하나만 해요. 둘 다 하는 일은 없어요." },
+    { "rule": "else는 if와 줄의 앞을 맞추고, 조건 없이 콜론만 써요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["오늘은 맞을 때와 아닐 때, 둘 중 하나를 고르게 해요."],
+    "two-ifs": ["지금까지는 [if|이프]를 두 번 썼어요. 맞을 때 한 번, 아닐 때 한 번."],
+    "two-ifs-bad": ["조건을 두 번 쓰니까 번거롭고, 하나를 잘못 쓰기도 쉬워요. 아니면이라는 말이 있으면 좋겠죠?"],
+    "entry-else": ["엔트리에는 만일 아니면 블록이 있었어요."],
+    "py-else": ["파이썬에서는 [else|엘스]라고 써요. 아니면이라는 뜻이에요."],
+    "py-else-how": ["[else|엘스]는 [if|이프]와 줄의 앞을 맞춰요. 뒤에 조건은 쓰지 않고, 콜론만 써요."],
+    "yes-after": ["[7|칠]은 [5|오] 이상이라서 커요가 나왔어요. [else|엘스] 쪽은 건너뛰었어요."],
+    "no-intro": ["수를 [3|삼]으로 바꿔 볼게요."],
+    "no-after": ["이번에는 조건이 맞지 않아서 [else|엘스] 쪽을 했어요."],
+    "only-one": ["둘 중 하나만 해요. 둘 다 하거나, 둘 다 안 하는 일은 없어요. 끝은 밖에 있어서 늘 나와요."],
+    "follow-else": ["따라 쳐 봐요. [else|엘스]와 콜론을 치면, 줄이 저절로 [if|이프]와 맞춰져요."],
+    "follow-ok": ["좋아요. [4|사]는 [5|오]보다 크지 않아서 작아요가 나왔어요."],
+    "money-intro": ["하나 더 볼게요. 돈이 모자란지 알려 주는 프로그램이에요."],
+    "money-after": ["[3000|삼천]은 [5000|오천]보다 작아요. 그래서 [else|엘스] 쪽으로 갔어요."],
+    "summary": ["정리해요. [if|이프] 쪽 아니면 [else|엘스] 쪽. 늘 하나만 해요."],
+
+    "q1-right": ["맞아요. [4|사]는 [5|오]보다 크지 않아서 나가 나오고, 다는 밖에 있어서 늘 나와요."],
+    "q1-both": ["[if|이프] 쪽과 [else|엘스] 쪽은 둘 중 하나만 해요. 가와 나가 함께 나오는 일은 없어요."],
+    "q1-in": ["다는 들여쓰지 않았어요. [else|엘스] 밖이라서 늘 나와요."],
+    "q1-explain": ["조건이 맞지 않아서 [else|엘스] 쪽의 나를 해요. 다는 밖에 있어서 늘 나와요."],
+    "q2-right": ["맞아요. [5|오]는 [5|오]와 같으니까 크거나 같다가 맞아요."],
+    "q2-else": ["조건은 크거나 같다예요. 같을 때도 맞아요."],
+    "q2-both": ["[if|이프] 쪽과 [else|엘스] 쪽은 둘 중 하나만 해요."],
+    "q2-explain": ["크거나 같다는 같을 때도 맞아요. 그래서 [if|이프] 쪽의 가만 나와요."],
+    "q3-right": ["맞아요. [3|삼]은 [8|팔]보다 크지 않아서 [else|엘스] 쪽으로 가요. b의 값 [8|팔]이 나와요."],
+    "q3-a": ["[3|삼]은 [8|팔]보다 크지 않아요. 조건이 맞지 않아서 [else|엘스] 쪽으로 가요."],
+    "q3-both": ["[if|이프] 쪽과 [else|엘스] 쪽은 둘 중 하나만 해요."],
+    "q3-explain": ["조건이 맞지 않으니 [else|엘스] 쪽에서 b를 내보내요. 둘 가운데 더 큰 수가 나오는 프로그램이에요."],
+
+    "task-how": ["실행해서 짝수와 홀수를 모두 넣어 보고, 잘 되면 '제출'을 눌러요."],
+    "praise-even": ["나머지로 짝수인지 묻고, 아닐 때는 [else|엘스]로 넘겼어요."],
+    "need-else": ["답은 맞아요. 그런데 [if|이프]를 두 번 쓰지 말고, 아닐 때는 [else|엘스]를 써 봐요."],
+    "even-slash": ["빗금 하나는 나눗셈이에요. 나머지는 퍼센트 기호로 구해요."],
+    "hint-1": ["수를 묻고 [int|인트]로 바꿔요. [2|이]로 나눈 나머지는 퍼센트 기호로 구해요."],
+    "hint-2": ["나머지가 [0|영]과 같은지 물어요. 같은지 묻는 것은 등호 두 개예요. 아닐 때는 [else|엘스]를 써요."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. 나누는 수와 글자가 달라요. 이걸 보고 써 봐요."],
+    "praise-big": ["두 수를 견줘서 더 큰 쪽을 골랐어요. 숫자로 바꾸는 것도 잊지 않았어요."],
+    "big-str": ["[9|구]와 [10|십] 가운데 [9|구]가 나왔어요. 글자로 견주면 앞 글자부터 견줘서 그래요. 둘 다 [int|인트]로 숫자로 바꿔요."],
+    "big-hint-1": ["수를 두 번 묻고, 둘 다 [int|인트]로 바꿔서 이름표 두 개에 넣어요."],
+    "big-hint-2": ["첫째가 둘째보다 크면 첫째를 내보내고, 아니면 둘째를 내보내요."],
+
+    "done-1": ["오늘은 [else|엘스]를 배웠어요."],
+    "done-2": ["[if|이프] 쪽 아니면 [else|엘스] 쪽. 둘 중 하나만 해요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "say": "two-ifs" },
+      { "type": "수 = 7\nif 수 >= 5:\n    print(\"커요\")\nif 수 < 5:\n    print(\"작아요\")" },
+      { "say": "two-ifs-bad" }
+    ],
+    [
+      {
+        "pair": {
+          "entry": [
+            { "cat": "flow", "parts": ["만일", { "judge": [{ "in": "수 값" }, { "drop": "≥" }, { "in": "5" }] }, "(이)라면"] },
+            { "cat": "looks", "indent": 1, "parts": [{ "in": "커요" }, "을(를)", { "drop": "말하기" }] },
+            { "cat": "flow", "parts": ["아니면"] },
+            { "cat": "looks", "indent": 1, "parts": [{ "in": "작아요" }, "을(를)", { "drop": "말하기" }] }
+          ],
+          "layout": "stack",
+          "python": "if 수 >= 5:\n    print(\"커요\")\nelse:\n    print(\"작아요\")",
+          "note": "엔트리의 '아니면'은 파이썬의 else:"
+        }
+      },
+      { "say": "entry-else", "pose": "point" },
+      { "say": "py-else", "pose": "point" },
+      { "say": "py-else-how" }
+    ],
+    [
+      { "type": "수 = 7\nif 수 >= 5:\n    print(\"커요\")\nelse:\n    print(\"작아요\")\nprint(\"끝\")" },
+      { "say": "watch-run" },
+      { "trace": "수 = 7\nif 수 >= 5:\n    print(\"커요\")\nelse:\n    print(\"작아요\")\nprint(\"끝\")" },
+      { "say": "yes-after" },
+      { "say": "no-intro" },
+      { "type": "수 = 3\nif 수 >= 5:\n    print(\"커요\")\nelse:\n    print(\"작아요\")\nprint(\"끝\")" },
+      { "trace": "수 = 3\nif 수 >= 5:\n    print(\"커요\")\nelse:\n    print(\"작아요\")\nprint(\"끝\")" },
+      { "say": "no-after" },
+      { "say": "only-one" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "수 = 4\nif 수 > 5:\n    print(\"커요\")\nelse:\n    print(\"작아요\")" } },
+      { "follow": { "code": "수 = 4\nif 수 > 5:\n    print(\"커요\")\nelse:\n    print(\"작아요\")", "expect": ["작아요"], "say": ["follow-else", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "money-intro" },
+      { "type": "돈 = 3000\nif 돈 >= 5000:\n    print(\"살 수 있어요\")\nelse:\n    print(\"돈이 모자라요\")" },
+      { "trace": "돈 = 3000\nif 돈 >= 5000:\n    print(\"살 수 있어요\")\nelse:\n    print(\"돈이 모자라요\")" },
+      { "say": "money-after" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["else:  아니면", "if 쪽과 else 쪽 가운데 하나만 한다", "else는 if와 줄의 앞을 맞춘다", "else 뒤에는 조건 없이 콜론만"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "x = 4\nif x > 5:\n    print(\"가\")\nelse:\n    print(\"나\")\nprint(\"다\")",
+      "answer": 1,
+      "choices": [
+        { "text": "가\n나\n다", "say": "q1-both" },
+        { "text": "나\n다", "say": "q1-right" },
+        { "text": "나", "say": "q1-in" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "x = 5\nif x >= 5:\n    print(\"가\")\nelse:\n    print(\"나\")",
+      "answer": 0,
+      "choices": [
+        { "text": "가", "say": "q2-right" },
+        { "text": "나", "say": "q2-else" },
+        { "text": "가\n나", "say": "q2-both" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "a = 3\nb = 8\nif a > b:\n    print(a)\nelse:\n    print(b)",
+      "answer": 2,
+      "choices": [
+        { "text": "3", "say": "q3-a" },
+        { "text": "3\n8", "say": "q3-both" },
+        { "text": "8", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "even",
+      "title": "짝수와 홀수",
+      "story": "2로 나눈 나머지가 0이면 짝수, 아니면 홀수예요.",
+      "steps": ["input으로 수를 물어요.", "짝수면 \"짝수\", 아니면 \"홀수\"를 내보내요.", "if와 else를 써요."],
+      "cases": [
+        { "inputs": ["14"], "expect": ["짝수"] },
+        { "inputs": ["7"], "expect": ["홀수"] },
+        { "inputs": ["100"], "expect": ["짝수"] },
+        { "inputs": ["1"], "expect": ["홀수"] }
+      ],
+      "expect": ["짝수"],
+      "show": true,
+      "showCases": 2,
+      "checks": [{ "pattern": "\\belse\\b", "say": "need-else" }],
+      "mistakes": [{ "code": "(^|[^/])/\\s*2\\b", "say": "even-slash" }],
+      "praise": "praise-even",
+      "solution": "수 = int(input(\"수: \"))\nif 수 % 2 == 0:\n    print(\"짝수\")\nelse:\n    print(\"홀수\")",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "수 = int(input(\"수: \"))\nif 수 % 5 == 0:\n    print(\"딱 나눠져요\")\nelse:\n    print(\"남아요\")" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "bigger",
+    "title": "심화: 더 큰 수",
+    "story": "수를 두 번 물어보고, 둘 가운데 더 큰 수를 알려 줘요.",
+    "steps": ["input으로 수를 두 번 물어요.", "더 큰 수를 내보내요. 두 수가 같으면 그 수를 내보내요."],
+    "cases": [
+      { "inputs": ["3", "8"], "expect": ["8"] },
+      { "inputs": ["9", "4"], "expect": ["9"] },
+      { "inputs": ["9", "10"], "expect": ["10"] },
+      { "inputs": ["5", "5"], "expect": ["5"] }
+    ],
+    "expect": ["8"],
+    "show": true,
+    "showCases": 2,
+    "mistakes": [{ "inputs": "^9,10$", "output": "^9$", "say": "big-str" }],
+    "praise": "praise-big",
+    "solution": "가 = int(input(\"첫째 수: \"))\n나 = int(input(\"둘째 수: \"))\nif 가 > 나:\n    print(가)\nelse:\n    print(나)",
+    "hints": [{ "say": "big-hint-1" }, { "say": "big-hint-2" }]
+  }
+}

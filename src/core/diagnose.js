@@ -11,6 +11,8 @@
 //  mistakes  이 문제에서 흔한 실수 [{ code: "정규식", output: "정규식", say: "대사 열쇠" }]
 //            - 출력이 틀렸을 때, 코드(따옴표 밖)와 출력이 정규식에 맞으면 그 대사로 알려 준다
 //            - want: 나와야 하는 출력이 이 정규식에 맞을 때만 본다(입력이 여러 가지인 문제에서 어느 입력 때의 실수인지 가리려고)
+//            - inputs: 채점할 때 넣은 답(쉼표로 이은 것)이 이 정규식에 맞을 때만 본다. 예: "^130$"
+//            - output을 "^$"로 적으면 아무것도 나오지 않은 경우를 가리킨다
 
 /** 출력을 줄 목록으로. 줄 끝 빈칸과 맨 끝 빈 줄은 뺀다. */
 export function outputLines(output) {
@@ -53,15 +55,21 @@ export function diagnoseTask(task, code, run) {
     if (skipped) return { kind: 'mistake', say: skipped.say };
     return { kind: 'correct' };
   }
-  if (got.length === 0) return { kind: 'no-output' };
-
   // 이 문제에서 흔한 실수
   const text = got.join('\n');
   const wanted = want.join('\n');
+  const typed = (task.inputs ?? []).join(',');
   const mistake = (task.mistakes ?? []).find(
-    (m) => (!m.code || new RegExp(m.code).test(bare)) && (!m.output || new RegExp(m.output).test(text)) && (!m.want || new RegExp(m.want).test(wanted)),
+    (m) =>
+      // 아무것도 나오지 않았을 때는, 출력 조건을 따로 적어 둔 실수만 본다(나머지는 "아직 아무것도 안 나왔다"고 알려 준다).
+      (got.length > 0 || m.output !== undefined) &&
+      (!m.code || new RegExp(m.code).test(bare)) &&
+      (m.output === undefined || new RegExp(m.output).test(text)) &&
+      (!m.want || new RegExp(m.want).test(wanted)) &&
+      (!m.inputs || new RegExp(m.inputs).test(typed)),
   );
   if (mistake) return { kind: 'mistake', say: mistake.say };
+  if (got.length === 0) return { kind: 'no-output' };
 
   // 계산할 것을 따옴표 안에 넣어 글자 그대로 나온 경우
   const quoted = compute.find((item) => got.some((line) => squeeze(line).includes(squeeze(item.literal))));

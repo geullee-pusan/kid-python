@@ -645,6 +645,40 @@ a.btn {
   align-items: center;
 }
 
+/* 블록이 길 때: 위아래로 */
+.pair-stack {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  gap: 4px;
+}
+
+.pair-stack .pair-arrow {
+  margin-left: 24px;
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* 블록이 많을 때: 작게 나란히 */
+.pair-compact {
+  grid-template-columns: auto auto minmax(0, 1fr);
+  gap: 8px;
+}
+
+.pair-compact .eb {
+  gap: 4px;
+  padding: 5px 9px;
+  font-size: 14px;
+}
+
+.pair-compact .eb-cond {
+  padding: 1px 13px;
+}
+
+.pair-compact .board-code {
+  padding: 8px 10px;
+  font-size: 17px;
+}
+
 .pair-label {
   margin-bottom: 6px;
   color: var(--muted);
@@ -699,6 +733,27 @@ a.btn {
 
 .eb-judge {
   background: #364fc7;
+}
+
+/* 만일 블록의 조건 칸에 끼운 판단 블록 */
+.eb-cond {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 16px;
+  background: #364fc7;
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
+}
+
+.eb-judge .eb-cond {
+  background: #5c7cfa;
+}
+
+.board-wants {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0 14px;
 }
 
 .board-want {

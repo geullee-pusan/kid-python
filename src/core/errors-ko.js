@@ -20,6 +20,13 @@ export function explain(error, knows = {}) {
       return '곱하기는 x가 아니라 별표(*)로 써요.';
     }
     if (/invalid character '÷'/.test(message)) return '나누기는 빗금(/)으로 써요.';
+    if (/invalid character '[≥≤]'/.test(message)) return '≥는 >= 로, ≤는 <= 로 써요. 기호 두 개를 이어 써요.';
+    if (/invalid character '≠'/.test(message)) return '다르다는 != 로 써요. 느낌표와 등호를 이어 써요.';
+    // 등호를 앞에 쓴 경우: "if 키 => 130:"
+    if (/=[><]/.test(text.replace(/"[^"]*"|'[^']*'/g, ''))) return '크거나 같다는 >= 로, 작거나 같다는 <= 로 써요. 등호가 뒤에 와요.';
+    // else 뒤에 조건을 쓴 경우: "else if 수 > 3:", "else 수 > 3:"
+    if (/^\s*else\s+if\b/m.test(text)) return '파이썬에서는 else if를 줄여서 elif라고 써요.';
+    if (/^\s*else\s+[^:\s]/m.test(text)) return 'else 뒤에는 조건을 쓰지 않아요. else: 라고만 써요. 조건이 더 필요하면 elif를 써요.';
     if (/expected ':'/.test(message)) return '줄 끝에 콜론(:)이 빠졌어요.';
     if (/was never closed/.test(message)) return '여는 괄호를 닫지 않았어요. 닫는 괄호 )를 써요.';
     if (/unmatched '\)'/.test(message)) return '닫는 괄호가 하나 더 많아요.';
@@ -36,6 +43,11 @@ export function explain(error, knows = {}) {
     if (knows.variables && /^\s*[^\s=()"'#]+\s+[^\s=()"'#]+\s*=[^=]/m.test(text)) return '이름에는 빈칸을 쓸 수 없어요. 붙여 쓰거나 밑줄(_)로 이어요.';
     // for를 큰 글자로 시작한 경우: "For i in range(3):"
     if (/^\s*F[oO][rR]\s/m.test(text) || /^\s*fOR\s|^\s*FOR\s/m.test(text)) return 'for는 모두 작은 글자로 써요.';
+    // if, else, elif를 큰 글자로 쓴 경우
+    const shouted = /^\s*(If|IF|Else|ELSE|Elif|ELIF)\b/m.exec(text);
+    if (shouted) return `${shouted[1].toLowerCase()}는 모두 작은 글자로 써요.`;
+    // else나 elif가 짝이 되는 if와 줄이 맞지 않는 경우
+    if (/^\s*(else\s*:|elif\b)/m.test(text)) return 'else와 elif는 짝이 되는 if와 줄의 앞을 맞춰 써요. if가 위에 있는지도 봐요.';
     if (/forgot a comma/.test(message)) return '따옴표로 감싸지 않은 글자가 있거나, 쉼표가 빠진 것 같아요.';
     return '파이썬이 읽을 수 없는 문장이에요. 괄호와 따옴표를 확인해 봐요.';
   }
@@ -50,6 +62,7 @@ export function explain(error, knows = {}) {
     const name = found ? found[1] : '';
     if (name && name !== 'print' && name.toLowerCase() === 'print') return 'print는 모두 작은 글자로 써요.';
     if (name && name !== 'input' && name.toLowerCase() === 'input') return 'input은 모두 작은 글자로 써요.';
+    if (name && /^(true|false|TRUE|FALSE)$/.test(name)) return 'True와 False는 첫 글자만 큰 글자로 써요.';
     if (name && knows.variables) return `${called(name)} 이름표가 아직 없어요. 먼저 값을 넣었는지, 철자가 같은지 봐요. 글자를 쓰려던 거라면 따옴표로 감싸요.`;
     if (name && HANGUL.test(name)) return `"${name}"에 따옴표가 없는 것 같아요. 글자는 따옴표로 감싸요.`;
     if (name) return `${called(name)} 이름을 파이썬이 몰라요. 글자라면 따옴표로 감싸고, 명령이라면 철자를 확인해요.`;
@@ -58,6 +71,7 @@ export function explain(error, knows = {}) {
   if (type === 'TypeError') {
     if (/can only concatenate str|unsupported operand type\(s\) for \+/.test(message)) return '글자와 숫자는 더하기(+)로 이을 수 없어요. 숫자로 계산하려면 int( )로, 글자로 이으려면 str( )로 바꿔요.';
     if (/unsupported operand type\(s\) for [-/*%]|can't multiply sequence/.test(message)) return '글자로는 이 계산을 할 수 없어요. int( )로 숫자로 바꿔요.';
+    if (/not supported between instances of/.test(message)) return '글자와 숫자는 크기를 견줄 수 없어요. input의 답이라면 int( )로 숫자로 바꿔요.';
     if (/cannot be interpreted as an integer/.test(message)) return 'range( ) 안에는 숫자를 넣어요. 글자라면 int( )로 숫자로 바꿔요.';
     if (/missing \d+ required positional argument|takes \d+ positional argument/.test(message)) return '괄호 안에 넣은 값의 개수가 맞지 않아요.';
     return '종류가 맞지 않는 값끼리 계산하려고 했어요.';

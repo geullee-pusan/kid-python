@@ -1,0 +1,222 @@
+{
+  "_설명": "조건 단원 4번 수업. 엔트리에는 elif에 해당하는 블록이 없어서 '아니면' 안에 '만일' 블록을 또 넣었다(docs.playentry.org/user/block_flow.html 의 블록 목록에서 확인, 2026-11-16). 겨냥하는 오개념: 맞는 조건이 여러 개면 다 실행된다, 조건의 순서는 상관없다, if 여러 개와 elif는 같다. 요금표는 지어낸 것이다.",
+  "id": "elif",
+  "unit": "조건",
+  "no": 4,
+  "title": "여러 갈래: elif",
+  "titleSay": "여러 갈래 [elif|엘리프]",
+  "desc": "갈림길이 셋 이상일 때 쓰는 법을 배워요.",
+  "minutes": 20,
+  "knows": ["variables"],
+  "showVars": true,
+  "learned": [
+    { "rule": "elif 조건: 은 '아니면 만일'이에요. if와 else 사이에 몇 개든 쓸 수 있어요.", "code": "if 점수 >= 90:\n    print(\"금\")\nelif 점수 >= 70:\n    print(\"은\")\nelse:\n    print(\"동\")" },
+    { "rule": "위에서부터 차례로 묻고, 처음 맞는 하나만 해요." },
+    { "rule": "조건의 순서가 중요해요. 먼저 걸러 낼 것을 위에 써요." },
+    { "rule": "if를 따로따로 쓰면 하나하나 다 물어요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["오늘은 갈림길이 셋 이상일 때를 배워요."],
+    "medal": ["점수에 따라 메달을 준다고 해 봐요. [90|구십] 이상은 금, [70|칠십] 이상은 은, 나머지는 동이에요."],
+    "entry-nest": ["엔트리에서는 아니면 안에 만일 블록을 또 넣었어요. 갈림길이 늘수록 블록이 자꾸 안으로 들어갔죠."],
+    "py-elif": ["파이썬에는 [elif|엘리프]가 있어요. 아니면 만일이라는 뜻이에요. [else|엘스]와 [if|이프]를 줄인 말이에요."],
+    "py-elif-how": ["[elif|엘리프]는 [if|이프]와 [else|엘스] 사이에 쓰고, 뒤에 조건을 써요. 몇 개든 쓸 수 있어요."],
+    "gold-after": ["[95|구십오]는 [90|구십] 이상이라서 금이 나왔어요. 나머지는 묻지도 않고 건너뛰었어요."],
+    "gold-not-silver": ["[95|구십오]는 [70|칠십] 이상이기도 해요. 그런데 은은 나오지 않았어요. 위에서부터 묻고, 처음 맞는 하나만 하기 때문이에요."],
+    "silver-intro": ["점수를 [75|칠십오]로 바꿔 볼게요."],
+    "silver-after": ["첫째 조건은 맞지 않아서 다음으로 내려갔어요. 둘째에서 맞아서 은이 나왔어요."],
+    "order-intro": ["조건의 순서를 바꾸면 어떻게 될까요? [70|칠십] 이상을 먼저 물어볼게요."],
+    "order-after": ["[95|구십오]점인데 은이 나왔어요. [70|칠십] 이상에서 먼저 걸렸기 때문이에요."],
+    "order-rule": ["그래서 순서가 중요해요. 이럴 때는 큰 수부터 차례로 물어요."],
+    "ifs-intro": ["[elif|엘리프] 대신 [if|이프]를 따로따로 쓰면 어떻게 될까요?"],
+    "ifs-after": ["금과 은이 둘 다 나왔어요. [if|이프]를 따로 쓰면 하나하나 다 물어요. 하나만 고르려면 [elif|엘리프]를 써요."],
+    "follow-elif": ["따라 쳐 봐요. [elif|엘리프]와 [else|엘스]는 [if|이프]와 줄의 앞을 맞춰요. 치다 보면 저절로 맞춰져요."],
+    "follow-ok": ["좋아요. [15|십오]는 [25|이십오]보다 작고 [10|십] 이상이라서 시원해요가 나왔어요."],
+    "summary": ["정리해요. [if|이프], [elif|엘리프], [else|엘스]. 위에서부터 묻고, 처음 맞는 하나만 해요."],
+
+    "q1-right": ["맞아요. 위에서부터 물어서, 처음 맞는 [80|팔십] 이상에서 나를 하고 끝나요."],
+    "q1-many": ["[85|팔십오]는 [70|칠십] 이상이기도 해요. 그래도 처음 맞는 하나만 해요."],
+    "q1-else": ["[else|엘스]는 위의 조건이 하나도 맞지 않을 때만 해요. 둘째 조건이 맞았어요."],
+    "q1-explain": ["첫째는 맞지 않고, 둘째가 맞아요. 나를 내보내고 나머지는 건너뛰어요."],
+    "q2-right": ["맞아요. [95|구십오]는 [50|오십] 이상이라서 맨 위에서 걸려요. 가만 나와요."],
+    "q2-best": ["위에서부터 물어요. [95|구십오]는 첫째 조건에서 먼저 걸려서, 둘째는 묻지도 않아요."],
+    "q2-both": ["맞는 조건이 여러 개여도, 처음 맞는 하나만 해요."],
+    "q2-explain": ["[95|구십오]는 첫째 조건에 맞아요. 가를 내보내고 끝나요. 조건의 순서가 잘못된 프로그램이에요."],
+    "q3-right": ["맞아요. [if|이프]가 따로 두 개라서 둘 다 물어요. 둘 다 맞아서 가와 나가 나와요."],
+    "q3-one": ["둘째도 [elif|엘리프]가 아니라 [if|이프]예요. 따로따로 물어요."],
+    "q3-else": ["[else|엘스]는 바로 위의 [if|이프]와 짝이에요. 그 조건이 맞아서 다는 나오지 않아요."],
+    "q3-explain": ["[if|이프]가 두 개면 따로따로 물어요. [8|팔]은 [5|오]보다도 크고 [3|삼]보다도 커서 가와 나가 나와요."],
+
+    "task-how": ["실행해서 여러 가지 나이를 넣어 보고, 잘 되면 '제출'을 눌러요."],
+    "praise-fee": ["세 갈래를 [if|이프], [elif|엘리프], [else|엘스]로 나눴어요. 순서도 맞게 썼어요."],
+    "need-elif": ["답은 맞아요. 이번에는 [elif|엘리프]를 써서 해 봐요."],
+    "fee-both": ["두 가지가 나왔어요. [if|이프]를 따로 쓰면 다 물어요. 둘째부터는 [elif|엘리프]를 써요."],
+    "fee-edge8": ["[8|팔]살은 [1000|천]원이에요. [8|팔]살보다 어리다는, [8|팔]보다 작다예요. 등호를 붙이지 않아요."],
+    "fee-edge14": ["[14|십사]살은 [3000|삼천]원이에요. [1000|천]원은 [14|십사]보다 작을 때까지예요."],
+    "fee-order": ["어린 나이인데 무료가 나오지 않았어요. 조건의 순서를 봐요. 작은 나이부터 차례로 물어요."],
+    "hint-1": ["나이를 묻고 [int|인트]로 바꿔요. 갈림길이 셋이니까 [if|이프], [elif|엘리프], [else|엘스]를 하나씩 써요."],
+    "hint-2": ["작은 나이부터 차례로 물어요. 먼저 [8|팔]보다 작은지, 그다음 [14|십사]보다 작은지."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. 묻는 것과 수가 달라요. 이걸 보고 써 봐요."],
+    "praise-cmp": ["클 때, 작을 때, 같을 때를 빠짐없이 나눴어요."],
+    "cmp-hint-1": ["갈림길이 셋이에요. 첫째가 클 때, 둘째가 클 때, 그리고 나머지."],
+    "cmp-hint-2": ["크지도 작지도 않으면 같은 거예요. 마지막은 [else|엘스]로 받으면 돼요."],
+
+    "done-1": ["오늘은 [elif|엘리프]로 여러 갈래를 만드는 법을 배웠어요."],
+    "done-2": ["위에서부터 묻고, 처음 맞는 하나만 해요. 그래서 순서가 중요해요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }, { "say": "medal" }],
+    [
+      {
+        "pair": {
+          "entry": [
+            { "cat": "flow", "parts": ["만일", { "judge": [{ "in": "점수 값" }, { "drop": "≥" }, { "in": "90" }] }, "(이)라면"] },
+            { "cat": "looks", "indent": 1, "parts": [{ "in": "금" }, "을(를)", { "drop": "말하기" }] },
+            { "cat": "flow", "parts": ["아니면"] },
+            { "cat": "flow", "indent": 1, "parts": ["만일", { "judge": [{ "in": "점수 값" }, { "drop": "≥" }, { "in": "70" }] }, "(이)라면"] },
+            { "cat": "looks", "indent": 2, "parts": [{ "in": "은" }, "을(를)", { "drop": "말하기" }] },
+            { "cat": "flow", "indent": 1, "parts": ["아니면"] },
+            { "cat": "looks", "indent": 2, "parts": [{ "in": "동" }, "을(를)", { "drop": "말하기" }] }
+          ],
+          "layout": "compact",
+          "python": "if 점수 >= 90:\n    print(\"금\")\nelif 점수 >= 70:\n    print(\"은\")\nelse:\n    print(\"동\")"
+        }
+      },
+      { "say": "entry-nest", "pose": "point" },
+      { "say": "py-elif", "pose": "point" },
+      { "say": "py-elif-how" }
+    ],
+    [
+      { "type": "점수 = 95\nif 점수 >= 90:\n    print(\"금\")\nelif 점수 >= 70:\n    print(\"은\")\nelse:\n    print(\"동\")" },
+      { "say": "watch-run" },
+      { "trace": "점수 = 95\nif 점수 >= 90:\n    print(\"금\")\nelif 점수 >= 70:\n    print(\"은\")\nelse:\n    print(\"동\")" },
+      { "say": "gold-after" },
+      { "say": "gold-not-silver" },
+      { "say": "silver-intro" },
+      { "type": "점수 = 75\nif 점수 >= 90:\n    print(\"금\")\nelif 점수 >= 70:\n    print(\"은\")\nelse:\n    print(\"동\")" },
+      { "trace": "점수 = 75\nif 점수 >= 90:\n    print(\"금\")\nelif 점수 >= 70:\n    print(\"은\")\nelse:\n    print(\"동\")" },
+      { "say": "silver-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "order-intro" },
+      { "type": "점수 = 95\nif 점수 >= 70:\n    print(\"은\")\nelif 점수 >= 90:\n    print(\"금\")\nelse:\n    print(\"동\")" },
+      { "trace": "점수 = 95\nif 점수 >= 70:\n    print(\"은\")\nelif 점수 >= 90:\n    print(\"금\")\nelse:\n    print(\"동\")" },
+      { "say": "order-after" },
+      { "say": "order-rule" }
+    ],
+    [
+      { "say": "ifs-intro" },
+      { "type": "점수 = 95\nif 점수 >= 90:\n    print(\"금\")\nif 점수 >= 70:\n    print(\"은\")" },
+      { "trace": "점수 = 95\nif 점수 >= 90:\n    print(\"금\")\nif 점수 >= 70:\n    print(\"은\")" },
+      { "say": "ifs-after" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "온도 = 15\nif 온도 >= 25:\n    print(\"더워요\")\nelif 온도 >= 10:\n    print(\"시원해요\")\nelse:\n    print(\"추워요\")" } },
+      {
+        "follow": {
+          "code": "온도 = 15\nif 온도 >= 25:\n    print(\"더워요\")\nelif 온도 >= 10:\n    print(\"시원해요\")\nelse:\n    print(\"추워요\")",
+          "expect": ["시원해요"],
+          "say": ["follow-elif", "follow-done"]
+        }
+      },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["elif 조건:  아니면 만일", "위에서부터 묻고, 처음 맞는 하나만 한다", "조건의 순서가 중요하다", "if를 따로 쓰면 다 묻는다"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "x = 85\nif x >= 90:\n    print(\"가\")\nelif x >= 80:\n    print(\"나\")\nelif x >= 70:\n    print(\"다\")\nelse:\n    print(\"라\")",
+      "answer": 0,
+      "choices": [
+        { "text": "나", "say": "q1-right" },
+        { "text": "나\n다", "say": "q1-many" },
+        { "text": "라", "say": "q1-else" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "x = 95\nif x >= 50:\n    print(\"가\")\nelif x >= 90:\n    print(\"나\")\nelse:\n    print(\"다\")",
+      "answer": 2,
+      "choices": [
+        { "text": "나", "say": "q2-best" },
+        { "text": "가\n나", "say": "q2-both" },
+        { "text": "가", "say": "q2-right" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "x = 8\nif x > 5:\n    print(\"가\")\nif x > 3:\n    print(\"나\")\nelse:\n    print(\"다\")",
+      "answer": 1,
+      "choices": [
+        { "text": "가", "say": "q3-one" },
+        { "text": "가\n나", "say": "q3-right" },
+        { "text": "가\n다", "say": "q3-else" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "fee",
+      "title": "입장료",
+      "story": "과학관 입장료는 나이에 따라 달라요. (지어낸 요금표예요.)",
+      "steps": ["input으로 나이를 물어요.", "8살보다 어리면 \"무료\"", "8살부터 13살까지는 \"1000원\"", "14살부터는 \"3000원\"을 내보내요."],
+      "cases": [
+        { "inputs": ["5"], "expect": ["무료"] },
+        { "inputs": ["10"], "expect": ["1000원"] },
+        { "inputs": ["30"], "expect": ["3000원"] },
+        { "inputs": ["8"], "expect": ["1000원"] },
+        { "inputs": ["14"], "expect": ["3000원"] },
+        { "inputs": ["13"], "expect": ["1000원"] }
+      ],
+      "expect": ["무료"],
+      "show": true,
+      "showCases": 3,
+      "checks": [{ "pattern": "\\belif\\b", "say": "need-elif" }],
+      "mistakes": [
+        { "output": "\\n", "say": "fee-both" },
+        { "inputs": "^5$", "output": "^1000원$", "say": "fee-order" },
+        { "inputs": "^8$", "output": "^무료$", "say": "fee-edge8" },
+        { "inputs": "^14$", "output": "^1000원$", "say": "fee-edge14" }
+      ],
+      "praise": "praise-fee",
+      "solution": "나이 = int(input(\"나이: \"))\nif 나이 < 8:\n    print(\"무료\")\nelif 나이 < 14:\n    print(\"1000원\")\nelse:\n    print(\"3000원\")",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "키 = int(input(\"키: \"))\nif 키 < 100:\n    print(\"작은 자전거\")\nelif 키 < 140:\n    print(\"중간 자전거\")\nelse:\n    print(\"큰 자전거\")" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "compare",
+    "title": "심화: 두 수 견주기",
+    "story": "수를 두 번 물어보고, 어느 쪽이 큰지 알려 줘요.",
+    "steps": ["input으로 수를 두 번 물어요.", "첫째가 크면 \"첫째가 커요\"", "둘째가 크면 \"둘째가 커요\"", "같으면 \"같아요\"를 내보내요."],
+    "cases": [
+      { "inputs": ["9", "4"], "expect": ["첫째가 커요"] },
+      { "inputs": ["3", "8"], "expect": ["둘째가 커요"] },
+      { "inputs": ["5", "5"], "expect": ["같아요"] },
+      { "inputs": ["9", "10"], "expect": ["둘째가 커요"] }
+    ],
+    "expect": ["첫째가 커요"],
+    "show": true,
+    "showCases": 3,
+    "praise": "praise-cmp",
+    "solution": "가 = int(input(\"첫째 수: \"))\n나 = int(input(\"둘째 수: \"))\nif 가 > 나:\n    print(\"첫째가 커요\")\nelif 가 < 나:\n    print(\"둘째가 커요\")\nelse:\n    print(\"같아요\")",
+    "hints": [{ "say": "cmp-hint-1" }, { "say": "cmp-hint-2" }]
+  }
+}

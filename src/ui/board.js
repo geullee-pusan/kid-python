@@ -8,16 +8,27 @@ function el(tag, className, text) {
   return e;
 }
 
-/** 엔트리 블록 한 줄. parts: 글자, { in: '안녕!' }(값 칸), { drop: '말하기' }(목록 칸) */
+/** 블록 안의 조각들. 글자, { in: '안녕!' }(값 칸), { drop: '말하기' }(목록 칸), { judge: [조각들] }(끼워 넣은 판단 블록) */
+function entryParts(row, parts) {
+  for (const part of parts) {
+    if (typeof part === 'string') row.append(el('span', 'eb-text', part));
+    else if (part.in !== undefined) row.append(el('span', 'eb-in', part.in));
+    else if (part.drop !== undefined) row.append(el('span', 'eb-drop', `${part.drop} ▾`));
+    else if (part.judge) {
+      // 만일 블록의 조건 칸에 끼운 판단 블록(엔트리에서는 육각형이다)
+      const inner = el('span', 'eb-cond');
+      entryParts(inner, part.judge);
+      row.append(inner);
+    }
+  }
+}
+
+/** 엔트리 블록 한 줄. */
 function entryBlock(block) {
   const row = el('div', `eb eb-${block.cat}`);
   // indent: 반복하기나 만일 블록이 감싼 블록은 안쪽으로 들여서 보여 준다.
   if (block.indent) row.style.marginLeft = `${block.indent * 26}px`;
-  for (const part of block.parts) {
-    if (typeof part === 'string') row.append(el('span', 'eb-text', part));
-    else if (part.in !== undefined) row.append(el('span', 'eb-in', part.in));
-    else if (part.drop !== undefined) row.append(el('span', 'eb-drop', `${part.drop} ▾`));
-  }
+  entryParts(row, block.parts);
   return row;
 }
 
@@ -39,7 +50,7 @@ export function createBoard(root) {
       show();
     },
     /** 엔트리 블록 ↔ 파이썬 문장 */
-    pair({ entry, python, note }) {
+    pair({ entry, python, note, layout }) {
       const left = el('div', 'pair-side');
       left.append(el('div', 'pair-label', '엔트리'));
       const stack = el('div', 'eb-stack');
@@ -47,8 +58,9 @@ export function createBoard(root) {
       left.append(stack);
       const right = el('div', 'pair-side');
       right.append(el('div', 'pair-label', '파이썬'), codeBlock(python));
-      const pair = el('div', 'pair');
-      pair.append(left, el('div', 'pair-arrow', '→'), right);
+      // layout: 'stack'은 블록이 길어서 나란히 놓을 수 없을 때 위아래로, 'compact'는 블록이 많을 때 작게 나란히.
+      const pair = el('div', layout ? `pair pair-${layout}` : 'pair');
+      pair.append(left, el('div', 'pair-arrow', layout === 'stack' ? '↓' : '→'), right);
       const children = [pair];
       if (note) children.push(el('p', 'board-note', note));
       show(...children);
@@ -100,17 +112,23 @@ export function createBoard(root) {
       };
     },
     /** 쓰기 문제: 할 일 목록 */
-    task({ title, story, steps, want, wantNote }) {
+    task({ title, story, steps, want, wantNote, wants }) {
       const list = el('ol', 'board-steps');
       for (const step of steps) list.append(el('li', '', step));
       const children = [el('h3', 'board-title', title)];
       if (story) children.push(el('p', 'board-story', story));
       children.push(list);
       // want: 나와야 하는 출력을 그대로 보여 줄 때(띄어쓰기까지 맞춰야 하는 문제)
-      if (want) {
-        const box = el('div', 'board-want');
-        box.append(el('div', 'pair-label', wantNote ?? '이렇게 나와야 해요'), codeBlock(want.join('\n')));
-        children.push(box);
+      // wants: 답에 따라 출력이 달라지는 문제는 여러 경우를 나란히 보여 준다 [{ note, lines }]
+      const samples = wants ?? (want ? [{ note: wantNote ?? '이렇게 나와야 해요', lines: want }] : []);
+      if (samples.length) {
+        const row = el('div', 'board-wants');
+        for (const sample of samples) {
+          const box = el('div', 'board-want');
+          box.append(el('div', 'pair-label', sample.note), codeBlock(sample.lines.length ? sample.lines.join('\n') : '(아무것도 안 나와요)'));
+          row.append(box);
+        }
+        children.push(row);
       }
       show(...children);
     },

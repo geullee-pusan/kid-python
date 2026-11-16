@@ -35,7 +35,15 @@
       ]
     },
     {
-      "title": "조건"
+      "title": "조건",
+      "lessons": [
+        "if-then",
+        "equal",
+        "if-else",
+        "elif",
+        "bool",
+        "unit4-review"
+      ]
     },
     {
       "title": "값 바꾸기와 세기"

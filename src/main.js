@@ -601,7 +601,7 @@ async function main() {
       } else if (result.unused > 0) {
         diagnosis = { kind: 'input-few', vars: { want: one.inputs.length, got: one.inputs.length - result.unused } };
       } else {
-        diagnosis = diagnoseTask({ ...task, expect: one.expect }, code, result);
+        diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, result);
       }
       if (diagnosis.kind !== 'correct') {
         diagnosis.inputs = one.inputs;
@@ -617,12 +617,15 @@ async function main() {
     const key = `${draftKey()}.${task.id}`;
     const hasLecture = Boolean(mission.lecture?.length);
     const sample = task.cases?.[0];
+    // showCases: 답에 따라 출력이 달라지는 문제(조건)는 앞의 몇 가지 경우를 나란히 보여 준다.
+    const several = task.show && task.cases && (task.showCases ?? 1) > 1 ? task.cases.slice(0, task.showCases) : null;
     const showTask = () =>
       board.task({
         ...task,
         title: total > 1 ? `${task.title} (${index + 1} / ${total})` : task.title,
         want: task.show ? (sample ? sample.expect : task.expect) : null,
         wantNote: task.show && sample ? `${asAnswer(sample.inputs)} 답했을 때 이렇게 나와야 해요` : null,
+        wants: several ? several.map((one) => ({ note: `${asAnswer(one.inputs)} 답하면`, lines: one.expect })) : null,
       });
     showTask();
     // 쓰던 것이 있으면 이어서, 없으면 문제에 딸린 시작 코드(고치기 문제)로 시작한다.
