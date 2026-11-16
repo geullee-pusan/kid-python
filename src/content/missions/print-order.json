@@ -1,7 +1,7 @@
 {
-  "_설명": "1호선(출력과 순서) 1번 역. 대사에서 {이름}은 값을 넣는 자리이고 {이름은}처럼 조사를 붙이면 받침에 맞춰 고른다. [print|프린트]는 자막에는 print, 목소리로는 프린트. 엔트리 블록 이름은 엔트리 공식 문서(docs.playentry.org/user/block_start.html, block_looks.html)에서 확인했다(2026-11-16).",
+  "_설명": "출력과 순서 단원의 첫 수업. 대사에서 {이름}은 값을 넣는 자리이고 {이름은}처럼 조사를 붙이면 받침에 맞춰 고른다. [print|프린트]는 자막에는 print, 목소리로는 프린트. 엔트리 블록 이름은 엔트리 공식 문서(docs.playentry.org/user/block_start.html, block_looks.html)에서 확인했다(2026-11-16).",
   "id": "print-order",
-  "line": "1호선 · 출력과 순서",
+  "unit": "출력과 순서",
   "no": 1,
   "title": "print로 말하기",
   "lines": {

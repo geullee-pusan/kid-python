@@ -66,10 +66,10 @@ async function main() {
   $('build').textContent = build === 'dev' ? '개발 서버' : `판 ${build}`;
 
   // ---- 화면 조각 ----
-  $('home-line').textContent = mission.line;
-  $('home-title').textContent = `${mission.no}번 역 · ${mission.title}`;
-  $('where-line').textContent = mission.line;
-  $('where-title').textContent = `${mission.no}번 역 · ${mission.title}`;
+  $('home-line').textContent = mission.unit;
+  $('home-title').textContent = `${mission.no}. ${mission.title}`;
+  $('where-line').textContent = mission.unit;
+  $('where-title').textContent = `${mission.no}. ${mission.title}`;
   if (store.get('kidpy.progress', {})[mission.id]) $('home-done').hidden = false;
 
   const homeTeacher = createTeacher($('home-teacher'), look, { unit: 4.2 });
