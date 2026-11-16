@@ -1,0 +1,8 @@
+node_modules/
+dist/
+# 파이썬 실행기는 npm 패키지에서 복사해 온다(npm run runtime). 저장소에 넣지 않는다.
+public/pyodide/
+# 인증키와 개인 설정은 저장소에 넣지 않는다.
+.env
+.env.*
+*.local

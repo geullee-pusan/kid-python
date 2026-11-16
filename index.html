@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#14213d" />
+    <title>파이썬 시험판</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon-192.png" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+  </head>
+  <body>
+    <header>
+      <h1>파이썬 시험판</h1>
+      <span id="status" role="status">켜는 중…</span>
+      <span id="build"></span>
+    </header>
+    <main>
+      <section id="work" aria-label="코드와 결과">
+        <div class="bar">
+          <button id="run" type="button" disabled>▶ 실행 <kbd>Ctrl</kbd>+<kbd>Enter</kbd></button>
+          <button id="stop" type="button" disabled>■ 멈춤</button>
+          <span id="runinfo"></span>
+          <span class="examples">
+            예제:
+            <button type="button" data-example="basic">기본</button>
+            <button type="button" data-example="input">입력</button>
+            <button type="button" data-example="forever">끝나지 않음</button>
+            <button type="button" data-example="error">오류</button>
+          </span>
+        </div>
+        <div id="editor"></div>
+        <div id="outwrap">
+          <pre id="out" aria-live="polite"></pre>
+          <form id="inputform" hidden>
+            <label for="inputbox">입력</label>
+            <input id="inputbox" autocomplete="off" autocapitalize="off" spellcheck="false" />
+            <button type="submit">보내기</button>
+          </form>
+        </div>
+      </section>
+
+      <aside id="checks" aria-label="점검">
+        <section>
+          <h2>자동 점검</h2>
+          <button id="autorun" type="button" disabled>자동 점검 시작</button>
+          <ol id="autolist" class="checklist"></ol>
+        </section>
+        <section>
+          <h2>직접 해 보는 점검</h2>
+          <ol id="manuallist" class="checklist"></ol>
+          <label for="notes">메모</label>
+          <textarea id="notes" rows="3" placeholder="느낀 점이나 이상했던 것을 적어 주세요"></textarea>
+        </section>
+        <section>
+          <h2>기록 전송 시험</h2>
+          <p class="help">비공개 저장소 하나에만 쓸 수 있는 인증키를 넣어요. 키는 이 기기에만 저장돼요.</p>
+          <form id="syncform">
+            <label for="repo">저장소 (주인/이름)</label>
+            <input id="repo" autocomplete="off" autocapitalize="off" spellcheck="false" />
+            <label for="token">인증키</label>
+            <input id="token" type="password" autocomplete="off" />
+            <div class="row">
+              <button type="submit">저장</button>
+              <button id="synctest" type="button">전송 시험</button>
+            </div>
+          </form>
+          <p id="syncstatus" class="help" role="status"></p>
+        </section>
+        <section>
+          <h2>결과</h2>
+          <div class="row">
+            <button id="copy" type="button">결과 복사</button>
+            <button id="send" type="button">결과를 저장소로 보내기</button>
+          </div>
+          <p id="resultstatus" class="help" role="status"></p>
+          <pre id="summary"></pre>
+        </section>
+      </aside>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

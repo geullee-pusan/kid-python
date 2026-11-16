@@ -1,0 +1,156 @@
+// 파이썬 일꾼을 켜고, 코드를 보내고, 멈추고, 입력을 넘겨 준다.
+
+const STOP_GRACE_MS = 1500;
+const INPUT_BYTES = 64 * 1024;
+
+export class Runner {
+  /**
+   * @param {{ onOut: (chunks: {s: 'out'|'err', t: string}[], dropped: number) => void,
+   *           onInput: () => void,
+   *           onState: (state: 'loading'|'ready'|'running'|'waiting-input'|'failed', info?: object) => void }} hooks
+   */
+  constructor(hooks) {
+    this.hooks = hooks;
+    this.worker = null;
+    this.state = 'loading';
+    this.ready = null;
+    this.info = null;
+    this.current = null;
+    this.nextId = 1;
+    this.hardStops = 0;
+    // 함께 쓰는 메모리는 "교차 출처 격리"가 된 페이지에서만 쓸 수 있다.
+    this.shared = typeof SharedArrayBuffer !== 'undefined' && globalThis.crossOriginIsolated === true;
+  }
+
+  start() {
+    this.setState('loading');
+    this.interrupt = this.shared ? new SharedArrayBuffer(1) : null;
+    this.inputCtlBuffer = this.shared ? new SharedArrayBuffer(8) : null;
+    this.inputBytesBuffer = this.shared ? new SharedArrayBuffer(INPUT_BYTES) : null;
+    this.interruptView = this.interrupt ? new Uint8Array(this.interrupt) : null;
+    this.inputCtl = this.inputCtlBuffer ? new Int32Array(this.inputCtlBuffer) : null;
+    this.inputBytes = this.inputBytesBuffer ? new Uint8Array(this.inputBytesBuffer) : null;
+    // 화면이 출력을 몇 번 그렸는지 일꾼에게 알려 주는 칸. 일꾼은 화면이 밀리면 보내기를 쉰다.
+    this.flowBuffer = this.shared ? new SharedArrayBuffer(4) : null;
+    this.flow = this.flowBuffer ? new Int32Array(this.flowBuffer) : null;
+
+    const worker = new Worker(new URL('py-worker.js', document.baseURI), { type: 'module' });
+    this.worker = worker;
+    this.ready = new Promise((resolve, reject) => {
+      worker.onmessage = (event) => this.onMessage(event.data, resolve, reject);
+      worker.onerror = (event) => {
+        const message = event.message || '일꾼을 켜지 못했어요';
+        this.setState('failed', { message });
+        reject(new Error(message));
+      };
+    });
+    worker.postMessage({
+      type: 'init',
+      interrupt: this.interrupt,
+      inputCtl: this.inputCtlBuffer,
+      inputBytes: this.inputBytesBuffer,
+      flow: this.flowBuffer,
+    });
+    return this.ready;
+  }
+
+  /** 화면이 출력 묶음을 count개 그렸다고 일꾼에게 알린다. */
+  ack(count) {
+    if (this.flow && count > 0) Atomics.add(this.flow, 0, count);
+  }
+
+  onMessage(message, resolveReady, rejectReady) {
+    if (message.type === 'ready') {
+      this.info = message;
+      this.setState('ready', message);
+      resolveReady(message);
+    } else if (message.type === 'failed') {
+      this.setState('failed', message);
+      rejectReady(new Error(message.message));
+    } else if (message.type === 'out') {
+      if (this.current) {
+        for (const chunk of message.chunks) this.current.output += chunk.t;
+      }
+      // onOut을 받은 쪽은 다 그린 뒤 ack()를 불러야 한다.
+      this.hooks.onOut(message.chunks, message.dropped);
+    } else if (message.type === 'input') {
+      this.setState('waiting-input');
+      this.hooks.onInput();
+    } else if (message.type === 'done') {
+      const current = this.current;
+      if (!current || current.id !== message.id) return;
+      this.finish({ error: message.error, ms: message.ms, hardStop: false });
+    }
+  }
+
+  setState(state, info) {
+    this.state = state;
+    this.hooks.onState(state, info);
+  }
+
+  /** 코드를 돌린다. 끝나면 { ok, stopped, hardStop, error, ms, output }을 돌려준다. */
+  async run(code) {
+    await this.ready;
+    if (this.current) throw new Error('이미 돌아가는 프로그램이 있어요');
+    const id = this.nextId++;
+    this.setState('running');
+    return new Promise((resolve) => {
+      this.current = { id, resolve, output: '', stopRequested: false, stopTimer: null, started: performance.now() };
+      this.worker.postMessage({ type: 'run', id, code });
+    });
+  }
+
+  finish({ error, ms, hardStop }) {
+    const current = this.current;
+    this.current = null;
+    if (current.stopTimer) clearTimeout(current.stopTimer);
+    const stopped = current.stopRequested;
+    if (!hardStop) this.setState('ready', this.info);
+    current.resolve({
+      ok: !error && !stopped,
+      stopped,
+      hardStop,
+      // 멈춤을 눌러서 난 오류(KeyboardInterrupt, EOFError)는 오류로 보여 주지 않는다.
+      error: stopped ? null : error,
+      ms,
+      output: current.output,
+    });
+  }
+
+  /** 돌아가는 프로그램을 멈춘다. 부드럽게 안 멈추면 일꾼을 껐다 켠다. */
+  stop() {
+    const current = this.current;
+    if (!current || current.stopRequested) return;
+    current.stopRequested = true;
+    if (this.shared) {
+      this.interruptView[0] = 2; // SIGINT
+      Atomics.store(this.inputCtl, 0, 2); // 입력을 기다리는 중이면 깨운다
+      Atomics.notify(this.inputCtl, 0);
+      current.stopTimer = setTimeout(() => this.hardStop(), STOP_GRACE_MS);
+    } else {
+      this.hardStop();
+    }
+  }
+
+  hardStop() {
+    const current = this.current;
+    if (!current) return;
+    this.hardStops += 1;
+    this.worker.terminate();
+    const ms = Math.round(performance.now() - current.started);
+    this.finish({ error: null, ms, hardStop: true });
+    this.start().catch(() => {});
+  }
+
+  /** input()에 답을 넘긴다. */
+  provideInput(text) {
+    if (!this.shared || this.state !== 'waiting-input') return false;
+    const bytes = new TextEncoder().encode(text).slice(0, INPUT_BYTES);
+    this.inputBytes.set(bytes);
+    Atomics.store(this.inputCtl, 1, bytes.length);
+    Atomics.store(this.inputCtl, 0, 1);
+    Atomics.notify(this.inputCtl, 0);
+    this.setState('running');
+    return true;
+  }
+}

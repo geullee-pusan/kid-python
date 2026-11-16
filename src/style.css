@@ -1,0 +1,344 @@
+:root {
+  --bg: #f8f9fa;
+  --panel: #ffffff;
+  --ink: #212529;
+  --muted: #5c6770;
+  --line: #ced4da;
+  --navy: #14213d;
+  --accent: #1c7ed6;
+  --good: #2b8a3e;
+  --bad: #c92a2a;
+  --error-bg: #fff0f0;
+  --mono: ui-monospace, 'Cascadia Mono', 'D2Coding', 'Roboto Mono', Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.5 system-ui, 'Noto Sans KR', sans-serif;
+}
+
+header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 8px 16px;
+  background: var(--navy);
+  color: #fff;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 18px;
+}
+
+#build {
+  margin-left: auto;
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+main {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(320px, 1fr);
+  gap: 12px;
+  padding: 12px;
+}
+
+#work {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 8px;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.examples {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+button {
+  min-height: 44px;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+#run {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.examples button {
+  min-height: 36px;
+  padding: 2px 10px;
+}
+
+kbd {
+  padding: 0 4px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
+  font: 12px var(--mono);
+}
+
+#runinfo {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+#editor {
+  min-height: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+#editor .cm-editor {
+  height: 100%;
+  font-size: 20px;
+}
+
+#editor .cm-scroller {
+  font-family: var(--mono);
+  line-height: 1.5;
+}
+
+#editor .cm-editor.cm-focused {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.cm-error-line {
+  background: var(--error-bg);
+  box-shadow: inset 4px 0 0 var(--bad);
+}
+
+#outwrap {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #101418;
+  overflow: hidden;
+}
+
+#out {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 10px 12px;
+  overflow: auto;
+  color: #e9ecef;
+  font: 18px/1.45 var(--mono);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+#out .err {
+  color: #ffa8a8;
+}
+
+#out .ko {
+  color: #ffe066;
+  font-family: system-ui, 'Noto Sans KR', sans-serif;
+}
+
+#out .note {
+  color: #adb5bd;
+}
+
+#out .typed {
+  color: #8ce99a;
+}
+
+#inputform {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #1f262d;
+  color: #e9ecef;
+}
+
+#inputform[hidden] {
+  display: none;
+}
+
+#inputform input {
+  flex: 1;
+}
+
+input,
+textarea {
+  min-height: 44px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  width: 100%;
+}
+
+#inputbox {
+  font-family: var(--mono);
+  font-size: 18px;
+}
+
+#checks {
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#checks > section {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+#checks h2 {
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+
+.help {
+  margin: 4px 0 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.checklist {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checklist li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 2px 6px;
+  padding: 6px 0;
+  border-top: 1px solid #e9ecef;
+}
+
+.checklist .mark {
+  grid-row: span 2;
+  font-weight: 700;
+  text-align: center;
+}
+
+.checklist .mark.pass {
+  color: var(--good);
+}
+
+.checklist .mark.fail {
+  color: var(--bad);
+}
+
+.checklist .detail {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.checklist .choices {
+  grid-column: 2;
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.checklist .choices button {
+  min-height: 40px;
+}
+
+.checklist .choices button[aria-pressed='true'] {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+#syncform label,
+label[for='notes'] {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+#summary {
+  max-height: 260px;
+  margin: 8px 0 0;
+  padding: 8px;
+  overflow: auto;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  background: var(--bg);
+  font: 13px/1.5 var(--mono);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* 좁은 화면(세로로 든 태블릿, 휴대폰)에서는 한 줄로 쌓는다. */
+@media (max-width: 900px) {
+  body {
+    height: auto;
+  }
+  main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #work {
+    grid-template-rows: auto 320px 260px;
+  }
+  #checks {
+    overflow: visible;
+  }
+}
