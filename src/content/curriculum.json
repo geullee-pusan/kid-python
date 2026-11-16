@@ -1,0 +1,12 @@
+{
+  "_설명": "처음 화면의 수업 목록. 단원 순서는 임시다(docs/전략.md 4절). lessons에는 src/content/missions/의 id를 적는다. lessons가 없는 단원은 이름만 보이고 '준비 중'으로 나온다. more가 true면 그 단원에 수업이 더 생길 예정이라는 뜻이다.",
+  "units": [
+    { "title": "출력과 순서", "lessons": ["print-order"], "more": true },
+    { "title": "변수" },
+    { "title": "정해진 횟수만큼 반복" },
+    { "title": "조건" },
+    { "title": "변수 값 바꾸기와 세기" },
+    { "title": "리스트" },
+    { "title": "함수" }
+  ]
+}

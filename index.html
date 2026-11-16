@@ -10,25 +10,49 @@
     <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
   </head>
   <body>
-    <!-- 처음 화면 -->
+    <!-- 처음 화면: 배우기 / 만들기 / 찾아보기 -->
     <section id="home" class="screen home">
-      <div class="home-card">
-        <div class="home-stage"><div id="home-teacher"></div></div>
-        <div class="home-text">
-          <p class="home-line" id="home-line"></p>
-          <h1 id="home-title"></h1>
-          <p class="home-desc">엔트리의 말하기 블록을 파이썬으로 옮겨 봐요. 15분쯤 걸려요.</p>
-          <p class="home-done" id="home-done" hidden>✓ 끝낸 수업이에요. 다시 해도 돼요.</p>
-          <div class="home-actions">
-            <button id="start-lecture" class="btn primary big" type="button" disabled>강의부터 시작</button>
-            <button id="start-solve" class="btn big" type="button" disabled>바로 문제 풀기</button>
-          </div>
-          <label class="sound"><input type="checkbox" id="sound" checked /> 선생님 목소리 켜기</label>
-          <p id="home-status" class="status" role="status">파이썬 준비 중…</p>
-          <p class="notice">더 좋은 수업을 만들려고, 어떻게 풀었는지 이 기기에 적어 둬요.</p>
+      <header class="top">
+        <h1 class="app-name">파이썬 첫걸음</h1>
+        <span id="home-status" class="top-status" role="status">파이썬 준비 중…</span>
+        <label class="sound"><input type="checkbox" id="sound" checked /> 선생님 목소리</label>
+        <a class="btn small" href="./check.html">부모용</a>
+      </header>
+
+      <div class="hello">
+        <div class="stage hello-stage"><div id="home-teacher"></div></div>
+        <div class="dialog">
+          <span class="nametag">큐브 선생님</span>
+          <div id="home-caption" class="caption"></div>
         </div>
       </div>
-      <span id="build" class="build"></span>
+
+      <main class="menu">
+        <section class="panel learn" aria-labelledby="learn-title">
+          <h2 id="learn-title">배우기</h2>
+          <div id="continue"></div>
+          <div id="lessons" class="lessons"></div>
+        </section>
+
+        <section class="panel make" aria-labelledby="make-title">
+          <h2 id="make-title">만들기</h2>
+          <p class="panel-desc">마음대로 코드를 쓰고 돌려 보는 곳이에요.</p>
+          <button id="new-work" class="btn primary wide" type="button" disabled>＋ 새로 만들기</button>
+          <h3>최근에 만든 것</h3>
+          <ul id="works" class="works"></ul>
+        </section>
+
+        <section class="panel look" aria-labelledby="look-title">
+          <h2 id="look-title">찾아보기</h2>
+          <p class="panel-desc">지금까지 배운 것을 모아 둬요.</p>
+          <div id="reference" class="reference"></div>
+        </section>
+      </main>
+
+      <footer class="home-foot">
+        <span>더 좋은 수업을 만들려고, 어떻게 풀었는지 이 기기에 적어 둬요.</span>
+        <span id="build"></span>
+      </footer>
     </section>
 
     <!-- 수업 화면 -->
@@ -60,16 +84,9 @@
             <button id="run" class="btn primary" type="button" disabled>▶ 실행 <kbd>Ctrl</kbd>+<kbd>Enter</kbd></button>
             <button id="stop" class="btn" type="button" disabled>■ 멈춤</button>
           </div>
-          <div id="editor"></div>
+          <div id="editor" class="editor"></div>
           <div class="pane-head"><span class="file">출력</span></div>
-          <div id="outwrap">
-            <pre id="out" aria-live="polite"></pre>
-            <form id="inputform" hidden>
-              <label for="inputbox">입력</label>
-              <input id="inputbox" autocomplete="off" autocapitalize="off" spellcheck="false" />
-              <button class="btn" type="submit">보내기</button>
-            </form>
-          </div>
+          <div id="console"></div>
         </section>
       </main>
 
@@ -78,6 +95,8 @@
         <button id="slower" class="btn" type="button">🐢 천천히요</button>
         <button id="skip" class="btn" type="button" hidden>⏭ 강의 건너뛰기</button>
         <span class="spacer"></span>
+        <button id="with-lecture" class="btn good big" type="button" hidden>강의부터 볼래요</button>
+        <button id="solve-now" class="btn big" type="button" hidden>바로 풀래요</button>
         <button id="hint" class="btn" type="button" hidden>💡 힌트</button>
         <button id="done" class="btn good big" type="button" hidden>다 했어요</button>
         <button id="submit" class="btn good big" type="button" hidden>제출</button>
@@ -85,6 +104,31 @@
         <button id="finish" class="btn good big" type="button" hidden>처음으로</button>
       </footer>
     </section>
+
+    <!-- 만들기 화면: 마음대로 쓰고 돌려 보는 곳 -->
+    <section id="studio" class="screen play" hidden>
+      <header class="top">
+        <button id="studio-home" class="btn small" type="button">← 처음으로</button>
+        <label class="work-name">이름 <input id="work-name" maxlength="30" autocomplete="off" spellcheck="false" /></label>
+        <span id="work-saved" class="top-status" role="status"></span>
+      </header>
+      <main class="grid studio-grid">
+        <section class="right">
+          <div class="pane-head">
+            <span class="file">main.py</span>
+            <span class="lock-note"></span>
+            <button id="studio-run" class="btn primary" type="button" disabled>▶ 실행 <kbd>Ctrl</kbd>+<kbd>Enter</kbd></button>
+            <button id="studio-stop" class="btn" type="button" disabled>■ 멈춤</button>
+          </div>
+          <div id="studio-editor" class="editor"></div>
+        </section>
+        <section class="right">
+          <div class="pane-head"><span class="file">출력</span></div>
+          <div id="studio-console"></div>
+        </section>
+      </main>
+    </section>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

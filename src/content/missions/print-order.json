@@ -4,7 +4,15 @@
   "unit": "출력과 순서",
   "no": 1,
   "title": "print로 말하기",
+  "desc": "엔트리의 말하기 블록을 파이썬으로 옮겨 봐요.",
+  "minutes": 15,
+  "learned": [
+    { "rule": "글자는 따옴표 안에 넣어요.", "code": "print(\"노포\")" },
+    { "rule": "계산은 따옴표 없이 써요.", "code": "print(3 + 4)" },
+    { "rule": "파이썬은 위에서 아래로, 한 줄씩 실행해요." }
+  ],
   "lines": {
+    "intro-ask": ["[print|프린트]로 말하기 수업이에요. 강의부터 볼까요, 바로 문제를 풀어 볼까요?"],
     "greet": ["안녕하세요. 오늘부터 파이썬을 같이 해 봐요.", "안녕하세요. 파이썬 수업을 시작해요."],
     "today": ["오늘은 화면에 글자를 내보내는 [print|프린트]를 배워요."],
     "entry-say": ["엔트리에서는 말하기 블록으로 글자를 보여 줬어요."],
@@ -88,9 +96,7 @@
       { "say": "start-diff" }
     ],
     [
-      { "say": "follow-intro" },
-      { "say": "follow-done" },
-      { "follow": { "code": "print(\"안녕!\")", "expect": ["안녕!"] } },
+      { "follow": { "code": "print(\"안녕!\")", "expect": ["안녕!"], "say": ["follow-intro", "follow-done"] } },
       { "say": "follow-ok" }
     ],
     [

@@ -32,8 +32,11 @@ export function createPlayer(ctx) {
     step();
   }
 
+  let sayTurn = 0;
+
   async function say(text, speech = text, pose = 'talk') {
     if (stopped) return;
+    const my = ++sayTurn;
     lastLine = { text, speech, pose };
     typeText(text);
     teacher.pose(pose);
@@ -46,10 +49,20 @@ export function createPlayer(ctx) {
     const early = setTimeout(begin, 300); // 소리가 늦게 시작해도 입은 곧 움직인다
     await speakLine(speech, { pitch: ctx.voice.pitch, rate: ctx.voice.rate * slow }, { onStart: begin });
     clearTimeout(early);
+    if (my !== sayTurn) return; // 그사이 다른 말이 시작됐거나 말을 끊었다
     teacher.talking(false);
     typing++;
     caption.textContent = text;
     await pause(220 / slow);
+  }
+
+  /** 하던 말을 끊는다(아이가 버튼을 눌렀을 때). 재생은 그만두지 않는다. 자막은 끝까지 채워 둔다. */
+  function hush() {
+    sayTurn++;
+    typing++;
+    stopSpeaking();
+    teacher.talking(false);
+    if (lastLine) caption.textContent = lastLine.text;
   }
 
   /** 코드를 한 줄씩 실행해 보인다: 실행하는 줄을 표시하고, 그 줄이 내보낸 글자를 출력 창에 더한다. */
@@ -118,6 +131,7 @@ export function createPlayer(ctx) {
   return {
     play,
     say,
+    hush,
     trace,
     /** 방금 한 말을 다시 한다 */
     async again() {

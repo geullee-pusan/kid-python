@@ -78,7 +78,8 @@ export function speak(text, style, { onStart } = {}) {
   const guessMs = (600 + [...text].length * 220) / fast;
   if (muted || !speechSupported() || !text) {
     onStart?.();
-    return wait(guessMs);
+    // 소리가 없을 때도 stopSpeaking()으로 바로 끊을 수 있어야 한다("처음으로"가 늦게 듣지 않게).
+    return waitTurn(guessMs, ++turn);
   }
   const synth = window.speechSynthesis;
   const voice = koreanVoices()[0];
@@ -126,4 +127,16 @@ export function speak(text, style, { onStart } = {}) {
 
 export function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** ms만큼 기다리되, 그 사이 차례 번호가 바뀌면(말을 끊으면) 바로 끝난다. */
+function waitTurn(ms, my) {
+  return new Promise((resolve) => {
+    const started = performance.now();
+    const tick = () => {
+      if (my !== turn || performance.now() - started >= ms) resolve();
+      else setTimeout(tick, 50);
+    };
+    tick();
+  });
 }

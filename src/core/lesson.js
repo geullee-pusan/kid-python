@@ -53,7 +53,8 @@ function toScene(script, spec, seed) {
   if (spec.clearBoard) return { kind: 'board-clear' };
   if (spec.type !== undefined) return { kind: 'code-type', code: spec.type };
   if (spec.trace !== undefined) return { kind: 'trace', code: spec.trace };
-  if (spec.follow) return { kind: 'follow', ...spec.follow };
+  // 따라 하기: say는 아이가 치는 동안 선생님이 하는 말이다(말이 끝나기를 기다리지 않고 바로 칠 수 있다).
+  if (spec.follow) return { kind: 'follow', ...spec.follow, say: (spec.follow.say ?? []).map((key) => line(script, key, seed)) };
   if (spec.nod) return { kind: 'nod' };
   throw new Error(`모르는 장면 표시예요: ${JSON.stringify(spec)}`);
 }
@@ -106,10 +107,15 @@ export function hintScenes(script, level, seed = 0) {
 /** 대본 점검: 장면이 가리키는 대사가 모두 있는가. 테스트에서 쓴다. */
 export function missingLines(script) {
   const used = new Set([
-    'follow-different', 'follow-not-run', 'follow-show', 'predict-ask', 'predict-run',
+    'intro-ask', 'follow-different', 'follow-not-run', 'follow-show', 'predict-ask', 'predict-run',
     'task-intro', 'task-how', 'task-correct-first', 'task-correct', 'skip-ok', 'lecture-back', 'done-1', 'done-2', 'done-bye',
   ]);
-  for (const part of script.lecture) for (const spec of part) if (spec.say) used.add(spec.say);
+  for (const part of script.lecture) {
+    for (const spec of part) {
+      if (spec.say) used.add(spec.say);
+      for (const key of spec.follow?.say ?? []) used.add(key);
+    }
+  }
   for (const question of script.predict) {
     used.add(question.explain);
     for (const choice of question.choices) used.add(choice.say);
