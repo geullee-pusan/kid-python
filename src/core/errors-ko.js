@@ -30,6 +30,12 @@ export function explain(error, knows = {}) {
     // else 뒤에 조건을 쓴 경우: "else if 수 > 3:", "else 수 > 3:"
     if (/^\s*else\s+if\b/m.test(text)) return '파이썬에서는 else if를 줄여서 elif라고 써요.';
     if (/^\s*else\s+[^:\s]/m.test(text)) return 'else 뒤에는 조건을 쓰지 않아요. else: 라고만 써요. 조건이 더 필요하면 elif를 써요.';
+    // print 안의 end= 를 잘못 쓴 경우: end 뒤에 등호가 없다, 등호 뒤가 비었다, 맨 뒤가 아니다, 앞에 쉼표가 없다.
+    const bare = text.replace(/"[^"]*"|'[^']*'/g, '""');
+    if (/[,(]\s*end\s*""/.test(bare)) return 'end 뒤에 등호(=)가 빠졌어요. end="" 처럼 써요.';
+    if (/expected argument value expression/.test(message)) return '등호(=) 뒤에 값이 빠졌어요. end="" 처럼 따옴표를 써요.';
+    if (/positional argument follows keyword argument/.test(message)) return 'end= 은 괄호 안의 맨 뒤에 써요. 내보낼 값을 먼저 쓰고, 그 뒤에 쉼표와 end= 을 써요.';
+    if (/forgot a comma/.test(message) && /[^,(\s]\s+end\s*=/.test(bare)) return 'end 앞에 쉼표가 빠졌어요. 내보낼 값 뒤에 쉼표를 찍고 end= 을 써요.';
     if (/expected ':'/.test(message)) return '줄 끝에 콜론(:)이 빠졌어요.';
     if (/'\[' was never closed/.test(message)) return '여는 대괄호 [ 를 닫지 않았어요. 닫는 대괄호 ] 를 써요.';
     if (/was never closed/.test(message)) return '여는 괄호를 닫지 않았어요. 닫는 괄호 )를 써요.';
@@ -85,6 +91,10 @@ export function explain(error, knows = {}) {
   }
   if (type === 'UnboundLocalError') return '함수 안에서 값을 넣는 이름은 함수 안의 새 이름표예요. 밖의 값을 쓰려면 괄호로 넘겨받고, 바꾼 값은 return으로 돌려줘요.';
   if (type === 'TypeError') {
+    const keyword = /print\(\) got an unexpected keyword argument '(.+?)'/.exec(message);
+    if (keyword && keyword[1].toLowerCase() === 'end') return 'end는 모두 작은 글자로 써요. end="" 처럼 써요.';
+    if (keyword) return 'print( ) 안에서 등호(=)와 함께 쓰는 이름은 end예요. 철자를 확인해요.';
+    if (/(end|sep) must be None or a string/.test(message)) return 'end= 뒤에는 글자를 써요. 따옴표로 감싸요.';
     if (/NoneType/.test(message)) return '값을 돌려주지 않는 함수의 결과(None)로 계산하려고 했어요. 함수 안에서 return으로 값을 돌려줘요.';
     if (/'str' object does not support item assignment/.test(message)) return '글자는 한 글자만 바꿀 수 없어요. 새 글자를 만들어서 이름표에 다시 넣어요.';
     if (/for -: 'str' and 'str'/.test(message)) return '글자에서 글자를 뺄 수는 없어요. 지우려면 replace( )로 빈 글자("")로 바꿔요.';

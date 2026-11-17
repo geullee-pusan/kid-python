@@ -99,6 +99,17 @@
         "str-split",
         "unit9-review"
       ]
+    },
+    {
+      "title": "반복 안의 반복",
+      "lessons": [
+        "nest-basic",
+        "nest-end",
+        "nest-depend",
+        "nest-table",
+        "nest-search",
+        "unit10-review"
+      ]
     }
   ]
 }

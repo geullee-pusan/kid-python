@@ -1,0 +1,195 @@
+{
+  "_설명": "반복 안의 반복 단원 2번 수업. print의 end=를 처음 배운다(end=\"\"는 줄을 바꾸지 않고, print()는 줄만 바꾼다). 이것으로 안쪽 반복이 한 줄을 그리고 바깥 반복이 줄을 바꾸는 '줄과 칸' 틀을 만든다. 겨냥하는 오개념: 줄을 바꾸는 print()를 빼먹어도 줄이 바뀐다, print()를 안쪽 반복 안에 써도 된다. 채점은 줄 끝의 빈칸을 보지 않으므로 end=\" \"로 생기는 줄 끝 빈칸은 괜찮다.",
+  "id": "nest-end",
+  "unit": "반복 안의 반복",
+  "no": 2,
+  "title": "한 줄에 이어 쓰기",
+  "desc": "줄을 바꾸지 않고 이어서 내보내는 법을 배우고, 줄과 칸으로 네모를 그려요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions"],
+  "showVars": true,
+  "learned": [
+    { "rule": "print 안의 맨 뒤에 end=\"\"를 쓰면, 내보낸 뒤에 줄을 바꾸지 않아요. end=\" \"는 줄을 바꾸는 대신 빈칸을 넣어요.", "code": "print(\"가\", end=\"\")\nprint(\"나\")" },
+    { "rule": "괄호 안을 비운 print()는 줄만 바꿔요." },
+    { "rule": "안쪽 반복이 한 줄을 그리고, 안쪽 반복이 끝나면 print()로 줄을 바꿔요.", "code": "for 줄 in range(3):\n    for 칸 in range(5):\n        print(\"*\", end=\"\")\n    print()" }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["[print|프린트]는 내보낼 때마다 줄을 바꿨어요. 오늘은 줄을 바꾸지 않고 옆으로 이어서 내보내는 법을 배워요."],
+    "end-intro": ["괄호 안의 맨 뒤에 쉼표를 찍고, [end|엔드], 등호, 따옴표 두 개를 써요. 끝에 아무것도 붙이지 말라는 뜻이에요."],
+    "end-after": ["가, 나, 다가 한 줄에 이어졌어요. 다에는 [end|엔드]를 쓰지 않아서, 다를 내보낸 뒤에 줄이 바뀌었어요. 그래서 라는 다음 줄에 나왔어요."],
+    "space-intro": ["따옴표 사이에 빈칸을 하나 넣으면, 줄을 바꾸는 대신 빈칸을 넣어요. 반복과 함께 써 볼게요."],
+    "space-after": ["숫자 다섯 개가 한 줄에 나왔어요. 그다음의 빈 [print|프린트]는 줄만 바꿔요. 그게 없으면 끝이라는 글자가 같은 줄에 붙어요."],
+    "grid-intro": ["이제 반복 안의 반복과 함께 써요. 안쪽 반복이 별을 옆으로 다섯 개 그리고, 그게 끝나면 줄을 바꿔요. 이것을 세 번 되풀이해요."],
+    "grid-after": ["별 다섯 개짜리 줄이 세 줄 나왔어요. 줄을 바꾸는 [print|프린트]는 한 단만 들여썼어요. 안쪽 반복이 끝난 뒤에, 줄마다 한 번씩 실행돼요."],
+    "check-ask": ["하나 물어볼게요. 한 줄을 다 그릴 때마다 줄을 바꾸려면, 빈 [print|프린트]를 어디에 써야 할까요?"],
+    "check-right": ["맞아요. 안쪽 반복이 끝난 뒤, 바깥 반복 안이에요. 한 단만 들여써요."],
+    "check-teach-1": ["안쪽 반복 안에 쓰면, 별을 하나 그릴 때마다 줄이 바뀌어요. 별이 세로로 한 줄이 돼요."],
+    "check-teach-2": ["한 줄을 다 그린 다음에 한 번만 바꿔야 해요. 안쪽 반복과 줄의 앞을 맞춰서, 한 단만 들여써요."],
+    "follow-ok": ["좋아요. 칸 번호가 한 줄에 나오고, 줄이 바뀌어서 두 줄이 됐어요."],
+    "summary": ["정리해요. [end|엔드]로 한 줄에 잇고, 빈 [print|프린트]로 줄을 바꿔요. 안쪽 반복은 한 줄을 그려요."],
+
+    "q1-right": ["맞아요. 가 다음에는 줄이 안 바뀌고, 나 다음에는 바뀌어요. 다와 라도 같아요."],
+    "q1-all-lines": ["[end|엔드]에 따옴표 두 개를 쓴 줄은, 내보낸 뒤에 줄을 바꾸지 않아요."],
+    "q1-one-line": ["둘째 줄에는 [end|엔드]가 없어요. 나를 내보낸 뒤에 줄이 바뀌어요."],
+    "q1-explain": ["가나가 한 줄, 다라가 한 줄이에요."],
+    "q2-right": ["맞아요. 줄을 바꾸는 [print|프린트]가 없어서, 별 여섯 개가 한 줄에 다 이어졌어요."],
+    "q2-rows": ["줄을 바꾸는 줄이 어디에도 없어요. 반복이 바뀐다고 줄이 저절로 바뀌지는 않아요."],
+    "q2-lines": ["[end|엔드]에 따옴표 두 개를 썼어요. 내보낸 뒤에 줄을 바꾸지 않아요."],
+    "q2-explain": ["안쪽 반복이 끝난 뒤에 빈 [print|프린트]를 써야 줄이 바뀌어요. 없으면 모두 한 줄이에요."],
+    "q3-right": ["맞아요. 빈 [print|프린트]가 안쪽 반복 안에 있어서, 별 하나마다 줄이 바뀌었어요."],
+    "q3-rows": ["빈 [print|프린트]를 두 단 들여썼어요. 안쪽 반복 안이라서 별 하나마다 실행돼요."],
+    "q3-one-line": ["빈 [print|프린트]가 있어요. 별을 하나 그릴 때마다 줄을 바꿔요."],
+    "q3-explain": ["줄을 바꾸는 줄이 안쪽 반복 안에 있으면, 별 하나에 한 줄이 돼요. 한 단만 들여써야 해요."],
+
+    "task-how": ["실행해서 직접 확인해 보고, 잘 되면 '제출'을 눌러요."],
+    "praise-grid": ["안쪽 반복으로 숫자 다섯 개를 한 줄에 잇고, 안쪽 반복이 끝난 뒤에 줄을 바꿨어요. 줄과 칸의 틀을 만들었어요."],
+    "need-end": ["출력은 맞아요. 그런데 숫자를 하나씩 내보내면서 [end|엔드]로 한 줄에 이어 봐요. 반복 안의 반복을 써요."],
+    "grid-oneline": ["모두 한 줄에 나왔어요. 안쪽 반복이 끝난 뒤에 빈 [print|프린트]로 줄을 바꿔요. 한 단만 들여써요."],
+    "grid-lines": ["숫자가 한 줄에 하나씩 나왔어요. 숫자를 내보내는 [print|프린트]의 괄호 안 맨 뒤에 [end|엔드]를 써서 옆으로 이어요."],
+    "grid-zero": ["[0|영]부터 나왔어요. 칸을 도는 [range|레인지] 안에 [1|일]과 [6|육]을 써요."],
+    "grid-nospace": ["숫자가 붙어 나왔어요. [end|엔드]의 따옴표 사이에 빈칸을 하나 넣어요."],
+    "hint-1": ["줄을 세 번 도는 [for|포]를 쓰고, 그 안에 칸을 [1|일]부터 [5|오]까지 도는 [for|포]를 써요."],
+    "hint-2": ["안쪽 반복 안에서 칸의 수를 내보내요. 괄호 안 맨 뒤에 쉼표를 찍고, [end|엔드], 등호, 빈칸이 하나 든 따옴표를 써요."],
+    "hint-3": ["안쪽 반복이 끝난 뒤에 빈 [print|프린트]로 줄을 바꿔요. 칠판에 비슷한 예제를 적었어요."],
+    "praise-rect": ["물어본 가로와 세로를 두 반복의 횟수로 썼어요. 세로가 바깥 반복, 가로가 안쪽 반복이에요."],
+    "rect-swap": ["가로와 세로가 바뀌었어요. 바깥 반복은 줄의 수(세로), 안쪽 반복은 한 줄에 그릴 수(가로)예요."],
+    "rect-oneline": ["모두 한 줄에 나왔어요. 한 줄을 다 그린 뒤에 빈 [print|프린트]로 줄을 바꿔요."],
+    "rect-hint-1": ["가로와 세로를 물어서 숫자로 바꿔요. 바깥 반복은 세로만큼, 안쪽 반복은 가로만큼 돌아요."],
+    "rect-hint-2": ["안쪽 반복 안에서 샵을 [end|엔드]와 함께 내보내고, 안쪽 반복이 끝나면 빈 [print|프린트]를 써요."],
+
+    "done-1": ["오늘은 한 줄에 이어서 내보내는 법과, 줄과 칸으로 네모를 그리는 법을 배웠어요."],
+    "done-2": ["안쪽 반복은 한 줄을 그리고, 그게 끝나면 줄을 바꿔요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "줄을 바꾸지 않기", "code": "print(\"가\", end=\"\")" } },
+      { "say": "end-intro" },
+      { "type": "print(\"가\", end=\"\")\nprint(\"나\", end=\"\")\nprint(\"다\")\nprint(\"라\")" },
+      { "trace": "print(\"가\", end=\"\")\nprint(\"나\", end=\"\")\nprint(\"다\")\nprint(\"라\")" },
+      { "say": "end-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "print의 끝", "items": ["print(값)  내보내고 줄을 바꾼다", "print(값, end=\"\")  줄을 바꾸지 않는다", "print(값, end=\" \")  줄을 바꾸는 대신 빈칸", "print()  줄만 바꾼다"] } },
+      { "say": "space-intro" },
+      { "type": "for i in range(1, 6):\n    print(i, end=\" \")\nprint()\nprint(\"끝\")" },
+      { "trace": "for i in range(1, 6):\n    print(i, end=\" \")\nprint()\nprint(\"끝\")" },
+      { "say": "space-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "줄과 칸", "items": ["바깥 반복:  줄을 센다", "안쪽 반복:  한 줄을 옆으로 그린다", "print():  한 줄이 끝나면 줄을 바꾼다 (한 단 들여쓰기)"] } },
+      { "say": "grid-intro" },
+      { "type": "for 줄 in range(3):\n    for 칸 in range(5):\n        print(\"*\", end=\"\")\n    print()" },
+      { "trace": "for 줄 in range(3):\n    for 칸 in range(5):\n        print(\"*\", end=\"\")\n    print()" },
+      { "say": "grid-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "한 줄을 다 그릴 때마다 줄을 바꾸려면\nprint()를 어디에 쓸까요?",
+          "ask": "check-ask",
+          "choices": ["안쪽 반복이 끝난 뒤 (한 단 들여쓰기)", "안쪽 반복 안 (두 단 들여쓰기)"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "for 줄 in range(2):\n    for 칸 in range(3):\n        print(칸, end=\" \")\n    print()" } },
+      { "follow": { "code": "for 줄 in range(2):\n    for 칸 in range(3):\n        print(칸, end=\" \")\n    print()", "expect": ["0 1 2", "0 1 2"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["end=\"\"  줄을 바꾸지 않고 잇는다", "end=\" \"  빈칸을 넣고 잇는다", "print()  줄만 바꾼다", "안쪽 반복이 한 줄, 끝나면 print()"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "print(\"가\", end=\"\")\nprint(\"나\")\nprint(\"다\", end=\"\")\nprint(\"라\")",
+      "answer": 1,
+      "choices": [
+        { "text": "가\n나\n다\n라", "say": "q1-all-lines" },
+        { "text": "가나\n다라", "say": "q1-right" },
+        { "text": "가나다라", "say": "q1-one-line" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "for 줄 in range(2):\n    for 칸 in range(3):\n        print(\"*\", end=\"\")",
+      "answer": 0,
+      "choices": [
+        { "text": "******", "say": "q2-right" },
+        { "text": "***\n***", "say": "q2-rows" },
+        { "text": "*\n*\n*\n*\n*\n*", "say": "q2-lines" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "for 줄 in range(2):\n    for 칸 in range(2):\n        print(\"*\", end=\"\")\n        print()",
+      "answer": 2,
+      "choices": [
+        { "text": "**\n**", "say": "q3-rows" },
+        { "text": "****", "say": "q3-one-line" },
+        { "text": "*\n*\n*\n*", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "grid",
+      "title": "숫자판",
+      "story": "1부터 5까지의 숫자를 빈칸으로 띄워서 한 줄에 쓰고, 그런 줄을 세 줄 내보내요.",
+      "steps": ["바깥 반복은 줄을 세 번 돌아요.", "안쪽 반복은 1부터 5까지를 end=\" \"로 한 줄에 이어요.", "한 줄이 끝나면 줄을 바꿔요."],
+      "expect": ["1 2 3 4 5", "1 2 3 4 5", "1 2 3 4 5"],
+      "show": true,
+      "checks": [{ "pattern": "end\\s*=", "say": "need-end" }],
+      "mistakes": [
+        { "output": "^1 2 3 4 5 1 2", "say": "grid-oneline" },
+        { "output": "^1\\n2\\n", "say": "grid-lines" },
+        { "output": "^0 1 2 3 4", "say": "grid-zero" },
+        { "output": "^12345", "say": "grid-nospace" }
+      ],
+      "praise": "praise-grid",
+      "solution": "for 줄 in range(3):\n    for 칸 in range(1, 6):\n        print(칸, end=\" \")\n    print()",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "for 줄 in range(2):\n    for 칸 in range(4):\n        print(\"가\", end=\" \")\n    print()" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "rect-ask",
+    "title": "심화: 물어보고 그리는 네모",
+    "story": "가로와 세로를 차례로 물어보고, 그 크기만큼 #으로 네모를 그려요. 가로가 4, 세로가 2면 # 네 개짜리 줄이 두 줄이에요.",
+    "steps": ["input으로 가로를 묻고, 또 input으로 세로를 물어요.", "한 줄에 #을 가로만큼, 그런 줄을 세로만큼 내보내요."],
+    "cases": [
+      { "inputs": ["4", "2"], "expect": ["####", "####"] },
+      { "inputs": ["3", "3"], "expect": ["###", "###", "###"] },
+      { "inputs": ["1", "2"], "expect": ["#", "#"] }
+    ],
+    "expect": ["####", "####"],
+    "show": true,
+    "showCases": 2,
+    "mistakes": [
+      { "inputs": "^4,2$", "output": "^##\\n##\\n##\\n##$", "say": "rect-swap" },
+      { "inputs": "^4,2$", "output": "^########$", "say": "rect-oneline" }
+    ],
+    "praise": "praise-rect",
+    "solution": "가로 = int(input(\"가로: \"))\n세로 = int(input(\"세로: \"))\nfor 줄 in range(세로):\n    for 칸 in range(가로):\n        print(\"#\", end=\"\")\n    print()",
+    "hints": [{ "say": "rect-hint-1" }, { "say": "rect-hint-2" }]
+  }
+}
