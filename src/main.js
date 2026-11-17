@@ -1,4 +1,4 @@
-// 앱의 뼈대: 처음 화면(배우기 / 만들기 / 찾아보기), 수업 화면, 만들기 화면.
+// 앱의 뼈대: 처음 화면(배우기 / 만들기 / 찾아보기), 수업 화면, 연습 문제 화면, 만들기 화면.
 // - 수업에서 할 말과 장면은 src/core/lesson.js가 대본(src/content/missions/)으로 정한다. 여기서는 재생하고 버튼을 받는다.
 // - 문제 풀기가 중심이다. 강의는 건너뛸 수 있고, 풀다가 "강의 보기"로 다시 볼 수 있다.
 // - 선생님은 아이가 버튼을 누를 때까지 기다린다.
@@ -31,6 +31,14 @@ const MISSIONS = Object.fromEntries(
 );
 /** 지금 열려 있는 수업들을 단원 순서대로 */
 const LESSONS = curriculum.units.flatMap((unit) => (unit.lessons ?? []).map((id) => MISSIONS[id]));
+
+// 연습 문제 묶음(단원마다 하나)을 단원 순서대로. 수업 대본과 같은 틀이라서 쓰기 문제의 흐름을 그대로 쓴다.
+const practiceFiles = Object.values(import.meta.glob('./content/practice/*.json', { eager: true, import: 'default' }));
+const PRACTICE = curriculum.units
+  .map((unit) => practiceFiles.find((set) => set.unit === unit.title))
+  .filter(Boolean)
+  .map((set) => mergeScript(set, common));
+const PROBLEM_COUNT = PRACTICE.reduce((n, set) => n + set.tasks.length, 0);
 
 const $ = (id) => document.getElementById(id);
 function el(tag, className, text) {
@@ -152,7 +160,7 @@ async function main() {
 
   function showScreen(name) {
     screen = name;
-    for (const id of ['home', 'play', 'studio']) $(id).hidden = id !== name;
+    for (const id of ['home', 'practice', 'play', 'studio']) $(id).hidden = id !== name;
   }
 
   // =====================================================================
@@ -175,7 +183,7 @@ async function main() {
       ? '안녕하세요. 파이썬을 같이 배워요. 아래에서 첫 수업을 시작해요.'
       : next
         ? '다시 왔네요. 이어서 배울까요, 아니면 무엇을 만들어 볼까요?'
-        : '수업을 모두 끝냈어요. 이제 만들기에서 나만의 프로그램을 만들어 봐요.';
+        : '수업을 모두 끝냈어요. 연습 문제를 풀거나, 만들기에서 나만의 프로그램을 만들어 봐요.';
 
     // 배우기: 이어서 하기
     const cont = $('continue');
@@ -190,6 +198,21 @@ async function main() {
     } else {
       cont.append(el('p', 'panel-desc', '수업을 모두 끝냈어요. 끝낸 수업은 다시 해도 돼요.'));
     }
+
+    // 배우기: 연습 문제로 가는 길(점수가 아니라, 푼 문제 수만 알려 준다)
+    const entry = $('practice-entry');
+    entry.replaceChildren();
+    const solved = store.get('kidpy.practice', {});
+    const solvedCount = PRACTICE.reduce((n, set) => n + set.tasks.filter((task) => solved[task.id]).length, 0);
+    const toPractice = el('button', 'btn practice-entry');
+    toPractice.type = 'button';
+    toPractice.dataset.needsPython = '';
+    toPractice.append(
+      el('span', 'practice-entry-label', '✏ 연습 문제'),
+      el('span', 'practice-entry-sub', solvedCount ? `${PROBLEM_COUNT}문제 가운데 ${solvedCount}문제를 풀었어요` : `배운 것으로 푸는 문제 ${PROBLEM_COUNT}개`),
+    );
+    toPractice.addEventListener('click', () => openPractice());
+    entry.append(toPractice);
 
     // 배우기: 단원별 수업 목록(아직 없는 단원도 이름은 보인다)
     const list = $('lessons');
@@ -375,10 +398,10 @@ async function main() {
     });
   }
   const orAbort = (promise) => firstOf(promise).then((result) => result.value);
-  const PRESSABLE = ['with-lecture', 'solve-now', 'challenge-yes', 'challenge-no', 'give-up', 'done', 'submit', 'next', 'hint', 'finish', 'lecture-again'];
+  const PRESSABLE = ['with-lecture', 'solve-now', 'challenge-yes', 'challenge-no', 'give-up', 'done', 'submit', 'next', 'hint', 'finish', 'lecture-again', 'to-list', 'next-problem'];
   for (const id of PRESSABLE) $(id).addEventListener('click', () => press(id));
 
-  const FOOTER = ['with-lecture', 'solve-now', 'challenge-yes', 'challenge-no', 'give-up', 'done', 'submit', 'next', 'hint', 'finish', 'skip'];
+  const FOOTER = ['with-lecture', 'solve-now', 'challenge-yes', 'challenge-no', 'give-up', 'done', 'submit', 'next', 'hint', 'finish', 'skip', 'to-list', 'next-problem'];
   /** 아래 줄과 위 줄에서 지금 쓸 버튼만 보인다 */
   function show(...ids) {
     for (const id of FOOTER) $(id).hidden = !ids.includes(id);
@@ -634,7 +657,7 @@ async function main() {
   }
 
   /** 쓰기 문제 하나. 통과하면 { attempts, hints, first, code }, 심화 문제를 그만두면 null을 돌려준다. */
-  async function runTask(task, { index = 0, total = 1, optional = false } = {}) {
+  async function runTask(task, { index = 0, total = 1, optional = false, firstWords = null } = {}) {
     const key = `${draftKey()}.${task.id}`;
     const hasLecture = Boolean(mission.lecture?.length);
     const sample = task.cases?.[0];
@@ -658,7 +681,8 @@ async function main() {
     lastRun = null;
     // 선생님이 설명하는 동안에도 바로 쓰기 시작할 수 있다.
     allowRun(true);
-    const opening = optional ? ['challenge-intro'] : index === 0 ? ['task-intro', 'task-how'] : ['task-next'];
+    // firstWords: 연습 문제는 수업과 다른 말로 시작한다.
+    const opening = firstWords ?? (optional ? ['challenge-intro'] : index === 0 ? ['task-intro', 'task-how'] : ['task-next']);
     background(opening.map((k) => line(mission, k, seed)));
     const hints = task.hints ?? [];
     const buttons = ['submit'];
@@ -790,6 +814,8 @@ async function main() {
     setMuted(!$('sound').checked || speed > 1);
     $('where-line').textContent = mission.unit;
     $('where-title').textContent = `${mission.no}. ${mission.title}`;
+    $('phases').hidden = false;
+    $('to-home').textContent = '← 처음으로';
     const hasLecture = Boolean(mission.lecture?.length);
     for (const item of $('phases').children) {
       if (item.dataset.phase === 'lecture') item.hidden = !hasLecture;
@@ -839,6 +865,137 @@ async function main() {
     currentPhase = 'home';
     goHome();
   }
+
+  // =====================================================================
+  // 연습 문제: 단원을 고르고 문제를 골라서 푼다. 새로 배우는 것은 없고, 푼 문제에 ✓만 남긴다.
+  // =====================================================================
+  let practiceAt = null; // 지금 보고 있는 단원(PRACTICE의 번호)
+
+  /** 그 단원의 수업을 모두 끝냈는가 */
+  function unitLearned(set, progress) {
+    const unit = curriculum.units.find((u) => u.title === set.unit);
+    return (unit.lessons ?? []).every((id) => progress[id]);
+  }
+
+  function renderPractice() {
+    const progress = store.get('kidpy.progress', {});
+    const solved = store.get('kidpy.practice', {});
+    const count = (set) => set.tasks.filter((task) => solved[task.id]).length;
+    $('practice-total').textContent = `${PROBLEM_COUNT}문제 가운데 ${PRACTICE.reduce((n, set) => n + count(set), 0)}문제를 풀었어요`;
+
+    const units = $('practice-units');
+    units.replaceChildren();
+    PRACTICE.forEach((set, index) => {
+      const button = el('button', 'unit-pick');
+      button.type = 'button';
+      button.setAttribute('aria-pressed', String(index === practiceAt));
+      const all = count(set) === set.tasks.length;
+      button.append(
+        el('span', 'unit-pick-title', set.unit),
+        el('span', `unit-pick-count${all ? ' all' : ''}`, `${all ? '✓ ' : ''}${count(set)} / ${set.tasks.length}`),
+        el('span', 'unit-pick-note', unitLearned(set, progress) ? '' : '수업을 아직 다 안 했어요'),
+      );
+      button.addEventListener('click', () => {
+        practiceAt = index;
+        renderPractice();
+      });
+      units.append(button);
+    });
+
+    const set = PRACTICE[practiceAt];
+    $('practice-unit-title').textContent = set.unit;
+    $('practice-unit-note').textContent = unitLearned(set, progress)
+      ? '이 단원까지 배운 것으로 풀 수 있어요. 아무 문제나 골라요.'
+      : '이 단원의 수업을 아직 다 하지 않았어요. 수업을 먼저 하면 풀기 쉬워요.';
+    const list = $('practice-problems');
+    list.replaceChildren();
+    for (const task of set.tasks) {
+      const done = Boolean(solved[task.id]);
+      const button = el('button', `problem${done ? ' done' : ''}`);
+      button.type = 'button';
+      const tags = el('span', 'problem-tags');
+      tags.append(el('span', 'tag', task.level));
+      if (task.kind === '고치기') tags.append(el('span', 'tag', '고치기'));
+      if (done) tags.append(el('span', 'tag solved', '풀었어요 · 다시 풀기'));
+      button.append(el('span', 'lesson-mark', done ? '✓' : '·'), el('span', 'problem-title', task.title), el('span', 'problem-summary', task.summary), tags);
+      button.addEventListener('click', () => startPractice(set, task));
+      const item = el('li');
+      item.append(button);
+      list.append(item);
+    }
+  }
+
+  /** 연습 문제 고르기 화면을 연다. 단원을 정해 주지 않으면, 수업을 끝낸 단원 가운데 안 푼 문제가 남은 가장 뒤 단원을 보여 준다. */
+  function openPractice(index = practiceAt) {
+    if (index == null) {
+      const progress = store.get('kidpy.progress', {});
+      const solved = store.get('kidpy.practice', {});
+      const open = PRACTICE.map((set, i) => (unitLearned(set, progress) && set.tasks.some((task) => !solved[task.id]) ? i : -1)).filter((i) => i >= 0);
+      index = open.length ? open[open.length - 1] : 0;
+    }
+    practiceAt = index;
+    stopSpeaking();
+    activeConsole = null;
+    renderPractice();
+    showScreen('practice');
+  }
+
+  /** 연습 문제 하나를 푼다. 다 풀면 선생님의 풀이를 보여 주고, 다음 문제로 갈지 목록으로 갈지 고른다. */
+  async function startPractice(set, task) {
+    if (!isReady()) return;
+    mission = set;
+    seed = Math.floor(Date.now() / 86400000);
+    aborted = false;
+    player.reset();
+    setMuted(!$('sound').checked || speed > 1);
+    $('where-line').textContent = `연습 문제 · ${set.unit}`;
+    $('where-title').textContent = task.title;
+    $('phases').hidden = true;
+    $('to-home').textContent = '← 목록으로';
+    showScreen('play');
+    activeConsole = lessonConsole;
+    currentPhase = 'practice';
+    shownVars = {};
+    showVars({});
+    caption.textContent = '';
+    show();
+    log('practice-start', { set: set.id, task: task.id, sound: $('sound').checked });
+    let next = null;
+    try {
+      await voicesReady();
+      checkAbort();
+      const result = await runTask(task, { firstWords: [task.kind === '고치기' ? 'practice-fix' : 'practice-intro'] });
+      // 처음 푼 기록을 남긴다. 다시 풀어도 처음 기록은 그대로 둔다.
+      const solved = store.get('kidpy.practice', {});
+      if (!solved[task.id]) {
+        solved[task.id] = { doneAt: new Date().toISOString(), attempts: result.attempts, hints: result.hints, first: result.first };
+        store.set('kidpy.practice', solved);
+      }
+      log('practice-done', { set: set.id, task: task.id, attempts: result.attempts, hints: result.hints, first: result.first });
+      currentPhase = 'done';
+      board.card({ title: '풀었어요 · 선생님의 풀이', items: ['다르게 풀어도 맞은 거예요. 내 코드와 견줘 봐요.'], code: task.solution });
+      flushLog();
+      // 이 단원에서 아직 안 푼 문제가 있으면 이어서 풀 수 있다.
+      // 버튼을 먼저 보여 주고, 선생님 말은 그동안 한다(말이 끝나기를 기다리게 하지 않는다).
+      const rest = set.tasks.find((other) => !solved[other.id]);
+      if (rest) show('to-list', 'next-problem');
+      else show('to-list');
+      background([line(mission, 'practice-done', seed)]);
+      const pressed = await nextPress('to-list', 'next-problem');
+      hush();
+      if (pressed === 'next-problem') next = rest;
+    } catch (error) {
+      if (!(error instanceof Stop)) throw error;
+      log('practice-abort', { set: set.id, task: task.id });
+    }
+    allowRun(false);
+    draftSaving = null;
+    currentPhase = 'home';
+    if (next) await startPractice(set, next);
+    else openPractice(PRACTICE.indexOf(set));
+  }
+
+  $('practice-home').addEventListener('click', () => goHome());
 
   $('to-home').addEventListener('click', () => {
     aborted = true;

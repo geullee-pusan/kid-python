@@ -1,0 +1,197 @@
+{
+  "_설명": "단원 4 '조건'의 연습 문제. 쓸 수 있는 것: if, 비교(> < >= <= == !=), else, elif, and·or·not. for 안에 if를 넣는 것과 += 는 다음 단원에서 배우므로 쓰지 않는다. 음수는 수업에서 다루지 않아서 문제에 넣지 않았다. 삼각형이 되는 조건(어느 두 변의 합도 나머지 한 변보다 길다)은 수학의 성질이고, 문제에서 먼저 풀어 준다. 틀은 unit1.json과 같다.",
+  "id": "practice-4",
+  "unit": "조건",
+  "title": "연습 문제",
+  "knows": ["variables"],
+  "showVars": true,
+  "lines": {
+    "pass-praise": ["[60|육십]점일 때도 통과가 되게, 크거나 같다로 물었어요."],
+    "pass-edge": ["[60|육십]점은 통과여야 해요. '이상'은 그 수도 들어가요. 크거나 같다로 물어요."],
+    "pass-both": ["두 줄이 나왔어요. 하나만 나오게, 아닐 때는 [else|엘스]에 써요."],
+    "pass-hint-1": ["[input|인풋]의 답을 수와 견주려면 [int( )|인트]로 숫자로 바꿔요."],
+    "pass-hint-2": ["맞을 때 할 일은 [if|이프] 아래에, 아닐 때 할 일은 [else|엘스] 아래에 써요."],
+
+    "three-praise": ["나머지가 [0|영]인지 물어서 배수를 가려냈어요."],
+    "three-hint-1": ["[3|삼]의 배수는 [3|삼]으로 나누어떨어지는 수예요. 나머지는 퍼센트 기호로 구해요."],
+    "three-hint-2": ["나머지가 [0|영]과 같은지 물어요. 같은지 물을 때는 등호를 두 개 써요."],
+
+    "medal-praise": ["[if|이프]를 [elif|엘리프]로 바꿔서, 처음 맞는 하나만 하게 고쳤어요."],
+    "medal-two": ["금과 은이 둘 다 나왔어요. [if|이프]를 따로 쓰면 하나하나 다 물어요. 둘째 [if|이프]를 [elif|엘리프]로 바꿔요."],
+    "medal-hint-1": ["먼저 실행해서 [95|구십오]를 넣어 봐요. 몇 줄이 나오는지 봐요."],
+    "medal-hint-2": ["[elif|엘리프]는 위의 조건이 맞지 않았을 때만 물어요."],
+
+    "season-praise": ["달의 범위를 '그리고'로 묶어서 계절을 가렸어요. 겨울처럼 떨어져 있는 달도 잘 챙겼어요."],
+    "season-winter": ["겨울은 [12|십이]월, [1|일]월, [2|이]월이에요. 떨어져 있는 달이에요. 남은 경우를 모두 받는 [else|엘스]에 두면 쉬워요."],
+    "season-hint-1": ["'[3|삼]월부터 [5|오]월까지'는 '[3|삼] 이상이고 [5|오] 이하'예요. 두 조건을 [and|앤드]로 이어요."],
+    "season-hint-2": ["봄, 여름, 가을을 [if|이프]와 [elif|엘리프]로 물어요. 남는 달은 모두 겨울이니까 [else|엘스]에 써요."],
+
+    "max3-praise": ["세 수를 견줘서 가장 큰 수를 골랐어요. 같은 수가 있을 때도 잘 돼요."],
+    "max3-tie": ["아무것도 나오지 않았어요. 같은 수가 있을 때를 봐요. 크다 대신 크거나 같다로 물어요."],
+    "max3-hint-1": ["첫째 수가 가장 크려면, 둘째 수보다도 크거나 같고 셋째 수보다도 크거나 같아야 해요. [and|앤드]로 이어요."],
+    "max3-hint-2": ["첫째 수가 가장 큰 게 아니라면, 남은 둘째 수와 셋째 수만 견주면 돼요."],
+    "max3-hint-3": ["칠판에 비슷한 예제를 적었어요. 가장 작은 수를 고르는 예제예요."],
+
+    "tri-praise": ["세 가지 조건을 모두 [and|앤드]로 이어서 물었어요. 어느 막대가 가장 길어도 맞게 가려요."],
+    "tri-one": ["조건을 하나만 물었어요. 어느 막대가 가장 긴지 모르니까, 세 가지를 모두 물어야 해요."],
+    "tri-equal": ["[2, 2, 4|이, 이, 사]는 만들 수 없어요. 두 막대를 더한 길이가 나머지와 같으면 납작하게 붙어 버려요. 더 길어야 해요."],
+    "tri-hint-1": ["두 막대를 더한 길이가 나머지 한 막대보다 길어야 해요. 짝을 짓는 방법은 세 가지예요."],
+    "tri-hint-2": ["세 조건이 모두 참이어야 하니까 [and|앤드]로 이어요."]
+  },
+  "tasks": [
+    {
+      "id": "p4-pass",
+      "level": "기본",
+      "kind": "쓰기",
+      "title": "통과일까",
+      "summary": "점수가 60점 이상이면 '통과', 아니면 '다시'라고 알려 줘요.",
+      "story": "점수를 물어보고, 60점 이상이면 통과라고 알려 줘요.",
+      "steps": ["input으로 점수를 물어요.", "60점 이상이면 \"통과\"를 내보내요.", "아니면 \"다시\"를 내보내요."],
+      "cases": [
+        { "inputs": ["85"], "expect": ["통과"] },
+        { "inputs": ["59"], "expect": ["다시"] },
+        { "inputs": ["60"], "expect": ["통과"] },
+        { "inputs": ["0"], "expect": ["다시"] }
+      ],
+      "expect": ["통과"],
+      "show": true,
+      "showCases": 2,
+      "mistakes": [
+        { "inputs": "^60$", "output": "^다시$", "say": "pass-edge" },
+        { "output": "통과\\n다시|다시\\n통과", "say": "pass-both" }
+      ],
+      "praise": "pass-praise",
+      "solution": "점수 = int(input(\"점수: \"))\nif 점수 >= 60:\n    print(\"통과\")\nelse:\n    print(\"다시\")",
+      "hints": [{ "say": "pass-hint-1" }, { "say": "pass-hint-2" }]
+    },
+    {
+      "id": "p4-three",
+      "level": "기본",
+      "kind": "쓰기",
+      "title": "3의 배수일까",
+      "summary": "수를 묻고, 3의 배수인지 알려 줘요.",
+      "story": "수를 물어보고, 3의 배수인지 알려 줘요. 3의 배수는 3으로 나누어떨어지는 수예요.",
+      "steps": ["input으로 수를 물어요.", "3의 배수면 \"3의 배수\"를 내보내요.", "아니면 \"3의 배수 아님\"을 내보내요."],
+      "cases": [
+        { "inputs": ["9"], "expect": ["3의 배수"] },
+        { "inputs": ["10"], "expect": ["3의 배수 아님"] },
+        { "inputs": ["12"], "expect": ["3의 배수"] },
+        { "inputs": ["7"], "expect": ["3의 배수 아님"] }
+      ],
+      "expect": ["3의 배수"],
+      "show": true,
+      "showCases": 2,
+      "praise": "three-praise",
+      "solution": "수 = int(input(\"수: \"))\nif 수 % 3 == 0:\n    print(\"3의 배수\")\nelse:\n    print(\"3의 배수 아님\")",
+      "hints": [{ "say": "three-hint-1" }, { "say": "three-hint-2" }]
+    },
+    {
+      "id": "p4-fix-medal",
+      "level": "응용",
+      "kind": "고치기",
+      "title": "고치기: 메달은 하나만",
+      "summary": "95점인데 금과 은이 둘 다 나오는 프로그램을 고쳐요.",
+      "story": "점수에 따라 메달을 주는 프로그램이에요. 90점 이상은 금, 70점 이상은 은, 나머지는 동이에요. 그런데 95점을 넣으면 메달이 두 개 나와요.",
+      "steps": ["먼저 실행해서 95를 넣어 봐요.", "어떤 점수를 넣어도 메달이 하나만 나오게 고쳐요."],
+      "start": "점수 = int(input(\"점수: \"))\nif 점수 >= 90:\n    print(\"금\")\nif 점수 >= 70:\n    print(\"은\")\nelse:\n    print(\"동\")",
+      "cases": [
+        { "inputs": ["95"], "expect": ["금"] },
+        { "inputs": ["80"], "expect": ["은"] },
+        { "inputs": ["50"], "expect": ["동"] },
+        { "inputs": ["90"], "expect": ["금"] },
+        { "inputs": ["70"], "expect": ["은"] }
+      ],
+      "expect": ["금"],
+      "show": true,
+      "showCases": 3,
+      "mistakes": [{ "output": "^금\\n은$", "say": "medal-two" }],
+      "praise": "medal-praise",
+      "solution": "점수 = int(input(\"점수: \"))\nif 점수 >= 90:\n    print(\"금\")\nelif 점수 >= 70:\n    print(\"은\")\nelse:\n    print(\"동\")",
+      "hints": [{ "say": "medal-hint-1" }, { "say": "medal-hint-2" }]
+    },
+    {
+      "id": "p4-season",
+      "level": "응용",
+      "kind": "쓰기",
+      "title": "몇 월은 무슨 계절",
+      "summary": "달을 묻고, 봄·여름·가을·겨울 가운데 무엇인지 알려 줘요.",
+      "story": "몇 월인지 물어보고, 계절을 알려 줘요. 3~5월은 봄, 6~8월은 여름, 9~11월은 가을, 12월과 1~2월은 겨울이에요.",
+      "steps": ["input으로 달을 물어요. (1부터 12까지의 수)", "\"봄\", \"여름\", \"가을\", \"겨울\" 가운데 하나를 내보내요."],
+      "cases": [
+        { "inputs": ["4"], "expect": ["봄"] },
+        { "inputs": ["12"], "expect": ["겨울"] },
+        { "inputs": ["7"], "expect": ["여름"] },
+        { "inputs": ["10"], "expect": ["가을"] },
+        { "inputs": ["1"], "expect": ["겨울"] },
+        { "inputs": ["3"], "expect": ["봄"] },
+        { "inputs": ["5"], "expect": ["봄"] },
+        { "inputs": ["6"], "expect": ["여름"] },
+        { "inputs": ["8"], "expect": ["여름"] },
+        { "inputs": ["9"], "expect": ["가을"] },
+        { "inputs": ["11"], "expect": ["가을"] },
+        { "inputs": ["2"], "expect": ["겨울"] }
+      ],
+      "expect": ["봄"],
+      "show": true,
+      "showCases": 2,
+      "mistakes": [{ "inputs": "^(12|1|2)$", "output": "^(봄|여름|가을)$", "say": "season-winter" }],
+      "praise": "season-praise",
+      "solution": "달 = int(input(\"몇 월? \"))\nif 달 >= 3 and 달 <= 5:\n    print(\"봄\")\nelif 달 >= 6 and 달 <= 8:\n    print(\"여름\")\nelif 달 >= 9 and 달 <= 11:\n    print(\"가을\")\nelse:\n    print(\"겨울\")",
+      "hints": [{ "say": "season-hint-1" }, { "say": "season-hint-2" }]
+    },
+    {
+      "id": "p4-max3",
+      "level": "도전",
+      "kind": "쓰기",
+      "title": "세 수 가운데 가장 큰 수",
+      "summary": "수 세 개를 묻고, 가장 큰 수를 알려 줘요.",
+      "story": "수를 세 개 물어보고, 그 가운데 가장 큰 수를 알려 줘요. 같은 수가 섞여 있을 수도 있어요.",
+      "steps": ["input으로 수를 세 번 물어요.", "가장 큰 수를 한 줄로 내보내요."],
+      "cases": [
+        { "inputs": ["3", "9", "5"], "expect": ["9"] },
+        { "inputs": ["9", "3", "5"], "expect": ["9"] },
+        { "inputs": ["3", "5", "9"], "expect": ["9"] },
+        { "inputs": ["7", "7", "2"], "expect": ["7"] },
+        { "inputs": ["2", "8", "8"], "expect": ["8"] },
+        { "inputs": ["4", "4", "4"], "expect": ["4"] }
+      ],
+      "expect": ["9"],
+      "show": true,
+      "mistakes": [{ "inputs": "^(7,7,2|2,8,8|4,4,4)$", "output": "^$", "say": "max3-tie" }],
+      "praise": "max3-praise",
+      "solution": "가 = int(input(\"첫째 수: \"))\n나 = int(input(\"둘째 수: \"))\n다 = int(input(\"셋째 수: \"))\nif 가 >= 나 and 가 >= 다:\n    print(가)\nelif 나 >= 다:\n    print(나)\nelse:\n    print(다)",
+      "hints": [
+        { "say": "max3-hint-1" },
+        { "say": "max3-hint-2" },
+        { "say": "max3-hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "가 = int(input(\"첫째 수: \"))\n나 = int(input(\"둘째 수: \"))\n다 = int(input(\"셋째 수: \"))\nif 가 <= 나 and 가 <= 다:\n    print(가)\nelif 나 <= 다:\n    print(나)\nelse:\n    print(다)", "inputs": ["3", "9", "5"] } }
+      ]
+    },
+    {
+      "id": "p4-triangle",
+      "level": "도전",
+      "kind": "쓰기",
+      "title": "삼각형을 만들 수 있을까",
+      "summary": "막대 세 개의 길이로 삼각형이 되는지 가려요.",
+      "story": "막대 세 개로 삼각형을 만들려면, 어느 두 막대의 길이를 더해도 나머지 한 막대보다 길어야 해요. 3, 4, 5는 만들 수 있고, 1, 2, 5는 만들 수 없어요.",
+      "steps": ["input으로 막대의 길이를 세 번 물어요.", "만들 수 있으면 \"만들 수 있어요\"를 내보내요.", "아니면 \"만들 수 없어요\"를 내보내요."],
+      "cases": [
+        { "inputs": ["3", "4", "5"], "expect": ["만들 수 있어요"] },
+        { "inputs": ["1", "2", "5"], "expect": ["만들 수 없어요"] },
+        { "inputs": ["5", "1", "2"], "expect": ["만들 수 없어요"] },
+        { "inputs": ["2", "5", "1"], "expect": ["만들 수 없어요"] },
+        { "inputs": ["2", "2", "4"], "expect": ["만들 수 없어요"] },
+        { "inputs": ["4", "4", "4"], "expect": ["만들 수 있어요"] }
+      ],
+      "expect": ["만들 수 있어요"],
+      "show": true,
+      "showCases": 2,
+      "mistakes": [
+        { "inputs": "^(5,1,2|2,5,1)$", "output": "^만들 수 있어요$", "say": "tri-one" },
+        { "inputs": "^2,2,4$", "output": "^만들 수 있어요$", "say": "tri-equal" }
+      ],
+      "praise": "tri-praise",
+      "solution": "가 = int(input(\"첫째 막대: \"))\n나 = int(input(\"둘째 막대: \"))\n다 = int(input(\"셋째 막대: \"))\nif 가 + 나 > 다 and 가 + 다 > 나 and 나 + 다 > 가:\n    print(\"만들 수 있어요\")\nelse:\n    print(\"만들 수 없어요\")",
+      "hints": [{ "say": "tri-hint-1" }, { "say": "tri-hint-2" }]
+    }
+  ]
+}

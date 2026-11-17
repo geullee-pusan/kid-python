@@ -31,6 +31,7 @@
         <section class="panel learn" aria-labelledby="learn-title">
           <h2 id="learn-title">배우기</h2>
           <div id="continue"></div>
+          <div id="practice-entry"></div>
           <div id="lessons" class="lessons"></div>
         </section>
 
@@ -53,6 +54,23 @@
         <span>더 좋은 수업을 만들려고, 어떻게 풀었는지 이 기기에 적어 둬요.</span>
         <span id="build"></span>
       </footer>
+    </section>
+
+    <!-- 연습 문제 고르기: 왼쪽에서 단원을, 오른쪽에서 문제를 고른다 -->
+    <section id="practice" class="screen practice" hidden>
+      <header class="top">
+        <button id="practice-home" class="btn small" type="button">← 처음으로</button>
+        <h1 class="app-name">연습 문제</h1>
+        <span id="practice-total" class="top-status"></span>
+      </header>
+      <main class="practice-main">
+        <nav id="practice-units" class="panel practice-units" aria-label="단원 고르기"></nav>
+        <section class="panel practice-list" aria-labelledby="practice-unit-title">
+          <h2 id="practice-unit-title"></h2>
+          <p id="practice-unit-note" class="panel-desc"></p>
+          <ul id="practice-problems" class="problems"></ul>
+        </section>
+      </main>
     </section>
 
     <!-- 수업 화면 -->
@@ -109,6 +127,8 @@
         <button id="submit" class="btn good big" type="button" hidden>제출</button>
         <button id="next" class="btn good big" type="button" hidden>다음</button>
         <button id="finish" class="btn good big" type="button" hidden>처음으로</button>
+        <button id="to-list" class="btn big" type="button" hidden>목록으로</button>
+        <button id="next-problem" class="btn good big" type="button" hidden>다음 문제</button>
       </footer>
     </section>
 

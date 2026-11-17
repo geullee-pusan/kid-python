@@ -18,3 +18,13 @@ export const MISSIONS = Object.fromEntries(
 );
 
 export const CURRICULUM = read('curriculum.json');
+
+// 연습 문제 묶음(단원마다 하나). 수업 대본과 같은 틀이라서 같은 방법으로 읽는다.
+export const PRACTICE = Object.fromEntries(
+  readdirSync(join(content, 'practice'))
+    .map((file) => read('practice', file))
+    .map((set) => [set.id, mergeScript(set, common)]),
+);
+
+/** 수업과 연습 문제 묶음을 한데 모은 것(문제를 돌려 보는 테스트에서 쓴다) */
+export const SCRIPTS = { ...MISSIONS, ...PRACTICE };

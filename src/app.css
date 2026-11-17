@@ -243,6 +243,29 @@ a.btn {
   opacity: 0.92;
 }
 
+/* 처음 화면에서 연습 문제로 가는 단추 */
+.practice-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 60px;
+  margin-top: 8px;
+  padding: 8px 18px;
+  text-align: left;
+  white-space: normal;
+}
+
+.practice-entry-label {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.practice-entry-sub {
+  color: var(--muted);
+  font-size: 14px;
+}
+
 .unit-head {
   display: flex;
   align-items: baseline;
@@ -463,6 +486,149 @@ a.btn {
   border: 1px solid var(--line);
   border-radius: 8px;
   font: inherit;
+}
+
+/* ---- 연습 문제 고르기 ---- */
+.practice {
+  display: flex;
+  flex-direction: column;
+}
+
+.practice-main {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px;
+}
+
+.practice-units {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.unit-pick {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0 8px;
+  width: 100%;
+  min-height: 56px;
+  padding: 6px 14px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* 고른 단원: 색과 함께 굵은 글자와 왼쪽 띠로 알린다 */
+.unit-pick[aria-pressed='true'] {
+  border-color: var(--accent);
+  box-shadow: inset 6px 0 0 var(--accent);
+  background: #e7f5ff;
+  font-weight: 700;
+}
+
+.unit-pick-count {
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.unit-pick-count.all {
+  color: var(--good);
+}
+
+.unit-pick-note {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.unit-pick-note:empty {
+  display: none;
+}
+
+.problems {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.problem {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  align-content: start;
+  gap: 4px 8px;
+  width: 100%;
+  height: 100%;
+  min-height: 112px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.problem.done {
+  background: #f3faf4;
+}
+
+.problem.done .lesson-mark {
+  color: var(--good);
+}
+
+.problem-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.problem-summary,
+.problem-tags {
+  grid-column: 2;
+}
+
+.problem-summary {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.problem-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.tag {
+  padding: 1px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tag.solved {
+  border-color: var(--good);
+  color: var(--good);
+}
+
+.problem:focus-visible,
+.unit-pick:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
 }
 
 /* ---- 수업 화면 틀 ---- */
@@ -1018,6 +1184,10 @@ a.btn {
     width: 160px;
   }
   .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .practice-main,
+  .problems {
     grid-template-columns: minmax(0, 1fr);
   }
   .board {

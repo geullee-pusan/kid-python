@@ -16,7 +16,8 @@ import { loadPyodide } from 'pyodide';
 import { diagnoseTask, outputLines } from '../src/core/diagnose.js';
 import { explain } from '../src/core/errors-ko.js';
 import { allTasks } from '../src/core/lesson.js';
-import { MISSIONS } from './missions.js';
+import { SCRIPTS } from './missions.js';
+import { PRACTICE_WRONG } from './practice-wrong.js';
 
 let scripted;
 
@@ -70,7 +71,7 @@ function grade(task, code) {
   return diagnosis;
 }
 
-for (const m of Object.values(MISSIONS)) {
+for (const m of Object.values(SCRIPTS)) {
   test(`${m.id}: 예측 문제의 정답이 실제 출력과 같다`, () => {
     for (const q of m.predict ?? []) {
       const ran = shown(q.code, q.inputs, { limit: q.limit, randoms: q.randoms });
@@ -432,8 +433,8 @@ const WRONG = [
 ];
 
 test('흔한 오답에 의도한 말이 나온다', () => {
-  for (const [missionId, taskId, code, kind, say] of WRONG) {
-    const task = allTasks(MISSIONS[missionId]).find((t) => t.id === taskId);
+  for (const [missionId, taskId, code, kind, say] of [...WRONG, ...PRACTICE_WRONG]) {
+    const task = allTasks(SCRIPTS[missionId]).find((t) => t.id === taskId);
     assert.ok(task, `${missionId}/${taskId}: 문제가 없어요`);
     const result = grade(task, code);
     assert.equal(result.kind, kind, `${missionId}/${taskId}: ${code.replace(/\n/g, ' ⏎ ')}`);

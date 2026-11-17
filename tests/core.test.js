@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import { diagnoseTask, outputLines, stripStrings } from '../src/core/diagnose.js';
 import { explain } from '../src/core/errors-ko.js';
 import { allTasks, fill, lectureParts, line, missingLines, predictFeedback, splitSpoken, taskFeedback, tracePace } from '../src/core/lesson.js';
-import { CURRICULUM, MISSIONS } from './missions.js';
+import { CURRICULUM, MISSIONS, PRACTICE } from './missions.js';
 
 const first = MISSIONS['print-order'];
 
@@ -74,6 +74,36 @@ for (const m of Object.values(MISSIONS)) {
   });
   test(`대본 ${m.id}: 처음 화면에 필요한 것이 있다`, () => {
     assert.ok(m.unit && m.no && m.title && m.desc && m.minutes);
+  });
+}
+
+test('연습 문제: 단원마다 한 묶음이 있고, 문제 id가 어디서도 겹치지 않는다', () => {
+  const sets = Object.values(PRACTICE);
+  assert.deepEqual(sets.map((set) => set.unit).sort(), CURRICULUM.units.map((unit) => unit.title).sort());
+  const ids = sets.flatMap((set) => set.tasks.map((task) => task.id));
+  assert.equal(new Set(ids).size, ids.length, '문제 id가 겹쳐요');
+});
+
+for (const set of Object.values(PRACTICE)) {
+  test(`연습 ${set.id}: 대사가 모두 있고, 문제마다 필요한 것이 있다`, () => {
+    assert.deepEqual(missingLines(set), []);
+    // 연습 문제는 단원에서 배운 것까지만 안다고 본다(오류 설명의 말을 고르는 데 쓴다).
+    const lessons = CURRICULUM.units.find((unit) => unit.title === set.unit).lessons.map((id) => MISSIONS[id]);
+    assert.deepEqual(set.knows, lessons[lessons.length - 1].knows ?? [], '단원의 마지막 수업과 knows가 같아야 해요');
+    assert.equal(Boolean(set.showVars), Boolean(lessons[lessons.length - 1].showVars));
+    for (const task of set.tasks) {
+      assert.ok(task.id && task.title && task.summary && task.story && task.steps.length && task.expect.length && task.solution && task.praise, `${task.id}: 빠진 것`);
+      assert.ok(['기본', '응용', '도전'].includes(task.level), `${task.id}: level`);
+      assert.ok(['쓰기', '고치기'].includes(task.kind), `${task.id}: kind`);
+      if (task.kind === '고치기') assert.ok(task.start, `${task.id}: 고치기 문제에는 시작 코드가 있어야 해요`);
+      assert.ok((task.hints ?? []).length > 0, `${task.id}: 힌트가 하나는 있어야 해요`);
+      assert.ok(taskFeedback(set, task, { kind: 'correct', first: true }).length >= 3, `${task.id}: 칭찬 대사`);
+      for (const rule of [...(task.checks ?? []), ...(task.mistakes ?? [])]) assert.ok(taskFeedback(set, task, { kind: 'mistake', say: rule.say })[0].text);
+    }
+  });
+  test(`연습 ${set.id}: 쉬운 문제가 앞에 온다`, () => {
+    const order = set.tasks.map((task) => ['기본', '응용', '도전'].indexOf(task.level));
+    assert.deepEqual(order, [...order].sort());
   });
 }
 
