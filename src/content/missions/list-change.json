@@ -1,0 +1,219 @@
+{
+  "_설명": "리스트 단원 4번 수업. 엔트리 블록 '(10) 항목을 [리스트] 에 추가하기', '[리스트] (1) 번째 항목을 (10) (으)로 바꾸기', '(1) 번째 항목을 [리스트] 에서 삭제하기', '[리스트] 에 (10) 이 포함되어 있는가?', '(10) 을(를) [리스트] 의 (1) 번째에 넣기'는 docs.playentry.org/user/block_variable.html 에서 확인했다(2026-11-17). 엔트리의 삭제하기는 번호로 지우고, 파이썬의 remove는 값으로 지운다는 차이를 말한다(번호로 지우는 pop은 심화). 겨냥하는 오개념: 빈 리스트를 반복 안에서 만든다, 없는 값을 지워도 괜찮다.",
+  "id": "list-change",
+  "unit": "리스트",
+  "no": 4,
+  "title": "리스트 바꾸기",
+  "desc": "리스트에 값을 더하고, 바꾸고, 지우고, 있는지 물어요.",
+  "minutes": 20,
+  "knows": ["variables", "loops"],
+  "showVars": true,
+  "learned": [
+    { "rule": "리스트.append(값)은 맨 뒤에 하나를 붙여요.", "code": "과일.append(\"포도\")" },
+    { "rule": "리스트[번호] = 값 은 그 자리의 값을 바꿔요.", "code": "과일[0] = \"배\"" },
+    { "rule": "리스트.remove(값)은 그 값을 찾아서 지워요. 없는 값을 지우면 오류가 나요.", "code": "과일.remove(\"귤\")" },
+    { "rule": "값 in 리스트 는 그 값이 들어 있는지 물어요. 답은 True 또는 False예요.", "code": "if \"귤\" in 과일:\n    print(\"있어요\")" },
+    { "rule": "[] 는 빈 리스트예요. 반복하면서 append로 값을 모을 수 있어요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["리스트는 만든 뒤에도 바꿀 수 있어요. 오늘은 더하고, 바꾸고, 지우고, 있는지 물어요."],
+    "entry-four": ["엔트리에도 리스트를 바꾸는 블록이 있었어요. 추가하기, 바꾸기, 삭제하기, 그리고 포함되어 있는가."],
+    "py-four": ["파이썬에서는 이렇게 써요. 하나씩 해 볼게요."],
+    "append-intro": ["먼저 [append|어펜드]예요. 리스트 이름 뒤에 점을 찍고 써요. 이름표 칸의 리스트를 봐요."],
+    "append-after": ["맨 뒤에 포도가 붙었어요. 항목 수도 [2|이]에서 [3|삼]으로 늘었어요."],
+    "set-intro": ["이번에는 [0|영]번 자리의 값을 바꿔요. 이름표에 값을 넣는 것과 같은 모양이에요."],
+    "set-after": ["[0|영]번에 있던 사과가 배로 바뀌었어요. 다른 자리는 그대로예요."],
+    "remove-intro": ["[remove|리무브]는 값을 찾아서 지워요. 그리고 [in|인]은 그 값이 들어 있는지 물어요."],
+    "remove-after": ["귤이 지워졌어요. 엔트리는 번호로 지웠지만, [remove|리무브]는 값으로 지워요."],
+    "in-after": ["귤은 이제 없으니까 [False|폴스], 포도는 있으니까 [True|트루]예요. 참과 거짓이니까 [if|이프]에 쓸 수 있어요."],
+    "miss-intro": ["없는 값을 지우려고 하면 어떻게 될까요?"],
+    "miss-after": ["오류가 나요. 그래서 지우기 전에 [in|인]으로 있는지 먼저 물어보면 안전해요."],
+    "empty-intro": ["마지막으로, 빈 리스트예요. 대괄호만 쓰면 아무것도 없는 리스트가 돼요. 여기에 하나씩 붙여서 모을 수 있어요."],
+    "empty-after": ["세 번 물어서, 답을 하나씩 리스트에 붙였어요. 빈 리스트를 만드는 줄은 반복 앞에 있어요. 합을 [0|영]으로 시작한 것과 같아요."],
+    "follow-ok": ["좋아요. [3|삼]을 붙이고, [0|영]번을 [10|십]으로 바꿨어요."],
+    "summary": ["정리해요. [append|어펜드]는 붙이기, 대괄호와 등호는 바꾸기, [remove|리무브]는 지우기, [in|인]은 있는지 묻기."],
+
+    "q1-right": ["맞아요. 세 개에 두 개를 붙여서 다섯 개예요."],
+    "q1-same": ["[append|어펜드]를 할 때마다 하나씩 늘어요."],
+    "q1-one": ["[append|어펜드]를 두 번 했어요. 두 개가 늘어요."],
+    "q1-explain": ["세 개였던 리스트에 두 번 붙였어요. 항목 수는 [5|오]예요."],
+    "q2-right": ["맞아요. [1|일]번은 둘째 자리예요. [2|이]가 [9|구]로 바뀌었어요."],
+    "q2-first": ["[1|일]번은 첫째가 아니라 둘째예요. 번호는 [0|영]부터 세요."],
+    "q2-append": ["대괄호와 등호는 붙이는 게 아니라 그 자리의 값을 바꿔요. 항목 수는 그대로예요."],
+    "q2-explain": ["[1|일]번 자리의 값을 [9|구]로 바꿨어요. 둘째 값만 달라져요."],
+    "q3-right": ["맞아요. 다는 리스트에 없어요. 없는 값을 지우려고 해서 오류가 나요."],
+    "q3-same": ["없는 값을 지우면 그냥 넘어가지 않아요. 오류가 나요."],
+    "q3-explain": ["[remove|리무브]는 없는 값을 만나면 오류를 내요. 그래서 내보내는 줄까지 가지 못해요."],
+    "q4-right": ["맞아요. 나가 리스트에 들어 있으니까 [in|인]은 참이에요."],
+    "q4-no": ["리스트를 봐요. 나는 [1|일]번에 들어 있어요."],
+    "q4-explain": ["나가 들어 있어서 조건이 참이에요. 있어요가 나와요."],
+
+    "task-how": ["실행해서 직접 여러 가지를 넣어 보고, 잘 되면 '제출'을 눌러요."],
+    "praise-collect": ["끝이라고 할 때까지 물어서 리스트에 모았어요. 빈 리스트, 반복, [append|어펜드]를 함께 썼어요."],
+    "collect-stop": ["끝도 리스트에 들어갔어요. 붙이기 전에 먼저 끝인지 물어요."],
+    "collect-reset": ["리스트가 비어 있어요. 빈 리스트를 만드는 줄이 반복 안에 있으면, 돌 때마다 다시 비워져요. 반복 앞으로 옮겨요."],
+    "task-input-many": ["끝이라고 했는데도 또 물었어요. 끝과 같으면 [break|브레이크]로 반복을 끝내요."],
+    "hint-1": ["반복 앞에서 빈 리스트를 만들어요. 그다음 [while True|와일 트루]로 계속 물어요."],
+    "hint-2": ["답이 끝과 같으면 [break|브레이크], 아니면 리스트에 [append|어펜드]로 붙여요. 반복이 끝나면 리스트와 항목 수를 내보내요."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. 세 번만 물어서 모으는 예제예요. 이걸 보고 써 봐요."],
+    "praise-line": ["[pop|팝]으로 꺼내고, [append|어펜드]로 뒤에 붙이고, [insert|인서트]로 앞에 끼워 넣었어요."],
+    "need-pop": ["답은 맞아요. 이번에는 [pop|팝]과 [insert|인서트]를 써서 해 봐요."],
+    "line-hint-1": ["세 줄이면 돼요. [pop(0)|팝 영]으로 맨 앞을 내보내고, [append|어펜드]로 라를 맨 뒤에 붙여요."],
+    "line-hint-2": ["[insert(0, \"마\")|인서트 영 쉼표 마]는 [0|영]번 자리에 마를 끼워 넣어요. 마지막에 줄을 내보내요."],
+
+    "done-1": ["오늘은 리스트를 바꾸는 법을 배웠어요."],
+    "done-2": ["붙이기, 바꾸기, 지우기, 있는지 묻기. 네 가지예요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      {
+        "pair": {
+          "entry": [
+            { "cat": "data", "parts": [{ "in": "포도" }, "항목을", { "drop": "과일" }, "에 추가하기"] },
+            { "cat": "data", "parts": [{ "drop": "과일" }, { "in": "1" }, "번째 항목을", { "in": "배" }, "(으)로 바꾸기"] },
+            { "cat": "data", "parts": [{ "in": "2" }, "번째 항목을", { "drop": "과일" }, "에서 삭제하기"] },
+            { "cat": "judge", "parts": [{ "drop": "과일" }, "에", { "in": "귤" }, "이 포함되어 있는가?"] }
+          ],
+          "layout": "compact",
+          "python": "과일.append(\"포도\")\n과일[0] = \"배\"\n과일.remove(\"귤\")\n\"귤\" in 과일"
+        }
+      },
+      { "say": "entry-four", "pose": "point" },
+      { "say": "py-four", "pose": "point" }
+    ],
+    [
+      { "say": "append-intro" },
+      { "type": "과일 = [\"사과\", \"귤\"]\n과일.append(\"포도\")\nprint(과일)\nprint(len(과일))" },
+      { "trace": "과일 = [\"사과\", \"귤\"]\n과일.append(\"포도\")\nprint(과일)\nprint(len(과일))" },
+      { "say": "append-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "set-intro" },
+      { "type": "과일 = [\"사과\", \"귤\", \"포도\"]\n과일[0] = \"배\"\nprint(과일)" },
+      { "trace": "과일 = [\"사과\", \"귤\", \"포도\"]\n과일[0] = \"배\"\nprint(과일)" },
+      { "say": "set-after" }
+    ],
+    [
+      { "say": "remove-intro" },
+      { "type": "과일 = [\"사과\", \"귤\", \"포도\"]\n과일.remove(\"귤\")\nprint(과일)\nprint(\"귤\" in 과일)\nprint(\"포도\" in 과일)" },
+      { "trace": "과일 = [\"사과\", \"귤\", \"포도\"]\n과일.remove(\"귤\")\nprint(과일)\nprint(\"귤\" in 과일)\nprint(\"포도\" in 과일)" },
+      { "say": "remove-after" },
+      { "say": "in-after" },
+      { "say": "miss-intro" },
+      { "type": "과일 = [\"사과\", \"포도\"]\n과일.remove(\"수박\")" },
+      { "trace": "과일 = [\"사과\", \"포도\"]\n과일.remove(\"수박\")", "expectError": "ValueError" },
+      { "say": "miss-after" }
+    ],
+    [
+      { "say": "empty-intro" },
+      { "type": "모음 = []\nfor i in range(3):\n    말 = input(\"말: \")\n    모음.append(말)\nprint(모음)" },
+      { "say": "watch-vars" },
+      { "trace": "모음 = []\nfor i in range(3):\n    말 = input(\"말: \")\n    모음.append(말)\nprint(모음)", "inputs": ["가", "나", "다"] },
+      { "say": "empty-after" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "수 = [1, 2]\n수.append(3)\n수[0] = 10\nprint(수)" } },
+      { "follow": { "code": "수 = [1, 2]\n수.append(3)\n수[0] = 10\nprint(수)", "expect": ["[10, 2, 3]"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["리스트.append(값)  맨 뒤에 붙인다", "리스트[번호] = 값  그 자리를 바꾼다", "리스트.remove(값)  값을 찾아 지운다", "값 in 리스트  들어 있는지 묻는다", "[]  빈 리스트"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "수 = [1, 2, 3]\n수.append(4)\n수.append(5)\nprint(len(수))",
+      "answer": 2,
+      "choices": [
+        { "text": "3", "say": "q1-same" },
+        { "text": "4", "say": "q1-one" },
+        { "text": "5", "say": "q1-right" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "수 = [1, 2, 3]\n수[1] = 9\nprint(수)",
+      "answer": 0,
+      "choices": [
+        { "text": "[1, 9, 3]", "say": "q2-right" },
+        { "text": "[9, 2, 3]", "say": "q2-first" },
+        { "text": "[1, 2, 3, 9]", "say": "q2-append" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "글 = [\"가\", \"나\"]\n글.remove(\"다\")\nprint(글)",
+      "outcome": { "output": [], "error": "ValueError" },
+      "answer": 1,
+      "choices": [
+        { "text": "['가', '나']", "say": "q3-same" },
+        { "text": "(오류만 나온다)", "say": "q3-right" }
+      ]
+    },
+    {
+      "id": "q4",
+      "explain": "q4-explain",
+      "code": "글 = [\"가\", \"나\", \"다\"]\nif \"나\" in 글:\n    print(\"있어요\")\nelse:\n    print(\"없어요\")",
+      "answer": 0,
+      "choices": [
+        { "text": "있어요", "say": "q4-right" },
+        { "text": "없어요", "say": "q4-no" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "collect",
+      "title": "끝이라고 할 때까지 모으기",
+      "story": "넣을 것을 계속 물어서 리스트에 모아요. \"끝\"이라고 하면 그만 물어요.",
+      "steps": ["빈 리스트를 만들어요.", "while True 안에서 input으로 넣을 것을 물어요.", "답이 \"끝\"이면 반복을 끝내고, 아니면 리스트에 붙여요.", "반복이 끝나면 리스트를 내보내고, 다음 줄에 \"2 개\"처럼 항목 수를 내보내요."],
+      "cases": [
+        { "inputs": ["사과", "귤", "끝"], "expect": ["['사과', '귤']", "2 개"] },
+        { "inputs": ["끝"], "expect": ["[]", "0 개"] },
+        { "inputs": ["가", "나", "다", "끝"], "expect": ["['가', '나', '다']", "3 개"] }
+      ],
+      "expect": ["['사과', '귤']", "2 개"],
+      "show": true,
+      "mistakes": [
+        { "output": "'끝'", "say": "collect-stop" },
+        { "inputs": "^사과,귤,끝$", "output": "^\\[\\]\\n0 개$", "say": "collect-reset" }
+      ],
+      "praise": "praise-collect",
+      "solution": "모음 = []\nwhile True:\n    말 = input(\"넣을 것: \")\n    if 말 == \"끝\":\n        break\n    모음.append(말)\nprint(모음)\nprint(len(모음), \"개\")",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "모음 = []\nfor i in range(3):\n    말 = input(\"말: \")\n    모음.append(말)\nprint(모음)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "line",
+    "title": "심화: 줄 서기",
+    "story": "pop(0)은 0번 항목을 꺼내면서 지워요. insert(0, 값)은 0번 자리에 값을 끼워 넣어요. 엔트리의 '(10) 을(를) [리스트] 의 (1) 번째에 넣기'와 같아요.",
+    "steps": ["편집기에 줄을 선 사람 리스트가 있어요.", "맨 앞 사람이 나가요. (pop)", "\"라\"가 맨 뒤에 서요. (append)", "\"마\"가 맨 앞에 끼어들어요. (insert)", "줄을 내보내요."],
+    "start": "줄 = [\"가\", \"나\", \"다\"]\n",
+    "expect": ["['마', '나', '다', '라']"],
+    "show": true,
+    "checks": [
+      { "pattern": "\\.pop\\s*\\(", "say": "need-pop" },
+      { "pattern": "\\.insert\\s*\\(", "say": "need-pop" }
+    ],
+    "praise": "praise-line",
+    "solution": "줄 = [\"가\", \"나\", \"다\"]\n줄.pop(0)\n줄.append(\"라\")\n줄.insert(0, \"마\")\nprint(줄)",
+    "hints": [{ "say": "line-hint-1" }, { "say": "line-hint-2" }]
+  }
+}

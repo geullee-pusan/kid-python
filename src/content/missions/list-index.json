@@ -1,0 +1,182 @@
+{
+  "_설명": "리스트 단원 3번 수업. range(len(리스트))로 번호를 차례로 만들어, 번호와 값을 함께 쓴다. 겨냥하는 오개념: 번호로 돌 때 i에 값이 들어 있다, 내보낼 번호를 바꾸려고 꺼내는 번호까지 바꾼다(i + 1로 꺼내서 한 칸 어긋나거나 끝에서 오류).",
+  "id": "list-index",
+  "unit": "리스트",
+  "no": 3,
+  "title": "번호로 돌기",
+  "desc": "번호와 값을 함께 꺼내요.",
+  "minutes": 15,
+  "knows": ["variables", "loops"],
+  "showVars": true,
+  "learned": [
+    { "rule": "for i in range(len(리스트)): 는 번호 0, 1, 2, …를 차례로 줘요. 값은 리스트[i]로 꺼내요.", "code": "과일 = [\"사과\", \"귤\", \"포도\"]\nfor i in range(len(과일)):\n    print(i, 과일[i])" },
+    { "rule": "값만 필요하면 for 하나 in 리스트, 번호도 필요하면 for i in range(len(리스트))." },
+    { "rule": "1부터 보여 주고 싶으면 내보낼 때만 i + 1을 써요. 꺼낼 때는 i 그대로 써요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["지난 시간에는 값만 차례로 꺼냈어요. 오늘은 몇 번째인지, 번호도 함께 써요."],
+    "idx-intro": ["번호가 필요하면, 번호를 차례로 만들어서 돌아요. 이름표 칸의 [i|아이]를 봐요."],
+    "idx-after": ["[len(과일)|렌 과일]은 [3|삼]이에요. 그래서 [range(3)|레인지 삼], [i|아이]는 [0, 1, 2|영, 일, 이]가 돼요. 딱 리스트의 번호예요."],
+    "idx-get": ["[i|아이]는 번호예요. 값은 대괄호에 [i|아이]를 넣어서 꺼냈어요."],
+    "human-intro": ["사람은 [1|일]부터 세죠. 첫째, 둘째로 보여 주고 싶으면 어떻게 할까요?"],
+    "human-after": ["내보낼 때만 [i|아이]에 [1|일]을 더했어요. 꺼낼 때는 [i|아이] 그대로 썼어요."],
+    "human-warn": ["꺼낼 때까지 [1|일]을 더하면 한 칸씩 어긋나고, 마지막에는 없는 번호가 돼서 오류가 나요."],
+    "two-ways": ["도는 방법이 두 가지가 됐어요. 값만 필요하면 리스트로 바로, 번호도 필요하면 번호로 돌아요."],
+    "check-ask": ["하나 물어볼게요. 몇 번째인지도 함께 내보내려면 어느 쪽을 쓸까요?"],
+    "check-right": ["맞아요. 번호가 필요하니까 번호로 돌아요."],
+    "check-teach-1": ["리스트로 바로 돌면 이름표에 값만 들어와요. 몇 번째인지는 알 수 없어요."],
+    "check-teach-2": ["번호가 필요하면 [range|레인지]와 [len|렌]으로 번호를 만들어서 돌아요."],
+    "follow-ok": ["좋아요. 번호와 동물이 나란히 나왔어요."],
+    "summary": ["정리해요. 번호로 돌면 [i|아이]는 번호, 값은 대괄호로 꺼내요."],
+
+    "q1-right": ["맞아요. [i|아이]는 번호예요. [0, 1, 2|영, 일, 이]가 나와요."],
+    "q1-value": ["[i|아이]에는 값이 아니라 번호가 들어 있어요. 값을 꺼내려면 대괄호에 [i|아이]를 넣어야 해요."],
+    "q1-one": ["번호는 [0|영]부터 세요."],
+    "q1-explain": ["번호로 돌면 [i|아이]는 [0, 1, 2|영, 일, 이]예요. 값은 따로 꺼내야 해요."],
+    "q2-right": ["맞아요. 내보낼 때만 [1|일]을 더했어요. 값은 [i|아이] 그대로 꺼내서 어긋나지 않아요."],
+    "q2-zero": ["앞의 수는 [i + 1|아이 더하기 일]이에요. [1|일]부터 나와요."],
+    "q2-error": ["꺼낼 때는 [i|아이] 그대로 썼어요. 없는 번호를 쓰지 않아서 오류가 나지 않아요."],
+    "q2-explain": ["번호만 [1|일]을 더해서 보여 줘요. [1|일] 가, [2|이] 나, [3|삼] 다예요."],
+    "q3-right": ["맞아요. 한 칸씩 어긋나서 나, 다가 나오고, 마지막에는 [3|삼]번을 꺼내려다 오류가 나요."],
+    "q3-all": ["대괄호 안이 [i + 1|아이 더하기 일]이에요. [0|영]번이 아니라 [1|일]번부터 꺼내요."],
+    "q3-two": ["나와 다가 나온 다음, 한 번 더 돌아요. 그때 [3|삼]번을 꺼내려다 오류가 나요."],
+    "q3-explain": ["꺼내는 번호에 [1|일]을 더해서 한 칸 어긋났어요. 마지막에는 없는 번호가 돼요."],
+
+    "praise-rank": ["번호로 돌면서 등수와 이름을 함께 내보냈어요. 등수에만 [1|일]을 더했어요."],
+    "rank-zero": ["[0|영] 등부터 나왔어요. 내보낼 때 [i|아이]에 [1|일]을 더해요."],
+    "rank-no-num": ["등수가 나오지 않았어요. 번호로 돌아서, [i + 1|아이 더하기 일]을 함께 내보내요."],
+    "hint-1": ["[for i in range(len(이름)):|포 아이 인 레인지 렌 이름]으로 번호를 차례로 만들어요."],
+    "hint-2": ["한 줄에 세 가지를 쉼표로 이어요. [i + 1|아이 더하기 일], 등 콜론이라는 글자, 그리고 그 번호의 이름."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. 리스트와 글자가 달라요. 이걸 보고 써 봐요."],
+    "praise-enum": ["[enumerate|이누머레이트]로 번호와 값을 한꺼번에 받았어요. 파이썬을 쓰는 어른들이 즐겨 쓰는 방법이에요."],
+    "need-enum": ["답은 맞아요. 이번에는 [enumerate|이누머레이트]를 써서 해 봐요."],
+    "enum-zero": ["[0|영]부터 나왔어요. 내보낼 때 번호에 [1|일]을 더해요."],
+    "enum-hint-1": ["[for|포] 뒤에 이름표 두 개를 쉼표로 써요. 앞이 번호, 뒤가 값이에요."],
+    "enum-hint-2": ["[in|인] 뒤에 [enumerate|이누머레이트] 괄호 안에 리스트를 넣어요. 내보낼 때 번호에 [1|일]을 더해요."],
+
+    "done-1": ["오늘은 리스트를 번호로 도는 법을 배웠어요."],
+    "done-2": ["[i|아이]는 번호예요. 값은 대괄호로 꺼내요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "번호로 돌기", "code": "for i in range(len(과일)):\n    print(i, 과일[i])" } },
+      { "say": "idx-intro" },
+      { "type": "과일 = [\"사과\", \"귤\", \"포도\"]\nfor i in range(len(과일)):\n    print(i, 과일[i])" },
+      { "trace": "과일 = [\"사과\", \"귤\", \"포도\"]\nfor i in range(len(과일)):\n    print(i, 과일[i])" },
+      { "say": "idx-after" },
+      { "say": "idx-get" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "human-intro" },
+      { "type": "과일 = [\"사과\", \"귤\", \"포도\"]\nfor i in range(len(과일)):\n    print(i + 1, \"번째:\", 과일[i])" },
+      { "trace": "과일 = [\"사과\", \"귤\", \"포도\"]\nfor i in range(len(과일)):\n    print(i + 1, \"번째:\", 과일[i])" },
+      { "say": "human-after" },
+      { "say": "human-warn" }
+    ],
+    [
+      { "card": { "title": "도는 방법 두 가지", "items": ["값만 필요하다  →  for 하나 in 과일:", "번호도 필요하다  →  for i in range(len(과일)):"] } },
+      { "say": "two-ways" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "\"1 번째: 사과\"처럼 몇 번째인지도 내보내려면?",
+          "ask": "check-ask",
+          "choices": ["for i in range(len(과일)):", "for 하나 in 과일:"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "동물 = [\"개\", \"고양이\", \"토끼\"]\nfor i in range(len(동물)):\n    print(i, 동물[i])" } },
+      { "follow": { "code": "동물 = [\"개\", \"고양이\", \"토끼\"]\nfor i in range(len(동물)):\n    print(i, 동물[i])", "expect": ["0 개", "1 고양이", "2 토끼"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["for i in range(len(리스트)):  번호로 돈다", "i는 번호, 값은 리스트[i]", "보여 줄 때만 i + 1", "값만 필요하면 for 하나 in 리스트"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "글 = [\"가\", \"나\", \"다\"]\nfor i in range(len(글)):\n    print(i)",
+      "answer": 1,
+      "choices": [
+        { "text": "가\n나\n다", "say": "q1-value" },
+        { "text": "0\n1\n2", "say": "q1-right" },
+        { "text": "1\n2\n3", "say": "q1-one" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "글 = [\"가\", \"나\", \"다\"]\nfor i in range(len(글)):\n    print(i + 1, 글[i])",
+      "answer": 0,
+      "choices": [
+        { "text": "1 가\n2 나\n3 다", "say": "q2-right" },
+        { "text": "0 가\n1 나\n2 다", "say": "q2-zero" },
+        { "text": "(오류만 나온다)", "say": "q2-error" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "글 = [\"가\", \"나\", \"다\"]\nfor i in range(len(글)):\n    print(글[i + 1])",
+      "outcome": { "output": ["나", "다"], "error": "IndexError" },
+      "answer": 2,
+      "choices": [
+        { "text": "가\n나\n다", "say": "q3-all" },
+        { "text": "나\n다", "say": "q3-two" },
+        { "text": "나\n다\n(그리고 오류)", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "rank",
+      "title": "달리기 등수",
+      "story": "편집기에 달리기에서 들어온 순서대로 이름이 들어 있어요. 등수와 함께 알려 줘요.",
+      "steps": ["번호로 돌아요.", "아래처럼 등수와 이름을 한 줄씩 내보내요."],
+      "start": "이름 = [\"하늘\", \"바다\", \"구름\", \"나무\"]\n",
+      "expect": ["1 등: 하늘", "2 등: 바다", "3 등: 구름", "4 등: 나무"],
+      "show": true,
+      "checks": [{ "pattern": "for\\s+\\S+", "say": "need-for" }],
+      "mistakes": [
+        { "output": "^0 등", "say": "rank-zero" },
+        { "output": "^하늘\\n바다", "say": "rank-no-num" }
+      ],
+      "praise": "praise-rank",
+      "solution": "이름 = [\"하늘\", \"바다\", \"구름\", \"나무\"]\nfor i in range(len(이름)):\n    print(i + 1, \"등:\", 이름[i])",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "과일 = [\"사과\", \"귤\"]\nfor i in range(len(과일)):\n    print(i + 1, \"번:\", 과일[i])" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "enum",
+    "title": "심화: 번호와 값을 한꺼번에",
+    "story": "enumerate를 쓰면 번호와 값을 한꺼번에 받을 수 있어요. for i, 하나 in enumerate(색): 이라고 쓰면, i에는 번호가, 하나에는 값이 들어와요.",
+    "steps": ["편집기에 색 리스트가 있어요.", "enumerate로 돌면서, 아래처럼 번호와 색을 내보내요. 번호는 1부터 보여 줘요."],
+    "start": "색 = [\"빨강\", \"노랑\", \"파랑\"]\n",
+    "expect": ["1 빨강", "2 노랑", "3 파랑"],
+    "show": true,
+    "checks": [{ "pattern": "\\benumerate\\b", "say": "need-enum" }],
+    "mistakes": [{ "output": "^0 빨강", "say": "enum-zero" }],
+    "praise": "praise-enum",
+    "solution": "색 = [\"빨강\", \"노랑\", \"파랑\"]\nfor i, 하나 in enumerate(색):\n    print(i + 1, 하나)",
+    "hints": [{ "say": "enum-hint-1" }, { "say": "enum-hint-2" }]
+  }
+}

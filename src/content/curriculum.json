@@ -67,7 +67,16 @@
       ]
     },
     {
-      "title": "리스트"
+      "title": "리스트",
+      "lessons": [
+        "list-basic",
+        "list-for",
+        "list-index",
+        "list-change",
+        "list-calc",
+        "list-pair",
+        "unit7-review"
+      ]
     },
     {
       "title": "함수"

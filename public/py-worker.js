@@ -118,7 +118,13 @@ def __kidpy_vars(scope):
         if key.startswith("__") or callable(value) or isinstance(value, type(sys)):
             continue
         try:
-            text = json.dumps(value, ensure_ascii=False) if isinstance(value, str) else repr(value)
+            # 글자와 리스트는 아이가 치는 모양 그대로(큰따옴표로) 보여 준다. 리스트 안에 True 같은 값이 있으면 파이썬 모양으로.
+            if isinstance(value, str):
+                text = json.dumps(value, ensure_ascii=False)
+            elif isinstance(value, list) and all(isinstance(x, (str, int, float)) and not isinstance(x, bool) for x in value):
+                text = json.dumps(value, ensure_ascii=False)
+            else:
+                text = repr(value)
         except Exception:
             text = "?"
         if len(text) > 48:

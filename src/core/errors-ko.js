@@ -31,7 +31,9 @@ export function explain(error, knows = {}) {
     if (/^\s*else\s+if\b/m.test(text)) return '파이썬에서는 else if를 줄여서 elif라고 써요.';
     if (/^\s*else\s+[^:\s]/m.test(text)) return 'else 뒤에는 조건을 쓰지 않아요. else: 라고만 써요. 조건이 더 필요하면 elif를 써요.';
     if (/expected ':'/.test(message)) return '줄 끝에 콜론(:)이 빠졌어요.';
+    if (/'\[' was never closed/.test(message)) return '여는 대괄호 [ 를 닫지 않았어요. 닫는 대괄호 ] 를 써요.';
     if (/was never closed/.test(message)) return '여는 괄호를 닫지 않았어요. 닫는 괄호 )를 써요.';
+    if (/unmatched '\]'/.test(message)) return '닫는 대괄호 ] 가 하나 더 많아요.';
     if (/unmatched '\)'/.test(message)) return '닫는 괄호가 하나 더 많아요.';
     if (/unterminated string/.test(message)) return '따옴표를 닫지 않았어요. 글자 끝에도 따옴표를 써요.';
     if (/invalid character/.test(message)) return '코드 자리에 쓸 수 없는 글자가 있어요. 한/영 키를 확인해 봐요.';
@@ -78,6 +80,10 @@ export function explain(error, knows = {}) {
   if (type === 'TypeError') {
     if (/can only concatenate str|unsupported operand type\(s\) for \+/.test(message)) return '글자와 숫자는 더하기(+)로 이을 수 없어요. 숫자로 계산하려면 int( )로, 글자로 이으려면 str( )로 바꿔요.';
     if (/unsupported operand type\(s\) for [-/*%]|can't multiply sequence/.test(message)) return '글자로는 이 계산을 할 수 없어요. int( )로 숫자로 바꿔요.';
+    if (/list indices must be integers/.test(message)) return '대괄호 안의 번호는 숫자여야 해요. 글자라면 int( )로 숫자로 바꿔요.';
+    if (/object is not iterable/.test(message)) return 'for … in 뒤에는 리스트나 range( )를 써요. 숫자 하나는 차례로 돌 수 없어요.';
+    if (/object is not subscriptable/.test(message)) return '대괄호로 꺼낼 수 있는 것은 리스트와 글자예요. 이름표에 리스트가 들어 있는지 봐요.';
+    if (/can only concatenate list/.test(message)) return '리스트에 값 하나를 더할 때는 append( )를 써요.';
     if (/not supported between instances of/.test(message)) return '글자와 숫자는 크기를 견줄 수 없어요. input의 답이라면 int( )로 숫자로 바꿔요.';
     if (/cannot be interpreted as an integer/.test(message)) return 'range( ) 안에는 숫자를 넣어요. 글자라면 int( )로 숫자로 바꿔요.';
     if (/missing \d+ required positional argument|takes \d+ positional argument/.test(message)) return '괄호 안에 넣은 값의 개수가 맞지 않아요.';
@@ -85,6 +91,8 @@ export function explain(error, knows = {}) {
   }
   if (type === 'AttributeError') {
     if (/module 'random' has no attribute/.test(message)) return 'random 뒤의 이름이 달라요. random.randint 의 철자를 확인해요.';
+    if (/'list' object has no attribute '(add|push|insert_end|appned|apend)'/.test(message)) return '리스트에 값을 더할 때는 append 라고 써요. 철자를 확인해요.';
+    if (/'list' object has no attribute/.test(message)) return '리스트 뒤의 점(.) 다음 이름을 파이썬이 몰라요. append, remove, index 의 철자를 확인해요.';
     return '점(.) 뒤에 쓴 이름을 파이썬이 몰라요. 철자를 확인해요.';
   }
   if (type === 'ModuleNotFoundError' || type === 'ImportError') return 'import 뒤의 이름을 파이썬이 몰라요. random 은 모두 작은 글자로 써요.';
@@ -92,6 +100,10 @@ export function explain(error, knows = {}) {
     const bad = /invalid literal for int\(\) with base 10: (.+)$/.exec(message);
     if (bad) return `${bad[1]}은(는) 숫자로 바꿀 수 없어요. int( ) 안에는 숫자로 된 글자만 넣어요.`;
     if (/empty range/.test(message)) return 'randint( ) 안에는 작은 수를 먼저, 큰 수를 나중에 써요.';
+    if (/list\.remove\(x\): x not in list/.test(message)) return '리스트에 없는 값은 지울 수 없어요. 철자를 확인하거나, 먼저 in으로 있는지 물어봐요.';
+    if (/list\.index\(x\): x not in list/.test(message)) return '찾는 값이 리스트에 없어요. 철자를 확인하거나, 먼저 in으로 있는지 물어봐요.';
+    const missing = /^(.+) is not in list$/.exec(message);
+    if (missing) return `${missing[1]}은(는) 리스트에 없어요. 철자를 확인하거나, 먼저 in으로 있는지 물어봐요.`;
     // 끝나지 않는 반복에서 수가 끝없이 커지면, 파이썬이 그 수를 글자로 바꾸다가 멈춘다.
     if (/Exceeds the limit/.test(message)) return '수가 끝없이 커졌어요. 반복이 끝나지 않는 것 같아요. 조건이 언젠가 거짓이 되는지 봐요.';
     return '값의 모양이 맞지 않아요.';
@@ -101,7 +113,10 @@ export function explain(error, knows = {}) {
     if (knows.loops) return '0으로 나눌 수 없어요. range는 0부터 세요. 나누는 수가 0이 되지 않게 1부터 시작해요.';
     return '0으로 나눌 수 없어요.';
   }
-  if (type === 'IndexError') return '없는 자리 번호를 썼어요.';
+  if (type === 'IndexError') {
+    if (/pop from empty list/.test(message)) return '빈 리스트에서는 꺼낼 것이 없어요.';
+    return '없는 번호를 썼어요. 번호는 0부터 세어서, 마지막 번호는 항목 수보다 하나 작아요.';
+  }
   if (type === 'EOFError') return '입력을 받을 수 없었어요.';
   return `${type} 오류가 났어요.`;
 }
