@@ -9,6 +9,11 @@ let runScripted = null;
 let interruptView = null; // 화면이 2를 써 넣으면 파이썬에 KeyboardInterrupt가 난다
 let inputCtl = null; // [상태, 길이]. 상태 0 = 기다림, 1 = 입력 있음, 2 = 그만
 let inputBytes = null; // 입력 글자(UTF-8)
+// 눌린 키: 화면이 [0]에 지금까지 넣은 개수를, [1 + n % KEY_SLOTS]에 키 번호를 적는다(뗀 것은 1000을 더한다).
+let keyView = null;
+let keysRead = 0;
+const KEY_SLOTS = 250;
+const KEY_NAMES = ['Left', 'Right', 'Up', 'Down', 'space', 'Return', ...'abcdefghijklmnopqrstuvwxyz0123456789'];
 
 // ---- 출력 모으기 ----
 // print를 끝없이 하는 프로그램이 화면을 얼리지 않게 세 가지를 한다.
@@ -56,6 +61,21 @@ function emit(stream, text) {
     dropped += cut;
   }
   if (performance.now() - lastFlush >= FLUSH_EVERY_MS) flush();
+}
+
+/** 그사이 눌린 키들을 파이썬에 넘겨준다: [["press", "Left"], ["release", "Left"], …]의 JSON */
+function pollKeys() {
+  if (!keyView) return '[]';
+  const written = Atomics.load(keyView, 0);
+  // 너무 많이 밀렸으면(프로그램이 오래 안 받았으면) 오래된 것은 버린다.
+  if (written - keysRead > KEY_SLOTS) keysRead = written - KEY_SLOTS;
+  const events = [];
+  for (; keysRead < written; keysRead += 1) {
+    const code = Atomics.load(keyView, 1 + (keysRead % KEY_SLOTS));
+    const name = KEY_NAMES[code % 1000];
+    if (name) events.push([code >= 1000 ? 'release' : 'press', name]);
+  }
+  return JSON.stringify(events);
 }
 
 /** 파이썬의 turtle 명령이 그릴 것을 하나씩 넘겨준다(그냥 실행일 때만). */
@@ -185,11 +205,21 @@ def _kidpy_r(v):
     return round(float(v), 3) + 0.0
 
 def _kidpy_emit(cmd):
-    if len(_kidpy_draws) >= _KIDPY_DRAW_MAX:
-        raise TurtleGraphicsError("too many drawing commands")
-    _kidpy_draws.append(cmd)
-    if _kidpy_stream[0] and _kidpy_draw_hook is not None:
-        _kidpy_draw_hook(json.dumps(cmd, ensure_ascii=False))
+    kind = cmd["k"]
+    if kind in ("line", "dot", "text", "fill"):
+        # 그림판에 남는 것만 센다(끝나지 않는 반복이 선을 끝없이 긋는 것을 막으려고). 지우면 다시 0부터 센다.
+        _kidpy_state["ink"] += 1
+        if _kidpy_state["ink"] > _KIDPY_DRAW_MAX:
+            raise TurtleGraphicsError("too many drawing commands")
+    elif kind == "clear":
+        _kidpy_state["ink"] = 0
+    if _kidpy_stream[0]:
+        # 그냥 실행: 화면으로 바로 보낸다(게임은 끝없이 보내므로 여기에 쌓아 두지 않는다).
+        if _kidpy_draw_hook is not None:
+            _kidpy_draw_hook(json.dumps(cmd, ensure_ascii=False))
+            _kidpy_maybe_poll()
+    else:
+        _kidpy_draws.append(cmd)
 
 def _kidpy_color(value):
     if isinstance(value, str):
@@ -215,13 +245,14 @@ class Turtle:
         self._fill_id = None
         self._shown = True
         self._shape = "classic"
+        self._stretch = [1.0, 1.0]
         self._pose()
 
     def __repr__(self):
         return "<거북이 " + str(self._id + 1) + ">"
 
     def _pose(self):
-        _kidpy_emit({"k": "pose", "t": self._id, "x": _kidpy_r(self._x), "y": _kidpy_r(self._y), "h": _kidpy_r(self._h), "v": self._shown, "s": self._shape})
+        _kidpy_emit({"k": "pose", "t": self._id, "x": _kidpy_r(self._x), "y": _kidpy_r(self._y), "h": _kidpy_r(self._h), "v": self._shown, "s": self._shape, "z": self._stretch, "c": self._pen, "f": self._fillc})
 
     def _go(self, x, y):
         x = float(x)
@@ -299,8 +330,11 @@ class Turtle:
             size = max(self._size + 4, self._size * 2)
         _kidpy_emit({"k": "dot", "t": self._id, "x": _kidpy_r(self._x), "y": _kidpy_r(self._y), "r": _kidpy_r(size / 2), "c": _kidpy_color(color) if color is not None else self._pen})
 
-    def write(self, text, *args, **kwargs):
-        _kidpy_emit({"k": "text", "t": self._id, "x": _kidpy_r(self._x), "y": _kidpy_r(self._y), "s": str(text), "c": self._pen})
+    def write(self, text, move=False, align="left", font=None):
+        size = 16
+        if isinstance(font, (tuple, list)) and len(font) >= 2:
+            size = int(font[1])
+        _kidpy_emit({"k": "text", "t": self._id, "x": _kidpy_r(self._x), "y": _kidpy_r(self._y), "s": str(text), "c": self._pen, "a": str(align), "z": size})
 
     def penup(self):
         self._down = False
@@ -327,17 +361,20 @@ class Turtle:
         if not args:
             return self._pen
         self._pen = _kidpy_color(args[0])
+        self._pose()
 
     def fillcolor(self, *args):
         if not args:
             return self._fillc
         self._fillc = _kidpy_color(args[0])
+        self._pose()
 
     def color(self, *args):
         if not args:
             return (self._pen, self._fillc)
         self._pen = _kidpy_color(args[0])
         self._fillc = _kidpy_color(args[-1])
+        self._pose()
 
     def begin_fill(self):
         self._fill_id = _kidpy_state["fills"]
@@ -379,7 +416,10 @@ class Turtle:
         return _kidpy_r(self._h)
 
     def distance(self, x, y=None):
-        if y is None:
+        # 다른 거북이까지의 거리도 잴 수 있다: 공.distance(바구니)
+        if isinstance(x, Turtle):
+            x, y = x._x, x._y
+        elif y is None:
             x, y = x
         return _kidpy_math.hypot(x - self._x, y - self._y)
 
@@ -404,6 +444,20 @@ class Turtle:
         self._shape = name
         self._pose()
 
+    def shapesize(self, stretch_wid=None, stretch_len=None, outline=None):
+        # 모양의 크기: 앞의 수는 세로(가는 방향에 가로지르는 쪽), 뒤의 수는 가로(가는 방향). 1이 처음 크기(20)다.
+        if stretch_wid is None and stretch_len is None:
+            return (self._stretch[0], self._stretch[1], 1)
+        if stretch_wid is None:
+            stretch_wid = self._stretch[0]
+        if stretch_len is None:
+            stretch_len = stretch_wid
+        if stretch_wid <= 0 or stretch_len <= 0:
+            raise TurtleGraphicsError("bad shape size")
+        self._stretch = [float(stretch_wid), float(stretch_len)]
+        self._pose()
+    turtlesize = shapesize
+
     def clear(self):
         _kidpy_emit({"k": "clear", "t": self._id})
 
@@ -419,31 +473,170 @@ class Turtle:
         self._path = None
         self._pose()
 
+# ---- 움직이는 그림과 게임: 키 입력, 한 장면씩 그리기, 타이머 ----
+# 눌린 키는 화면 쪽에서 함께 쓰는 메모리로 넘어온다(_kidpy_keys_hook이 꺼내 준다).
+# 파이썬은 turtle.update(), time.sleep(), turtle.mainloop()에서, 그리고 거북이를 움직이는 사이사이에 키를 받아
+# 그 키에 붙여 둔 함수를 부른다(진짜 turtle도 화면을 고칠 때 키를 처리한다).
+# 채점과 점검(_kidpy_stream이 False)에서는 정해 둔 키를 차례로 하나씩 넣고, 정해 둔 장면 수가 지나면 프로그램을 끝낸다.
+import time as _kidpy_time
+_kidpy_real_sleep = _kidpy_time.sleep
+_kidpy_keys_hook = None
+_kidpy_flush_hook = None
+_KIDPY_KEYS = ["Left", "Right", "Up", "Down", "space", "Return"] + list("abcdefghijklmnopqrstuvwxyz0123456789")
+
+class _KidpyGameEnd(BaseException):
+    pass
+
+def _kidpy_call_keys(events):
+    if not _kidpy_state["listening"]:
+        return
+    for kind, name in events:
+        fn = _kidpy_state[kind].get(name)
+        if fn is not None:
+            fn()
+
+def _kidpy_call_timers(now):
+    due = [item for item in _kidpy_state["timers"] if item[0] <= now]
+    for item in due:
+        _kidpy_state["timers"].remove(item)
+    for item in due:
+        item[1]()
+
+def _kidpy_poll():
+    if _kidpy_stream[0]:
+        _kidpy_state["polled"] = _kidpy_time.time()
+        if _kidpy_keys_hook is not None:
+            _kidpy_call_keys(json.loads(_kidpy_keys_hook()))
+        _kidpy_call_timers(_kidpy_time.time())
+    else:
+        # 정해 둔 키를 장면마다 하나씩 넣는다(눌렀다 뗀 것으로 친다).
+        game = _kidpy_state["game"]
+        if game["frames"] and game["tick"] >= game["frames"]:
+            raise _KidpyGameEnd()
+        game["tick"] += 1
+        if game["keys"]:
+            name = game["keys"].pop(0)
+            _kidpy_call_keys([["press", name], ["release", name]])
+        _kidpy_call_timers(_kidpy_state["clock"])
+
+def _kidpy_maybe_poll():
+    # 거북이가 움직이는 사이사이에도 키를 받는다(너무 자주 묻지 않게 0.02초에 한 번만).
+    if _kidpy_state["tracer"] and _kidpy_state["listening"] and not _kidpy_state["in_poll"] and _kidpy_time.time() - _kidpy_state["polled"] > 0.02:
+        _kidpy_state["in_poll"] = True
+        try:
+            _kidpy_poll()
+        finally:
+            _kidpy_state["in_poll"] = False
+
+def _kidpy_sleep(seconds):
+    seconds = float(seconds)
+    if _kidpy_stream[0]:
+        if _kidpy_flush_hook is not None:
+            _kidpy_flush_hook()
+        # 길게 쉴 때도 멈춤 버튼이 바로 듣게 조금씩 나눠 쉰다.
+        while seconds > 0:
+            step = min(seconds, 0.05)
+            _kidpy_real_sleep(step)
+            seconds -= step
+        _kidpy_poll()
+    else:
+        _kidpy_state["clock"] += seconds
+        _kidpy_poll()
+
+_kidpy_time.sleep = _kidpy_sleep
+
+def _kidpy_key_name(key):
+    if key is None:
+        return None
+    if key not in _KIDPY_KEYS:
+        raise TurtleGraphicsError("bad key name: " + str(key))
+    return key
+
+def _kidpy_bind(table, fun, key):
+    if fun is not None and not callable(fun):
+        raise TurtleGraphicsError("key handler must be a function")
+    if fun is None:
+        # 함수 이름 뒤에 괄호를 붙이면 함수가 바로 실행되고, 돌려준 값(None)이 넘어온다.
+        raise TurtleGraphicsError("key handler is None")
+    _kidpy_state[table][_kidpy_key_name(key)] = fun
+
+def _kidpy_mainloop():
+    # 키와 타이머를 기다린다. 멈춤 버튼을 누를 때까지(채점에서는 정해 둔 장면 수만큼) 돈다.
+    while True:
+        if _kidpy_stream[0]:
+            _kidpy_sleep(0.02)
+        else:
+            if not _kidpy_state["game"]["frames"]:
+                return
+            _kidpy_state["clock"] += 0.02
+            _kidpy_poll()
+
 class _KidpyScreen:
     def bgcolor(self, *args):
         if not args:
             return _kidpy_state["bg"]
         _kidpy_state["bg"] = _kidpy_color(args[0])
         _kidpy_emit({"k": "bg", "c": _kidpy_state["bg"]})
+    def tracer(self, n=None, delay=None):
+        # tracer(0): 움직임을 하나하나 보여 주지 않고, update()를 부를 때 한 장면을 한꺼번에 바꾼다.
+        if n is None:
+            return _kidpy_state["tracer"]
+        _kidpy_state["tracer"] = int(n)
+        _kidpy_emit({"k": "tracer", "n": int(n)})
+    def update(self):
+        _kidpy_emit({"k": "frame"})
+        if _kidpy_stream[0] and _kidpy_flush_hook is not None:
+            _kidpy_flush_hook()
+        _kidpy_poll()
+    def listen(self, *args):
+        _kidpy_state["listening"] = True
+        _kidpy_emit({"k": "listen"})
+    def onkeypress(self, fun, key=None):
+        _kidpy_bind("press", fun, key)
+    def onkeyrelease(self, fun, key=None):
+        _kidpy_bind("release", fun, key)
+    onkey = onkeyrelease
+    def ontimer(self, fun, t=0):
+        if not callable(fun):
+            raise TurtleGraphicsError("key handler is None" if fun is None else "key handler must be a function")
+        now = _kidpy_time.time() if _kidpy_stream[0] else _kidpy_state["clock"]
+        _kidpy_state["timers"].append([now + t / 1000, fun])
+    def mainloop(self):
+        _kidpy_mainloop()
+    done = mainloop
+    exitonclick = mainloop
     def _nothing(self, *args, **kwargs):
         return None
-    title = setup = tracer = update = delay = mainloop = exitonclick = done = bye = listen = screensize = _nothing
+    title = setup = delay = bye = screensize = _nothing
     def window_width(self):
         return 480
     def window_height(self):
         return 360
 
-_kidpy_state = {"count": 0, "fills": 0, "speed": 3, "bg": "#ffffff", "default": None}
+_kidpy_state = {}
 
 def _kidpy_default():
     if _kidpy_state["default"] is None:
         _kidpy_state["default"] = Turtle()
     return _kidpy_state["default"]
 
-def _kidpy_turtle_reset(stream):
+def _kidpy_turtle_reset(stream, keys=(), frames=0):
     del _kidpy_draws[:]
     _kidpy_stream[0] = stream
-    _kidpy_state.update({"count": 0, "fills": 0, "speed": 3, "bg": "#ffffff", "default": None})
+    _kidpy_state.update({
+        "count": 0, "fills": 0, "speed": 3, "bg": "#ffffff", "default": None, "ink": 0,
+        "tracer": 1, "listening": False, "press": {}, "release": {}, "timers": [], "polled": 0.0, "in_poll": False, "clock": 0.0,
+        # 채점과 점검에서 쓰는 것: 차례로 넣을 키, 돌릴 장면 수(0이면 한도 없음), 지금까지 지난 장면 수
+        "game": {"keys": list(keys), "frames": int(frames), "tick": 0},
+    })
+
+def _kidpy_after_run():
+    # 키를 기다리는 프로그램(listen을 부른 프로그램)은 끝까지 가도 닫지 않고 키를 계속 받는다.
+    # 진짜 turtle에서는 맨 끝에 turtle.done()을 써야 하지만, 빼먹어도 되게 해 둔다.
+    if _kidpy_state["listening"] or _kidpy_state["timers"]:
+        _kidpy_mainloop()
+
+_kidpy_turtle_reset(False)
 
 def _kidpy_turtle_module():
     module = _kidpy_types.ModuleType("turtle")
@@ -456,7 +649,7 @@ def _kidpy_turtle_module():
         if not name.startswith("_"):
             setattr(module, name, passing(name))
     screen = _KidpyScreen()
-    for name in ("bgcolor", "title", "setup", "tracer", "update", "delay", "mainloop", "exitonclick", "done", "bye", "listen", "screensize", "window_width", "window_height"):
+    for name in ("bgcolor", "title", "setup", "tracer", "update", "delay", "mainloop", "exitonclick", "done", "bye", "listen", "screensize", "window_width", "window_height", "onkey", "onkeypress", "onkeyrelease", "ontimer"):
         setattr(module, name, getattr(screen, name))
     module.Turtle = Turtle
     module.Pen = Turtle
@@ -474,6 +667,7 @@ def __kidpy_run(code):
     error = None
     try:
         exec(compile(code, name, "exec"), scope)
+        _kidpy_after_run()
     except SystemExit:
         pass
     except BaseException as e:
@@ -492,8 +686,9 @@ class __KidpyTraceLimit(Exception):
 # limit: 한 줄씩 보기에서 보여 줄 줄 수의 한도. 넘으면 TraceLimit(끝나지 않는 반복을 시연할 때는 작게 준다).
 # randoms_json: 무작위 수를 정해 둘 때 쓴다. 비어 있지 않으면 random.randint가 이 값들을 차례로 돌려준다(채점과 시연이 늘 같게).
 # 채점(trace=False)에서도 줄 수를 세어, 너무 많으면(끝나지 않는 반복) TraceLimit으로 멈춘다.
-def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]"):
-    _kidpy_turtle_reset(False)
+# keys_json: 차례로 넣을 키 이름들(장면마다 하나씩). frames: 돌릴 장면 수. 0이 아니면 그만큼 돈 뒤에 프로그램을 끝낸다(오류가 아니다).
+def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]", keys_json="[]", frames=0):
+    _kidpy_turtle_reset(False, json.loads(keys_json), frames)
     name = "main.py"
     linecache.cache[name] = (len(code), None, code.splitlines(True), name)
     scope = {"__name__": "__main__"}
@@ -548,9 +743,10 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]"):
         sys.settrace(tracer if trace else counter)
         try:
             exec(compiled, scope)
+            _kidpy_after_run()
         finally:
             sys.settrace(None)
-    except SystemExit:
+    except (SystemExit, _KidpyGameEnd):
         pass
     except __KidpyTraceLimit:
         error = {"type": "TraceLimit", "message": "too many steps", "line": None, "col": None, "text": ""}
@@ -584,6 +780,7 @@ async function init(message) {
     inputBytes = new Uint8Array(message.inputBytes);
   }
   if (message.flow) flow = new Int32Array(message.flow);
+  if (message.keys) keyView = new Int32Array(message.keys);
   pyodide = await loadPyodide({ indexURL: new URL('./pyodide/', self.location.href).href });
   pyodide.setStdout(makeWriter('out'));
   pyodide.setStderr(makeWriter('err'));
@@ -591,6 +788,9 @@ async function init(message) {
   if (interruptView) pyodide.setInterruptBuffer(interruptView);
   pyodide.runPython(RUNNER_SOURCE);
   pyodide.globals.set('_kidpy_draw_hook', emitDraw);
+  pyodide.globals.set('_kidpy_keys_hook', pollKeys);
+  // 한 장면을 다 그렸거나 쉬기 전에: 모아 둔 것을 화면으로 보낸다(화면이 밀려 있으면 다음에 보낸다).
+  pyodide.globals.set('_kidpy_flush_hook', () => flush());
   runUser = pyodide.globals.get('__kidpy_run');
   runScripted = pyodide.globals.get('__kidpy_scripted');
   const python = pyodide.runPython('import sys; sys.version.split()[0]');
@@ -609,11 +809,13 @@ function run(message) {
   const started = performance.now();
   if (interruptView) interruptView[0] = 0;
   if (inputCtl) Atomics.store(inputCtl, 0, 0);
+  // 앞 프로그램 때 눌린 키는 버린다.
+  if (keyView) keysRead = Atomics.load(keyView, 0);
   let result = { error: null };
   try {
     if (message.mode === 'trace' || message.mode === 'check') {
       result = JSON.parse(
-        runScripted(message.code, JSON.stringify(message.inputs ?? []), message.mode === 'trace', message.limit ?? 300, JSON.stringify(message.randoms ?? [])),
+        runScripted(message.code, JSON.stringify(message.inputs ?? []), message.mode === 'trace', message.limit ?? 300, JSON.stringify(message.randoms ?? []), JSON.stringify(message.keys ?? []), message.frames ?? 0),
       );
     } else {
       result = JSON.parse(runUser(message.code));

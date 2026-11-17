@@ -1,7 +1,9 @@
 // 그림판. 파이썬의 turtle 명령이 남긴 그리기 명령(public/py-worker.js)을 받아서 그린다.
 // - 좌표는 가운데가 (0, 0), 위쪽이 y의 +. 그림판의 크기는 가로 480, 세로 360(화면에서는 늘려서 보여 준다).
 // - 선은 거북이가 움직이는 것처럼 차례로 그어진다. 빠르기는 turtle.speed( )로 정하고, 그릴 것이 많이 밀리면 저절로 빨라진다.
+// - turtle.tracer(0)을 쓴 프로그램(게임)은 움직임을 하나하나 보여 주지 않고, turtle.update()마다 한 장면을 한꺼번에 바꾼다.
 // - 다 그린 것은 따로 둔 종이(ink)에 남기고, 화면에는 종이 + 지금 긋는 선 + 거북이를 겹쳐 보여 준다.
+// - 프로그램이 turtle.listen()을 부르면 그림판이 키를 받는다. 화면에 누를 수 있는 화살표 단추도 나온다.
 
 export const VIEW = { w: 480, h: 360 };
 const SCALE = 2; // 그림판 안쪽의 실제 점 수(선이 흐릿하지 않게)
@@ -9,6 +11,14 @@ const X = (x) => VIEW.w / 2 + x;
 const Y = (y) => VIEW.h / 2 - y;
 // 밀린 그림을 다 그리는 데 걸리는 시간의 한도. 넘을 것 같으면 선 하나에 쓰는 시간을 줄인다.
 const DRAIN_MS = 9000;
+
+/** 브라우저의 키 이름을 turtle의 키 이름으로. 모르는 키는 null. */
+export function turtleKey(event) {
+  const names = { ArrowLeft: 'Left', ArrowRight: 'Right', ArrowUp: 'Up', ArrowDown: 'Down', ' ': 'space', Spacebar: 'space', Enter: 'Return' };
+  if (names[event.key]) return names[event.key];
+  if (/^[a-zA-Z0-9]$/.test(event.key)) return event.key.toLowerCase();
+  return null;
+}
 
 /** 다 그려진 것 하나를 종이에 그린다. */
 function paintItem(ctx, item) {
@@ -35,47 +45,62 @@ function paintItem(ctx, item) {
     ctx.fill();
   } else if (item.k === 'text') {
     ctx.fillStyle = item.c;
-    ctx.font = '16px system-ui, "Noto Sans KR", sans-serif';
+    ctx.font = `${item.z ?? 16}px system-ui, "Noto Sans KR", sans-serif`;
+    ctx.textAlign = ['left', 'center', 'right'].includes(item.a) ? item.a : 'left';
     ctx.textBaseline = 'alphabetic';
     ctx.fillText(item.s, X(item.x), Y(item.y));
+    ctx.textAlign = 'left';
   }
 }
 
-/** 거북이(또는 화살표)를 그린다. */
+/** 거북이를 그 모양(화살표, 거북이, 동그라미, 네모, 세모)과 색, 크기로 그린다. */
 function paintTurtle(ctx, t) {
   if (!t.v) return;
+  const [wid, len] = t.z ?? [1, 1];
+  const plain = (t.f ?? '#000000') === '#000000' && (t.c ?? '#000000') === '#000000';
   ctx.save();
   ctx.translate(X(t.x), Y(t.y));
   ctx.rotate((-t.h * Math.PI) / 180);
+  ctx.scale(len, wid); // 가는 방향이 가로(len), 가로지르는 쪽이 세로(wid)
+  ctx.lineWidth = 1 / Math.max(len, wid);
+  ctx.fillStyle = t.f ?? '#000000';
+  ctx.strokeStyle = t.c ?? '#000000';
+  ctx.beginPath();
   if (t.s === 'turtle') {
-    ctx.fillStyle = '#2f9e44';
-    ctx.strokeStyle = '#1b6e2d';
-    ctx.lineWidth = 1;
-    for (const [lx, ly] of [[5, -7], [5, 7], [-5, -7], [-5, 7]]) {
-      ctx.beginPath();
-      ctx.arc(lx, ly, 2.6, 0, Math.PI * 2);
-      ctx.fill();
+    // 색을 정하지 않은 거북이는 초록색으로 보여 준다.
+    if (plain) {
+      ctx.fillStyle = '#2f9e44';
+      ctx.strokeStyle = '#1b6e2d';
     }
-    ctx.beginPath();
+    for (const [lx, ly] of [[5, -7], [5, 7], [-5, -7], [-5, 7]]) {
+      ctx.moveTo(lx + 2.6, ly);
+      ctx.arc(lx, ly, 2.6, 0, Math.PI * 2);
+    }
+    ctx.moveTo(13.6, 0);
     ctx.arc(10, 0, 3.6, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
     ctx.ellipse(0, 0, 8.5, 6.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
+  } else if (t.s === 'circle') {
+    ctx.arc(0, 0, 10, 0, Math.PI * 2);
+  } else if (t.s === 'square') {
+    ctx.rect(-10, -10, 20, 20);
+  } else if (t.s === 'triangle') {
+    ctx.moveTo(11.5, 0);
+    ctx.lineTo(-5.8, 10);
+    ctx.lineTo(-5.8, -10);
+    ctx.closePath();
   } else {
-    ctx.fillStyle = '#1f2937';
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
+    // 화살표: 선 위에서도 보이게 흰 테두리를 두른다.
+    if (plain) ctx.strokeStyle = '#ffffff';
     ctx.moveTo(9, 0);
     ctx.lineTo(-6, 6);
     ctx.lineTo(-3, 0);
     ctx.lineTo(-6, -6);
     ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
   }
+  ctx.fill();
+  ctx.stroke();
   ctx.restore();
 }
 
@@ -88,14 +113,16 @@ function build(cmds) {
 
 function apply(state, cmd) {
   if (cmd.k === 'line' || cmd.k === 'dot' || cmd.k === 'text') state.items.push(cmd);
-  else if (cmd.k === 'fill-begin') state.items.push({ k: 'fill', n: cmd.n, p: null, c: '#000000' });
+  else if (cmd.k === 'fill-begin') state.items.push({ k: 'fill', t: cmd.t, n: cmd.n, p: null, c: '#000000' });
   else if (cmd.k === 'fill') {
     const slot = state.items.find((item) => item.k === 'fill' && item.n === cmd.n && !item.p);
     if (slot) Object.assign(slot, { p: cmd.p, c: cmd.c });
     else state.items.push(cmd);
-  } else if (cmd.k === 'clear') state.items = [];
-  else if (cmd.k === 'bg') state.bg = cmd.c;
-  else if (cmd.k === 'pose') state.turtles.set(cmd.t, { x: cmd.x, y: cmd.y, h: cmd.h, v: cmd.v, s: cmd.s });
+  } else if (cmd.k === 'clear') {
+    // 지우기는 그 거북이가 그린 것만 지운다(점수판 거북이가 글자를 지워도 다른 그림은 남는다).
+    state.items = state.items.filter((item) => item.t !== cmd.t);
+  } else if (cmd.k === 'bg') state.bg = cmd.c;
+  else if (cmd.k === 'pose') state.turtles.set(cmd.t, { x: cmd.x, y: cmd.y, h: cmd.h, v: cmd.v, s: cmd.s, z: cmd.z, c: cmd.c, f: cmd.f });
 }
 
 /**
@@ -144,10 +171,15 @@ export function paintDrawing(canvas, cmds, { turtle = false, origin = false, fit
 
 /**
  * @param {HTMLElement} root 그림판을 넣을 자리
- * @param {{rate?: number}} options rate: 빨리 돌려 보기(?fast)일 때 움직임을 몇 배로 빠르게 할지
+ * @param {{rate?: number, onKey?: (kind: 'press'|'release', name: string) => void, onListen?: (on: boolean) => void, onEscape?: () => void}} options
+ *   rate: 빨리 돌려 보기(?fast)일 때 움직임을 몇 배로 빠르게 할지
+ *   onKey: 그림판이 키를 받았을 때(프로그램이 turtle.listen()을 부른 뒤에만)
+ *   onListen: 프로그램이 키를 받기 시작했을 때(true)와 끝났을 때(false)
+ *   onEscape: 키를 받는 동안 Esc를 눌렀을 때(프로그램을 멈추는 데 쓴다)
  */
-export function createCanvas(root, { rate = 1 } = {}) {
+export function createCanvas(root, { rate = 1, onKey, onListen, onEscape } = {}) {
   root.classList.add('canvas-pane');
+  root.tabIndex = -1;
   const canvas = document.createElement('canvas');
   canvas.width = VIEW.w * SCALE;
   canvas.height = VIEW.h * SCALE;
@@ -160,6 +192,25 @@ export function createCanvas(root, { rate = 1 } = {}) {
   ink.height = canvas.height;
   const inkCtx = ink.getContext('2d');
 
+  // 화면의 화살표 단추(키보드가 없거나 그림판을 누르지 않았을 때도 조종할 수 있게). 그림을 가리지 않게 그림판 아래에 둔다.
+  const pad = document.createElement('div');
+  pad.className = 'canvas-pad';
+  pad.hidden = true;
+  for (const [name, label, text] of [['Left', '왼쪽', '◀'], ['Up', '위', '▲'], ['Down', '아래', '▼'], ['Right', '오른쪽', '▶'], ['space', '스페이스', '␣']]) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'canvas-key';
+    button.textContent = text;
+    button.setAttribute('aria-label', label);
+    button.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      onKey?.('press', name);
+    });
+    for (const type of ['pointerup', 'pointercancel']) button.addEventListener(type, () => onKey?.('release', name));
+    pad.append(button);
+  }
+  root.after(pad);
+
   let state = { items: [], bg: '#ffffff', turtles: new Map() };
   let queue = [];
   let linesWaiting = 0; // 그을 차례를 기다리는 선의 수
@@ -169,6 +220,36 @@ export function createCanvas(root, { rate = 1 } = {}) {
   let frame = null;
   let timer = null;
   let waiters = [];
+  let instant = false; // turtle.tracer(0): 한 장면씩 그린다
+  let held = []; // 한 장면이 다 올 때까지 모아 두는 명령
+  let listening = false;
+
+  function setListening(on) {
+    if (listening === on) return;
+    listening = on;
+    pad.hidden = !on;
+    onListen?.(on);
+  }
+
+  root.addEventListener('keydown', (event) => {
+    if (!listening) return;
+    if (event.key === 'Escape') {
+      onEscape?.();
+      return;
+    }
+    const name = turtleKey(event);
+    if (!name || event.ctrlKey || event.metaKey || event.altKey) return;
+    event.preventDefault(); // 화살표와 스페이스가 화면을 밀지 않게
+    onKey?.('press', name);
+  });
+  root.addEventListener('keyup', (event) => {
+    if (!listening) return;
+    const name = turtleKey(event);
+    if (name) onKey?.('release', name);
+  });
+  root.addEventListener('pointerdown', () => {
+    if (listening) root.focus();
+  });
 
   function redrawInk() {
     inkCtx.setTransform(1, 0, 0, 1, 0, 0);
@@ -189,13 +270,18 @@ export function createCanvas(root, { rate = 1 } = {}) {
 
   /** 명령 하나를 바로 끝낸다. */
   function finish(cmd) {
-    const before = state.items;
-    apply(state, cmd);
     if (cmd.k === 'line' || cmd.k === 'dot' || cmd.k === 'text') {
+      apply(state, cmd);
       inkCtx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
       paintItem(inkCtx, cmd);
-    } else if (cmd.k === 'fill' || cmd.k === 'clear' || state.items !== before) redrawInk();
-    else if (cmd.k === 'speed') speedNow = cmd.v;
+    } else if (cmd.k === 'fill' || cmd.k === 'clear') {
+      const before = state.items.length;
+      apply(state, cmd);
+      // 지울 것이 없었으면 다시 그리지 않는다(게임은 장면마다 지운다).
+      if (cmd.k === 'fill' || state.items.length !== before) redrawInk();
+    } else if (cmd.k === 'speed') speedNow = cmd.v;
+    else if (cmd.k === 'listen') setListening(true);
+    else apply(state, cmd);
   }
 
   /** 선 하나를 긋는 데 쓸 시간(ms). 빠르기 0은 바로, 밀린 것이 많으면 줄인다. */
@@ -205,6 +291,12 @@ export function createCanvas(root, { rate = 1 } = {}) {
     const perSecond = 40 * speedNow ** 1.6 * rate;
     // 남은 시간을 남은 선의 수로 나눈 것보다 오래 끌지 않는다.
     return Math.min((length / perSecond) * 1000, Math.max(0, deadline - at) / (linesWaiting + 1), cap ?? Infinity);
+  }
+
+  /** 모아 둔 한 장면을 한꺼번에 그림에 넣는다. */
+  function release() {
+    for (const cmd of held) finish(cmd);
+    held = [];
   }
 
   function tick() {
@@ -236,34 +328,46 @@ export function createCanvas(root, { rate = 1 } = {}) {
       }
       const next = queue.shift();
       if (!next) break;
-      if (next.cmd.k === 'line') {
-        linesWaiting -= 1;
+      const { cmd } = next;
+      if (cmd.k === 'line') linesWaiting -= 1;
+      if (cmd.k === 'tracer') {
+        // 한 장면씩 그리기를 켜거나 끈다. 끌 때는 모아 둔 것을 내보낸다.
+        instant = cmd.n === 0;
+        if (!instant) release();
+        continue;
+      }
+      if (instant) {
+        // 한 장면이 다 올 때까지 모아 두었다가, update()가 오면 한꺼번에 바꾼다(지우고 다시 쓰는 사이가 보이지 않게).
+        if (cmd.k === 'frame') release();
+        else if (cmd.k === 'listen') finish(cmd);
+        else held.push(cmd);
+        if (performance.now() > budget) break;
+        continue;
+      }
+      if (cmd.k === 'frame') continue;
+      if (cmd.k === 'line') {
         const started = carry !== null && now - carry < 200 ? carry : now;
-        const ms = duration(next.cmd, next.cap, started);
+        const ms = duration(cmd, next.cap, started);
         if (ms > 0) {
-          current = { cmd: next.cmd, started, ms };
+          current = { cmd, started, ms };
           continue;
         }
       }
-      finish(next.cmd);
+      finish(cmd);
       if (performance.now() > budget) break;
     }
     show(part);
     if (current || queue.length) wake();
-    else {
-      const resolve = waiters;
-      waiters = [];
-      for (const done of resolve) done();
-    }
+    else settle();
   }
 
-  // 화면이 가려져 있으면 브라우저가 화면 그리기 신호를 보내지 않는다. 그때도 그림이 멈추지 않게 타이머를 함께 건다.
   function settle() {
     const resolve = waiters;
     waiters = [];
     for (const done of resolve) done();
   }
 
+  // 화면이 가려져 있으면 브라우저가 화면 그리기 신호를 보내지 않는다. 그때도 그림이 멈추지 않게 타이머를 함께 건다.
   function wake() {
     if (frame || timer) return;
     frame = requestAnimationFrame(tick);
@@ -273,9 +377,13 @@ export function createCanvas(root, { rate = 1 } = {}) {
   function drain() {
     if (current) finish(current.cmd);
     current = null;
-    for (const next of queue) finish(next.cmd);
+    for (const next of queue) {
+      if (next.cmd.k === 'tracer') instant = next.cmd.n === 0;
+      else if (next.cmd.k !== 'frame') finish(next.cmd);
+    }
     queue = [];
     linesWaiting = 0;
+    release();
   }
 
   show();
@@ -284,10 +392,13 @@ export function createCanvas(root, { rate = 1 } = {}) {
     /** 새 프로그램을 돌리기 전에: 그림과 거북이를 모두 지운다. */
     reset() {
       queue = [];
+      held = [];
+      instant = false;
       linesWaiting = 0;
       current = null;
       speedNow = 3;
       state = { items: [], bg: '#ffffff', turtles: new Map() };
+      setListening(false);
       redrawInk();
       show();
       settle();
@@ -314,17 +425,32 @@ export function createCanvas(root, { rate = 1 } = {}) {
     /** 명령 목록을 움직임 없이 한 번에 그린다(채점한 결과를 보여 줄 때). */
     showAll(cmds) {
       this.reset();
-      for (const cmd of cmds) finish(cmd);
+      for (const cmd of cmds) if (cmd.k !== 'listen') finish(cmd);
       show();
     },
     /** 멈춤: 아직 안 그린 것은 버린다. */
     stop() {
       queue = [];
+      held = [];
       linesWaiting = 0;
       if (current) finish(current.cmd);
       current = null;
+      setListening(false);
       show();
       settle();
+    },
+    /** 프로그램이 끝났을 때: 키를 그만 받는다. 아직 못 그린 것은 마저 그린다(한 장면씩 그리던 것은 바로). */
+    endRun() {
+      if (instant) {
+        drain();
+        show();
+        settle();
+      }
+      setListening(false);
+    },
+    /** 그림판이 키를 받게 한다. */
+    focus() {
+      root.focus({ preventScroll: true });
     },
     /** 밀린 것을 다 그리면 끝나는 약속 */
     idle() {
@@ -332,7 +458,7 @@ export function createCanvas(root, { rate = 1 } = {}) {
       return new Promise((resolve) => waiters.push(resolve));
     },
     /** 지금까지 무엇을 그렸는가(점검용) */
-    snapshot: () => ({ items: state.items.length, waiting: queue.length + (current ? 1 : 0), turtles: [...state.turtles.values()] }),
+    snapshot: () => ({ items: state.items.length, waiting: queue.length + (current ? 1 : 0), turtles: [...state.turtles.values()], listening, instant }),
   };
 }
 

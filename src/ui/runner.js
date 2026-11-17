@@ -2,6 +2,9 @@
 
 const STOP_GRACE_MS = 1500;
 const INPUT_BYTES = 64 * 1024;
+// 눌린 키를 넘기는 칸. 일꾼(public/py-worker.js)의 것과 같아야 한다.
+const KEY_SLOTS = 250;
+const KEY_NAMES = ['Left', 'Right', 'Up', 'Down', 'space', 'Return', ...'abcdefghijklmnopqrstuvwxyz0123456789'];
 
 export class Runner {
   /**
@@ -33,6 +36,9 @@ export class Runner {
     // 화면이 출력을 몇 번 그렸는지 일꾼에게 알려 주는 칸. 일꾼은 화면이 밀리면 보내기를 쉰다.
     this.flowBuffer = this.shared ? new SharedArrayBuffer(4) : null;
     this.flow = this.flowBuffer ? new Int32Array(this.flowBuffer) : null;
+    // 눌린 키: [0]에 지금까지 넣은 개수, 그 뒤 칸에 키 번호(뗀 것은 1000을 더한다)를 돌아가며 적는다.
+    this.keysBuffer = this.shared ? new SharedArrayBuffer(4 * (KEY_SLOTS + 1)) : null;
+    this.keys = this.keysBuffer ? new Int32Array(this.keysBuffer) : null;
 
     const worker = new Worker(new URL('py-worker.js', document.baseURI), { type: 'module' });
     this.worker = worker;
@@ -50,8 +56,19 @@ export class Runner {
       inputCtl: this.inputCtlBuffer,
       inputBytes: this.inputBytesBuffer,
       flow: this.flowBuffer,
+      keys: this.keysBuffer,
     });
     return this.ready;
+  }
+
+  /** 눌리거나 떼어진 키를 돌아가는 프로그램에 넘긴다(turtle.onkey로 붙여 둔 함수가 불린다). */
+  sendKey(kind, name) {
+    const index = KEY_NAMES.indexOf(name);
+    if (!this.keys || index < 0 || !this.current) return false;
+    const written = Atomics.load(this.keys, 0);
+    Atomics.store(this.keys, 1 + (written % KEY_SLOTS), index + (kind === 'release' ? 1000 : 0));
+    Atomics.store(this.keys, 0, written + 1);
+    return true;
   }
 
   /** 화면이 출력 묶음을 count개 그렸다고 일꾼에게 알린다. */
@@ -75,7 +92,8 @@ export class Runner {
       // 그리기 명령은 출력과 같은 묶음에 실려 온다. 그림판이 받아서 차례로 그린다.
       if (message.draws?.length) {
         const cmds = message.draws.map((text) => JSON.parse(text));
-        if (this.current) this.current.draws.push(...cmds);
+        // 채점에 쓰려고 모아 둔다. 게임처럼 끝없이 그리는 프로그램은 앞의 것만 남긴다.
+        if (this.current && this.current.draws.length < 60000) this.current.draws.push(...cmds);
         this.hooks.onDraw?.(cmds);
       }
       this.hooks.onOut(message.chunks, message.dropped);
@@ -102,15 +120,16 @@ export class Runner {
    * limit: trace에서 보여 줄 줄 수의 한도(넘으면 오류 종류가 TraceLimit). 끝나지 않는 반복을 시연할 때 작게 준다.
    * randoms: trace와 check에서 random.randint가 차례로 돌려줄 값들(무작위 수를 쓰는 프로그램을 늘 같게 돌리려고).
    * check에서 프로그램이 끝나지 않으면(줄을 20만 번 넘게 실행하면) 오류 종류가 TraceLimit으로 온다.
+   * keys, frames: trace와 check에서 게임을 돌려 볼 때. keys의 키를 장면마다 하나씩 누르고, frames 장면이 지나면 끝낸다.
    */
-  async run(code, { trace = false, check = false, inputs = [], limit, randoms } = {}) {
+  async run(code, { trace = false, check = false, inputs = [], limit, randoms, keys, frames } = {}) {
     await this.ready;
     if (this.current) throw new Error('이미 돌아가는 프로그램이 있어요');
     const id = this.nextId++;
     this.setState('running');
     return new Promise((resolve) => {
       this.current = { id, resolve, output: '', draws: [], stopRequested: false, stopTimer: null, started: performance.now() };
-      this.worker.postMessage({ type: 'run', id, code, mode: trace ? 'trace' : check ? 'check' : 'run', inputs, limit, randoms });
+      this.worker.postMessage({ type: 'run', id, code, mode: trace ? 'trace' : check ? 'check' : 'run', inputs, limit, randoms, keys, frames });
     });
   }
 

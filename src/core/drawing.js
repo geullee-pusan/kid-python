@@ -10,13 +10,14 @@ const ANGLE_TOL = 0.4; // 도
 const OFFSET_TOL = 0.75;
 const GAP_TOL = 0.75;
 
-/** 명령 목록에서 마지막 clear 뒤의 것만 남긴다. */
+/** 지운 것을 뺀다. clear는 그 거북이(t)가 그때까지 그린 것만 지운다. */
 function afterClear(cmds) {
-  let from = 0;
-  cmds.forEach((cmd, index) => {
-    if (cmd.k === 'clear') from = index + 1;
-  });
-  return cmds.slice(from);
+  let kept = [];
+  for (const cmd of cmds) {
+    if (cmd.k === 'clear') kept = kept.filter((one) => one.t !== cmd.t);
+    else kept.push(cmd);
+  }
+  return kept;
 }
 
 /**

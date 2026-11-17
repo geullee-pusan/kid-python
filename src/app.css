@@ -532,6 +532,58 @@ a.btn {
   object-fit: contain;
 }
 
+.canvas-pane:focus {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+}
+
+/* 화면의 화살표 단추: 프로그램이 키를 받는 동안에만 보인다 */
+.canvas-pad {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.canvas-pad[hidden] {
+  display: none;
+}
+
+.canvas-key {
+  min-width: 64px;
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 20px;
+  touch-action: none;
+}
+
+.canvas-key:active {
+  background: #ffe066;
+}
+
+/* 키로 조종하는 프로그램이 도는 동안: 편집기를 접고 그림판을 크게 보여 준다(출력 칸은 그 아래 얇게) */
+.right.playing .editor,
+.right.playing .vars {
+  display: none;
+}
+
+.right.playing .bottom {
+  flex-direction: column;
+  align-items: center;
+}
+
+.right.playing .draw-col {
+  flex: 1;
+}
+
+.right.playing .out-col {
+  flex: none;
+  align-self: stretch;
+  height: 132px;
+}
+
 /* 만들기 화면: 그림판이 출력 칸 위에 놓인다 */
 .studio-grid .draw-col {
   flex: none;

@@ -119,8 +119,22 @@ async function main() {
   const studioConsole = createConsole($('studio-console'), getRunner);
 
   // 그림판: turtle을 쓰는 프로그램일 때만 보인다. 수업 화면에서는 출력 칸 왼쪽에, 만들기 화면에서는 출력 칸 위에 놓인다.
-  const lessonCanvas = createCanvas($('canvas'), { rate: speed });
-  const studioCanvas = createCanvas($('studio-canvas'), { rate: speed });
+  // 키를 받는 프로그램(turtle.listen())이 돌면: 그림판이 키를 받아 프로그램에 넘기고, 수업 화면에서는 그림판을 크게 보여 준다.
+  const canvasHooks = (which) => ({
+    rate: speed,
+    onKey: (kind, name) => runner?.sendKey(kind, name),
+    onEscape: () => runner?.stop(),
+    onListen(on) {
+      const canvas = which === 'lesson' ? lessonCanvas : studioCanvas;
+      if (which === 'lesson') {
+        $('draw-col').closest('.right').classList.toggle('playing', on);
+        fitCanvas();
+      }
+      if (on) canvas.focus();
+    },
+  });
+  const lessonCanvas = createCanvas($('canvas'), canvasHooks('lesson'));
+  const studioCanvas = createCanvas($('studio-canvas'), canvasHooks('studio'));
   let activeCanvas = null; // 지금 그림을 받을 그림판
   /** 그림판을 보이거나 감춘다. 수업 화면에서는 그림판의 가로를 세로에 맞춰(4:3) 잡는다. */
   function showCanvas(canvas, on) {
@@ -134,7 +148,12 @@ async function main() {
   function fitCanvas() {
     const column = $('draw-col');
     if (column.hidden) return;
-    column.style.width = `${Math.round(($('canvas').clientHeight * 4) / 3)}px`;
+    // 크게 보여 줄 때는 칸의 가로를 넘지 않게 한다.
+    const playing = column.closest('.right').classList.contains('playing');
+    column.style.width = '';
+    const height = $('canvas').clientHeight;
+    const room = column.closest('.right').clientWidth;
+    column.style.width = `${Math.round(playing ? Math.min(room, (height * 4) / 3) : (height * 4) / 3)}px`;
   }
   addEventListener('resize', fitCanvas);
 
@@ -145,7 +164,8 @@ async function main() {
       activeCanvas.push(cmds);
     },
     onOut(chunks, dropped) {
-      if (activeConsole) activeConsole.queue(chunks, dropped);
+      // 글자가 없는 묶음(그림만 온 것)은 바로 받았다고 알린다. 게임은 장면마다 보내므로 기다리게 하면 느려진다.
+      if (activeConsole && (chunks.length || dropped)) activeConsole.queue(chunks, dropped);
       else runner.ack(1);
     },
     onInput: () => {},
@@ -177,6 +197,7 @@ async function main() {
     editor.markErrorLine(null);
     const result = await runner.run(code);
     out.flush();
+    canvas.endRun();
     if (result.stopped) {
       canvas.stop();
       out.append('\n■ 멈췄어요\n', 'note');

@@ -15,7 +15,7 @@ const TURTLE_WORDS = new Set([
   'home', 'circle', 'dot', 'write', 'begin_fill', 'end_fill', 'speed', 'hideturtle', 'showturtle', 'shape', 'clear', 'bgcolor',
 ]);
 /** 진짜 turtle에는 있지만 이 앱의 그림판에는 아직 없는 명령 */
-const TURTLE_LATER = /^(onkey|onkeypress|onkeyrelease|ontimer|onclick|onscreenclick|ondrag|onrelease|stamp|clearstamp|clearstamps|undo|towards|shapesize|turtlesize|tilt|register_shape|addshape|textinput|numinput|colormode|getscreen|clone|begin_poly|end_poly|degrees|radians|teleport)$/;
+const TURTLE_LATER = /^(onclick|onscreenclick|ondrag|onrelease|stamp|clearstamp|clearstamps|undo|towards|shapesize|turtlesize|tilt|register_shape|addshape|textinput|numinput|colormode|getscreen|clone|begin_poly|end_poly|degrees|radians|teleport)$/;
 /** "키" → "키"라는, "점수" → "점수"라는, "값" → "값"이라는 */
 const called = (name) => `"${name}"${hasBatchim(name) ? '이라는' : '라는'}`;
 
@@ -210,6 +210,11 @@ export function explain(error, knows = {}) {
     if (color) return `"${color[1]}"은(는) 쓸 수 없는 색 이름이에요. 색은 영어로 써요. red, orange, yellow, green, blue, purple, pink, brown, black, white 같은 이름을 쓸 수 있어요.`;
     if (/too many drawing commands/.test(message)) return '그림을 너무 많이 그려서 멈췄어요. 반복이 끝나지 않는 것 같아요.';
     if (/bad pen size/.test(message)) return '펜의 굵기는 0보다 큰 숫자로 써요.';
+    if (/key handler is None/.test(message)) return '첫째 칸에는 함수의 이름만 써요. 이름 뒤에 괄호를 붙이면 함수가 그 자리에서 바로 실행돼 버려요. 괄호를 지워요.';
+    if (/key handler must be a function/.test(message)) return '첫째 칸에는 def로 만든 함수의 이름을 써요.';
+    const badKey = /bad key name: (.*)$/.exec(message);
+    if (badKey) return `"${badKey[1]}"은(는) 쓸 수 없는 키 이름이에요. 화살표는 "Left", "Right", "Up", "Down", 스페이스는 "space", 글자는 "a"처럼 작은 글자 하나를 써요.`;
+    if (/bad shape size/.test(message)) return '모양의 크기는 0보다 큰 숫자로 써요.';
     if (/no shape named/.test(message)) return '그런 모양은 없어요. "turtle", "arrow", "circle", "square", "triangle" 가운데에서 골라요.';
     return '그림판 명령을 실행할 수 없었어요.';
   }
