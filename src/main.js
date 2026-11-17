@@ -401,7 +401,7 @@ async function main() {
   const PRESSABLE = ['with-lecture', 'solve-now', 'challenge-yes', 'challenge-no', 'give-up', 'done', 'submit', 'next', 'hint', 'finish', 'lecture-again', 'to-list', 'next-problem'];
   for (const id of PRESSABLE) $(id).addEventListener('click', () => press(id));
 
-  const FOOTER = ['with-lecture', 'solve-now', 'challenge-yes', 'challenge-no', 'give-up', 'done', 'submit', 'next', 'hint', 'finish', 'skip', 'to-list', 'next-problem'];
+  const FOOTER = ['with-lecture', 'solve-now', 'challenge-yes', 'challenge-no', 'give-up', 'done', 'submit', 'next', 'hint', 'finish', 'skip', 'to-list', 'next-problem', 'reset-code'];
   /** 아래 줄과 위 줄에서 지금 쓸 버튼만 보인다 */
   function show(...ids) {
     for (const id of FOOTER) $(id).hidden = !ids.includes(id);
@@ -417,7 +417,7 @@ async function main() {
     const running = isRunning() && screen === 'play';
     $('run').disabled = !canRun || !isReady();
     $('stop').disabled = !canRun || !running;
-    for (const id of ['submit', 'hint', 'done', 'lecture-again', 'give-up']) $(id).disabled = running && canRun;
+    for (const id of ['submit', 'hint', 'done', 'lecture-again', 'give-up', 'reset-code']) $(id).disabled = running && canRun;
     lessonConsole.askInput(runner.state === 'waiting-input' && canRun && screen === 'play');
     $('lock-note').textContent = canRun ? '' : '선생님이 쓰는 중이에요';
   }
@@ -448,6 +448,34 @@ async function main() {
     if (canRun) editor.focus();
     return ran;
   }
+
+  // 처음 코드로: 시작 코드가 있는 문제(고치기 등)에서, 고치다가 엉킨 코드를 처음 것으로 되돌린다.
+  // 쓰던 코드가 사라지므로 두 번 눌러야 된다(한 번 누르면 "정말 되돌려요?"로 바뀐다).
+  let resetTo = null; // 지금 문제의 시작 코드. 없으면 null
+  let resetTimer = null;
+  function calmReset() {
+    clearTimeout(resetTimer);
+    delete $('reset-code').dataset.sure;
+    $('reset-code').textContent = '↺ 처음 코드로';
+  }
+  $('reset-code').addEventListener('click', () => {
+    if (resetTo == null || !canRun) return;
+    const button = $('reset-code');
+    if (!button.dataset.sure) {
+      button.dataset.sure = '1';
+      button.textContent = '정말 되돌려요?';
+      resetTimer = setTimeout(calmReset, 4000);
+      return;
+    }
+    calmReset();
+    log('reset-code', { mission: mission.id, code: editor.getCode() });
+    editor.setCode(resetTo);
+    if (draftSaving) store.set(draftSaving, resetTo);
+    editor.markErrorLine(null);
+    lessonConsole.clear();
+    showVars({});
+    editor.focus();
+  });
 
   $('run').addEventListener('click', () => runUser());
   $('stop').addEventListener('click', () => runner.stop());
@@ -687,6 +715,10 @@ async function main() {
     const hints = task.hints ?? [];
     const buttons = ['submit'];
     if (hints.length) buttons.push('hint');
+    // 시작 코드가 있는 문제는 처음 코드로 되돌릴 수 있다.
+    resetTo = task.start ?? null;
+    calmReset();
+    if (resetTo != null) buttons.unshift('reset-code');
     if (optional) buttons.push('give-up');
     else if (hasLecture) buttons.push('lecture-again');
     let attempts = 0;

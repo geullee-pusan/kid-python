@@ -375,6 +375,11 @@ a.btn {
   color: var(--muted);
 }
 
+#reset-code[data-sure] {
+  border-color: var(--bad);
+  color: var(--bad);
+}
+
 .work-remove[data-sure] {
   border-color: var(--bad);
   color: var(--bad);
