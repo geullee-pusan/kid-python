@@ -88,6 +88,17 @@
         "def-split",
         "unit8-review"
       ]
+    },
+    {
+      "title": "글자 다루기",
+      "lessons": [
+        "str-index",
+        "str-for",
+        "str-slice",
+        "str-method",
+        "str-split",
+        "unit9-review"
+      ]
     }
   ]
 }

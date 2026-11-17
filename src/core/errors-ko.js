@@ -86,11 +86,19 @@ export function explain(error, knows = {}) {
   if (type === 'UnboundLocalError') return '함수 안에서 값을 넣는 이름은 함수 안의 새 이름표예요. 밖의 값을 쓰려면 괄호로 넘겨받고, 바꾼 값은 return으로 돌려줘요.';
   if (type === 'TypeError') {
     if (/NoneType/.test(message)) return '값을 돌려주지 않는 함수의 결과(None)로 계산하려고 했어요. 함수 안에서 return으로 값을 돌려줘요.';
+    if (/'str' object does not support item assignment/.test(message)) return '글자는 한 글자만 바꿀 수 없어요. 새 글자를 만들어서 이름표에 다시 넣어요.';
+    if (/for -: 'str' and 'str'/.test(message)) return '글자에서 글자를 뺄 수는 없어요. 지우려면 replace( )로 빈 글자("")로 바꿔요.';
+    if (/replace\(\) takes at least 2/.test(message)) return 'replace( ) 안에는 바꿀 글자와 새 글자, 두 개를 넣어요.';
+    if (/expected at least 1 argument, got 0/.test(message)) return '괄호 안에 찾을 글자를 넣어요.';
+    if (/must be str, not int|requires string as left operand/.test(message)) return '글자 안에서 찾을 때는 글자로 물어요. 숫자라면 따옴표로 감싸거나 str( )로 글자로 바꿔요.';
+    if (/expected str instance/.test(message)) return 'join( )은 글자만 이을 수 있어요. 숫자는 str( )로 글자로 바꿔요.';
+    if (/has no len\(\)/.test(message)) return 'len( )은 글자나 리스트에 써요. 숫자라면 str( )로 글자로 바꿔요.';
+    if (/indices must be integers.*'float'|slice indices must be integers/.test(message)) return '대괄호 안의 번호는 소수점이 없는 숫자여야 해요. 나눌 때는 몫(//)을 쓰고, 글자라면 int( )로 바꿔요.';
     if (/can only concatenate str|unsupported operand type\(s\) for \+/.test(message)) return '글자와 숫자는 더하기(+)로 이을 수 없어요. 숫자로 계산하려면 int( )로, 글자로 이으려면 str( )로 바꿔요.';
     if (/unsupported operand type\(s\) for [-/*%]|can't multiply sequence/.test(message)) return '글자로는 이 계산을 할 수 없어요. int( )로 숫자로 바꿔요.';
-    if (/list indices must be integers/.test(message)) return '대괄호 안의 번호는 숫자여야 해요. 글자라면 int( )로 숫자로 바꿔요.';
-    if (/object is not iterable/.test(message)) return 'for … in 뒤에는 리스트나 range( )를 써요. 숫자 하나는 차례로 돌 수 없어요.';
-    if (/object is not subscriptable/.test(message)) return '대괄호로 꺼낼 수 있는 것은 리스트와 글자예요. 이름표에 리스트가 들어 있는지 봐요.';
+    if (/(list|string) indices must be integers/.test(message)) return '대괄호 안의 번호는 숫자여야 해요. 글자라면 int( )로 숫자로 바꿔요.';
+    if (/object is not iterable/.test(message)) return 'for … in 뒤에는 리스트나 range( ), 글자를 써요. 숫자 하나는 차례로 돌 수 없어요. 숫자를 한 자리씩 돌려면 str( )로 글자로 바꿔요.';
+    if (/object is not subscriptable/.test(message)) return '대괄호로 꺼낼 수 있는 것은 리스트와 글자예요. 숫자에는 쓸 수 없어요. 이름표에 무엇이 들어 있는지 봐요. input의 답을 int( )로 바꿨다면 글자가 아니라 숫자예요.';
     if (/can only concatenate list/.test(message)) return '리스트에 값 하나를 더할 때는 append( )를 써요.';
     if (/not supported between instances of/.test(message)) return '글자와 숫자는 크기를 견줄 수 없어요. input의 답이라면 int( )로 숫자로 바꿔요.';
     if (/cannot be interpreted as an integer/.test(message)) return 'range( ) 안에는 숫자를 넣어요. 글자라면 int( )로 숫자로 바꿔요.';
@@ -101,6 +109,13 @@ export function explain(error, knows = {}) {
   }
   if (type === 'AttributeError') {
     if (/module 'random' has no attribute/.test(message)) return 'random 뒤의 이름이 달라요. random.randint 의 철자를 확인해요.';
+    if (/'str' object has no attribute '(append|add|push)'/.test(message)) return '글자에는 append( )를 쓸 수 없어요. 글자를 이으려면 더하기(+)를 써요.';
+    if (/'str' object has no attribute '(remove|pop)'/.test(message)) return '글자에서는 한 글자를 지울 수 없어요. replace( )로 빈 글자("")로 바꾼 새 글자를 만들어요.';
+    const strName = /'str' object has no attribute '(.+?)'/.exec(message);
+    if (strName && strName[1] !== strName[1].toLowerCase()) return '점(.) 뒤의 명령은 모두 작은 글자로 써요.';
+    if (strName) return '글자 뒤의 점(.) 다음 이름을 파이썬이 몰라요. replace, count, find, split 의 철자를 확인해요.';
+    if (/'list' object has no attribute '(replace|find|split|join|upper|lower)'/.test(message)) return '글자에 쓰는 명령을 리스트에 썼어요. 리스트에서 글자를 하나 꺼내서 써요.';
+    if (/'int' object has no attribute/.test(message)) return '숫자 뒤에는 점(.) 명령을 쓸 수 없어요. 글자로 다루려면 str( )로 바꿔요.';
     if (/'list' object has no attribute '(add|push|insert_end|appned|apend)'/.test(message)) return '리스트에 값을 더할 때는 append 라고 써요. 철자를 확인해요.';
     if (/'list' object has no attribute/.test(message)) return '리스트 뒤의 점(.) 다음 이름을 파이썬이 몰라요. append, remove, index 의 철자를 확인해요.';
     return '점(.) 뒤에 쓴 이름을 파이썬이 몰라요. 철자를 확인해요.';
@@ -109,6 +124,8 @@ export function explain(error, knows = {}) {
   if (type === 'ValueError') {
     const bad = /invalid literal for int\(\) with base 10: (.+)$/.exec(message);
     if (bad) return `${bad[1]}은(는) 숫자로 바꿀 수 없어요. int( ) 안에는 숫자로 된 글자만 넣어요.`;
+    if (/substring not found/.test(message)) return '찾는 글자가 없어요. 먼저 in으로 있는지 물어봐요. find( )는 없을 때 -1을 알려 줘요.';
+    if (/empty separator/.test(message)) return 'split( ) 안에 빈 글자는 넣을 수 없어요. 빈칸에서 자르려면 괄호 안을 비워요.';
     if (/empty range/.test(message)) return 'randint( ) 안에는 작은 수를 먼저, 큰 수를 나중에 써요.';
     if (/list\.remove\(x\): x not in list/.test(message)) return '리스트에 없는 값은 지울 수 없어요. 철자를 확인하거나, 먼저 in으로 있는지 물어봐요.';
     if (/list\.index\(x\): x not in list/.test(message)) return '찾는 값이 리스트에 없어요. 철자를 확인하거나, 먼저 in으로 있는지 물어봐요.';
@@ -125,6 +142,7 @@ export function explain(error, knows = {}) {
   }
   if (type === 'IndexError') {
     if (/pop from empty list/.test(message)) return '빈 리스트에서는 꺼낼 것이 없어요.';
+    if (/string index/.test(message)) return '없는 번호를 썼어요. 번호는 0부터 세어서, 마지막 번호는 글자 수보다 하나 작아요.';
     return '없는 번호를 썼어요. 번호는 0부터 세어서, 마지막 번호는 항목 수보다 하나 작아요.';
   }
   if (type === 'EOFError') return '입력을 받을 수 없었어요.';
