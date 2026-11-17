@@ -107,8 +107,16 @@
             <span class="vars-label">이름표</span>
             <div id="vars-list" class="vars-list"></div>
           </div>
-          <div class="pane-head"><span class="file">출력</span></div>
-          <div id="console"></div>
+          <div class="bottom">
+            <div class="draw-col" id="draw-col" hidden>
+              <div class="pane-head"><span class="file">그림판</span></div>
+              <div id="canvas"></div>
+            </div>
+            <div class="out-col">
+              <div class="pane-head"><span class="file">출력</span></div>
+              <div id="console"></div>
+            </div>
+          </div>
         </section>
       </main>
 
@@ -151,6 +159,10 @@
           <div id="studio-editor" class="editor"></div>
         </section>
         <section class="right">
+          <div class="draw-col" id="studio-draw-col" hidden>
+            <div class="pane-head"><span class="file">그림판</span></div>
+            <div id="studio-canvas"></div>
+          </div>
           <div class="pane-head"><span class="file">출력</span></div>
           <div id="studio-console"></div>
         </section>

@@ -18,6 +18,7 @@ let inputBytes = null; // 입력 글자(UTF-8)
 const MAX_QUEUED = 20000;
 const FLUSH_EVERY_MS = 50;
 let queue = [];
+let drawQueue = []; // 그리기 명령(JSON 글자). 출력과 같은 묶음에 실어 보낸다.
 let queued = 0;
 let dropped = 0;
 let lastFlush = 0;
@@ -25,11 +26,12 @@ let flow = null;
 let sent = 0;
 
 function flush(force = false) {
-  if (!queue.length && !dropped) return;
+  if (!queue.length && !dropped && !drawQueue.length) return;
   if (!force && flow && sent - Atomics.load(flow, 0) >= 2) return;
-  postMessage({ type: 'out', chunks: queue, dropped });
+  postMessage({ type: 'out', chunks: queue, dropped, draws: drawQueue });
   sent += 1;
   queue = [];
+  drawQueue = [];
   queued = 0;
   dropped = 0;
   lastFlush = performance.now();
@@ -53,6 +55,12 @@ function emit(stream, text) {
     queued -= cut;
     dropped += cut;
   }
+  if (performance.now() - lastFlush >= FLUSH_EVERY_MS) flush();
+}
+
+/** 파이썬의 turtle 명령이 그릴 것을 하나씩 넘겨준다(그냥 실행일 때만). */
+function emitDraw(text) {
+  drawQueue.push(text);
   if (performance.now() - lastFlush >= FLUSH_EVERY_MS) flush();
 }
 
@@ -105,10 +113,14 @@ def __kidpy_error(e, name):
         text = "".join(traceback.format_exception_only(type(e), e))
     else:
         tb = e.__traceback__.tb_next if e.__traceback__ else None
-        for frame in traceback.extract_tb(tb):
-            if frame.filename == name:
-                line = frame.lineno
-        text = "".join(traceback.format_exception(type(e), e, tb))
+        mine = [frame for frame in traceback.extract_tb(tb) if frame.filename == name]
+        for frame in mine:
+            line = frame.lineno
+        if mine:
+            # 아이가 쓴 코드의 줄만 보여 준다(그림판 명령처럼 안쪽에서 난 오류의 속 줄은 감춘다).
+            text = "Traceback (most recent call last):" + chr(10) + "".join(traceback.format_list(mine)) + "".join(traceback.format_exception_only(type(e), e))
+        else:
+            text = "".join(traceback.format_exception(type(e), e, tb))
     return {"type": type(e).__name__, "message": message, "line": line, "col": col, "text": text}
 
 # 변수 표에 보여 줄 값들. 글자는 따옴표를 붙여서(큰따옴표로) 숫자와 구분되게 한다.
@@ -144,7 +156,318 @@ def __kidpy_vars(scope):
         out[key] = text
     return out
 
+# ---- 그림판: 파이썬의 turtle과 같은 이름의 명령 ----
+# 진짜 turtle은 브라우저에서 돌지 않아서, 자주 쓰는 명령만 같은 이름과 같은 뜻으로 만들었다.
+# 명령은 화면에 바로 그리지 않고 "무엇을 그렸는지"를 목록(_kidpy_draws)에 적는다.
+#  - 그냥 실행: 적는 대로 화면으로 보낸다(_kidpy_draw_hook). 화면이 받아서 움직임을 보여 준다.
+#  - 한 줄씩 보기와 채점: 목록을 결과에 담아 돌려준다(줄마다 무엇을 그렸는지도 함께).
+# 좌표는 가운데가 (0, 0)이고 위쪽이 y의 +, 방향은 오른쪽이 0도이고 왼쪽으로 돌수록 커진다(turtle과 같다).
+import math as _kidpy_math
+import types as _kidpy_types
+
+_kidpy_draws = []
+_kidpy_draw_hook = None
+_kidpy_stream = [False]
+_KIDPY_DRAW_MAX = 20000
+_KIDPY_COLORS = {
+    "black": "#000000", "white": "#ffffff", "red": "#e03131", "orange": "#f76707", "yellow": "#fcc419",
+    "green": "#2f9e44", "blue": "#1971c2", "purple": "#7048e8", "pink": "#f783ac", "brown": "#8d5524",
+    "gray": "#868e96", "grey": "#868e96", "skyblue": "#74c0fc", "sky blue": "#74c0fc", "navy": "#1c3d7a",
+    "gold": "#f0b400", "lime": "#82c91e", "cyan": "#15aabf", "magenta": "#d6336c", "violet": "#9775fa",
+    "lightgreen": "#b2f2bb", "light green": "#b2f2bb", "lightblue": "#a5d8ff", "light blue": "#a5d8ff",
+    "darkgreen": "#1b6e2d", "dark green": "#1b6e2d", "tomato": "#ff6347", "beige": "#f5e6c8",
+}
+
+class TurtleGraphicsError(Exception):
+    pass
+
+def _kidpy_r(v):
+    return round(float(v), 3) + 0.0
+
+def _kidpy_emit(cmd):
+    if len(_kidpy_draws) >= _KIDPY_DRAW_MAX:
+        raise TurtleGraphicsError("too many drawing commands")
+    _kidpy_draws.append(cmd)
+    if _kidpy_stream[0] and _kidpy_draw_hook is not None:
+        _kidpy_draw_hook(json.dumps(cmd, ensure_ascii=False))
+
+def _kidpy_color(value):
+    if isinstance(value, str):
+        key = value.strip().lower()
+        if key in _KIDPY_COLORS:
+            return _KIDPY_COLORS[key]
+        if len(key) == 7 and key[0] == "#" and all(ch in "0123456789abcdef" for ch in key[1:]):
+            return key
+    raise TurtleGraphicsError("bad color string: " + str(value))
+
+class Turtle:
+    def __init__(self):
+        self._id = _kidpy_state["count"]
+        _kidpy_state["count"] += 1
+        self._x = 0.0
+        self._y = 0.0
+        self._h = 0.0
+        self._down = True
+        self._pen = "#000000"
+        self._fillc = "#000000"
+        self._size = 1.0
+        self._path = None
+        self._fill_id = None
+        self._shown = True
+        self._shape = "classic"
+        self._pose()
+
+    def __repr__(self):
+        return "<거북이 " + str(self._id + 1) + ">"
+
+    def _pose(self):
+        _kidpy_emit({"k": "pose", "t": self._id, "x": _kidpy_r(self._x), "y": _kidpy_r(self._y), "h": _kidpy_r(self._h), "v": self._shown, "s": self._shape})
+
+    def _go(self, x, y):
+        x = float(x)
+        y = float(y)
+        if self._down:
+            _kidpy_emit({"k": "line", "t": self._id, "x1": _kidpy_r(self._x), "y1": _kidpy_r(self._y), "x2": _kidpy_r(x), "y2": _kidpy_r(y), "c": self._pen, "w": self._size})
+        if self._path is not None:
+            self._path.append([_kidpy_r(x), _kidpy_r(y)])
+        self._x = x
+        self._y = y
+        self._pose()
+
+    def forward(self, distance):
+        a = _kidpy_math.radians(self._h)
+        self._go(self._x + distance * _kidpy_math.cos(a), self._y + distance * _kidpy_math.sin(a))
+    fd = forward
+
+    def backward(self, distance):
+        self.forward(-distance)
+    back = backward
+    bk = backward
+
+    def left(self, angle):
+        self._h = (self._h + angle) % 360
+        self._pose()
+    lt = left
+
+    def right(self, angle):
+        self.left(-angle)
+    rt = right
+
+    def setheading(self, angle):
+        self._h = float(angle) % 360
+        self._pose()
+    seth = setheading
+
+    def goto(self, x, y=None):
+        if y is None:
+            x, y = x
+        self._go(x, y)
+    setpos = goto
+    setposition = goto
+
+    def setx(self, x):
+        self._go(x, self._y)
+
+    def sety(self, y):
+        self._go(self._x, y)
+
+    def home(self):
+        self._go(0, 0)
+        self._h = 0.0
+        self._pose()
+
+    def circle(self, radius, extent=360, steps=None):
+        if steps is None:
+            steps = max(12, min(72, int(abs(radius) / 2) + 12))
+            steps = max(1, int(steps * abs(extent) / 360))
+        part = extent / steps
+        chord = 2 * radius * _kidpy_math.sin(_kidpy_math.radians(part) / 2)
+        if radius < 0:
+            part = -part
+        self._h = (self._h + part / 2) % 360
+        for i in range(steps):
+            a = _kidpy_math.radians(self._h)
+            self._go(self._x + chord * _kidpy_math.cos(a), self._y + chord * _kidpy_math.sin(a))
+            self._h = (self._h + part) % 360
+        self._h = (self._h - part / 2) % 360
+        self._pose()
+
+    def dot(self, size=None, color=None):
+        if isinstance(size, str) and color is None:
+            size, color = None, size
+        if size is None:
+            size = max(self._size + 4, self._size * 2)
+        _kidpy_emit({"k": "dot", "t": self._id, "x": _kidpy_r(self._x), "y": _kidpy_r(self._y), "r": _kidpy_r(size / 2), "c": _kidpy_color(color) if color is not None else self._pen})
+
+    def write(self, text, *args, **kwargs):
+        _kidpy_emit({"k": "text", "t": self._id, "x": _kidpy_r(self._x), "y": _kidpy_r(self._y), "s": str(text), "c": self._pen})
+
+    def penup(self):
+        self._down = False
+    pu = penup
+    up = penup
+
+    def pendown(self):
+        self._down = True
+    pd = pendown
+    down = pendown
+
+    def isdown(self):
+        return self._down
+
+    def pensize(self, width=None):
+        if width is None:
+            return self._size
+        if width <= 0:
+            raise TurtleGraphicsError("bad pen size: " + str(width))
+        self._size = float(width)
+    width = pensize
+
+    def pencolor(self, *args):
+        if not args:
+            return self._pen
+        self._pen = _kidpy_color(args[0])
+
+    def fillcolor(self, *args):
+        if not args:
+            return self._fillc
+        self._fillc = _kidpy_color(args[0])
+
+    def color(self, *args):
+        if not args:
+            return (self._pen, self._fillc)
+        self._pen = _kidpy_color(args[0])
+        self._fillc = _kidpy_color(args[-1])
+
+    def begin_fill(self):
+        self._fill_id = _kidpy_state["fills"]
+        _kidpy_state["fills"] += 1
+        self._path = [[_kidpy_r(self._x), _kidpy_r(self._y)]]
+        _kidpy_emit({"k": "fill-begin", "t": self._id, "n": self._fill_id})
+
+    def end_fill(self):
+        if self._path is not None:
+            _kidpy_emit({"k": "fill", "t": self._id, "n": self._fill_id, "p": self._path, "c": self._fillc})
+        self._path = None
+
+    def filling(self):
+        return self._path is not None
+
+    def speed(self, value=None):
+        if value is None:
+            return _kidpy_state["speed"]
+        names = {"fastest": 0, "fast": 10, "normal": 6, "slow": 3, "slowest": 1}
+        if isinstance(value, str):
+            value = names.get(value, 6)
+        value = int(value)
+        if value < 0 or value > 10:
+            value = 0
+        _kidpy_state["speed"] = value
+        _kidpy_emit({"k": "speed", "v": value})
+
+    def position(self):
+        return (_kidpy_r(self._x), _kidpy_r(self._y))
+    pos = position
+
+    def xcor(self):
+        return _kidpy_r(self._x)
+
+    def ycor(self):
+        return _kidpy_r(self._y)
+
+    def heading(self):
+        return _kidpy_r(self._h)
+
+    def distance(self, x, y=None):
+        if y is None:
+            x, y = x
+        return _kidpy_math.hypot(x - self._x, y - self._y)
+
+    def hideturtle(self):
+        self._shown = False
+        self._pose()
+    ht = hideturtle
+
+    def showturtle(self):
+        self._shown = True
+        self._pose()
+    st = showturtle
+
+    def isvisible(self):
+        return self._shown
+
+    def shape(self, name=None):
+        if name is None:
+            return self._shape
+        if name not in ("arrow", "turtle", "circle", "square", "triangle", "classic"):
+            raise TurtleGraphicsError("There is no shape named " + str(name))
+        self._shape = name
+        self._pose()
+
+    def clear(self):
+        _kidpy_emit({"k": "clear", "t": self._id})
+
+    def reset(self):
+        self.clear()
+        self._x = 0.0
+        self._y = 0.0
+        self._h = 0.0
+        self._down = True
+        self._pen = "#000000"
+        self._fillc = "#000000"
+        self._size = 1.0
+        self._path = None
+        self._pose()
+
+class _KidpyScreen:
+    def bgcolor(self, *args):
+        if not args:
+            return _kidpy_state["bg"]
+        _kidpy_state["bg"] = _kidpy_color(args[0])
+        _kidpy_emit({"k": "bg", "c": _kidpy_state["bg"]})
+    def _nothing(self, *args, **kwargs):
+        return None
+    title = setup = tracer = update = delay = mainloop = exitonclick = done = bye = listen = screensize = _nothing
+    def window_width(self):
+        return 480
+    def window_height(self):
+        return 360
+
+_kidpy_state = {"count": 0, "fills": 0, "speed": 3, "bg": "#ffffff", "default": None}
+
+def _kidpy_default():
+    if _kidpy_state["default"] is None:
+        _kidpy_state["default"] = Turtle()
+    return _kidpy_state["default"]
+
+def _kidpy_turtle_reset(stream):
+    del _kidpy_draws[:]
+    _kidpy_stream[0] = stream
+    _kidpy_state.update({"count": 0, "fills": 0, "speed": 3, "bg": "#ffffff", "default": None})
+
+def _kidpy_turtle_module():
+    module = _kidpy_types.ModuleType("turtle")
+    def passing(name):
+        def call(*args, **kwargs):
+            return getattr(_kidpy_default(), name)(*args, **kwargs)
+        call.__name__ = name
+        return call
+    for name in dir(Turtle):
+        if not name.startswith("_"):
+            setattr(module, name, passing(name))
+    screen = _KidpyScreen()
+    for name in ("bgcolor", "title", "setup", "tracer", "update", "delay", "mainloop", "exitonclick", "done", "bye", "listen", "screensize", "window_width", "window_height"):
+        setattr(module, name, getattr(screen, name))
+    module.Turtle = Turtle
+    module.Pen = Turtle
+    module.Screen = lambda: screen
+    module.TurtleGraphicsError = TurtleGraphicsError
+    return module
+
+sys.modules["turtle"] = _kidpy_turtle_module()
+
 def __kidpy_run(code):
+    _kidpy_turtle_reset(True)
     name = "main.py"
     linecache.cache[name] = (len(code), None, code.splitlines(True), name)
     scope = {"__name__": "__main__"}
@@ -170,6 +493,7 @@ class __KidpyTraceLimit(Exception):
 # randoms_json: 무작위 수를 정해 둘 때 쓴다. 비어 있지 않으면 random.randint가 이 값들을 차례로 돌려준다(채점과 시연이 늘 같게).
 # 채점(trace=False)에서도 줄 수를 세어, 너무 많으면(끝나지 않는 반복) TraceLimit으로 멈춘다.
 def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]"):
+    _kidpy_turtle_reset(False)
     name = "main.py"
     linecache.cache[name] = (len(code), None, code.splitlines(True), name)
     scope = {"__name__": "__main__"}
@@ -211,7 +535,7 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]"):
                 raise __KidpyTraceLimit()
             # 함수 안을 실행하는 동안에는 함수 안의 이름(넘겨받은 값 포함)도 함께 보여 준다. 함수가 끝나면 사라진다.
             seen = frame.f_globals if frame.f_locals is frame.f_globals else {**frame.f_globals, **frame.f_locals}
-            marks.append((frame.f_lineno, len(buf.getvalue()), __kidpy_vars(seen)))
+            marks.append((frame.f_lineno, len(buf.getvalue()), __kidpy_vars(seen), len(_kidpy_draws)))
         return tracer
     error = None
     old = sys.stdout
@@ -238,12 +562,18 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]"):
     total = buf.getvalue()
     final = __kidpy_vars(scope)
     steps = []
-    for i, (line, pos, _) in enumerate(marks):
+    draws = list(_kidpy_draws)
+    for i, (line, pos, _, drawn) in enumerate(marks):
         end = marks[i + 1][1] if i + 1 < len(marks) else len(total)
         # 이 줄을 실행한 뒤의 변수 값 = 다음 줄을 실행하기 직전의 값(마지막 줄이면 끝났을 때의 값)
         after = marks[i + 1][2] if i + 1 < len(marks) else final
-        steps.append({"line": line, "out": total[pos:end], "vars": after})
-    return json.dumps({"steps": steps, "output": total, "error": error, "vars": final, "asked": asked[0], "unused": len(inputs)})
+        step = {"line": line, "out": total[pos:end], "vars": after}
+        # 이 줄이 그린 것(그림판을 쓰는 프로그램일 때만)
+        drawn_end = marks[i + 1][3] if i + 1 < len(marks) else len(draws)
+        if drawn_end > drawn:
+            step["draw"] = draws[drawn:drawn_end]
+        steps.append(step)
+    return json.dumps({"steps": steps, "output": total, "error": error, "vars": final, "asked": asked[0], "unused": len(inputs), "draw": draws})
 `;
 
 async function init(message) {
@@ -260,6 +590,7 @@ async function init(message) {
   pyodide.setStdin({ stdin: readLine, isatty: false });
   if (interruptView) pyodide.setInterruptBuffer(interruptView);
   pyodide.runPython(RUNNER_SOURCE);
+  pyodide.globals.set('_kidpy_draw_hook', emitDraw);
   runUser = pyodide.globals.get('__kidpy_run');
   runScripted = pyodide.globals.get('__kidpy_scripted');
   const python = pyodide.runPython('import sys; sys.version.split()[0]');
@@ -299,6 +630,7 @@ function run(message) {
     error: result.error ?? null,
     steps: result.steps ?? null,
     output: result.output ?? null,
+    draw: result.draw ?? null,
     vars: result.vars ?? {},
     unused: result.unused ?? 0,
     ms: Math.round(performance.now() - started),

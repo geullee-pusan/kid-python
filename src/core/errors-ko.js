@@ -9,6 +9,13 @@
 import { hasBatchim } from './korean.js';
 
 const HANGUL = /[ㄱ-ㆎ가-힣]/;
+/** 그림판(turtle)에서 쓸 수 있는 명령. 앞에 turtle. 을 빼먹었을 때와 철자가 틀렸을 때 알려 주려고 적어 둔다. */
+const TURTLE_WORDS = new Set([
+  'forward', 'backward', 'left', 'right', 'penup', 'pendown', 'color', 'pencolor', 'fillcolor', 'pensize', 'goto', 'setheading',
+  'home', 'circle', 'dot', 'write', 'begin_fill', 'end_fill', 'speed', 'hideturtle', 'showturtle', 'shape', 'clear', 'bgcolor',
+]);
+/** 진짜 turtle에는 있지만 이 앱의 그림판에는 아직 없는 명령 */
+const TURTLE_LATER = /^(onkey|onkeypress|onkeyrelease|ontimer|onclick|onscreenclick|ondrag|onrelease|stamp|clearstamp|clearstamps|undo|towards|shapesize|turtlesize|tilt|register_shape|addshape|textinput|numinput|colormode|getscreen|clone|begin_poly|end_poly|degrees|radians|teleport)$/;
 /** "키" → "키"라는, "점수" → "점수"라는, "값" → "값"이라는 */
 const called = (name) => `"${name}"${hasBatchim(name) ? '이라는' : '라는'}`;
 
@@ -85,6 +92,9 @@ export function explain(error, knows = {}) {
     if (name && name !== 'print' && name.toLowerCase() === 'print') return 'print는 모두 작은 글자로 써요.';
     if (name && name !== 'input' && name.toLowerCase() === 'input') return 'input은 모두 작은 글자로 써요.';
     if (name && /^(true|false|TRUE|FALSE)$/.test(name)) return 'True와 False는 첫 글자만 큰 글자로 써요.';
+    if (name === 'turtle') return 'turtle을 쓰려면, 맨 윗줄에 import turtle 을 먼저 써요.';
+    // 그림판 명령을 turtle. 없이 부른 경우: forward(100)
+    if (TURTLE_WORDS.has(name) && text.replace(/\s+\(/g, '(').includes(`${name}(`)) return `${name}는 앞에 turtle과 점을 붙여 써요. turtle.${name}( ) 처럼 써요. 맨 윗줄에 import turtle 도 있어야 해요.`;
     if (name === 'random') return 'random을 쓰려면, 맨 윗줄에 import random 을 먼저 써요.';
     if (name === 'randint') return 'randint는 random.randint( ) 처럼, 앞에 random과 점을 붙여 써요.';
     // 함수를 부르려던 경우: 오류가 난 줄에 "이름(" 꼴이 있다.
@@ -107,6 +117,10 @@ export function explain(error, knows = {}) {
     if (keyword && keyword[1].toLowerCase() === 'end') return 'end는 모두 작은 글자로 써요. end="" 처럼 써요.';
     if (keyword) return 'print( ) 안에서 등호(=)와 함께 쓰는 이름은 end예요. 철자를 확인해요.';
     if (/(end|sep) must be None or a string/.test(message)) return 'end= 뒤에는 글자를 써요. 따옴표로 감싸요.';
+    // 그림판 명령에 값을 빼먹거나 너무 많이 넣은 경우
+    if (/Turtle\.\w+\(\) missing \d+ required positional argument/.test(message)) return '이 명령의 괄호 안에 값을 넣어야 해요. 얼마나 움직일지, 얼마나 돌지를 숫자로 넣어요.';
+    if (/Turtle\.\w+\(\) takes \d+ positional arguments? but \d+ (was|were) given/.test(message)) return '이 명령의 괄호 안에 넣은 값의 개수가 맞지 않아요.';
+    if (/cannot unpack non-iterable/.test(message) && /goto|setpos/.test(text)) return 'goto( ) 안에는 가로 위치와 세로 위치, 숫자 두 개를 쉼표로 넣어요.';
     if (/as a dict key|unhashable type/.test(message)) return '리스트는 딕셔너리의 키로 쓸 수 없어요. 키는 글자나 숫자로 써요.';
     if (/'dict' object is not callable/.test(message)) return '딕셔너리에서 꺼낼 때는 둥근 괄호가 아니라 대괄호를 써요. 값["사과"] 처럼 써요.';
     if (/'dict_(keys|values|items)' object is not subscriptable/.test(message)) return '여기에는 번호를 쓸 수 없어요. 딕셔너리는 키로 꺼내요. 차례로 보려면 for로 돌아요.';
@@ -135,6 +149,10 @@ export function explain(error, knows = {}) {
     return '종류가 맞지 않는 값끼리 계산하려고 했어요.';
   }
   if (type === 'AttributeError') {
+    const turtleName = /module 'turtle' has no attribute '(.+?)'/.exec(message) ?? /'Turtle' object has no attribute '(.+?)'/.exec(message);
+    if (turtleName && TURTLE_LATER.test(turtleName[1])) return `${turtleName[1]}는 이 앱의 그림판에서는 아직 쓸 수 없는 명령이에요.`;
+    if (turtleName && turtleName[1] !== turtleName[1].toLowerCase() && turtleName[1] !== 'Turtle') return '점(.) 뒤의 명령은 모두 작은 글자로 써요.';
+    if (turtleName) return 'turtle 뒤의 이름을 파이썬이 몰라요. 철자를 확인해요. forward, backward, left, right, penup, pendown, color, goto 같은 이름을 써요.';
     if (/module 'random' has no attribute/.test(message)) return 'random 뒤의 이름이 달라요. random.randint 의 철자를 확인해요.';
     if (/'str' object has no attribute '(append|add|push)'/.test(message)) return '글자에는 append( )를 쓸 수 없어요. 글자를 이으려면 더하기(+)를 써요.';
     if (/'str' object has no attribute '(remove|pop)'/.test(message)) return '글자에서는 한 글자를 지울 수 없어요. replace( )로 빈 글자("")로 바꾼 새 글자를 만들어요.';
@@ -187,6 +205,14 @@ export function explain(error, knows = {}) {
     return '그 키가 딕셔너리에 없어요. 먼저 in으로 있는지 물어봐요.';
   }
   if (type === 'RuntimeError' && /dictionary changed size during iteration/.test(message)) return '딕셔너리를 for로 도는 동안에는 키를 넣거나 지울 수 없어요. 반복이 끝난 뒤에 바꿔요.';
+  if (type === 'TurtleGraphicsError') {
+    const color = /bad color string: (.*)$/.exec(message);
+    if (color) return `"${color[1]}"은(는) 쓸 수 없는 색 이름이에요. 색은 영어로 써요. red, orange, yellow, green, blue, purple, pink, brown, black, white 같은 이름을 쓸 수 있어요.`;
+    if (/too many drawing commands/.test(message)) return '그림을 너무 많이 그려서 멈췄어요. 반복이 끝나지 않는 것 같아요.';
+    if (/bad pen size/.test(message)) return '펜의 굵기는 0보다 큰 숫자로 써요.';
+    if (/no shape named/.test(message)) return '그런 모양은 없어요. "turtle", "arrow", "circle", "square", "triangle" 가운데에서 골라요.';
+    return '그림판 명령을 실행할 수 없었어요.';
+  }
   if (type === 'EOFError') return '입력을 받을 수 없었어요.';
   return `${type} 오류가 났어요.`;
 }

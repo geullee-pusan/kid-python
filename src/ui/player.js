@@ -72,6 +72,7 @@ export function createPlayer(ctx) {
     if (editor.getCode() !== code) editor.setCode(code);
     output.clear();
     ctx.ui.vars?.({});
+    ctx.ui.drawStart?.(code);
     const result = await ctx.runner.run(code, { trace: true, inputs, limit, randoms });
     const steps = result.steps ?? [];
     for (const [index, step] of steps.entries()) {
@@ -86,6 +87,8 @@ export function createPlayer(ctx) {
         else if (piece) output.append(piece);
       }
       ctx.ui.vars?.(step.vars ?? {});
+      // 이 줄이 그린 것: 다음 줄로 넘어가기 전에 다 그려지게 시간을 정해 준다.
+      if (step.draw) ctx.ui.draw?.(step.draw, (450 * pace) / slow / speed);
       await pause((550 * pace) / slow);
     }
     editor.markRunLine(null);

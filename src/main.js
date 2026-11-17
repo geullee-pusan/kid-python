@@ -11,6 +11,7 @@ import { explain } from './core/errors-ko.js';
 import { hasBatchim } from './core/korean.js';
 import { lectureParts, line, mergeScript, predictAskScenes, predictFeedback, predictRevealScenes, taskFeedback } from './core/lesson.js';
 import { createBoard } from './ui/board.js';
+import { createCanvas, usesTurtle } from './ui/canvas.js';
 import { createConsole } from './ui/console.js';
 import { createEditor } from './ui/editor.js';
 import { flushLog, log, setBuild } from './ui/log.js';
@@ -116,7 +117,32 @@ async function main() {
   const lessonConsole = createConsole($('console'), getRunner);
   const studioConsole = createConsole($('studio-console'), getRunner);
 
+  // 그림판: turtle을 쓰는 프로그램일 때만 보인다. 수업 화면에서는 출력 칸 왼쪽에, 만들기 화면에서는 출력 칸 위에 놓인다.
+  const lessonCanvas = createCanvas($('canvas'), { rate: speed });
+  const studioCanvas = createCanvas($('studio-canvas'), { rate: speed });
+  let activeCanvas = null; // 지금 그림을 받을 그림판
+  /** 그림판을 보이거나 감춘다. 수업 화면에서는 그림판의 가로를 세로에 맞춰(4:3) 잡는다. */
+  function showCanvas(canvas, on) {
+    const column = canvas === lessonCanvas ? $('draw-col') : $('studio-draw-col');
+    if (column.hidden === !on) return;
+    column.hidden = !on;
+    if (canvas !== lessonCanvas) return;
+    column.closest('.right').classList.toggle('drawing', on);
+    if (on) fitCanvas();
+  }
+  function fitCanvas() {
+    const column = $('draw-col');
+    if (column.hidden) return;
+    column.style.width = `${Math.round(($('canvas').clientHeight * 4) / 3)}px`;
+  }
+  addEventListener('resize', fitCanvas);
+
   runner = new Runner({
+    onDraw(cmds) {
+      if (!activeCanvas) return;
+      showCanvas(activeCanvas, true);
+      activeCanvas.push(cmds);
+    },
     onOut(chunks, dropped) {
       if (activeConsole) activeConsole.queue(chunks, dropped);
       else runner.ack(1);
@@ -138,15 +164,20 @@ async function main() {
    * 편집기의 코드를 실행해 출력 칸에 보여 준다.
    * 오류가 나면 한국어 한 문장과 파이썬의 원래 글을 함께 보여 주고, 그 줄을 표시한다.
    */
-  async function runCode(editor, out, where) {
+  async function runCode(editor, out, where, canvas) {
     if (!isReady()) return null;
     const code = editor.getCode();
     activeConsole = out;
+    activeCanvas = canvas;
+    canvas.reset();
+    // 그리는 프로그램이면 그림판을 먼저 보여 준다(그리기 시작한 뒤에 화면이 밀리지 않게).
+    showCanvas(canvas, usesTurtle(code) || (canvas === lessonCanvas && Boolean(mission?.canvas)));
     out.clear();
     editor.markErrorLine(null);
     const result = await runner.run(code);
     out.flush();
     if (result.stopped) {
+      canvas.stop();
       out.append('\n■ 멈췄어요\n', 'note');
     } else if (result.error) {
       const at = result.error.line ? ` (${result.error.line}번 줄)` : '';
@@ -309,6 +340,9 @@ async function main() {
   function goHome() {
     stopSpeaking();
     activeConsole = null;
+    activeCanvas = null;
+    lessonCanvas.stop();
+    studioCanvas.stop();
     renderHome();
     showScreen('home');
     flushLog();
@@ -440,7 +474,7 @@ async function main() {
 
   async function runUser() {
     if (!canRun) return null;
-    const ran = await runCode(editor, lessonConsole, { mission: mission.id, phase: currentPhase });
+    const ran = await runCode(editor, lessonConsole, { mission: mission.id, phase: currentPhase }, lessonCanvas);
     if (ran) {
       lastRun = ran;
       showVars(ran.vars ?? {});
@@ -473,6 +507,7 @@ async function main() {
     if (draftSaving) store.set(draftSaving, resetTo);
     editor.markErrorLine(null);
     lessonConsole.clear();
+    lessonCanvas.reset();
     showVars({});
     editor.focus();
   });
@@ -489,7 +524,18 @@ async function main() {
     caption,
     voice: teacherVoice.voice,
     speed,
-    ui: { follow, check, vars: showVars },
+    ui: {
+      follow,
+      check,
+      vars: showVars,
+      // 한 줄씩 보기: 시작할 때 그림판을 비우고(그리는 코드일 때만 보인다), 줄마다 그 줄이 그린 것을 넘겨받는다.
+      drawStart(code) {
+        activeCanvas = lessonCanvas;
+        lessonCanvas.reset();
+        showCanvas(lessonCanvas, usesTurtle(code) || Boolean(mission?.canvas));
+      },
+      draw: (cmds, maxMs) => lessonCanvas.push(cmds, { maxMs }),
+    },
     knows,
   });
   const say = (key, vars) => player.play([line(mission, key, seed, vars)]);
@@ -522,6 +568,7 @@ async function main() {
     lastRun = null;
     editor.setCode('');
     lessonConsole.clear();
+    lessonCanvas.reset();
     showVars({});
     allowRun(true);
     show('done', 'skip');
@@ -606,6 +653,8 @@ async function main() {
       show();
       editor.setCode(question.code);
       lessonConsole.clear();
+      lessonCanvas.reset();
+      showCanvas(lessonCanvas, usesTurtle(question.code) || Boolean(mission.canvas));
       let pick;
       const picked = new Promise((resolve) => (pick = resolve));
       showVars({});
@@ -642,7 +691,10 @@ async function main() {
     if (!isReady()) return null;
     const code = editor.getCode();
     activeConsole = lessonConsole;
+    activeCanvas = lessonCanvas;
     lessonConsole.clear();
+    lessonCanvas.reset();
+    showCanvas(lessonCanvas, usesTurtle(code) || Boolean(mission.canvas));
     editor.markErrorLine(null);
     let diagnosis = { kind: 'correct' };
     for (const one of task.cases) {
@@ -655,6 +707,8 @@ async function main() {
       const endless = result.error?.type === 'TraceLimit';
       const printed = result.output ?? '';
       lessonConsole.append(endless ? `${printed.split('\n').slice(0, 12).join('\n')}\n…\n` : printed);
+      // 채점할 때는 화면으로 보내지 않고 돌리므로, 그린 것이 있으면 다 그린 모습을 한 번에 보여 준다.
+      if (result.draw?.length) lessonCanvas.showAll(result.draw);
       showVars(result.vars ?? {});
       if (endless) {
         // 끝나지 않는 반복: 실행기가 줄 수를 세다가 멈춘 것이다.
@@ -703,6 +757,8 @@ async function main() {
     // 쓰던 것이 있으면 이어서, 없으면 문제에 딸린 시작 코드(고치기 문제)로 시작한다.
     editor.setCode(store.get(key, '') || task.start || '');
     lessonConsole.clear();
+    lessonCanvas.reset();
+    showCanvas(lessonCanvas, usesTurtle(editor.getCode()) || Boolean(mission.canvas));
     editor.markErrorLine(null);
     showVars({});
     draftSaving = key;
@@ -855,6 +911,9 @@ async function main() {
     }
     showScreen('play');
     activeConsole = lessonConsole;
+    activeCanvas = lessonCanvas;
+    lessonCanvas.reset();
+    showCanvas(lessonCanvas, Boolean(mission.canvas));
     setPhase('');
     currentPhase = 'intro';
     shownVars = {};
@@ -986,6 +1045,9 @@ async function main() {
     $('to-home').textContent = '← 목록으로';
     showScreen('play');
     activeConsole = lessonConsole;
+    activeCanvas = lessonCanvas;
+    lessonCanvas.reset();
+    showCanvas(lessonCanvas, Boolean(mission.canvas));
     currentPhase = 'practice';
     shownVars = {};
     showVars({});
@@ -1033,6 +1095,7 @@ async function main() {
     aborted = true;
     player.stop();
     runner.stop();
+    lessonCanvas.stop();
     press('abort');
   });
   $('skip').addEventListener('click', () => {
@@ -1092,7 +1155,7 @@ async function main() {
   async function runStudio() {
     if (screen !== 'studio') return;
     saveWork();
-    await runCode(studioEditor, studioConsole, { where: 'studio', work: work.id });
+    await runCode(studioEditor, studioConsole, { where: 'studio', work: work.id }, studioCanvas);
     refreshStudio();
     if (runner.state !== 'waiting-input') studioEditor.focus();
   }
@@ -1107,8 +1170,11 @@ async function main() {
     $('work-name').value = work.name;
     $('work-saved').textContent = found ? '저장됨' : '';
     studioConsole.clear();
+    studioCanvas.reset();
+    showCanvas(studioCanvas, usesTurtle(work.code));
     showScreen('studio');
     activeConsole = studioConsole;
+    activeCanvas = studioCanvas;
     refreshStudio();
     studioEditor.focus();
     log('studio-open', { work: work.id, isNew: !found });
@@ -1137,7 +1203,7 @@ async function main() {
   });
 
   // 개발 서버에서만: 수업을 자동으로 돌려 보는 점검에서 편집기에 코드를 넣을 수 있게 한다(빌드에는 들어가지 않는다).
-  if (import.meta.env.DEV) window.__kidpy = { editor, studioEditor, runner };
+  if (import.meta.env.DEV) window.__kidpy = { editor, studioEditor, runner, player, lessonCanvas, studioCanvas };
 
   // ---- 시작 ----
   show();
