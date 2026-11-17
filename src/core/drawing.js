@@ -99,19 +99,35 @@ function near(ax, ay, bx, by, tol) {
   return Math.hypot(ax - bx, ay - by) <= tol;
 }
 
-/** 두 선분 묶음을 짝짓는다. 짝을 못 찾은 것들을 돌려준다. */
+/** 점 (px, py)에서 선분 s까지의 거리 */
+function distance(px, py, s) {
+  const dx = s.x2 - s.x1;
+  const dy = s.y2 - s.y1;
+  const t = Math.max(0, Math.min(1, ((px - s.x1) * dx + (py - s.y1) * dy) / (dx * dx + dy * dy)));
+  return Math.hypot(px - (s.x1 + t * dx), py - (s.y1 + t * dy));
+}
+
+/** 선분 small이 선분 big 위에 놓여 있는가(big이 더 길어도 된다) */
+function covers(big, small, tol) {
+  return distance(small.x1, small.y1, big) <= tol && distance(small.x2, small.y2, big) <= tol;
+}
+
+/**
+ * 두 선분 묶음을 견준다.
+ * missing: 본보기에는 있는데 그리지 않은(또는 덜 그은) 선. extra: 본보기에 없는(또는 더 길게 그은) 선.
+ * 한 직선 위에서 이어진 선은 하나로 합쳐져 있으므로, 양 끝이 같은지가 아니라 "그 선 위에 놓였는지"로 본다.
+ * 그래야 본보기의 두 선 사이를 잇는 선을 더 그었을 때 '더 그은 선'으로 알아본다.
+ * pairs: 양쪽이 똑같은 선끼리의 짝(색을 견줄 때 쓴다).
+ */
 function matchStrokes(got, want, tol) {
-  const left = [...got];
-  const missing = [];
+  const missing = want.filter((w) => !got.some((g) => covers(g, w, tol)));
+  const extra = got.filter((g) => !want.some((w) => covers(w, g, tol)));
   const pairs = [];
   for (const w of want) {
-    const at = left.findIndex(
-      (g) => (near(g.x1, g.y1, w.x1, w.y1, tol) && near(g.x2, g.y2, w.x2, w.y2, tol)) || (near(g.x1, g.y1, w.x2, w.y2, tol) && near(g.x2, g.y2, w.x1, w.y1, tol)),
-    );
-    if (at < 0) missing.push(w);
-    else pairs.push([left.splice(at, 1)[0], w]);
+    const g = got.find((one) => covers(one, w, tol) && covers(w, one, tol));
+    if (g) pairs.push([g, w]);
   }
-  return { missing, extra: left, pairs };
+  return { missing, extra, pairs };
 }
 
 const moved = (list, fn) => list.map((s) => ({ ...s, ...fn(s.x1, s.y1, 1), ...fn(s.x2, s.y2, 2) }));

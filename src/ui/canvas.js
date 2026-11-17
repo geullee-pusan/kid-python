@@ -14,7 +14,8 @@ const DRAIN_MS = 9000;
 function paintItem(ctx, item) {
   if (item.k === 'line') {
     ctx.strokeStyle = item.c;
-    ctx.lineWidth = item.w;
+    // 그림판을 줄여서 보여 주므로, 굵기 1인 선이 흐려지지 않게 조금 굵게 긋는다(보이는 굵기만 다르다).
+    ctx.lineWidth = Math.max(item.w, 1.6);
     ctx.lineCap = 'round';
     ctx.beginPath();
     ctx.moveTo(X(item.x1), Y(item.y1));
@@ -101,9 +102,10 @@ function apply(state, cmd) {
  * 명령 목록을 한 번에 그린다(문제의 본보기 그림처럼 움직임이 필요 없을 때).
  * @param {HTMLCanvasElement} canvas
  * @param {object[]} cmds
- * @param {{turtle?: boolean}} options turtle: 거북이도 그릴지
+ * @param {{turtle?: boolean, origin?: boolean, fit?: boolean}} options turtle: 거북이도 그릴지. origin: 가운데 (0, 0)에 옅은 십자.
+ * fit: 그림이 작으면 그림과 가운데 (0, 0)이 함께 보이는 만큼 키워서 보여 준다(칠판의 작은 본보기 그림에서 쓴다).
  */
-export function paintDrawing(canvas, cmds, { turtle = false } = {}) {
+export function paintDrawing(canvas, cmds, { turtle = false, origin = false, fit = false } = {}) {
   canvas.width = VIEW.w * SCALE;
   canvas.height = VIEW.h * SCALE;
   const ctx = canvas.getContext('2d');
@@ -111,6 +113,31 @@ export function paintDrawing(canvas, cmds, { turtle = false } = {}) {
   const state = build(cmds);
   ctx.fillStyle = state.bg;
   ctx.fillRect(0, 0, VIEW.w, VIEW.h);
+  if (fit) {
+    const xs = [0];
+    const ys = [0];
+    for (const item of state.items) {
+      if (item.k === 'line') xs.push(item.x1, item.x2), ys.push(item.y1, item.y2);
+      else if (item.k === 'fill' && item.p) for (const [x, y] of item.p) xs.push(x), ys.push(y);
+      else if (item.k === 'dot') xs.push(item.x - item.r, item.x + item.r), ys.push(item.y - item.r, item.y + item.r);
+    }
+    const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+    const zoom = Math.max(1, Math.min(2.5, (VIEW.w - 50) / Math.max(x1 - x0, 1), (VIEW.h - 50) / Math.max(y1 - y0, 1)));
+    ctx.translate(VIEW.w / 2, VIEW.h / 2);
+    ctx.scale(zoom, zoom);
+    ctx.translate(-VIEW.w / 2 - (x0 + x1) / 2, -VIEW.h / 2 + (y0 + y1) / 2);
+  }
+  if (origin) {
+    // 가운데 (0, 0)을 옅은 십자로 표시한다(그림이 어디에 놓이는지 보이게).
+    ctx.strokeStyle = '#ced4da';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(X(-8), Y(0));
+    ctx.lineTo(X(8), Y(0));
+    ctx.moveTo(X(0), Y(-8));
+    ctx.lineTo(X(0), Y(8));
+    ctx.stroke();
+  }
   for (const item of state.items) paintItem(ctx, item);
   if (turtle) for (const t of state.turtles.values()) paintTurtle(ctx, t);
 }
@@ -231,6 +258,12 @@ export function createCanvas(root, { rate = 1 } = {}) {
   }
 
   // 화면이 가려져 있으면 브라우저가 화면 그리기 신호를 보내지 않는다. 그때도 그림이 멈추지 않게 타이머를 함께 건다.
+  function settle() {
+    const resolve = waiters;
+    waiters = [];
+    for (const done of resolve) done();
+  }
+
   function wake() {
     if (frame || timer) return;
     frame = requestAnimationFrame(tick);
@@ -257,6 +290,7 @@ export function createCanvas(root, { rate = 1 } = {}) {
       state = { items: [], bg: '#ffffff', turtles: new Map() };
       redrawInk();
       show();
+      settle();
     },
     /**
      * 그리기 명령을 받는다. 차례로 움직이며 그린다.
@@ -275,6 +309,7 @@ export function createCanvas(root, { rate = 1 } = {}) {
     flush() {
       drain();
       show();
+      settle();
     },
     /** 명령 목록을 움직임 없이 한 번에 그린다(채점한 결과를 보여 줄 때). */
     showAll(cmds) {
@@ -289,6 +324,7 @@ export function createCanvas(root, { rate = 1 } = {}) {
       if (current) finish(current.cmd);
       current = null;
       show();
+      settle();
     },
     /** 밀린 것을 다 그리면 끝나는 약속 */
     idle() {

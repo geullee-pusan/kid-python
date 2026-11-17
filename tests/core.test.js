@@ -59,7 +59,7 @@ for (const m of Object.values(MISSIONS)) {
     const ids = allTasks(m).map((t) => t.id);
     assert.equal(new Set(ids).size, ids.length, '문제 id가 겹쳐요');
     for (const task of allTasks(m)) {
-      assert.ok(task.id && task.title && task.steps.length && task.expect.length && task.solution, `${task.id}: 빠진 것`);
+      assert.ok(task.id && task.title && task.steps.length && (task.expect.length || task.draw) && task.solution, `${task.id}: 빠진 것`);
       const vars = { calc: '12 + 30', got: 2, want: 3, no: '첫째' };
       assert.ok(taskFeedback(m, task, { kind: 'correct', first: true }).length >= 2);
       for (const kind of ['not-computed', 'quoted-calc', 'order', 'count']) assert.ok(taskFeedback(m, task, { kind, vars })[0].text);
@@ -92,7 +92,7 @@ for (const set of Object.values(PRACTICE)) {
     assert.deepEqual(set.knows, lessons[lessons.length - 1].knows ?? [], '단원의 마지막 수업과 knows가 같아야 해요');
     assert.equal(Boolean(set.showVars), Boolean(lessons[lessons.length - 1].showVars));
     for (const task of set.tasks) {
-      assert.ok(task.id && task.title && task.summary && task.story && task.steps.length && task.expect.length && task.solution && task.praise, `${task.id}: 빠진 것`);
+      assert.ok(task.id && task.title && task.summary && task.story && task.steps.length && (task.expect.length || task.draw) && task.solution && task.praise, `${task.id}: 빠진 것`);
       assert.ok(['기본', '응용', '도전'].includes(task.level), `${task.id}: level`);
       assert.ok(['쓰기', '고치기'].includes(task.kind), `${task.id}: kind`);
       if (task.kind === '고치기') assert.ok(task.start, `${task.id}: 고치기 문제에는 시작 코드가 있어야 해요`);

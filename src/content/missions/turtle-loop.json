@@ -1,0 +1,202 @@
+{
+  "_설명": "거북이로 그리기 단원 2번 수업. 반복으로 정다각형을 그린다. 거북이가 꼭짓점에서 도는 각은 도형의 안쪽 각(내각)이 아니라 바깥쪽 각(외각)이고, 한 바퀴를 다 돌아야 제자리로 오므로 정n각형은 한 번에 360 ÷ n 도를 돈다(다각형의 외각의 합은 360도 — 수학의 정리). 학습자는 외각의 합과 360 ÷ n 을 이미 배웠으므로(사고력 수학 교재에서 확인, 2026-11-18) 길게 설명하지 않고 코드와 잇는다. 엔트리의 '(4) 번 반복하기'는 정해진 횟수만큼 반복 단원에서 확인한 것이다. 겨냥하는 오개념: 정삼각형을 그리려면 60도를 돈다(내각으로 착각), 반복 횟수가 많으면 변도 많아진다(같은 선을 다시 지나갈 뿐이다).",
+  "id": "turtle-loop",
+  "unit": "거북이로 그리기",
+  "no": 2,
+  "title": "반복으로 도형 그리기",
+  "desc": "가고 돌기를 되풀이해서 네모, 세모, 여러 가지 정다각형을 그려요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions"],
+  "showVars": true,
+  "canvas": true,
+  "learned": [
+    { "rule": "가고 돌기를 되풀이하면 도형이 돼요.", "code": "import turtle\nfor i in range(4):\n    turtle.forward(100)\n    turtle.left(90)" },
+    { "rule": "거북이가 도는 각은 도형의 안쪽 각이 아니라 바깥쪽 각(외각)이에요. 정삼각형은 60도가 아니라 120도를 돌아요." },
+    { "rule": "한 바퀴는 360도라서, 변이 n개인 정다각형은 한 번에 360 ÷ n 도를 돌아요.", "code": "turtle.left(360 / 변)" }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["지난 시간에는 한 줄에 한 번씩 움직였어요. 오늘은 반복으로 도형을 그려요."],
+    "square-intro": ["네모는 가고, 돌고, 가고, 돌기를 네 번 하면 돼요. 엔트리에서 반복하기 블록 안에 움직이기와 회전하기를 넣던 것과 같아요."],
+    "square-after": ["네 번 되풀이해서 네모가 됐어요. 거북이는 처음 자리로 돌아와서, 처음처럼 오른쪽을 보고 있어요."],
+    "tri-intro": ["이번에는 정삼각형이에요. 정삼각형의 한 각은 [60|육십]도죠. 그런데 거북이는 [60|육십]도가 아니라 [120|백이십]도를 돌아야 해요. 칠판을 봐요."],
+    "tri-why": ["거북이는 가던 방향에서 얼마나 꺾는지를 돌아요. 그것은 도형의 바깥쪽 각, 외각이에요. 안쪽 각과 바깥쪽 각을 더하면 [180|백팔십]도니까, [180|백팔십]에서 [60|육십]을 뺀 [120|백이십]도예요."],
+    "tri-after": ["[120|백이십]도씩 세 번 돌아서 정삼각형이 됐어요."],
+    "any-intro": ["거북이가 도형을 한 바퀴 돌아 제자리에 오면, 돈 각을 모두 더한 것이 [360|삼백육십]도예요. 외각의 합이 [360|삼백육십]도라는 것, 수학 시간에 배웠죠. 그래서 변이 다섯 개면 한 번에 [360|삼백육십] 나누기 [5|오]를 돌면 돼요. 계산은 파이썬에게 시켜요."],
+    "any-after": ["정오각형이 됐어요. 맨 윗줄의 변의 수만 바꾸면 어떤 정다각형이든 그릴 수 있어요."],
+    "check-ask": ["하나 물어볼게요. 정육각형을 그리려면 한 번에 몇 도를 돌아야 할까요?"],
+    "check-right": ["맞아요. [360|삼백육십] 나누기 [6|육], [60|육십]도예요."],
+    "check-teach-1": ["[120|백이십]도는 정육각형의 안쪽 각이에요. 거북이는 바깥쪽 각만큼 돌아요."],
+    "check-teach-2": ["여섯 번 돌아서 한 바퀴니까, [360|삼백육십] 나누기 [6|육], [60|육십]도예요."],
+    "follow-ok": ["좋아요. 정삼각형이 그려졌어요."],
+    "summary": ["정리해요. 가고 돌기를 되풀이하면 도형이 돼요. 한 번에 도는 각은 [360|삼백육십]을 변의 수로 나눈 값이에요."],
+
+    "q1-right": ["맞아요. [60|육십]도씩 세 번 돌면 [180|백팔십]도, 반 바퀴밖에 못 돌아요. 도형이 닫히지 않아요."],
+    "q1-tri": ["[60|육십]도는 정삼각형의 안쪽 각이에요. 거북이가 [60|육십]도씩 돌면 훨씬 덜 꺾여요."],
+    "q1-hex": ["정육각형이 되려면 여섯 번을 되풀이해야 해요. 세 번이면 절반만 그려져요."],
+    "q1-explain": ["[60|육십]도씩 도는 것은 정육각형을 그리는 각이에요. 세 번만 해서 절반이 그려졌어요."],
+    "q2-right": ["맞아요. 나누기는 답에 소수점이 붙어요. [45.0|사십오 점 영]이에요."],
+    "q2-int": ["빗금 하나로 나누면 답에 소수점이 붙어요. 소수점 없이 받으려면 빗금 두 개로 몫을 구해요."],
+    "q2-n": ["[360|삼백육십]을 [8|팔]로 나눈 값을 내보냈어요."],
+    "q2-explain": ["[360|삼백육십] 나누기 [8|팔]은 [45|사십오]예요. 정팔각형을 그릴 때 한 번에 도는 각이에요."],
+    "q3-right": ["맞아요. 네 번이면 네모가 다 그려져요. 나머지 네 번은 같은 선 위를 한 번 더 지나갈 뿐이에요."],
+    "q3-oct": ["[90|구십]도씩 돌았어요. 정팔각형은 [45|사십오]도씩 돌아야 해요. 되풀이하는 횟수가 변의 수를 정하지 않아요."],
+    "q3-two": ["같은 자리에서 같은 쪽으로 도니까, 같은 네모를 한 번 더 따라 그려요."],
+    "q3-explain": ["도는 각이 [90|구십]도면 네 번 만에 한 바퀴예요. 더 되풀이해도 같은 네모 위를 지나가요."],
+
+    "task-how": ["실행해서 그림판에 그려 보고, 칠판의 그림과 같으면 '제출'을 눌러요."],
+    "praise-hexagon": ["[360|삼백육십]을 [6|육]으로 나눈 [60|육십]도씩 돌면서 여섯 번 되풀이했어요. 수학에서 배운 외각을 코드에 썼어요."],
+    "need-loop": ["그림은 맞아요. 그런데 같은 줄을 여러 번 쓰지 말고, [for|포]로 되풀이해 봐요."],
+    "hex-inner": ["정삼각형이 됐어요. [120|백이십]도는 정육각형의 안쪽 각이에요. 거북이는 바깥쪽 각만큼, [360|삼백육십] 나누기 [6|육]을 돌아요."],
+    "hint-1": ["[for|포]로 여섯 번 되풀이해요. 그 안에서 앞으로 [60|육십] 가고, 왼쪽으로 돌아요."],
+    "hint-2": ["한 번에 도는 각은 [360|삼백육십]을 변의 수 [6|육]으로 나눈 값이에요."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. 정오각형을 그리는 예제예요. 이걸 보고 써 봐요."],
+    "praise-polygon": ["물어본 변의 수를 되풀이하는 횟수와 도는 각에 모두 썼어요. 프로그램 하나로 어떤 정다각형이든 그려요."],
+    "poly-fixed": ["변의 수가 달라져도 같은 그림이 나왔어요. 물어본 수를 [range|레인지]와, 도는 각을 구하는 나눗셈에 써요."],
+    "polygon-hint-1": ["변의 수를 물어서 숫자로 바꿔요. 그 수만큼 되풀이해요."],
+    "polygon-hint-2": ["되풀이할 때마다 앞으로 [50|오십] 가고, 왼쪽으로 [360|삼백육십] 나누기 변의 수만큼 돌아요."],
+
+    "done-1": ["오늘은 반복으로 정다각형을 그렸어요."],
+    "done-2": ["한 번에 도는 각은 [360|삼백육십]을 변의 수로 나눈 값이에요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      {
+        "pair": {
+          "entry": [
+            { "cat": "flow", "parts": [{ "in": "4" }, "번 반복하기"] },
+            { "cat": "move", "indent": 1, "parts": ["이동 방향으로", { "in": "100" }, "만큼 움직이기"] },
+            { "cat": "move", "indent": 1, "parts": ["이동 방향을", { "in": "90º" }, "만큼 회전하기"] }
+          ],
+          "python": "for i in range(4):\n    turtle.forward(100)\n    turtle.left(90)",
+          "note": "가고 돌기를 네 번 되풀이하면 네모"
+        }
+      },
+      { "say": "square-intro" },
+      { "type": "import turtle\nfor i in range(4):\n    turtle.forward(100)\n    turtle.left(90)" },
+      { "trace": "import turtle\nfor i in range(4):\n    turtle.forward(100)\n    turtle.left(90)" },
+      { "say": "square-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "거북이가 도는 각", "items": ["정삼각형의 안쪽 각:  60도", "거북이가 도는 각(바깥쪽 각):  180 - 60 = 120도", "안쪽 각 + 바깥쪽 각 = 180도"] } },
+      { "say": "tri-intro" },
+      { "say": "tri-why" },
+      { "type": "import turtle\nfor i in range(3):\n    turtle.forward(100)\n    turtle.left(120)" },
+      { "trace": "import turtle\nfor i in range(3):\n    turtle.forward(100)\n    turtle.left(120)" },
+      { "say": "tri-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "한 바퀴는 360도", "items": ["도형을 한 바퀴 돌면, 돈 각을 모두 더해 360도", "변이 n개인 정다각형:  한 번에 360 ÷ n", "세모 120,  네모 90,  오각형 72,  육각형 60"] } },
+      { "say": "any-intro" },
+      { "type": "import turtle\n변 = 5\nfor i in range(변):\n    turtle.forward(80)\n    turtle.left(360 / 변)" },
+      { "trace": "import turtle\n변 = 5\nfor i in range(변):\n    turtle.forward(80)\n    turtle.left(360 / 변)" },
+      { "say": "any-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "정육각형을 그리려면\n한 번에 몇 도를 돌아야 할까요?",
+          "ask": "check-ask",
+          "choices": ["60도  (360 ÷ 6)", "120도  (정육각형의 한 각)"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "import turtle\nfor i in range(3):\n    turtle.forward(100)\n    turtle.left(120)" } },
+      { "follow": { "code": "import turtle\nfor i in range(3):\n    turtle.forward(100)\n    turtle.left(120)", "draw": true, "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["for 안에서 가고 돌기  →  도형", "거북이는 바깥쪽 각만큼 돈다", "정n각형:  turtle.left(360 / n)"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "ask": "어떤 그림이 그려질까요?",
+      "explain": "q1-explain",
+      "code": "import turtle\nfor i in range(3):\n    turtle.forward(100)\n    turtle.left(60)",
+      "outcome": { "output": [], "strokes": 3, "home": false, "heading": 180 },
+      "answer": 0,
+      "choices": [
+        { "text": "닫히지 않은 꺾인 선 (정육각형의 절반)", "say": "q1-right" },
+        { "text": "정삼각형", "say": "q1-tri" },
+        { "text": "정육각형", "say": "q1-hex" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "print(360 / 8)",
+      "answer": 1,
+      "choices": [
+        { "text": "45", "say": "q2-int" },
+        { "text": "45.0", "say": "q2-right" },
+        { "text": "8", "say": "q2-n" }
+      ]
+    },
+    {
+      "id": "q3",
+      "ask": "어떤 그림이 그려질까요?",
+      "explain": "q3-explain",
+      "code": "import turtle\nfor i in range(8):\n    turtle.forward(50)\n    turtle.left(90)",
+      "outcome": { "output": [], "strokes": 4, "home": true },
+      "answer": 2,
+      "choices": [
+        { "text": "정팔각형", "say": "q3-oct" },
+        { "text": "네모 두 개", "say": "q3-two" },
+        { "text": "네모 하나 (같은 선을 두 번 지나간다)", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "hexagon",
+      "title": "정육각형",
+      "story": "한 변의 길이가 60인 정육각형을 그려요. 거북이는 가운데에서 오른쪽으로 가기 시작해서, 왼쪽으로 돌아요.",
+      "steps": ["for로 여섯 번 되풀이해요.", "앞으로 60 가고, 왼쪽으로 돌아요. 몇 도를 돌지는 360을 변의 수로 나눠서 구해요."],
+      "start": "import turtle\n",
+      "expect": [],
+      "draw": true,
+      "checks": [{ "pattern": "for\\s", "say": "need-loop" }],
+      "mistakes": [{ "draw": "draw-diff", "code": "120", "say": "hex-inner" }],
+      "praise": "praise-hexagon",
+      "solution": "import turtle\nfor i in range(6):\n    turtle.forward(60)\n    turtle.left(360 / 6)",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "import turtle\nfor i in range(5):\n    turtle.forward(80)\n    turtle.left(360 / 5)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "polygon",
+    "title": "심화: 변의 수를 물어서 그리기",
+    "story": "변의 수를 물어보고, 한 변의 길이가 50인 정다각형을 그려요. 3이면 정삼각형, 8이면 정팔각형이에요. 왼쪽으로 돌아요.",
+    "steps": ["import turtle 아래에서 input으로 변의 수를 물어서 숫자로 바꿔요.", "그 수만큼 되풀이하면서, 앞으로 50 가고 왼쪽으로 돌아요."],
+    "start": "import turtle\n",
+    "cases": [
+      { "inputs": ["3"], "expect": [] },
+      { "inputs": ["5"], "expect": [] },
+      { "inputs": ["8"], "expect": [] }
+    ],
+    "expect": [],
+    "draw": true,
+    "showCases": 3,
+    "mistakes": [{ "draw": "draw-diff", "inputs": "^(5|8)$", "say": "poly-fixed" }],
+    "praise": "praise-polygon",
+    "solution": "import turtle\n변 = int(input(\"변의 수: \"))\nfor i in range(변):\n    turtle.forward(50)\n    turtle.left(360 / 변)",
+    "hints": [{ "say": "polygon-hint-1" }, { "say": "polygon-hint-2" }]
+  }
+}

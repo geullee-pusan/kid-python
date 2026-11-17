@@ -6,7 +6,8 @@ import './app.css';
 import curriculum from './content/curriculum.json';
 import look from './content/teacher-look.json';
 import teacherVoice from './content/teacher.json';
-import { diagnoseTask, outputLines } from './core/diagnose.js';
+import { diagnoseDrawing, diagnoseTask, outputLines } from './core/diagnose.js';
+import { compareDrawing } from './core/drawing.js';
 import { explain } from './core/errors-ko.js';
 import { hasBatchim } from './core/korean.js';
 import { lectureParts, line, mergeScript, predictAskScenes, predictFeedback, predictRevealScenes, taskFeedback } from './core/lesson.js';
@@ -186,7 +187,15 @@ async function main() {
       if (result.error.line) editor.markErrorLine(result.error.line);
     }
     log('run', { ...where, code, ok: result.ok, error: result.error ? { type: result.error.type, line: result.error.line, message: result.error.message } : null, ms: result.ms });
-    return { code, output: result.output, error: result.error, stopped: result.stopped, vars: result.vars };
+    return { code, output: result.output, error: result.error, stopped: result.stopped, vars: result.vars, draw: result.draw };
+  }
+
+  // 그리기 문제: 모범 답이 그리는 그림. 문제를 보여 줄 때와 채점할 때 쓴다(한 번 구하면 적어 둔다).
+  const wanted = new Map();
+  async function wantDrawing(code, inputs = []) {
+    const key = JSON.stringify([code, inputs]);
+    if (!wanted.has(key)) wanted.set(key, (await runner.run(code, { check: true, inputs })).draw ?? []);
+    return wanted.get(key);
   }
 
   function showScreen(name) {
@@ -581,9 +590,12 @@ async function main() {
         if (pressed === 'skip') return 'stop';
         const ran = lastRun;
         // stopped: 끝나지 않는 프로그램을 돌려 보고 멈춤 버튼으로 멈추는 연습. 멈췄으면 된 것이다.
+        // draw: 그리기 따라 하기는 출력이 아니라 그림을 견준다.
         const same = scene.stopped
           ? Boolean(ran?.stopped)
-          : ran && !ran.error && !ran.stopped && (scene.match ? new RegExp(scene.match).test(ran.output) : outputLines(ran.output).join('\n') === scene.expect.join('\n'));
+          : scene.draw
+            ? ran && !ran.error && !ran.stopped && compareDrawing(ran.draw ?? [], await wantDrawing(scene.code)).kind === 'draw-correct'
+            : ran && !ran.error && !ran.stopped && (scene.match ? new RegExp(scene.match).test(ran.output) : outputLines(ran.output).join('\n') === scene.expect.join('\n'));
         log('follow', { mission: mission.id, ok: Boolean(same), tries, code: editor.getCode() });
         if (same) return 'done';
         tries += 1;
@@ -597,7 +609,7 @@ async function main() {
         if (!ran) await say('follow-not-run');
         else if (scene.stopped) await say('follow-not-stopped');
         else if (ran.error) await player.say(explain(ran.error, knows()));
-        else await say('follow-different');
+        else await say(scene.draw ? 'follow-different-draw' : 'follow-different');
         if (player.stopped) return 'stop';
         allowRun(true);
       }
@@ -684,7 +696,12 @@ async function main() {
     if (!task.cases) {
       const ran = await runUser();
       if (!ran || ran.stopped) return null;
-      const diagnosis = diagnoseTask(task, ran.code, ran);
+      let diagnosis;
+      if (task.draw) {
+        // 그리기 문제: 다 그려지기를 기다렸다가, 모범 답의 그림과 견준다.
+        await lessonCanvas.idle();
+        diagnosis = ran.error ? { kind: 'error' } : diagnoseDrawing(task, ran.code, ran.draw, await wantDrawing(task.solution));
+      } else diagnosis = diagnoseTask(task, ran.code, ran);
       if (diagnosis.kind === 'error') diagnosis.text = explain(ran.error, knows());
       return { ran, diagnosis };
     }
@@ -726,6 +743,8 @@ async function main() {
         diagnosis = { kind: 'error', text: explain(result.error, knows()) };
       } else if (result.unused > 0) {
         diagnosis = { kind: 'input-few', vars: { want: one.inputs.length, got: one.inputs.length - result.unused } };
+      } else if (task.draw) {
+        diagnosis = diagnoseDrawing({ ...task, inputs: one.inputs }, code, result.draw, await wantDrawing(task.solution, one.inputs));
       } else {
         diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, result);
       }
@@ -745,13 +764,24 @@ async function main() {
     const sample = task.cases?.[0];
     // showCases: 답에 따라 출력이 달라지는 문제(조건)는 앞의 몇 가지 경우를 나란히 보여 준다.
     const several = task.show && task.cases && (task.showCases ?? 1) > 1 ? task.cases.slice(0, task.showCases) : null;
+    // 그리기 문제는 글 대신 본보기 그림을 보여 준다(모범 답을 돌려서 얻는다).
+    let pictures = null;
+    if (task.draw) {
+      pictures = [];
+      const shown = task.cases ? task.cases.slice(0, task.showCases ?? 1) : [null];
+      for (const one of shown) {
+        pictures.push({ note: one?.inputs.length ? `${asAnswer(one.inputs)} 답하면` : '이렇게 그려요', cmds: await wantDrawing(task.solution, one?.inputs ?? []) });
+      }
+      checkAbort();
+    }
     const showTask = () =>
       board.task({
         ...task,
+        pictures,
         title: total > 1 ? `${task.title} (${index + 1} / ${total})` : task.title,
-        want: task.show ? (sample ? sample.expect : task.expect) : null,
-        wantNote: task.show && sample?.inputs.length ? `${picked(sample)}${asAnswer(sample.inputs)} 답했을 때 이렇게 나와야 해요` : null,
-        wants: several ? several.map((one) => ({ note: `${picked(one)}${asAnswer(one.inputs)} 답하면`, lines: one.expect })) : null,
+        want: task.show && !task.draw ? (sample ? sample.expect : task.expect) : null,
+        wantNote: task.show && !task.draw && sample?.inputs.length ? `${picked(sample)}${asAnswer(sample.inputs)} 답했을 때 이렇게 나와야 해요` : null,
+        wants: several && !task.draw ? several.map((one) => ({ note: `${picked(one)}${asAnswer(one.inputs)} 답하면`, lines: one.expect })) : null,
       });
     showTask();
     // 쓰던 것이 있으면 이어서, 없으면 문제에 딸린 시작 코드(고치기 문제)로 시작한다.

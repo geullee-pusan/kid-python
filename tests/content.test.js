@@ -13,7 +13,8 @@ import { fileURLToPath } from 'node:url';
 
 import { loadPyodide } from 'pyodide';
 
-import { diagnoseTask, outputLines } from '../src/core/diagnose.js';
+import { diagnoseDrawing, diagnoseTask, outputLines } from '../src/core/diagnose.js';
+import { strokes } from '../src/core/drawing.js';
 import { explain } from '../src/core/errors-ko.js';
 import { allTasks } from '../src/core/lesson.js';
 import { SCRIPTS } from './missions.js';
@@ -46,9 +47,12 @@ function typedRun(code, inputs, options) {
 
 /** 앱의 채점(src/main.js의 grade)과 같은 차례로 채점한다. */
 function grade(task, code) {
+  // 그리기 문제: 모범 답이 그린 그림과 견준다.
+  const want = (inputs) => scripted(task.solution, inputs ?? [], false).draw;
   if (!task.cases) {
     const ran = scripted(code, [], false);
-    return ran.error ? { kind: 'error', error: ran.error } : diagnoseTask(task, code, ran);
+    if (ran.error) return { kind: 'error', error: ran.error };
+    return task.draw ? diagnoseDrawing(task, code, ran.draw, want()) : diagnoseTask(task, code, ran);
   }
   let diagnosis = { kind: 'correct' };
   for (const one of task.cases) {
@@ -62,6 +66,7 @@ function grade(task, code) {
     }
     else if (ran.error) diagnosis = { kind: 'error', error: ran.error };
     else if (ran.unused > 0) diagnosis = { kind: 'input-few' };
+    else if (task.draw) diagnosis = diagnoseDrawing({ ...task, inputs: one.inputs }, code, ran.draw, want(one.inputs));
     else diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, ran);
     if (diagnosis.kind !== 'correct') {
       diagnosis.inputs = one.inputs;
@@ -77,8 +82,14 @@ for (const m of Object.values(SCRIPTS)) {
       const ran = shown(q.code, q.inputs, { limit: q.limit, randoms: q.randoms });
       if (q.outcome) {
         // 오류가 답인 문제: 보기 글은 설명이라서, 대본에 적어 둔 실제 결과(outcome)와 견준다.
-        assert.equal(ran.error?.type, q.outcome.error, `${q.id}: 오류 종류`);
+        assert.equal(ran.error?.type ?? null, q.outcome.error ?? null, `${q.id}: 오류 종류`);
         assert.deepEqual(outputLines(ran.output), q.outcome.output, `${q.id}: 오류 전까지의 출력`);
+        // 그림이 답인 문제: 보기 글은 그림을 말로 풀어 쓴 것이라서, 대본에 적어 둔 사실(선의 수, 끝난 방향, 제자리로 돌아왔는지)과 견준다.
+        const last = (ran.draw ?? []).filter((cmd) => cmd.k === 'pose').pop();
+        if (q.outcome.strokes !== undefined) assert.equal(strokes(ran.draw).length, q.outcome.strokes, `${q.id}: 선의 수`);
+        if (q.outcome.heading !== undefined) assert.equal(last.h, q.outcome.heading, `${q.id}: 끝난 방향`);
+        if (q.outcome.at !== undefined) assert.ok(Math.hypot(last.x - q.outcome.at[0], last.y - q.outcome.at[1]) < 0.5, `${q.id}: 끝난 자리 (${last.x}, ${last.y})`);
+        if (q.outcome.home !== undefined) assert.equal(Math.hypot(last.x, last.y) < 0.5, q.outcome.home, `${q.id}: 제자리로 돌아왔는지`);
       } else {
         assert.equal(ran.error, null, `${q.id}: 오류가 나면 안 돼요 (${ran.error?.message})`);
         assert.deepEqual(outputLines(ran.output), q.choices[q.answer].text.split('\n'), `${q.id}: 정답 보기`);
@@ -123,6 +134,11 @@ for (const m of Object.values(SCRIPTS)) {
             continue;
           }
           assert.equal(ran.error, null, `따라 하기에서 오류 (${ran.error?.message})`);
+          // 그리기 따라 하기는 그림을 견준다. 여기서는 무엇인가 그리는지만 본다.
+          if (spec.follow.draw) {
+            assert.ok(strokes(ran.draw).length > 0, '그리기 따라 하기는 선을 그어야 해요');
+            continue;
+          }
           if (spec.follow.match) assert.match(ran.output, new RegExp(spec.follow.match), '따라 하기 출력 모양');
           else assert.deepEqual(outputLines(ran.output), spec.follow.expect, '따라 하기 출력');
         }
@@ -619,6 +635,54 @@ const WRONG = [
   ['unit12-review', 'bingo', '판 = [[7, 2, 9],\n      [4, 5, 1],\n      [8, 3, 6]]\nwhile True:\n    답 = input()\n    if 답 == "끝":\n        break\n    수 = int(답)\n    for 줄 in range(3):\n        for 칸 in range(3):\n            if 판[줄][칸] == 수:\n                판[줄][칸] = "X"\nfor 한줄 in 판:\n    for 값 in 한줄:\n        print(값, end=" ")\n    print()\n빙고 = 0\nfor 한줄 in 판:\n    빙고 += 한줄.count("X")\nprint("빙고", 빙고, "줄")', 'mistake', 'bingo-count'],
   ['unit12-review', 'bingo', '판 = [[7, 2, 9],\n      [4, 5, 1],\n      [8, 3, 6]]\nwhile True:\n    답 = input()\n    if 답 == "끝":\n        break\n    수 = int(답)\n    for 줄 in range(3):\n        for 칸 in range(3):\n            if 판[줄][칸] == 수:\n                판[줄][칸] = "X"\nfor 한줄 in 판:\n    for 값 in 한줄:\n        print(값, end=" ")\n    print()\n빙고 = 0\nfor 줄 in range(3):\n    개수 = 0\n    for 칸 in range(3):\n        if 판[줄][칸] == "X":\n            개수 += 1\n    if 개수 == 3:\n        빙고 += 1\nfor 칸 in range(3):\n    개수 = 0\n    for 줄 in range(3):\n        if 판[줄][칸] == "X":\n            개수 += 1\n    if 개수 == 3:\n        빙고 += 1\nif 판[0][0] == "X" and 판[1][1] == "X" and 판[2][2] == "X":\n    빙고 += 1\nprint("빙고", 빙고, "줄")', 'mistake', 'bingo-diag'],
   ['unit12-review', 'bingo', '판 = [[7, 2, 9],\n      [4, 5, 1],\n      [8, 3, 6]]\nwhile True:\n    답 = input()\n    if 답 == "끝":\n        break\n    수 = int(답)\n    for 줄 in range(3):\n        for 칸 in range(3):\n            if 판[줄][칸] == 수:\n                판[줄][칸] = "X"\nfor 한줄 in 판:\n    for 값 in 한줄:\n        print(값, end=" ")\n    print()\n빙고 = 0\nfor i in range(3):\n    if 판[i].count("X") == 3:\n        빙고 += 1\n    if 판[0][i] == "X" and 판[1][i] == "X" and 판[2][i] == "X":\n        빙고 += 1\nprint("빙고", 빙고, "줄")', 'correct'],
+  // 거북이로 그리기 단원
+  ['turtle-move', 'stairs', 'import turtle\nturtle.forward(40)\nturtle.right(90)\nturtle.forward(40)\nturtle.left(90)\nturtle.forward(40)\nturtle.right(90)\nturtle.forward(40)', 'mistake', 'stairs-down'],
+  ['turtle-move', 'stairs', 'import turtle\nturtle.forward(40)\nturtle.left(90)\nturtle.forward(40)', 'draw-missing'],
+  ['turtle-move', 'stairs', 'import turtle\n', 'draw-none'],
+  ['turtle-move', 'stairs', 'import turtle\nturtle.forward(80)\nturtle.left(90)\nturtle.forward(80)\nturtle.right(90)\nturtle.forward(80)\nturtle.left(90)\nturtle.forward(80)', 'draw-size'],
+  ['turtle-move', 'stairs', 'turtle.forward(40)', 'error'],
+  ['turtle-move', 'stairs', 'import turtle\nturtle.foward(40)', 'error'],
+  ['turtle-move', 'stairs', 'import turtle\nfor i in range(2):\n    turtle.forward(40)\n    turtle.left(90)\n    turtle.forward(40)\n    turtle.right(90)', 'correct'],
+  ['turtle-move', 'plus', 'import turtle\nturtle.forward(50)\nturtle.backward(100)\nturtle.forward(50)\nturtle.left(90)\nturtle.forward(50)\nturtle.backward(100)', 'correct'],
+  ['turtle-move', 'plus', 'import turtle\nfor i in range(4):\n    turtle.forward(50)\n    turtle.left(90)', 'draw-diff'],
+  ['turtle-loop', 'hexagon', 'import turtle\nfor i in range(6):\n    turtle.forward(60)\n    turtle.left(120)', 'mistake', 'hex-inner'],
+  ['turtle-loop', 'hexagon', 'import turtle\nturtle.forward(60)\nturtle.left(60)\nturtle.forward(60)\nturtle.left(60)\nturtle.forward(60)\nturtle.left(60)\nturtle.forward(60)\nturtle.left(60)\nturtle.forward(60)\nturtle.left(60)\nturtle.forward(60)\nturtle.left(60)', 'mistake', 'need-loop'],
+  ['turtle-loop', 'hexagon', 'import turtle\nfor i in range(6):\n    turtle.forward(60)\n    turtle.right(60)', 'draw-mirror'],
+  ['turtle-loop', 'hexagon', 'import turtle\nfor i in range(5):\n    turtle.forward(60)\n    turtle.left(60)', 'draw-missing'],
+  ['turtle-loop', 'hexagon', 'import turtle\nfor i in range(6):\n    turtle.forward(60)\n    turtle.left(60)', 'correct'],
+  ['turtle-loop', 'polygon', 'import turtle\n변 = int(input())\nfor i in range(3):\n    turtle.forward(50)\n    turtle.left(120)', 'mistake', 'poly-fixed'],
+  ['turtle-loop', 'polygon', 'import turtle\n변 = input()\nfor i in range(변):\n    turtle.forward(50)\n    turtle.left(360 / 변)', 'error'],
+  ['turtle-loop', 'polygon', 'import turtle\n변 = int(input())\n각 = 360 / 변\nfor i in range(변):\n    turtle.forward(50)\n    turtle.left(각)', 'correct'],
+  ['turtle-pen', 'dash', 'import turtle\nfor i in range(5):\n    turtle.forward(20)\n    turtle.forward(20)', 'mistake', 'dash-solid'],
+  ['turtle-pen', 'dash', 'import turtle\nfor i in range(5):\n    turtle.forward(20)\n    turtle.penup()\n    turtle.forward(20)', 'mistake', 'dash-once'],
+  ['turtle-pen', 'dash', 'import turtle\nturtle.forward(20)\nturtle.penup()\nturtle.forward(20)\nturtle.pendown()\nturtle.forward(20)\nturtle.penup()\nturtle.forward(20)\nturtle.pendown()\nturtle.forward(20)\nturtle.penup()\nturtle.forward(20)\nturtle.pendown()\nturtle.forward(20)\nturtle.penup()\nturtle.forward(20)\nturtle.pendown()\nturtle.forward(20)', 'mistake', 'need-loop'],
+  ['turtle-pen', 'dash', 'import turtle\nfor i in range(5):\n    turtle.pendown()\n    turtle.forward(20)\n    turtle.penup()\n    turtle.forward(20)', 'correct'],
+  ['turtle-pen', 'two-color', 'import turtle\n색 = ["red", "blue"]\nfor i in range(6):\n    turtle.forward(20)\n    turtle.color(색[i % 2])\n    turtle.penup()\n    turtle.forward(10)\n    turtle.pendown()', 'mistake', 'two-late'],
+  ['turtle-pen', 'two-color', 'import turtle\n색 = ["빨강", "파랑"]\nfor i in range(6):\n    turtle.color(색[i % 2])\n    turtle.forward(20)', 'error'],
+  ['turtle-pen', 'two-color', 'import turtle\nfor i in range(3):\n    turtle.color("red")\n    turtle.forward(20)\n    turtle.penup()\n    turtle.forward(10)\n    turtle.pendown()\n    turtle.color("blue")\n    turtle.forward(20)\n    turtle.penup()\n    turtle.forward(10)\n    turtle.pendown()', 'correct'],
+  ['turtle-def', 'three', 'import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\nfor i in range(3):\n    네모(40)\n    turtle.forward(60)', 'mistake', 'three-joined'],
+  ['turtle-def', 'three', 'import turtle\nfor i in range(3):\n    for j in range(4):\n        turtle.forward(40)\n        turtle.left(90)\n    turtle.penup()\n    turtle.forward(60)\n    turtle.pendown()', 'mistake', 'need-def'],
+  ['turtle-def', 'three', 'import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\n', 'draw-none'],
+  ['turtle-def', 'three', 'import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\nfor i in range(2):\n    네모(40)\n    turtle.penup()\n    turtle.forward(60)\n    turtle.pendown()', 'draw-missing'],
+  ['turtle-def', 'three', 'import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\n    turtle.penup()\n    turtle.forward(60)\n    turtle.pendown()\n네모(40)\n네모(40)\n네모(40)', 'correct'],
+  ['turtle-def', 'flower', 'import turtle\ndef 세모(크기):\n    for i in range(3):\n        turtle.forward(크기)\n        turtle.left(120)\nfor i in range(12):\n    세모(80)\n    turtle.left(45)', 'draw-diff'],
+  ['turtle-def', 'flower', 'import turtle\ndef 세모(크기):\n    for i in range(3):\n        turtle.forward(크기)\n        turtle.left(120)\nfor i in range(12):\n    세모(80)\n    turtle.left(30)', 'correct'],
+  ['turtle-goto', 'tri-fill', 'import turtle\nturtle.goto(-60, -40)\nturtle.color("green")\nturtle.begin_fill()\nturtle.goto(60, -40)\nturtle.goto(0, 60)\nturtle.goto(-60, -40)\nturtle.end_fill()', 'mistake', 'tri-pen'],
+  ['turtle-goto', 'tri-fill', 'import turtle\nturtle.penup()\nturtle.goto(-60, -40)\nturtle.pendown()\nturtle.color("green")\nturtle.goto(60, -40)\nturtle.goto(0, 60)\nturtle.goto(-60, -40)', 'mistake', 'tri-nofill'],
+  ['turtle-goto', 'tri-fill', 'import turtle\nturtle.penup()\nturtle.goto(-60, -40)\nturtle.pendown()\nturtle.color("green")\nturtle.begin_fill()\nturtle.goto(60, -40)\nturtle.goto(0, 60)\nturtle.end_fill()', 'mistake', 'tri-open'],
+  ['turtle-goto', 'tri-fill', 'import turtle\nturtle.penup()\nturtle.goto(-60 -40)\nturtle.pendown()', 'error'],
+  ['turtle-goto', 'tri-fill', 'import turtle\nturtle.penup()\nturtle.goto(0, 60)\nturtle.pendown()\nturtle.color("green")\nturtle.begin_fill()\nturtle.goto(-60, -40)\nturtle.goto(60, -40)\nturtle.goto(0, 60)\nturtle.end_fill()', 'correct'],
+  ['turtle-goto', 'target', 'import turtle\nfor 반지름 in [30, 60, 90]:\n    turtle.circle(반지름)', 'mistake', 'target-stack'],
+  ['turtle-goto', 'target', 'import turtle\nfor 반지름 in [30, 60, 90]:\n    turtle.goto(0, -반지름)\n    turtle.circle(반지름)', 'mistake', 'target-joined'],
+  ['turtle-goto', 'target', 'import turtle\nturtle.penup()\nturtle.goto(0, -30)\nturtle.pendown()\nturtle.circle(30)\nturtle.penup()\nturtle.goto(0, -60)\nturtle.pendown()\nturtle.circle(60)\nturtle.penup()\nturtle.goto(0, -90)\nturtle.pendown()\nturtle.circle(90)', 'correct'],
+  ['unit13-review', 'stars', 'import turtle\ndef 별(크기):\n    for i in range(5):\n        turtle.forward(크기)\n        turtle.right(144)\nturtle.penup()\nturtle.goto(-170, 60)\nturtle.pendown()\n별(60)\nturtle.goto(-40, 60)\n별(120)', 'mistake', 'stars-joined'],
+  ['unit13-review', 'stars', 'import turtle\nturtle.penup()\nturtle.goto(-170, 60)\nturtle.pendown()\nfor i in range(5):\n    turtle.forward(60)\n    turtle.right(144)\nturtle.penup()\nturtle.goto(-40, 60)\nturtle.pendown()\nfor i in range(5):\n    turtle.forward(120)\n    turtle.right(144)', 'mistake', 'need-def'],
+  ['unit13-review', 'stars', 'import turtle\ndef 별(크기):\n    for i in range(5):\n        turtle.forward(크기)\n        turtle.right(72)\nturtle.penup()\nturtle.goto(-170, 60)\nturtle.pendown()\n별(60)\nturtle.penup()\nturtle.goto(-40, 60)\nturtle.pendown()\n별(120)', 'draw-diff'],
+  ['unit13-review', 'house', 'import turtle\ndef 네모(x, y, 가로, 세로):\n    turtle.penup()\n    turtle.goto(x, y)\n    turtle.pendown()\n    for i in range(2):\n        turtle.forward(가로)\n        turtle.left(90)\n        turtle.forward(세로)\n        turtle.left(90)\n네모(-60, -80, 120, 100)\n네모(-15, -80, 30, 50)\nturtle.goto(-60, 20)\nturtle.color("red")\nturtle.begin_fill()\nturtle.goto(60, 20)\nturtle.goto(0, 90)\nturtle.goto(-60, 20)\nturtle.end_fill()', 'mistake', 'house-pen'],
+  ['unit13-review', 'house', 'import turtle\ndef 네모(x, y, 가로, 세로):\n    turtle.penup()\n    turtle.goto(x, y)\n    turtle.pendown()\n    for i in range(2):\n        turtle.forward(가로)\n        turtle.left(90)\n        turtle.forward(세로)\n        turtle.left(90)\n네모(-60, -80, 120, 100)\n네모(-15, -80, 30, 50)\nturtle.penup()\nturtle.goto(-60, 20)\nturtle.pendown()\nturtle.color("red")\nturtle.goto(60, 20)\nturtle.goto(0, 90)\nturtle.goto(-60, 20)', 'mistake', 'house-fill'],
+  ['unit13-review', 'house', 'import turtle\ndef 네모(x, y, 가로, 세로):\n    turtle.penup()\n    turtle.goto(x, y)\n    turtle.pendown()\n    for i in range(2):\n        turtle.forward(가로)\n        turtle.left(90)\n        turtle.forward(세로)\n        turtle.left(90)\n네모(-60, -80, 120, 100)\nturtle.penup()\nturtle.goto(-60, 20)\nturtle.pendown()\nturtle.color("red")\nturtle.begin_fill()\nturtle.goto(60, 20)\nturtle.goto(0, 90)\nturtle.goto(-60, 20)\nturtle.end_fill()', 'mistake', 'house-missing'],
+  ['unit13-review', 'house', 'import turtle\nturtle.color("red")\nturtle.begin_fill()\ndef 네모(x, y, 가로, 세로):\n    turtle.penup()\n    turtle.goto(x, y)\n    turtle.pendown()\n    for i in range(2):\n        turtle.forward(가로)\n        turtle.left(90)\n        turtle.forward(세로)\n        turtle.left(90)\n네모(-60, -80, 120, 100)\n네모(-15, -80, 30, 50)\nturtle.end_fill()\nturtle.penup()\nturtle.goto(-60, 20)\nturtle.pendown()\nturtle.color("red")\nturtle.begin_fill()\nturtle.goto(60, 20)\nturtle.goto(0, 90)\nturtle.goto(-60, 20)\nturtle.end_fill()', 'mistake', 'house-fill'],
+  ['unit13-review', 'house', 'import turtle\nturtle.penup()\nturtle.goto(-60, 20)\nturtle.pendown()\nturtle.color("red")\nturtle.begin_fill()\nturtle.goto(60, 20)\nturtle.goto(0, 90)\nturtle.goto(-60, 20)\nturtle.end_fill()\nturtle.color("black")\nturtle.goto(-60, -80)\nturtle.goto(60, -80)\nturtle.goto(60, 20)\nturtle.penup()\nturtle.goto(-15, -80)\nturtle.pendown()\nturtle.goto(-15, -30)\nturtle.goto(15, -30)\nturtle.goto(15, -80)', 'correct'],
 ];
 
 test('흔한 오답에 의도한 말이 나온다', () => {

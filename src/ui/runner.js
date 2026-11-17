@@ -73,7 +73,11 @@ export class Runner {
       }
       // onOut을 받은 쪽은 다 그린 뒤 ack()를 불러야 한다.
       // 그리기 명령은 출력과 같은 묶음에 실려 온다. 그림판이 받아서 차례로 그린다.
-      if (message.draws?.length) this.hooks.onDraw?.(message.draws.map((text) => JSON.parse(text)));
+      if (message.draws?.length) {
+        const cmds = message.draws.map((text) => JSON.parse(text));
+        if (this.current) this.current.draws.push(...cmds);
+        this.hooks.onDraw?.(cmds);
+      }
       this.hooks.onOut(message.chunks, message.dropped);
     } else if (message.type === 'input') {
       this.setState('waiting-input');
@@ -105,7 +109,7 @@ export class Runner {
     const id = this.nextId++;
     this.setState('running');
     return new Promise((resolve) => {
-      this.current = { id, resolve, output: '', stopRequested: false, stopTimer: null, started: performance.now() };
+      this.current = { id, resolve, output: '', draws: [], stopRequested: false, stopTimer: null, started: performance.now() };
       this.worker.postMessage({ type: 'run', id, code, mode: trace ? 'trace' : check ? 'check' : 'run', inputs, limit, randoms });
     });
   }
@@ -127,8 +131,8 @@ export class Runner {
       steps,
       vars,
       unused,
-      // trace와 check에서: 프로그램이 그린 것 전부(그림판 명령 목록)
-      draw,
+      // 프로그램이 그린 것 전부(그림판 명령 목록). 그냥 실행에서는 화면으로 보낸 것을 모아 둔 것이다.
+      draw: draw ?? current.draws,
     });
   }
 

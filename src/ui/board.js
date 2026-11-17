@@ -1,5 +1,6 @@
 // 칠판. 엔트리 블록과 파이썬 문장을 나란히 보여 주고, 글 카드, 예측 문제, 쓰기 문제를 적는다.
 // 엔트리 블록은 우리가 그린 단순한 그림이다(엔트리의 그림 파일을 쓰지 않는다). 색만으로 뜻을 전하지 않게 글자를 함께 쓴다.
+import { paintDrawing } from './canvas.js';
 
 function el(tag, className, text) {
   const e = document.createElement(tag);
@@ -112,7 +113,7 @@ export function createBoard(root) {
       };
     },
     /** 쓰기 문제: 할 일 목록 */
-    task({ title, story, steps, want, wantNote, wants }) {
+    task({ title, story, steps, want, wantNote, wants, pictures }) {
       const list = el('ol', 'board-steps');
       for (const step of steps) list.append(el('li', '', step));
       const children = [el('h3', 'board-title', title)];
@@ -126,6 +127,19 @@ export function createBoard(root) {
         for (const sample of samples) {
           const box = el('div', 'board-want');
           box.append(el('div', 'pair-label', sample.note), codeBlock(sample.lines.length ? sample.lines.join('\n') : '(아무것도 안 나와요)'));
+          row.append(box);
+        }
+        children.push(row);
+      }
+      // pictures: 그리기 문제의 본보기 그림 [{ note, cmds }]. 가운데 (0, 0)에 옅은 십자가 있다.
+      if (pictures?.length) {
+        const row = el('div', 'board-wants');
+        for (const picture of pictures) {
+          const box = el('div', 'board-want');
+          const canvas = document.createElement('canvas');
+          canvas.className = 'board-picture';
+          paintDrawing(canvas, picture.cmds, { origin: true, fit: true });
+          box.append(el('div', 'pair-label', picture.note), canvas);
           row.append(box);
         }
         children.push(row);

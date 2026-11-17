@@ -519,9 +519,13 @@ a.btn {
   border-radius: 0 10px 10px 10px;
   background: #fff;
   overflow: hidden;
+  position: relative;
 }
 
+/* 그림판은 칸에 꼭 맞게 줄여서 보여 준다(칸보다 커져서 아래가 잘리지 않게 칸에 붙여 둔다). */
 .canvas-pane canvas {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
@@ -961,6 +965,14 @@ a.btn {
   background: #c2410c;
 }
 
+.eb-move {
+  background: #9c36b5;
+}
+
+.eb-brush {
+  background: #e8590c;
+}
+
 .eb-flow {
   background: #0c7c91;
 }
@@ -1000,6 +1012,22 @@ a.btn {
 
 .board-want {
   margin-top: 12px;
+}
+
+/* 그리기 문제의 본보기 그림 */
+.board-picture {
+  display: block;
+  width: 264px;
+  height: 198px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.board-wants .board-want:nth-child(n + 3) .board-picture,
+.board-wants:has(.board-want:nth-child(3)) .board-picture {
+  width: 176px;
+  height: 132px;
 }
 
 .eb-in,

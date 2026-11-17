@@ -15,6 +15,8 @@
 //            - output을 "^$"로 적으면 아무것도 나오지 않은 경우를 가리킨다
 //            - again: true면, 준 답을 다 쓰고도 프로그램이 또 물었을 때만 본다(그때까지의 출력으로 견준다)
 
+import { compareDrawing } from './drawing.js';
+
 /** 출력을 줄 목록으로. 줄 끝 빈칸과 맨 끝 빈 줄은 뺀다. */
 export function outputLines(output) {
   const lines = String(output ?? '').replace(/\r/g, '').split('\n').map((line) => line.replace(/\s+$/, ''));
@@ -85,4 +87,26 @@ export function diagnoseTask(task, code, run) {
   const vars = { no: ORDINAL[at] ?? `${at + 1}번째`, want: want[at], got: got[at] };
   if (squeeze(got[at]) === squeeze(want[at])) return { kind: 'spacing', vars };
   return { kind: 'line-diff', vars };
+}
+
+/**
+ * 그리기 문제 채점. 다 그린 그림을 모범 답이 그린 그림과 견준다(src/core/drawing.js).
+ * @param {{draw: true|{color?: boolean, fill?: boolean}, checks?: object[], mistakes?: object[], inputs?: string[]}} task
+ *   mistakes의 { draw: 'draw-mirror', say } 는 그 어긋남일 때 이 문제에 맞는 말을 하게 한다.
+ * @param {string} code 아이가 쓴 코드
+ * @param {object[]} got 아이의 프로그램이 그린 것(그리기 명령 목록)
+ * @param {object[]} want 모범 답이 그린 것
+ * @returns {{kind: string, vars?: object, say?: string}} kind: correct, mistake, draw-none, draw-mirror, … (drawing.js)
+ */
+export function diagnoseDrawing(task, code, got, want) {
+  const result = compareDrawing(got ?? [], want ?? [], task.draw === true ? {} : task.draw);
+  const bare = stripStrings(code);
+  if (result.kind === 'draw-correct') {
+    // 그림은 맞지만 배운 방법을 쓰지 않은 경우(예: 반복 없이 네 번 적음)
+    const skipped = (task.checks ?? []).find((rule) => !new RegExp(rule.pattern).test(bare));
+    return skipped ? { kind: 'mistake', say: skipped.say } : { kind: 'correct' };
+  }
+  const typed = (task.inputs ?? []).join(',');
+  const mistake = (task.mistakes ?? []).find((m) => m.draw === result.kind && (!m.code || new RegExp(m.code).test(bare)) && (!m.inputs || new RegExp(m.inputs).test(typed)));
+  return mistake ? { kind: 'mistake', say: mistake.say } : result;
 }

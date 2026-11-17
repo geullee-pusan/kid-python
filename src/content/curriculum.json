@@ -132,6 +132,17 @@
         "grid-find",
         "unit12-review"
       ]
+    },
+    {
+      "title": "거북이로 그리기",
+      "lessons": [
+        "turtle-move",
+        "turtle-loop",
+        "turtle-pen",
+        "turtle-def",
+        "turtle-goto",
+        "unit13-review"
+      ]
     }
   ]
 }

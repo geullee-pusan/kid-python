@@ -1,0 +1,144 @@
+{
+  "_설명": "거북이로 그리기 단원 마무리. 강의가 없다. 섞어 풀기(예측 4문제, 쓰기 1문제)와 만들기 과제다. 만들기 과제는 집 그리기다: 정해 준 자리와 크기대로 몸통(네모), 문(네모), 지붕(빨갛게 칠한 세모)을 그린다. 펜 들고 옮기기, goto, 반복, 함수, 색칠을 한데 쓴다. 채점은 다 그린 그림(선과 색칠)을 모범 답의 그림과 견준다. 그리는 차례와 방법은 달라도 된다(함수를 쓰지 않아도, goto만 써도 된다). 마지막에 쓴 프로그램은 '집 그리기'라는 이름으로 '만들기'에 들어간다.",
+  "id": "unit13-review",
+  "unit": "거북이로 그리기",
+  "no": 6,
+  "title": "단원 마무리: 집 그리기",
+  "titleSay": "단원 마무리",
+  "desc": "배운 것을 섞어서 풀고, 거북이로 집을 그려요.",
+  "minutes": 30,
+  "knows": ["variables", "loops", "functions"],
+  "showVars": true,
+  "canvas": true,
+  "saveAs": "집 그리기",
+  "doneCard": {
+    "title": "거북이로 그리기 단원을 마쳤어요",
+    "items": ["forward, backward, left, right  움직이기", "정n각형:  360 ÷ n 도씩 돈다", "penup, pendown, color, pensize  펜", "def 네모(크기):  도형을 함수로", "goto(x, y), begin_fill, end_fill, circle", "'만들기'에 집 그리기가 들어 있어요. 창문과 해, 나무도 그려 봐요"]
+  },
+  "done": ["done-1", "done-2", "done-3", "done-bye"],
+  "lines": {
+    "q1-right": ["맞아요. [360|삼백육십] 나누기 [5|오]는 [72|칠십이]예요. 나누기라서 소수점이 붙어요."],
+    "q1-int": ["빗금 하나로 나누면 답에 소수점이 붙어요."],
+    "q1-inner": ["[108|백팔]도는 정오각형의 안쪽 각이에요. 여기서는 [360|삼백육십]을 [5|오]로 나눴어요."],
+    "q1-explain": ["정오각형을 그릴 때 한 번에 도는 각이에요. [72.0|칠십이 점 영]이 나와요."],
+    "q2-right": ["맞아요. [144|백사십사]도씩 다섯 번 돌면 [720|칠백이십]도, 두 바퀴예요. 선이 서로 엇갈리면서 별이 돼요."],
+    "q2-penta": ["정오각형은 [72|칠십이]도씩 돌 때예요. [144|백사십사]도는 그 두 배라서 훨씬 많이 꺾여요."],
+    "q2-open": ["다섯 번 돌면 [720|칠백이십]도, 딱 두 바퀴예요. 제자리로 돌아와서 닫혀요."],
+    "q2-explain": ["두 바퀴를 돌면서 다섯 번 꺾으면, 끝이 다섯 개인 별이 돼요."],
+    "q3-right": ["맞아요. 가로가 [-40|빼기 사십]인 자리에서 오른쪽으로 [80|팔십] 가면 [40|사십]이에요. 가운데를 지나갔어요."],
+    "q3-left": ["거북이는 오른쪽을 보고 있어요. 앞으로 가면 가로의 수가 커져요."],
+    "q3-zero": ["[goto|고 투]로 옮긴 자리에서 출발해요. [-40|빼기 사십]에서 [80|팔십]만큼 커져요."],
+    "q3-explain": ["[-40|빼기 사십]에서 [40|사십]을 가면 가운데, 거기서 [40|사십]을 더 가요."],
+    "q4-right": ["맞아요. 바깥 반복이 두 번 돌아도 아래로 내려가는 줄이 없어요. 여섯 개가 모두 한 줄로 이어져요."],
+    "q4-rows": ["줄을 바꿔 주는 명령이 없어요. 거북이는 계속 오른쪽으로만 옮겨 가요."],
+    "q4-three": ["안쪽 반복이 세 번, 그것을 두 번 되풀이해요. 모두 여섯 번 그려요."],
+    "q4-explain": ["[2|이] 곱하기 [3|삼], 네모 여섯 개가 한 줄에 나란히 그려져요. 두 줄로 놓으려면 줄마다 아래로 옮겨야 해요."],
+
+    "task-intro": ["이제 그려 봐요. 두 문제예요. 둘째 문제에서는 집을 그려요."],
+    "task-how": ["실행해서 그림판에 그려 보고, 칠판의 그림과 같으면 '제출'을 눌러요."],
+    "praise-stars": ["별을 그리는 함수를 만들고, 펜을 들고 자리를 옮겨서 크기가 다른 별 두 개를 그렸어요."],
+    "need-def": ["그림은 맞아요. 그런데 별을 그리는 줄들을 [def|데프]로 함수 하나에 묶고, 그 함수를 두 번 불러서 그려 봐요."],
+    "stars-joined": ["두 별 사이에 선이 그어졌어요. 자리를 옮길 때는 펜을 들어요."],
+    "stars-hint-1": ["별이라는 함수를 만들어요. 크기를 넘겨받아서, 앞으로 가고 오른쪽으로 [144|백사십사]도 돌기를 다섯 번 해요."],
+    "stars-hint-2": ["펜을 들고 [goto|고 투]로 첫 자리에 가서 펜을 내리고, 별을 [60|육십]으로 불러요. 같은 방법으로 둘째 자리에서 [120|백이십]으로 불러요."],
+    "task-next": ["이번에는 집을 그려요. 네모 두 개와, 빨갛게 칠한 세모 지붕이에요. 칠판에 자리와 크기가 적혀 있어요."],
+    "house-pen": ["칠판의 그림에 없는 선이 있어요. 다음 것을 그리러 옮길 때 펜을 들었는지 봐요."],
+    "house-fill": ["선은 맞는데 색칠이 달라요. 지붕만 칠해요. 지붕을 그리기 전에 [begin_fill|비긴 필], 다 그린 뒤에 [end_fill|엔드 필]을 써요. 몸통과 문은 칠하지 않아요."],
+    "house-missing": ["아직 긋지 않은 선이 있어요. 몸통의 네 변, 문의 세 변, 지붕의 두 변이 모두 있는지 칠판의 그림과 견줘 봐요."],
+    "house-hint-1": ["몸통부터 그려요. 펜을 들고 [goto|고 투]로 왼쪽 아래 모서리에 가서 펜을 내려요. 가로 [120|백이십], 세로 [100|백]인 네모는, 가고 돌기를 가로와 세로로 번갈아 하면 돼요."],
+    "house-hint-2": ["문도 같은 방법으로 그려요. 자리와 크기만 달라요. 네모를 그리는 일을 함수로 만들어 두면 두 번 부르기만 하면 돼요. 자리와 가로, 세로를 넘겨받게 해요."],
+    "house-hint-3": ["지붕은 세 점을 [goto|고 투]로 이어요. 펜을 들고 첫 점으로 가서 펜을 내리고, 색을 빨강으로 정하고, [begin_fill|비긴 필]을 쓴 다음, 둘째 점, 셋째 점, 다시 첫 점으로 가요. 마지막에 [end_fill|엔드 필]을 써요."],
+    "praise-house": ["정해진 자리에 몸통과 문을 그리고, 세 점을 이어 지붕을 칠했어요. 펜 들기, 자리 정해서 가기, 색칠을 모두 써서 그림 한 장을 완성했어요."],
+
+    "done-1": ["거북이로 그리기 단원을 마쳤어요. 수고했어요."],
+    "done-2": ["이제 거북이를 움직이고, 도형을 함수로 만들고, 자리를 정해서 그리고, 색을 칠할 줄 알아요."],
+    "done-3": ["그린 집은 만들기에 들어 있어요. 창문을 달고, 해와 나무를 그려서 나만의 그림으로 만들어 봐요."]
+  },
+
+  "lecture": [],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "print(360 / 5)",
+      "answer": 0,
+      "choices": [
+        { "text": "72.0", "say": "q1-right" },
+        { "text": "72", "say": "q1-int" },
+        { "text": "108.0", "say": "q1-inner" }
+      ]
+    },
+    {
+      "id": "q2",
+      "ask": "어떤 그림이 그려질까요?",
+      "explain": "q2-explain",
+      "code": "import turtle\nfor i in range(5):\n    turtle.forward(100)\n    turtle.right(144)",
+      "outcome": { "output": [], "strokes": 5, "home": true },
+      "answer": 1,
+      "choices": [
+        { "text": "정오각형", "say": "q2-penta" },
+        { "text": "별 (뾰족한 끝이 다섯 개)", "say": "q2-right" },
+        { "text": "닫히지 않은 꺾인 선", "say": "q2-open" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "import turtle\nturtle.penup()\nturtle.goto(-40, 0)\nturtle.pendown()\nturtle.forward(80)\nprint(turtle.pos())",
+      "answer": 2,
+      "choices": [
+        { "text": "(-120.0, 0.0)", "say": "q3-left" },
+        { "text": "(80.0, 0.0)", "say": "q3-zero" },
+        { "text": "(40.0, 0.0)", "say": "q3-right" }
+      ]
+    },
+    {
+      "id": "q4",
+      "ask": "네모가 어떻게 놓일까요?",
+      "explain": "q4-explain",
+      "code": "import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\nfor 줄 in range(2):\n    for 칸 in range(3):\n        네모(20)\n        turtle.forward(30)",
+      "outcome": {"output":[],"strokes":19,"at":[180,0]},
+      "answer": 0,
+      "choices": [
+        { "text": "한 줄에 6개", "say": "q4-right" },
+        { "text": "두 줄에 3개씩", "say": "q4-rows" },
+        { "text": "한 줄에 3개", "say": "q4-three" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "stars",
+      "title": "별 두 개",
+      "story": "크기가 다른 별 두 개를 그려요. 별은 앞으로 가고 오른쪽으로 144도 돌기를 다섯 번 하면 그려져요. 작은 별(한 변 60)은 (-170, 60)에서, 큰 별(한 변 120)은 (-40, 60)에서 그리기 시작해요. 두 별 사이에는 선이 없어야 해요.",
+      "steps": ["별(크기)라는 함수를 만들어요.", "펜을 들고 (-170, 60)으로 가서 펜을 내리고, 별(60)을 불러요.", "펜을 들고 (-40, 60)으로 가서 펜을 내리고, 별(120)을 불러요."],
+      "start": "import turtle\n",
+      "expect": [],
+      "draw": true,
+      "checks": [{ "pattern": "def\\s", "say": "need-def" }],
+      "mistakes": [{ "draw": "draw-extra", "say": "stars-joined" }],
+      "praise": "praise-stars",
+      "solution": "import turtle\ndef 별(크기):\n    for i in range(5):\n        turtle.forward(크기)\n        turtle.right(144)\nturtle.penup()\nturtle.goto(-170, 60)\nturtle.pendown()\n별(60)\nturtle.penup()\nturtle.goto(-40, 60)\nturtle.pendown()\n별(120)",
+      "hints": [{ "say": "stars-hint-1" }, { "say": "stars-hint-2" }]
+    },
+    {
+      "id": "house",
+      "title": "만들기: 집 그리기",
+      "story": "거북이로 집을 그려요. 몸통과 문은 네모이고, 지붕은 빨갛게 칠한 세모예요. 그리는 차례와 방법은 마음대로 해도 돼요. 다 그린 그림이 칠판의 그림과 같으면 돼요.",
+      "steps": ["몸통: 왼쪽 아래 모서리가 (-60, -80)이고 가로 120, 세로 100인 네모.", "문: 왼쪽 아래 모서리가 (-15, -80)이고 가로 30, 세로 50인 네모.", "지붕: 세 점 (-60, 20), (60, 20), (0, 90)을 이은 세모. 빨간색(red)으로 칠해요.", "몸통과 문은 칠하지 않아요. 옮길 때는 펜을 들어요."],
+      "start": "import turtle\n",
+      "expect": [],
+      "draw": true,
+      "mistakes": [
+        { "draw": "draw-extra", "say": "house-pen" },
+        { "draw": "draw-fill", "say": "house-fill" },
+        { "draw": "draw-missing", "say": "house-missing" }
+      ],
+      "praise": "praise-house",
+      "solution": "import turtle\ndef 네모(x, y, 가로, 세로):\n    turtle.penup()\n    turtle.goto(x, y)\n    turtle.pendown()\n    for i in range(2):\n        turtle.forward(가로)\n        turtle.left(90)\n        turtle.forward(세로)\n        turtle.left(90)\n네모(-60, -80, 120, 100)\n네모(-15, -80, 30, 50)\nturtle.penup()\nturtle.goto(-60, 20)\nturtle.pendown()\nturtle.color(\"red\")\nturtle.begin_fill()\nturtle.goto(60, 20)\nturtle.goto(0, 90)\nturtle.goto(-60, 20)\nturtle.end_fill()",
+      "hints": [{ "say": "house-hint-1" }, { "say": "house-hint-2" }, { "say": "house-hint-3" }]
+    }
+  ]
+}

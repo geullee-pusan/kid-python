@@ -1,0 +1,181 @@
+{
+  "_설명": "거북이로 그리기 단원 4번 수업. 도형을 그리는 일을 함수로 묶고(def 네모(크기)), 불러서 여러 번 쓴다. 함수 단원의 '함수로 쪼개기'를 그림에 쓰는 것이다. 도형을 그리고 조금 돌기를 되풀이하면 무늬가 된다(n번 × 360 ÷ n도 = 한 바퀴). 겨냥하는 오개념: 함수를 만들기만 하면 그려진다(불러야 그린다), 도형을 다 그린 뒤 거북이가 어디에 있고 어디를 보는지 생각하지 않는다(정다각형을 한 바퀴 돌면 처음 자리, 처음 방향으로 돌아온다).",
+  "id": "turtle-def",
+  "unit": "거북이로 그리기",
+  "no": 4,
+  "title": "함수로 도형 만들기",
+  "desc": "도형을 그리는 함수를 만들고, 여러 번 불러서 무늬를 만들어요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions"],
+  "showVars": true,
+  "canvas": true,
+  "learned": [
+    { "rule": "도형을 그리는 줄들을 함수로 묶으면, 이름을 불러서 몇 번이든 그릴 수 있어요. 크기는 괄호로 넘겨요.", "code": "def 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)" },
+    { "rule": "정다각형을 다 그리면 거북이는 처음 자리에서 처음 방향을 보고 있어요. 그래서 이어서 옮기거나 돌리기 쉬워요." },
+    { "rule": "도형을 그리고 조금 돌기를 되풀이하면 무늬가 돼요. n번 그리면 한 번에 360 ÷ n 도씩 돌아요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["네모를 여러 개 그리려면 같은 줄을 여러 번 써야 해요. 오늘은 도형 그리기를 함수로 묶어요."],
+    "def-intro": ["네모를 그리는 세 줄을 함수로 묶었어요. 크기는 괄호로 넘겨받아요. 그리고 아래에서 두 번 불렀어요. 한 번은 [50|오십], 한 번은 [100|백]이에요."],
+    "def-after": ["크기가 다른 네모 두 개가 그려졌어요. 네모를 다 그리면 거북이는 처음 자리에서 처음 방향을 봐요. 그래서 둘째 네모도 같은 모서리에서 시작했어요."],
+    "row-intro": ["네모를 그린 다음에 펜을 들고 옆으로 옮기면, 네모를 나란히 놓을 수 있어요. 그리기와 옮기기를 세 번 되풀이해 볼게요."],
+    "row-after": ["네모 세 개가 나란히 놓였어요. 네모의 크기는 [40|사십]이고 [60|육십]씩 옮겼으니까, 네모 사이가 [20|이십]씩 떨어졌어요."],
+    "spin-intro": ["이번에는 옮기지 않고 돌려요. 네모를 그리고 [45|사십오]도 돌기를 여덟 번 해 볼게요. 여덟 번에 [45|사십오]도씩이면 [360|삼백육십]도, 한 바퀴예요."],
+    "spin-after": ["네모 여덟 개가 겹쳐서 꽃 같은 무늬가 됐어요. 짧은 코드로 복잡한 그림을 그릴 수 있는 것은, 도형을 함수로 묶어 두었기 때문이에요."],
+    "check-ask": ["하나 물어볼게요. 네모를 열두 번 그려서 한 바퀴 도는 무늬를 만들려면, 한 번에 몇 도씩 돌아야 할까요?"],
+    "check-right": ["맞아요. [360|삼백육십] 나누기 [12|십이], [30|삼십]도예요."],
+    "check-teach-1": ["[45|사십오]도는 여덟 번 그릴 때예요. 열두 번이면 더 조금씩 돌아야 한 바퀴가 돼요."],
+    "check-teach-2": ["한 바퀴 [360|삼백육십]도를 열둘로 나누면 [30|삼십]도예요."],
+    "follow-ok": ["좋아요. 크기가 다른 세모 두 개가 그려졌어요."],
+    "summary": ["정리해요. 도형을 함수로 묶어 두고, 불러서 옮기거나 돌려 가며 그려요."],
+
+    "q1-right": ["맞아요. 크기 [30|삼십]짜리를 두 번 불렀지만, 같은 자리에 겹쳐서 하나로 보여요. 네모는 두 개예요."],
+    "q1-three": ["첫째와 셋째는 크기도 자리도 같아요. 같은 선 위를 한 번 더 지나가요."],
+    "q1-one": ["크기가 [60|육십]인 네모는 [30|삼십]인 네모와 달라요. 따로 보여요."],
+    "q1-explain": ["같은 모서리에서 시작해서, 작은 네모와 큰 네모가 하나씩 그려져요."],
+    "q2-right": ["맞아요. 변의 수와 한 변의 길이를 곱해서 돌려줬어요. [6|육] 곱하기 [50|오십], [300|삼백]이에요."],
+    "q2-plus": ["함수 안에서 두 값을 곱했어요. 별표는 곱하기예요."],
+    "q2-big": ["[6|육]에 [50|오십]을 곱해요. [300|삼백]이에요."],
+    "q2-explain": ["이 함수는 그리지 않고 계산만 해서 돌려줘요. 정육각형의 둘레예요."],
+    "q3-right": ["맞아요. 함수는 선 하나를 긋고, 그것을 네 번 부르면서 [90|구십]도씩 돌았어요. 네모가 돼요."],
+    "q3-line": ["부를 때마다 [90|구십]도씩 돌았어요. 선이 이어지면서 꺾여요."],
+    "q3-plus": ["선을 긋고 나서 제자리로 돌아오지 않아요. 간 자리에서 돌아서 이어 그어요."],
+    "q3-explain": ["가고 돌기를 네 번 한 것과 같아요. 가는 일을 함수가 맡았을 뿐이에요."],
+
+    "task-how": ["실행해서 그림판에 그려 보고, 칠판의 그림과 같으면 '제출'을 눌러요."],
+    "praise-three": ["네모를 그리는 함수를 만들고, 그리기와 옮기기를 세 번 되풀이했어요. 옮길 때 펜을 든 것도 맞아요."],
+    "need-def": ["그림은 맞아요. 그런데 네모를 그리는 줄들을 [def|데프]로 함수 하나에 묶고, 그 함수를 불러서 그려 봐요."],
+    "three-joined": ["네모 사이에 선이 이어졌거나, 옮긴 거리가 달라요. 옮길 때는 펜을 들고 앞으로 [60|육십] 간 다음, 펜을 다시 내려요."],
+    "hint-1": ["먼저 [def|데프]로 네모라는 함수를 만들어요. 크기를 넘겨받아서, 가고 [90|구십]도 돌기를 네 번 해요."],
+    "hint-2": ["그 아래에서 세 번 되풀이해요. 네모를 [40|사십]으로 부르고, 펜을 들고, 앞으로 [60|육십] 가고, 펜을 내려요."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. 세모 두 개를 나란히 그리는 예제예요. 이걸 보고 써 봐요."],
+    "praise-flower": ["세모를 그리고 [30|삼십]도 돌기를 열두 번 해서, 한 바퀴 도는 무늬를 만들었어요. 도는 각을 [360|삼백육십] 나누기 [12|십이]로 구한 것도 맞아요."],
+    "flower-hint-1": ["세모를 그리는 함수를 만들어요. 가고 [120|백이십]도 돌기를 세 번 해요."],
+    "flower-hint-2": ["그 아래에서 열두 번 되풀이하면서, 세모를 [80|팔십]으로 부르고 왼쪽으로 [30|삼십]도 돌아요."],
+
+    "done-1": ["오늘은 도형을 함수로 묶고, 불러서 무늬를 만들었어요."],
+    "done-2": ["도형을 다 그리면 거북이는 처음 자리, 처음 방향으로 돌아와요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "도형을 함수로", "code": "def 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)" } },
+      { "say": "def-intro" },
+      { "type": "import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\n네모(50)\n네모(100)" },
+      { "trace": "import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\n네모(50)\n네모(100)" },
+      { "say": "def-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "row-intro" },
+      { "type": "import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\nfor i in range(3):\n    네모(40)\n    turtle.penup()\n    turtle.forward(60)\n    turtle.pendown()" },
+      { "trace": "import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\nfor i in range(3):\n    네모(40)\n    turtle.penup()\n    turtle.forward(60)\n    turtle.pendown()" },
+      { "say": "row-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "돌려서 만드는 무늬", "items": ["도형을 그리고, 조금 돈다", "8번 × 45도 = 360도 (한 바퀴)", "n번 그리면 한 번에 360 ÷ n 도"] } },
+      { "say": "spin-intro" },
+      { "type": "import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\nfor i in range(8):\n    네모(70)\n    turtle.left(45)" },
+      { "trace": "import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\nfor i in range(8):\n    네모(70)\n    turtle.left(45)" },
+      { "say": "spin-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "네모를 12번 그려서 한 바퀴 도는 무늬를 만들려면\n한 번에 몇 도씩 돌까요?",
+          "ask": "check-ask",
+          "choices": ["30도", "45도"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "import turtle\ndef 세모(크기):\n    for i in range(3):\n        turtle.forward(크기)\n        turtle.left(120)\n세모(60)\n세모(120)" } },
+      { "follow": { "code": "import turtle\ndef 세모(크기):\n    for i in range(3):\n        turtle.forward(크기)\n        turtle.left(120)\n세모(60)\n세모(120)", "draw": true, "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["def 네모(크기):  도형 그리기를 함수로", "네모(50)  불러야 그려진다", "그리고 옮기기  →  나란히", "그리고 돌기  →  무늬"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "ask": "네모가 몇 개 보일까요?",
+      "explain": "q1-explain",
+      "code": "import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\n네모(30)\n네모(60)\n네모(30)",
+      "outcome": { "output": [], "strokes": 6, "home": true },
+      "answer": 0,
+      "choices": [
+        { "text": "2개", "say": "q1-right" },
+        { "text": "3개", "say": "q1-three" },
+        { "text": "1개", "say": "q1-one" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "def 둘레(변, 길이):\n    return 변 * 길이\nprint(둘레(6, 50))",
+      "answer": 1,
+      "choices": [
+        { "text": "56", "say": "q2-plus" },
+        { "text": "300", "say": "q2-right" },
+        { "text": "3000", "say": "q2-big" }
+      ]
+    },
+    {
+      "id": "q3",
+      "ask": "어떤 그림이 그려질까요?",
+      "explain": "q3-explain",
+      "code": "import turtle\ndef 선():\n    turtle.forward(50)\nfor i in range(4):\n    선()\n    turtle.left(90)",
+      "outcome": { "output": [], "strokes": 4, "home": true },
+      "answer": 2,
+      "choices": [
+        { "text": "곧은 선 하나", "say": "q3-line" },
+        { "text": "더하기 모양", "say": "q3-plus" },
+        { "text": "네모", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "three",
+      "title": "네모 세 개",
+      "story": "크기가 40인 네모 세 개를 나란히 그려요. 네모와 네모 사이는 20만큼 떨어져 있어요(한 네모를 그린 자리에서 60만큼 옮기면 다음 네모의 자리예요).",
+      "steps": ["네모(크기)라는 함수를 만들어요. 왼쪽으로 돌면서 그려요.", "네모를 그리고, 펜을 들고 60 옮긴 다음, 펜을 내려요. 이것을 세 번 해요."],
+      "start": "import turtle\n",
+      "expect": [],
+      "draw": true,
+      "checks": [{ "pattern": "def\\s", "say": "need-def" }],
+      "mistakes": [{ "draw": "draw-extra", "say": "three-joined" }, { "draw": "draw-diff", "say": "three-joined" }],
+      "praise": "praise-three",
+      "solution": "import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\nfor i in range(3):\n    네모(40)\n    turtle.penup()\n    turtle.forward(60)\n    turtle.pendown()",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "import turtle\ndef 세모(크기):\n    for i in range(3):\n        turtle.forward(크기)\n        turtle.left(120)\nfor i in range(2):\n    세모(50)\n    turtle.penup()\n    turtle.forward(80)\n    turtle.pendown()" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "flower",
+    "title": "심화: 세모 열두 개 무늬",
+    "story": "한 변이 80인 정삼각형을 12번 그려서 한 바퀴 도는 무늬를 만들어요. 세모 하나를 그릴 때마다 왼쪽으로 조금씩 돌아요. 세모도 왼쪽으로 돌면서 그려요.",
+    "steps": ["세모(크기)라는 함수를 만들어요.", "세모를 그리고 왼쪽으로 돌기를 12번 되풀이해요. 한 번에 몇 도를 돌지는 360을 12로 나눠서 구해요."],
+    "start": "import turtle\n",
+    "expect": [],
+    "draw": true,
+    "praise": "praise-flower",
+    "solution": "import turtle\ndef 세모(크기):\n    for i in range(3):\n        turtle.forward(크기)\n        turtle.left(120)\nfor i in range(12):\n    세모(80)\n    turtle.left(360 / 12)",
+    "hints": [{ "say": "flower-hint-1" }, { "say": "flower-hint-2" }]
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "_설명": "거북이로 그리기 단원 1번 수업. 그림판을 처음 쓴다. import turtle 뒤에 turtle.forward( ), left( ), right( ), backward( )로 거북이를 움직여 선을 긋는다(random.randint와 같은 모양이라 새 문법은 없다). 엔트리 블록 '이동 방향으로 (10) 만큼 움직이기', '이동 방향을 (90º) 만큼 회전하기'는 docs.playentry.org/user/block_motion.html, '그리기 시작하기'는 block_brush.html 에서 확인했다(2026-11-18). 엔트리의 회전은 양수가 시계 방향이라고 그 문서에 적혀 있다(파이썬의 right와 같다). 겨냥하는 오개념: 돌기만 해도 선이 그어진다, left는 화면의 왼쪽으로 간다는 뜻이다(거북이가 보는 쪽이 기준이다), backward는 뒤로 돌아선다. 쓰기 문제는 출력이 아니라 그림을 모범 답의 그림과 견줘 채점한다(\"draw\": true).",
+  "id": "turtle-move",
+  "unit": "거북이로 그리기",
+  "no": 1,
+  "title": "거북이 움직이기",
+  "desc": "거북이를 앞으로 보내고 돌려서 선을 그어요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions"],
+  "showVars": true,
+  "canvas": true,
+  "learned": [
+    { "rule": "맨 윗줄에 import turtle 을 쓰면 그림판의 거북이를 쓸 수 있어요. 거북이는 가운데에서 오른쪽을 보고 시작해요.", "code": "import turtle\nturtle.forward(100)" },
+    { "rule": "turtle.forward(거리)는 앞으로, turtle.backward(거리)는 뒷걸음으로 가요. 지나간 자리에 선이 남아요." },
+    { "rule": "turtle.left(각도)는 왼쪽으로, turtle.right(각도)는 오른쪽으로 돌아요. 거북이가 보는 쪽이 기준이에요. 돌기만 하면 선은 생기지 않아요.", "code": "turtle.left(90)" }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["지금까지는 글자와 숫자를 내보냈어요. 이번 단원에서는 그림을 그려요. 파이썬에는 펜을 달고 다니는 거북이가 있어요."],
+    "pair-intro": ["엔트리에서는 그리기를 시작한 다음에 오브젝트를 움직이면 선이 남았죠. 파이썬의 거북이도 움직이면 선이 남아요. 거북이는 처음부터 펜을 내리고 있어요."],
+    "first-intro": ["[random|랜덤]을 쓸 때처럼, 맨 윗줄에 [import turtle|임포트 터틀]을 써요. 그다음 [turtle|터틀], 점, [forward|포워드]라고 쓰고, 괄호 안에 얼마나 갈지를 넣어요. 아래에 새로 생긴 그림판을 봐요."],
+    "first-after": ["가운데의 화살표가 거북이예요. 오른쪽을 보고 있다가, 앞으로 [100|백]만큼 갔어요. 지나간 자리에 선이 남았어요."],
+    "turn-pair": ["방향을 바꿀 때는 엔트리의 회전하기 블록처럼 각도를 넣어요. 왼쪽으로 돌 때는 [left|레프트], 오른쪽으로 돌 때는 [right|라이트]예요."],
+    "turn-intro": ["앞으로 가고, 왼쪽으로 [90|구십]도 돌고, 또 가고, 이번에는 오른쪽으로 [90|구십]도 돌고, 또 가 볼게요."],
+    "turn-after": ["계단 모양이 됐어요. 돌 때는 제자리에서 방향만 바뀌고 선은 생기지 않았어요. 왼쪽과 오른쪽은 화면이 아니라, 거북이가 보고 있는 쪽이 기준이에요."],
+    "check-ask": ["하나 물어볼게요. 거북이가 화면의 위쪽을 보고 있어요. 여기서 왼쪽으로 [90|구십]도 돌면 화면의 어느 쪽을 보게 될까요?"],
+    "check-right": ["맞아요. 위를 보고 있는 거북이의 왼쪽은 화면의 왼쪽이에요."],
+    "check-teach-1": ["거북이가 되어 봐요. 위를 보고 서서 왼쪽으로 돌면, 왼팔이 있던 쪽을 보게 돼요."],
+    "check-teach-2": ["화면의 왼쪽을 보게 돼요. 거북이가 아래를 보고 있었다면, 왼쪽으로 돌았을 때 화면의 오른쪽을 보게 돼요."],
+    "back-intro": ["뒤로도 갈 수 있어요. [backward|백워드]는 돌아서는 게 아니라, 앞을 본 채로 뒷걸음질하는 거예요."],
+    "back-after": ["앞으로 [80|팔십] 갔다가, 뒤로 [160|백육십] 갔어요. 화살표는 계속 오른쪽을 보고 있어요."],
+    "follow-ok": ["좋아요. 기역 자를 뒤집은 것 같은 모양이 그려졌어요."],
+    "summary": ["정리해요. 앞으로 가면 선이 남고, 돌면 방향만 바뀌어요. 왼쪽과 오른쪽은 거북이가 보는 쪽이 기준이에요."],
+
+    "q1-right": ["맞아요. 왼쪽으로 [90|구십]도씩 두 번 돌면 [180|백팔십]도, 뒤로 돌아선 거예요. 화면의 왼쪽을 봐요."],
+    "q1-up": ["두 번 돌았어요. 한 번 돌면 위쪽, 한 번 더 돌면 왼쪽이에요."],
+    "q1-same": ["돌면 방향이 바뀌어요. [90|구십]도씩 두 번이면 반 바퀴예요."],
+    "q1-explain": ["[90|구십] 더하기 [90|구십]은 [180|백팔십]도예요. 오른쪽을 보다가 반 바퀴 돌아서 왼쪽을 봐요."],
+    "q2-right": ["맞아요. 왼쪽으로 돌았다가 그만큼 오른쪽으로 돌면 제자리예요. 곧은 선 하나가 길게 이어져요."],
+    "q2-bent": ["왼쪽으로 [90|구십]도, 바로 오른쪽으로 [90|구십]도 돌았어요. 방향이 처음과 같아져요."],
+    "q2-three": ["돌 때는 선이 생기지 않아요. 선은 앞으로 갈 때만 생겨요."],
+    "q2-explain": ["두 번 돈 것이 서로 지워져서, 같은 쪽으로 [50|오십]씩 두 번 간 거예요. 길이가 [100|백]인 선 하나예요."],
+    "q3-right": ["맞아요. 앞으로 [100|백], 뒤로 [150|백오십] 갔으니, 처음 자리보다 뒤쪽에 있어요. 거북이의 뒤는 화면의 왼쪽이에요."],
+    "q3-home": ["뒤로 간 것을 모두 더해요. [100|백]과 [50|오십], [150|백오십]을 뒤로 갔어요."],
+    "q3-front": ["뒤로 간 거리가 앞으로 간 거리보다 길어요."],
+    "q3-explain": ["[100|백]에서 [150|백오십]을 빼면, 처음 자리보다 [50|오십]만큼 뒤예요."],
+
+    "task-how": ["실행해서 그림판에 그려 보고, 칠판의 그림과 같으면 '제출'을 눌러요."],
+    "praise-stairs": ["가고, 왼쪽으로 돌고, 가고, 오른쪽으로 돌아서 계단 두 칸을 그렸어요. 도는 쪽을 번갈아 바꾼 것이 맞아요."],
+    "stairs-down": ["계단이 아래로 내려갔어요. 위로 올라가려면 먼저 왼쪽으로 돌고, 다음 칸으로 갈 때 오른쪽으로 돌아요."],
+    "hint-1": ["앞으로 [40|사십] 가고, 왼쪽으로 [90|구십]도 돌고, 또 [40|사십] 가면 한 칸이에요."],
+    "hint-2": ["다음 칸을 그리려면 다시 오른쪽을 봐야 해요. 오른쪽으로 [90|구십]도 돌고, 같은 일을 한 번 더 해요."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. 한 칸짜리 큰 계단이에요. 이걸 보고 써 봐요."],
+    "praise-plus": ["가운데에서 나갔다가 돌아오기를 네 방향으로 되풀이했어요. 뒷걸음으로 가운데에 돌아온 것이 좋았어요."],
+    "plus-hint-1": ["앞으로 [50|오십] 갔다가, 뒷걸음으로 [50|오십] 돌아오면 가운데예요. 그다음에 [90|구십]도 돌아요."],
+    "plus-hint-2": ["그 세 줄을 네 번 되풀이하면 네 방향이에요. [for|포]를 써도 돼요."],
+
+    "done-1": ["오늘은 거북이를 움직여서 선을 그었어요."],
+    "done-2": ["앞으로 가면 선이 남고, 돌 때는 거북이가 보는 쪽이 기준이에요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      {
+        "pair": {
+          "entry": [
+            { "cat": "brush", "parts": ["그리기 시작하기"] },
+            { "cat": "move", "parts": ["이동 방향으로", { "in": "100" }, "만큼 움직이기"] }
+          ],
+          "python": "import turtle\nturtle.forward(100)",
+          "note": "엔트리: 그리기를 시작해야 선이 남는다  ·  파이썬: 처음부터 펜이 내려와 있다"
+        }
+      },
+      { "say": "pair-intro" },
+      { "say": "first-intro" },
+      { "type": "import turtle\nturtle.forward(100)" },
+      { "trace": "import turtle\nturtle.forward(100)" },
+      { "say": "first-after" }
+    ],
+    [
+      {
+        "pair": {
+          "entry": [{ "cat": "move", "parts": ["이동 방향을", { "in": "90º" }, "만큼 회전하기"] }],
+          "python": "turtle.right(90)",
+          "note": "엔트리: 양수면 시계 방향  ·  파이썬: 오른쪽은 right, 왼쪽은 left"
+        }
+      },
+      { "say": "turn-pair" },
+      { "say": "turn-intro" },
+      { "type": "import turtle\nturtle.forward(100)\nturtle.left(90)\nturtle.forward(60)\nturtle.right(90)\nturtle.forward(40)" },
+      { "trace": "import turtle\nturtle.forward(100)\nturtle.left(90)\nturtle.forward(60)\nturtle.right(90)\nturtle.forward(40)" },
+      { "say": "turn-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "거북이가 화면의 위쪽을 보고 있어요.\nturtle.left(90) 을 하면 어느 쪽을 볼까요?",
+          "ask": "check-ask",
+          "choices": ["화면의 왼쪽", "화면의 오른쪽"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "거북이 명령", "items": ["turtle.forward(100)  앞으로 100", "turtle.backward(100)  뒷걸음으로 100", "turtle.left(90)  왼쪽으로 90도 돌기", "turtle.right(90)  오른쪽으로 90도 돌기"] } },
+      { "say": "back-intro" },
+      { "type": "import turtle\nturtle.forward(80)\nturtle.backward(160)" },
+      { "trace": "import turtle\nturtle.forward(80)\nturtle.backward(160)" },
+      { "say": "back-after" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "import turtle\nturtle.forward(100)\nturtle.left(90)\nturtle.forward(100)" } },
+      { "follow": { "code": "import turtle\nturtle.forward(100)\nturtle.left(90)\nturtle.forward(100)", "draw": true, "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["import turtle  맨 윗줄에 한 번", "forward, backward  가면 선이 남는다", "left, right  방향만 바뀐다", "왼쪽·오른쪽은 거북이가 보는 쪽이 기준"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "ask": "다 하고 나면 거북이는 화면의 어느 쪽을 보고 있을까요?",
+      "explain": "q1-explain",
+      "code": "import turtle\nturtle.forward(50)\nturtle.left(90)\nturtle.left(90)",
+      "outcome": { "output": [], "heading": 180, "strokes": 1 },
+      "answer": 0,
+      "choices": [
+        { "text": "왼쪽", "say": "q1-right" },
+        { "text": "위쪽", "say": "q1-up" },
+        { "text": "오른쪽", "say": "q1-same" }
+      ]
+    },
+    {
+      "id": "q2",
+      "ask": "어떤 선이 그어질까요?",
+      "explain": "q2-explain",
+      "code": "import turtle\nturtle.forward(50)\nturtle.left(90)\nturtle.right(90)\nturtle.forward(50)",
+      "outcome": { "output": [], "heading": 0, "strokes": 1 },
+      "answer": 1,
+      "choices": [
+        { "text": "꺾인 선 (선 두 개)", "say": "q2-bent" },
+        { "text": "곧은 선 하나", "say": "q2-right" },
+        { "text": "선 세 개", "say": "q2-three" }
+      ]
+    },
+    {
+      "id": "q3",
+      "ask": "다 하고 나면 거북이는 어디에 있을까요?",
+      "explain": "q3-explain",
+      "code": "import turtle\nturtle.forward(100)\nturtle.backward(100)\nturtle.backward(50)",
+      "outcome": { "output": [], "heading": 0, "at": [-50, 0] },
+      "answer": 2,
+      "choices": [
+        { "text": "처음 자리 (가운데)", "say": "q3-home" },
+        { "text": "가운데보다 오른쪽", "say": "q3-front" },
+        { "text": "가운데보다 왼쪽", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "stairs",
+      "title": "계단 두 칸",
+      "story": "위로 올라가는 계단을 두 칸 그려요. 한 칸은 오른쪽으로 40, 위로 40이에요.",
+      "steps": ["편집기에 import turtle 이 있어요. 그 아래에 써요.", "오른쪽으로 40 가고, 위로 40 올라가요. 이것을 두 번 해요."],
+      "start": "import turtle\n",
+      "expect": [],
+      "draw": true,
+      "mistakes": [{ "draw": "draw-mirror", "say": "stairs-down" }],
+      "praise": "praise-stairs",
+      "solution": "import turtle\nturtle.forward(40)\nturtle.left(90)\nturtle.forward(40)\nturtle.right(90)\nturtle.forward(40)\nturtle.left(90)\nturtle.forward(40)",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "import turtle\nturtle.forward(100)\nturtle.left(90)\nturtle.forward(100)\nturtle.right(90)\nturtle.forward(100)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "plus",
+    "title": "심화: 더하기 모양",
+    "story": "가운데에서 위, 아래, 왼쪽, 오른쪽으로 50씩 뻗은 더하기(+) 모양을 그려요. 거북이는 가운데에서 시작해요.",
+    "steps": ["가운데에서 한쪽으로 50 갔다가, 가운데로 돌아와요.", "방향을 바꿔서 네 방향 모두 그려요."],
+    "start": "import turtle\n",
+    "expect": [],
+    "draw": true,
+    "praise": "praise-plus",
+    "solution": "import turtle\nfor i in range(4):\n    turtle.forward(50)\n    turtle.backward(50)\n    turtle.left(90)",
+    "hints": [{ "say": "plus-hint-1" }, { "say": "plus-hint-2" }]
+  }
+}
