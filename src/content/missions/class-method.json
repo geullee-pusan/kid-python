@@ -1,0 +1,184 @@
+{
+  "_설명": "클래스 단원 3번 수업. 클래스 안에 함수(메서드)를 넣어서, 객체가 '할 줄 아는 일'을 갖게 한다. 낱말은 '메서드'를 한 번 알려 주고, 설명은 '클래스 안의 함수'로 한다. 거북이의 forward도 메서드였다는 것과 잇는다. 한 줄씩 보기의 이름표 칸에서 self → 가, self → 나 로 바뀌는 것을 보여 준다. 겨냥하는 오개념: 부를 때 self 자리에 객체를 넣는다, 메서드 안에서 self. 없이 써도 객체의 값이 바뀐다, 돌려준 값이 저절로 객체에 들어간다, 메서드를 부르면 모든 객체가 따른다.",
+  "id": "class-method",
+  "unit": "클래스",
+  "no": 3,
+  "title": "할 줄 아는 일 넣기",
+  "desc": "클래스 안에 함수를 넣어서, 객체가 스스로 일하게 해요.",
+  "minutes": 20,
+  "knows": ["variables", "loops", "functions", "classes"],
+  "showVars": true,
+  "learned": [
+    { "rule": "클래스 안에 def로 만든 함수를 메서드라고 해요. 괄호 안의 맨 앞은 늘 self예요.", "code": "    def 소개(self):\n        print(self.이름, self.점수)" },
+    { "rule": "객체 뒤에 점을 찍어 불러요. 점 앞의 객체가 self로 들어가요. self 자리에는 값을 넣지 않아요.", "code": "가.소개()" },
+    { "rule": "메서드 안에서 self.이름 으로 그 객체의 값을 쓰고 바꿔요.", "code": "    def 넣기(self, 얼마):\n        self.돈 += 얼마" },
+    { "rule": "메서드도 return으로 값을 돌려줄 수 있어요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["거북이는 자리 같은 값만 가진 것이 아니었어요. 앞으로 가기, 돌기처럼 할 줄 아는 일도 있었죠. 오늘은 우리가 만든 클래스에도 할 줄 아는 일을 넣어요."],
+    "method-intro": ["클래스 안에 함수를 하나 더 만들어요. 소개라는 함수예요. 클래스 안의 함수를 메서드라고 불러요. 괄호 안의 맨 앞에는 늘 [self|셀프]를 써요."],
+    "method-call": ["부를 때는 객체 뒤에 점을 찍고 불러요. 괄호 안은 비워 둬요. 점 앞에 있는 객체가 저절로 [self|셀프]로 들어가요."],
+    "method-after": ["이름표 칸을 봤나요? [가.소개()|가 점 소개]를 부를 때는 [self|셀프]가 가였고, [나.소개()|나 점 소개]를 부를 때는 [self|셀프]가 나였어요. 같은 함수인데, 누가 불렀는지에 따라 다른 이름과 점수가 나와요."],
+    "change-intro": ["메서드는 객체의 값을 바꿀 수도 있어요. 저금통에 돈을 넣는 메서드를 만들어요. [self|셀프] 다음 자리에, 얼마를 넣을지 받아요."],
+    "change-after": ["넣기를 두 번 불러서 [800|팔백]이 됐어요. 부를 때 괄호 안에 넣은 [500|오백]은 얼마 자리로 들어갔어요. [self|셀프] 자리는 건너뛰어요."],
+    "check-ask": ["하나 물어볼게요. 넣기는 [self|셀프]와 얼마를 받아요. 통에 [500|오백]을 넣으려면 어떻게 부를까요?"],
+    "check-right": ["맞아요. 점 앞의 통이 [self|셀프]로 들어가니까, 괄호 안에는 얼마만 넣어요."],
+    "check-teach-1": ["[self|셀프] 자리에는 값을 넣지 않아요. 점 앞의 객체가 저절로 들어가요."],
+    "check-teach-2": ["괄호 안에는 [self|셀프] 다음 자리의 값만 넣어요."],
+    "return-intro": ["메서드도 값을 돌려줄 수 있어요. 네모의 넓이를 돌려주는 메서드예요."],
+    "return-after": ["가로 [3|삼]과 세로 [4|사]를 곱한 [12|십이]를 돌려줬어요. 돌려받은 값을 내보냈어요."],
+    "follow-ok": ["좋아요. 가기를 두 번 불러서 x가 [6|육]이 됐어요."],
+    "summary": ["정리해요. 클래스 안의 함수는 맨 앞에 [self|셀프]를 받고, 객체 뒤에 점을 찍어 불러요. 그 안에서 [self|셀프]로 그 객체의 값을 쓰고 바꿔요."],
+
+    "q1-right": ["맞아요. 가는 [3|삼]씩 두 번 가서 [6|육], 나는 [5|오]씩 한 번 가서 [5|오]예요."],
+    "q1-same": ["가기를 부른 횟수가 달라요. 그리고 공마다 dx가 달라요."],
+    "q1-once": ["가는 가기를 두 번 불렀어요."],
+    "q1-explain": ["가는 [3|삼]을 두 번 더해 [6|육], 나는 [5|오]를 한 번 더해 [5|오]예요."],
+    "q2-right": ["맞아요. [self|셀프]를 붙이지 않은 돈은 함수 안의 이름표예요. 객체의 돈은 그대로 [0|영]이에요."],
+    "q2-in": ["넣기 안의 돈에는 [self|셀프]가 없어요. 객체의 돈이 아니라 함수 안의 새 이름표예요."],
+    "q2-error": ["오류는 나지 않아요. 함수 안에 새 이름표가 생겼다가 사라질 뿐이에요."],
+    "q2-explain": ["[self.돈|셀프 점 돈]이 아니라 돈이라고만 썼어요. 객체의 돈은 바뀌지 않아서 [0|영]이에요."],
+    "q3-right": ["맞아요. 둘레가 돌려준 [20|이십]은 어디에도 쓰지 않았어요. 길이는 그대로 [5|오]예요."],
+    "q3-kept": ["둘레는 값을 돌려주기만 해요. 객체의 길이를 바꾸지는 않았어요."],
+    "q3-both": ["돌려준 값은 [print|프린트]에 넣어야 나와요. 부르기만 하면 나오지 않아요."],
+    "q3-explain": ["돌려준 [20|이십]은 쓰지 않았고, 길이는 바뀌지 않았어요. [5|오]만 나와요."],
+
+    "praise-bank": ["넣기와 꺼내기를 저금통 안에 넣었어요. 돈이 모자라면 꺼내지 않게 조건도 달았어요."],
+    "bank-minus": ["돈이 빼기 수가 됐어요. 꺼내기 안에서, 꺼낼 돈이 가진 돈보다 많은지 먼저 물어요."],
+    "bank-nosay": ["돈은 맞아요. 모자랄 때는 모자라요라고 내보내야 해요."],
+    "bank-took": ["모자라요라고 말하고도 돈을 꺼냈어요. 모자랄 때는 꺼내지 않아요. [else|엘스]를 써요."],
+    "hint-1": ["[__init__|이닛] 아래에, 같은 깊이로 메서드를 두 개 만들어요. 넣기와 꺼내기예요. 둘 다 [self|셀프]와 얼마를 받아요."],
+    "hint-2": ["넣기는 [self.돈|셀프 점 돈]에 얼마를 더해요. 꺼내기는 먼저 얼마가 [self.돈|셀프 점 돈]보다 큰지 물어요. 크면 모자라요를 내보내고, 아니면 얼마를 빼요."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. 이걸 보고 써 봐요."],
+    "praise-avg": ["점수를 리스트에 모으는 메서드와, 평균을 돌려주는 메서드를 만들었어요. 객체 안에 리스트도 넣을 수 있어요."],
+    "avg-sum": ["평균이 아니라 합이 나왔어요. 합을 점수의 개수로 나눠요."],
+    "avg-hint-1": ["[__init__|이닛]에서 이름을 받아 넣고, [self.점수들|셀프 점 점수들]에는 빈 리스트를 넣어요."],
+    "avg-hint-2": ["더하기는 받은 점수를 [self.점수들|셀프 점 점수들]에 [append|어펜드]로 붙여요. 평균은 [sum|섬]으로 구한 합을 [len|렌]으로 구한 개수로 나눠서 [return|리턴]으로 돌려줘요."],
+
+    "done-1": ["오늘은 클래스 안에 함수를 넣어서, 객체가 스스로 일하게 했어요."],
+    "done-2": ["점 앞의 객체가 [self|셀프]로 들어가요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "메서드: 클래스 안의 함수", "items": ["def 소개(self):  괄호 안의 맨 앞은 늘 self", "가.소개()  객체 뒤에 점을 찍어 부른다", "점 앞의 객체가 self로 들어간다"], "code": "    def 소개(self):\n        print(self.이름, self.점수, \"점\")" } },
+      { "say": "method-intro" },
+      { "say": "method-call" },
+      { "type": "class 학생:\n    def __init__(self, 이름, 점수):\n        self.이름 = 이름\n        self.점수 = 점수\n    def 소개(self):\n        print(self.이름, self.점수, \"점\")\n가 = 학생(\"민수\", 90)\n나 = 학생(\"지아\", 85)\n가.소개()\n나.소개()" },
+      { "trace": "class 학생:\n    def __init__(self, 이름, 점수):\n        self.이름 = 이름\n        self.점수 = 점수\n    def 소개(self):\n        print(self.이름, self.점수, \"점\")\n가 = 학생(\"민수\", 90)\n나 = 학생(\"지아\", 85)\n가.소개()\n나.소개()" },
+      { "say": "method-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "값을 바꾸는 메서드", "items": ["def 넣기(self, 얼마):  self 다음에 받을 값", "self.돈 += 얼마  그 객체의 값을 바꾼다", "통.넣기(500)  self 자리는 건너뛰고 넣는다"] } },
+      { "say": "change-intro" },
+      { "type": "class 저금통:\n    def __init__(self):\n        self.돈 = 0\n    def 넣기(self, 얼마):\n        self.돈 += 얼마\n통 = 저금통()\n통.넣기(500)\n통.넣기(300)\nprint(통.돈)" },
+      { "trace": "class 저금통:\n    def __init__(self):\n        self.돈 = 0\n    def 넣기(self, 얼마):\n        self.돈 += 얼마\n통 = 저금통()\n통.넣기(500)\n통.넣기(300)\nprint(통.돈)" },
+      { "say": "change-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "def 넣기(self, 얼마):\n통에 500을 넣으려면?",
+          "ask": "check-ask",
+          "choices": ["통.넣기(500)", "통.넣기(통, 500)"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "return-intro" },
+      { "type": "class 네모:\n    def __init__(self, 가로, 세로):\n        self.가로 = 가로\n        self.세로 = 세로\n    def 넓이(self):\n        return self.가로 * self.세로\n가 = 네모(3, 4)\nprint(가.넓이())" },
+      { "trace": "class 네모:\n    def __init__(self, 가로, 세로):\n        self.가로 = 가로\n        self.세로 = 세로\n    def 넓이(self):\n        return self.가로 * self.세로\n가 = 네모(3, 4)\nprint(가.넓이())" },
+      { "say": "return-after" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "class 공:\n    def __init__(self):\n        self.x = 0\n    def 가기(self):\n        self.x += 3\n가 = 공()\n가.가기()\n가.가기()\nprint(가.x)" } },
+      { "follow": { "code": "class 공:\n    def __init__(self):\n        self.x = 0\n    def 가기(self):\n        self.x += 3\n가 = 공()\n가.가기()\n가.가기()\nprint(가.x)", "expect": ["6"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["def 소개(self):  클래스 안의 함수(메서드)", "가.소개()  점 앞의 객체가 self", "self.돈 += 얼마  그 객체의 값을 바꾼다", "return으로 값을 돌려줄 수 있다"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "class 공:\n    def __init__(self, dx):\n        self.x = 0\n        self.dx = dx\n    def 가기(self):\n        self.x += self.dx\n가 = 공(3)\n나 = 공(5)\n가.가기()\n가.가기()\n나.가기()\nprint(가.x, 나.x)",
+      "answer": 0,
+      "choices": [
+        { "text": "6 5", "say": "q1-right" },
+        { "text": "6 6", "say": "q1-same" },
+        { "text": "3 5", "say": "q1-once" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "class 저금통:\n    def __init__(self):\n        self.돈 = 0\n    def 넣기(self, 얼마):\n        돈 = 얼마\n통 = 저금통()\n통.넣기(500)\nprint(통.돈)",
+      "answer": 1,
+      "choices": [
+        { "text": "500", "say": "q2-in" },
+        { "text": "0", "say": "q2-right" },
+        { "text": "(오류만 나온다)", "say": "q2-error" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "class 네모:\n    def __init__(self, 길이):\n        self.길이 = 길이\n    def 둘레(self):\n        return self.길이 * 4\n가 = 네모(5)\n가.둘레()\nprint(가.길이)",
+      "answer": 2,
+      "choices": [
+        { "text": "20", "say": "q3-kept" },
+        { "text": "20\n5", "say": "q3-both" },
+        { "text": "5", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "bank",
+      "title": "저금통",
+      "story": "편집기에 클래스 '저금통'이 있어요. 아래쪽 여섯 줄은 돈을 넣고 꺼내요. 그런데 넣기와 꺼내기가 아직 없어요. 두 메서드를 클래스 안에 만들어요. 가진 돈보다 많이 꺼내려고 하면 \"모자라요\"라고 내보내고, 꺼내지 않아요.",
+      "steps": ["__init__ 아래에 메서드 넣기를 만들어요. 받은 만큼 돈을 늘려요.", "메서드 꺼내기를 만들어요. 받은 값이 가진 돈보다 크면 \"모자라요\"를 내보내고, 아니면 그만큼 돈을 줄여요.", "아래쪽 여섯 줄은 고치지 않아요."],
+      "start": "class 저금통:\n    def __init__(self):\n        self.돈 = 0\n\n통 = 저금통()\n통.넣기(1000)\n통.넣기(500)\n통.꺼내기(700)\n통.꺼내기(2000)\nprint(통.돈)",
+      "expect": ["모자라요", "800"],
+      "show": true,
+      "mistakes": [
+        { "output": "^-1200$", "say": "bank-minus" },
+        { "output": "^800$", "say": "bank-nosay" },
+        { "output": "^모자라요\\n-1200$", "say": "bank-took" }
+      ],
+      "praise": "praise-bank",
+      "solution": "class 저금통:\n    def __init__(self):\n        self.돈 = 0\n    def 넣기(self, 얼마):\n        self.돈 += 얼마\n    def 꺼내기(self, 얼마):\n        if 얼마 > self.돈:\n            print(\"모자라요\")\n        else:\n            self.돈 -= 얼마\n\n통 = 저금통()\n통.넣기(1000)\n통.넣기(500)\n통.꺼내기(700)\n통.꺼내기(2000)\nprint(통.돈)",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "class 물통:\n    def __init__(self):\n        self.물 = 0\n    def 붓기(self, 얼마):\n        if self.물 + 얼마 > 10:\n            print(\"넘쳐요\")\n        else:\n            self.물 += 얼마\n\n통 = 물통()\n통.붓기(7)\n통.붓기(5)\nprint(통.물)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "avg",
+    "title": "심화: 점수를 모으는 학생",
+    "story": "편집기의 아래쪽 다섯 줄은 학생을 만들고, 점수를 세 번 더하고, 이름과 평균을 내보내요. 클래스 '학생'을 만들어요. 학생은 만들 때 이름만 받고, 점수는 리스트에 모아요.",
+    "steps": ["__init__에서 이름을 받아 넣고, self.점수들에 빈 리스트를 넣어요.", "메서드 더하기는 받은 점수를 리스트에 붙여요.", "메서드 평균은 점수들의 평균을 return으로 돌려줘요.", "아래쪽 다섯 줄은 고치지 않아요."],
+    "start": "# 여기에 클래스 학생을 만들어요\n\n가 = 학생(\"민수\")\n가.더하기(90)\n가.더하기(80)\n가.더하기(70)\nprint(가.이름, 가.평균())",
+    "expect": ["민수 80.0"],
+    "show": true,
+    "mistakes": [{ "output": "^민수 240$", "say": "avg-sum" }],
+    "praise": "praise-avg",
+    "solution": "class 학생:\n    def __init__(self, 이름):\n        self.이름 = 이름\n        self.점수들 = []\n    def 더하기(self, 점수):\n        self.점수들.append(점수)\n    def 평균(self):\n        return sum(self.점수들) / len(self.점수들)\n\n가 = 학생(\"민수\")\n가.더하기(90)\n가.더하기(80)\n가.더하기(70)\nprint(가.이름, 가.평균())",
+    "hints": [{ "say": "avg-hint-1" }, { "say": "avg-hint-2" }]
+  }
+}

@@ -167,7 +167,7 @@ export function explain(error, knows = {}) {
       if (missing) return `${what} 넣을 값이 모자라요. 빠진 것: ${missing[1].replace(/'/g, '').replace(/,? and /, ', ')}`;
       const counts = /takes (\d+) positional arguments? but (\d+) (?:was|were) given/.exec(message);
       if (counts && counts[1] === '0') return `클래스 안의 함수는 괄호 안의 맨 앞에 self를 써야 해요. def ${fn}(self): 처럼 써요.`;
-      if (counts) return `${what} 값을 ${counts[2] - 1}개 넣었는데, 받기로 한 것은 ${counts[1] - 1}개예요. def ${fn} 줄의 괄호 안을 봐요. 맨 앞의 self는 세지 않아요.`;
+      if (counts) return `${what} 값을 ${counts[2] - 1}개 넣었는데, 받기로 한 것은 ${counts[1] - 1}개예요. def ${fn} 줄의 괄호 안을 봐요. 맨 앞에는 self가 있어야 하고, self는 세지 않아요.`;
     }
     if (knows.functions && /missing \d+ required positional argument/.test(message)) return '함수가 받기로 한 값을 다 넘기지 않았어요. 부를 때 괄호 안에 값을 넣어요.';
     if (knows.functions && /takes \d+ positional arguments? but \d+ (was|were) given/.test(message)) return '함수가 받기로 한 것보다 값을 많이 넘겼어요. def 줄의 괄호 안과 개수를 맞춰요.';

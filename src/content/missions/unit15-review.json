@@ -1,0 +1,160 @@
+{
+  "_설명": "클래스 단원 마무리. 강의가 없다. 섞어 풀기(예측 4문제, 쓰기 1문제)와 만들기 과제다. 만들기 과제는 14단원의 별 받기를 클래스로 넓힌 것이다: 별이 세 개이고 저마다 빠르기가 다르며, 놓치면 목숨이 줄고, 목숨이 0이 되면 끝난다. 바구니, 점수판, 키, 클래스 별(__init__과 위로), 별 세 개는 시작 코드로 주고, 아이는 메서드 '내리기'와 놀이의 반복을 쓴다. 채점은 정해 둔 키와 장면 수 뒤의 모습을 견준다(무작위 수는 정해 둔다). 닿았는지와 놓쳤는지를 묻는 차례, 점수판 글자의 모양을 칠판에 그대로 적어 준다.",
+  "id": "unit15-review",
+  "unit": "클래스",
+  "no": 6,
+  "title": "단원 마무리: 별 여러 개 받기",
+  "titleSay": "단원 마무리",
+  "desc": "배운 것을 섞어서 풀고, 별 여러 개를 받는 놀이를 클래스로 만들어요.",
+  "minutes": 30,
+  "knows": ["variables", "loops", "functions", "classes"],
+  "showVars": true,
+  "canvas": true,
+  "saveAs": "별 여러 개 받기",
+  "doneCard": {
+    "title": "클래스 단원을 마쳤어요",
+    "items": [
+      "class 학생:  새 종류를 만든다",
+      "def __init__(self, 이름):  만들 때 값을 넣는다",
+      "self.이름  그 객체가 가진 값",
+      "def 소개(self):  객체가 할 줄 아는 일",
+      "객체를 리스트에 넣어 한꺼번에 다루기",
+      "'만들기'에 별 여러 개 받기가 들어 있어요. 별을 다섯 개로 늘리거나, 별마다 색을 다르게 해 봐요"
+    ]
+  },
+  "done": ["done-1", "done-2", "done-3", "done-bye"],
+  "lines": {
+    "q1-right": ["맞아요. 가에 [50|오십]을 넣어 [150|백오십], 나에는 가의 돈 [150|백오십]을 넣어 [250|이백오십]이에요."],
+    "q1-same": ["가와 나는 다른 저금통이에요. 나에는 [100|백]에 [150|백오십]을 더했어요."],
+    "q1-old": ["나에 넣을 때 가의 돈은 이미 [150|백오십]이에요."],
+    "q1-explain": ["가는 [100|백] 더하기 [50|오십], 나는 [100|백] 더하기 [150|백오십]이에요."],
+    "q2-right": ["맞아요. 리스트의 [0|영]번에는 가가 가리키는 바로 그 공이 들어 있어요. 리스트로 바꿔도 가로 꺼내면 바뀐 값이 보여요."],
+    "q2-copy": ["리스트에 넣을 때 공이 새로 만들어지지 않아요. 같은 공을 가리켜요."],
+    "q2-other": ["[0|영]번은 가가 가리키는 공이에요. dx가 [5|오]인 공은 [1|일]번이에요."],
+    "q2-explain": ["리스트의 [0|영]번과 가는 같은 공이에요. 그래서 [9|구]가 나와요."],
+    "q3-right": ["맞아요. [70|칠십] 이상은 나와 다, 두 명이에요."],
+    "q3-all": ["가의 점수 [50|오십]은 [70|칠십]보다 작아요."],
+    "q3-over": ["[70|칠십]도 [70|칠십] 이상이에요. 다도 세요."],
+    "q3-explain": ["[90|구십]과 [70|칠십]이 [70|칠십] 이상이에요. 두 명이에요."],
+    "q4-right": ["맞아요. [10|십]에서 [4|사]씩 세 번 내려가서 빼기 [2|이]가 됐을 때 멈췄어요."],
+    "q4-early": ["y가 [2|이]일 때는 아직 [0|영]보다 커요. 한 번 더 내려가요."],
+    "q4-zero": ["[4|사]씩 내려가서 [0|영]에 딱 멈추지 않아요. [2|이] 다음은 빼기 [2|이]예요."],
+    "q4-explain": ["[6|육], [2|이], 빼기 [2|이]. 세 번 내려가고 멈춰요."],
+
+    "task-intro": ["이제 써 봐요. 두 문제예요. 둘째 문제에서는 별 여러 개를 받는 놀이를 만들어요."],
+    "task-how": ["실행해서 직접 해 보고, 멈춤 버튼으로 멈춰요. 잘 되면 '제출'을 눌러요."],
+    "praise-board": ["점수와 목숨을 한 객체에 넣고, 맞음, 틀림, 끝났나를 메서드로 만들었어요. 끝났나는 참인지 거짓인지를 돌려줘요."],
+    "board-none": ["끝났나가 아무것도 돌려주지 않았어요. 목숨이 [0|영]인지 물은 것을 [return|리턴]으로 돌려줘요."],
+    "board-start": ["처음 값이 달라요. 만들 때 점수는 [0|영], 목숨은 [3|삼]으로 넣어요."],
+    "board-hint-1": ["[__init__|이닛]은 [self|셀프]만 받아요. 그 안에서 [self.점수|셀프 점 점수]에 [0|영], [self.목숨|셀프 점 목숨]에 [3|삼]을 넣어요."],
+    "board-hint-2": ["맞음은 점수를 [1|일] 올리고, 틀림은 목숨을 [1|일] 줄여요. 끝났나는 [self.목숨|셀프 점 목숨]이 [0|영]과 같은지를 [return|리턴]으로 돌려줘요."],
+    "task-next": ["이번에는 별 여러 개 받기예요. 별 세 개가 저마다 다른 빠르기로 떨어져요. 놓치면 목숨이 줄고, 목숨이 [0|영]이 되면 끝나요. 편집기에 바구니와 점수판, 클래스 별이 준비돼 있어요."],
+    "rain-text": ["거북이의 자리는 맞는데 점수판의 글자가 달라요. 받으면 점수를 올리고 놓치면 목숨을 줄이는지, 글자를 칠판에 적힌 모양대로 쓰는지, 끝나면 끝이라고 쓰는지 봐요."],
+    "rain-pos": ["별의 자리가 선생님 것과 달라요. 별마다 [self.빠르기|셀프 점 빠르기]만큼 내리는지, 받았을 때와 놓쳤을 때 위로를 부르는지, 목숨이 [0|영]이 되면 멈추는지 칠판과 견줘 봐요."],
+    "rain-hint-1": ["먼저 클래스 별 안에 메서드 내리기를 만들어요. 몸의 세로 자리를 지금보다 [self.빠르기|셀프 점 빠르기]만큼 작게 바꿔요."],
+    "rain-hint-2": ["맨 아래에 [while|와일] 목숨이 [0|영]보다 큰 동안 도는 반복을 써요. 그 안에서 별들을 돌면서 내리기를 부르고, 몸과 바구니의 거리가 [40|사십]보다 작으면 점수를 올리고 위로를 불러요. [elif|엘리프]로, 몸의 세로 자리가 [-170|빼기 백칠십]보다 작으면 목숨을 줄이고 위로를 불러요."],
+    "rain-hint-3": ["안쪽 반복이 끝나면 판을 지우고 점수와 목숨을 써요. 글자를 잇는 법은 칠판에 적었어요. 그다음 [update|업데이트]와 [sleep|슬립]을 해요. 바깥 반복이 끝난 뒤에는 판을 지우고 끝이라고 쓰고, [update|업데이트]를 한 번 해요."],
+    "praise-rain": ["내리는 법을 별 안에 넣고, 반복에서는 별마다 내리기를 부르고 받았는지 놓쳤는지를 물었어요. 클래스로 만든 진짜 놀이예요."],
+
+    "done-1": ["클래스 단원을 마쳤어요. 수고했어요."],
+    "done-2": ["이제 새 종류를 만들고, 값과 할 줄 아는 일을 한 객체에 묶을 줄 알아요."],
+    "done-3": ["만든 놀이는 만들기에 들어 있어요. 별을 다섯 개로 늘려 봐요. 리스트에 두 개만 더 넣으면 돼요."]
+  },
+
+  "lecture": [],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "class 저금통:\n    def __init__(self):\n        self.돈 = 100\n    def 넣기(self, 얼마):\n        self.돈 += 얼마\n가 = 저금통()\n나 = 저금통()\n가.넣기(50)\n나.넣기(가.돈)\nprint(가.돈, 나.돈)",
+      "answer": 0,
+      "choices": [
+        { "text": "150 250", "say": "q1-right" },
+        { "text": "150 150", "say": "q1-same" },
+        { "text": "150 200", "say": "q1-old" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "class 공:\n    def __init__(self, dx):\n        self.dx = dx\n가 = 공(3)\n공들 = [가, 공(5)]\n공들[0].dx = 9\nprint(가.dx)",
+      "answer": 1,
+      "choices": [
+        { "text": "3", "say": "q2-copy" },
+        { "text": "9", "say": "q2-right" },
+        { "text": "5", "say": "q2-other" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "class 학생:\n    def __init__(self, 이름, 점수):\n        self.이름 = 이름\n        self.점수 = 점수\n반 = [학생(\"가\", 50), 학생(\"나\", 90), 학생(\"다\", 70)]\n수 = 0\nfor 한명 in 반:\n    if 한명.점수 >= 70:\n        수 += 1\nprint(수)",
+      "answer": 2,
+      "choices": [
+        { "text": "3", "say": "q3-all" },
+        { "text": "1", "say": "q3-over" },
+        { "text": "2", "say": "q3-right" }
+      ]
+    },
+    {
+      "id": "q4",
+      "explain": "q4-explain",
+      "code": "class 별:\n    def __init__(self, y, 빠르기):\n        self.y = y\n        self.빠르기 = 빠르기\n    def 내리기(self):\n        self.y -= self.빠르기\n가 = 별(10, 4)\n번 = 0\nwhile 가.y > 0:\n    가.내리기()\n    번 += 1\nprint(번, 가.y)",
+      "answer": 0,
+      "choices": [
+        { "text": "3 -2", "say": "q4-right" },
+        { "text": "2 2", "say": "q4-early" },
+        { "text": "3 0", "say": "q4-zero" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "board",
+      "title": "점수와 목숨",
+      "story": "편집기의 아래쪽 여덟 줄은 '점수판'이라는 클래스를 써요. 그 클래스를 만들어요. 점수판은 점수 0, 목숨 3에서 시작해요.",
+      "steps": ["__init__에서 self.점수에 0, self.목숨에 3을 넣어요.", "메서드 맞음은 점수를 1 올리고, 메서드 틀림은 목숨을 1 줄여요.", "메서드 끝났나는 목숨이 0과 같은지(True 또는 False)를 return으로 돌려줘요.", "아래쪽 여덟 줄은 고치지 않아요."],
+      "start": "# 여기에 클래스 점수판을 만들어요\n\n판 = 점수판()\n판.맞음()\n판.맞음()\n판.틀림()\nprint(판.점수, 판.목숨)\n판.틀림()\n판.틀림()\nprint(판.끝났나())",
+      "expect": ["2 2", "True"],
+      "show": true,
+      "mistakes": [
+        { "output": "^2 2\\nNone$", "say": "board-none" },
+        { "output": "^(?!2 2\\n)\\d+ \\d+\\n", "say": "board-start" }
+      ],
+      "praise": "praise-board",
+      "solution": "class 점수판:\n    def __init__(self):\n        self.점수 = 0\n        self.목숨 = 3\n    def 맞음(self):\n        self.점수 += 1\n    def 틀림(self):\n        self.목숨 -= 1\n    def 끝났나(self):\n        return self.목숨 == 0\n\n판 = 점수판()\n판.맞음()\n판.맞음()\n판.틀림()\nprint(판.점수, 판.목숨)\n판.틀림()\n판.틀림()\nprint(판.끝났나())",
+      "hints": [{ "say": "board-hint-1" }, { "say": "board-hint-2" }]
+    },
+    {
+      "id": "rain",
+      "title": "만들기: 별 여러 개 받기",
+      "story": "별 세 개가 저마다 다른 빠르기로 떨어져요. 받으면 점수가 오르고, 놓치면 목숨이 줄어요. 목숨이 0이 되면 끝나요. 바구니, 점수판, 클래스 별은 준비돼 있어요.",
+      "steps": [
+        "클래스 별 안에 메서드 내리기를 만들어요. 몸의 세로 자리를 self.빠르기만큼 내려요.",
+        "맨 아래에 while 목숨 > 0: 을 쓰고, 그 안에서 별들을 돌면서 내리기를 불러요.",
+        "몸과 바구니의 거리가 40보다 작으면 점수를 1 올리고 위로()를, 아니고(elif) 몸의 세로 자리가 -170보다 작으면 목숨을 1 줄이고 위로()를 불러요.",
+        "별을 다 돌면 판을 지우고 \"점수: 1 목숨: 5\"처럼 쓴 다음, update와 sleep(0.02)를 해요.",
+        "반복이 끝나면 판을 지우고 \"끝! 점수: 2\"처럼 쓰고, update를 해요."
+      ],
+      "start": "import turtle\nimport time\nimport random\nturtle.tracer(0)\n바구니 = turtle.Turtle()\n바구니.shape(\"square\")\n바구니.shapesize(1, 4)\n바구니.color(\"blue\")\n바구니.penup()\n바구니.goto(0, -150)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\ndef 왼쪽():\n    바구니.setx(바구니.xcor() - 20)\ndef 오른쪽():\n    바구니.setx(바구니.xcor() + 20)\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nclass 별:\n    def __init__(self, x, 빠르기):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(x, 160)\n        self.빠르기 = 빠르기\n    def 위로(self):\n        self.몸.goto(random.randint(-10, 10) * 20, 160)\n\n별들 = [별(-100, 1), 별(0, 2), 별(100, 3)]\n점수 = 0\n목숨 = 5\n",
+      "cases": [
+        { "keys": [], "frames": 60, "randoms": [5, -6, 0, 8, -3, 2, -9, 4], "inputs": [], "expect": [] },
+        { "keys": [], "frames": 400, "randoms": [5, -6, 0, 8, -3, 2, -9, 4], "inputs": [], "expect": [] },
+        { "keys": ["Right", null, null, "Right", null, null, "Right", null, null, "Right", null, null, "Right"], "frames": 300, "randoms": [5, -6, 0, 8, -3, 2, -9, 4], "inputs": [], "expect": [] },
+        { "keys": [], "frames": 3000, "randoms": [5, -6, 0, 8, -3, 2, -9, 4], "inputs": [], "expect": [] }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 3,
+      "mistakes": [
+        { "game": "game-text", "say": "rain-text" },
+        { "game": "game-pos", "say": "rain-pos" }
+      ],
+      "praise": "praise-rain",
+      "solution": "import turtle\nimport time\nimport random\nturtle.tracer(0)\n바구니 = turtle.Turtle()\n바구니.shape(\"square\")\n바구니.shapesize(1, 4)\n바구니.color(\"blue\")\n바구니.penup()\n바구니.goto(0, -150)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\ndef 왼쪽():\n    바구니.setx(바구니.xcor() - 20)\ndef 오른쪽():\n    바구니.setx(바구니.xcor() + 20)\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nclass 별:\n    def __init__(self, x, 빠르기):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(x, 160)\n        self.빠르기 = 빠르기\n    def 위로(self):\n        self.몸.goto(random.randint(-10, 10) * 20, 160)\n    def 내리기(self):\n        self.몸.sety(self.몸.ycor() - self.빠르기)\n\n별들 = [별(-100, 1), 별(0, 2), 별(100, 3)]\n점수 = 0\n목숨 = 5\nwhile 목숨 > 0:\n    for 한개 in 별들:\n        한개.내리기()\n        if 한개.몸.distance(바구니) < 40:\n            점수 += 1\n            한개.위로()\n        elif 한개.몸.ycor() < -170:\n            목숨 -= 1\n            한개.위로()\n    판.clear()\n    판.write(\"점수: \" + str(점수) + \" 목숨: \" + str(목숨))\n    turtle.update()\n    time.sleep(0.02)\n판.clear()\n판.write(\"끝! 점수: \" + str(점수))\nturtle.update()",
+      "hints": [{ "say": "rain-hint-1" }, { "say": "rain-hint-2" }, { "say": "rain-hint-3", "card": { "title": "글자를 잇는 법 (정답은 아니에요)", "code": "점수 = 1\n목숨 = 5\nprint(\"점수: \" + str(점수) + \" 목숨: \" + str(목숨))" } }]
+    }
+  ]
+}

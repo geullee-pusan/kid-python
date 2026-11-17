@@ -1,0 +1,188 @@
+{
+  "_설명": "클래스 단원 5번 수업. 14단원의 움직이는 공을 클래스로 다시 만든다: 객체 안에 거북이(self.몸)와 빠르기(self.dx)를 함께 넣고, 움직이고 튕기는 일을 메서드로 넣는다. 그러면 놀이의 반복 안은 '공마다 움직이기를 부른다'로 짧아진다. 엔트리의 오브젝트가 저마다 블록 묶음을 가진 것과 견줘 말로 설명한다(블록 짝은 없다). 겨냥하는 오개념: self.몸.setx처럼 점이 두 번 이어지는 것을 읽지 못한다, 메서드 안에서 dx라고만 쓴다, 한 공이 튕기면 다른 공의 방향도 바뀐다, 클래스를 만들면 거북이가 생긴다(객체를 만들 때 생긴다).",
+  "id": "class-move",
+  "unit": "클래스",
+  "no": 5,
+  "title": "움직이는 객체",
+  "desc": "거북이와 빠르기를 한 객체에 넣어서, 공이 스스로 움직이고 튕기게 해요.",
+  "minutes": 20,
+  "knows": ["variables", "loops", "functions", "classes"],
+  "showVars": true,
+  "canvas": true,
+  "learned": [
+    { "rule": "객체 안에 거북이를 넣을 수 있어요. self.몸에 거북이를, self.dx에 빠르기를 넣으면 공 하나에 딸린 것이 한데 묶여요.", "code": "class 공:\n    def __init__(self, y, dx):\n        self.몸 = turtle.Turtle()\n        self.dx = dx" },
+    { "rule": "self.몸.setx( )처럼 점을 이어서, 내 안의 거북이에게 명령해요." },
+    { "rule": "움직이고 튕기는 일을 메서드에 넣으면, 놀이의 반복 안은 공마다 그 메서드를 부르기만 하면 돼요.", "code": "for 한개 in 공들:\n    한개.움직이기()" },
+    { "rule": "한 공이 튕겨서 dx가 바뀌어도, 다른 공의 dx는 그대로예요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["튕기는 공을 만들 때, 공이 여러 개면 빠르기도 여러 개가 필요했어요. 오늘은 공 하나에 거북이와 빠르기를 함께 넣어요. 움직이는 법도 공 안에 넣어요."],
+    "body-intro": ["공이라는 클래스를 만들어요. 만들 때 세로 자리와 빠르기를 받아요. [__init__|이닛] 안에서 거북이를 새로 만들어 [self.몸|셀프 점 몸]에 넣어요. 그 거북이를 동그라미로 바꾸고, 펜을 들고, 세로 자리로 보내요."],
+    "body-dots": ["[self.몸.shape|셀프 점 몸 점 셰이프]. 점이 두 번 나와요. 앞에서부터 읽어요. 내 안의 몸, 그 몸에게 모양을 바꾸라고 하는 거예요."],
+    "body-after": ["공을 두 개 만들었더니 거북이도 두 마리가 생겼어요. 이름표 칸을 봐요. 공마다 몸과 dx가 함께 들어 있어요."],
+    "move-intro": ["이제 움직이는 법을 메서드로 넣어요. 내 몸을 내 dx만큼 옮기고, 벽을 넘으면 내 dx의 부호를 뒤집어요. 그리고 공을 세 개 만들어 리스트에 넣어요. 선생님이 실행해 볼게요."],
+    "move-after": ["세 공이 저마다 다른 빠르기로 움직이고, 저마다 따로 튕겼어요. 반복 안을 봐요. 공을 하나씩 꺼내서 움직이기를 부르는 두 줄뿐이에요. 어떻게 움직이고 튕기는지는 공이 알고 있어요."],
+    "check-ask": ["하나 물어볼게요. 움직이기 안에서 내 빠르기를 쓰려면 어떻게 쓸까요?"],
+    "check-right": ["맞아요. [self|셀프]와 점을 붙여야 내 빠르기예요."],
+    "check-teach-1": ["dx라고만 쓰면 함수 안의 이름표를 찾아요. 그런 이름표가 없어서 오류가 나요."],
+    "check-teach-2": ["공마다 따로 가진 값은 늘 [self|셀프]와 점을 붙여서 써요."],
+    "follow-ok": ["좋아요. 움직이기를 두 번 불러서, 공의 몸이 [60|육십]까지 갔어요."],
+    "summary": ["정리해요. 거북이와 빠르기를 한 객체에 넣고, 움직이는 법을 메서드로 넣어요. 그러면 공을 몇 개든 쉽게 늘릴 수 있어요."],
+
+    "q1-right": ["맞아요. 가는 [10|십]씩 세 번 가서 [30|삼십], 나는 [20|이십]씩 한 번 가서 [20|이십]이에요."],
+    "q1-loop": ["나의 움직이기는 반복 밖에 있어요. 한 번만 불러요."],
+    "q1-once": ["가의 움직이기는 반복 안에서 세 번 불렀어요."],
+    "q1-explain": ["가는 세 번, 나는 한 번 움직였어요. [30|삼십]과 [20|이십]이에요."],
+    "q2-right": ["맞아요. [110|백십]이 되어 벽을 넘자 dx가 뒤집혔어요. 그 뒤 두 번은 [20|이십]씩 돌아와서 [70|칠십]이에요."],
+    "q2-on": ["x가 [100|백]을 넘으면 dx의 부호가 뒤집혀요. 계속 커지지 않아요."],
+    "q2-stop": ["뒤집힌 다음에도 두 번 더 움직였어요."],
+    "q2-explain": ["[110|백십]에서 뒤집히고, [90|구십], [70|칠십]으로 돌아와요. dx는 빼기 [20|이십]이에요."],
+    "q3-right": ["맞아요. 공을 만들 때마다 [__init__|이닛] 안에서 거북이가 하나씩 생겨요. 세 번 만들었으니 세 마리예요."],
+    "q3-one": ["클래스는 하나지만, 객체는 세 번 만들었어요. 만들 때마다 거북이가 생겨요."],
+    "q3-four": ["가는 새 공이 아니에요. 리스트의 [0|영]번 공을 가리키는 이름표일 뿐이에요."],
+    "q3-explain": ["공을 세 번 만들었고, 만들 때마다 거북이가 하나씩 생겨서 세 마리예요."],
+
+    "task-how": ["실행해서 움직임을 보고, 멈춤 버튼으로 멈춰요. 잘 되면 '제출'을 눌러요."],
+    "praise-three": ["움직이고 튕기는 일을 공 안에 넣었어요. 그래서 반복 안에서는 공마다 움직이기만 부르면 됐어요."],
+    "three-nobounce": ["공이 벽 밖으로 나가 버렸어요. 움직이기 안에서, 몸의 가로 자리가 [200|이백]보다 크거나 [-200|빼기 이백]보다 작으면 [self.dx|셀프 점 dx]의 부호를 뒤집어요."],
+    "three-pos": ["공의 자리가 선생님 것과 달라요. 한 장면에 [self.dx|셀프 점 dx]만큼 한 번만 옮기는지, 벽의 자리가 [200|이백]과 [-200|빼기 이백]인지 봐요."],
+    "hint-1": ["[__init__|이닛] 아래에, 같은 깊이로 메서드 움직이기를 만들어요. 괄호 안에는 [self|셀프]만 써요."],
+    "hint-2": ["움직이기 안에서, 몸의 가로 자리를 지금 자리 더하기 [self.dx|셀프 점 dx]로 바꿔요. 그다음 가로 자리가 [200|이백]보다 크거나 [-200|빼기 이백]보다 작으면 [self.dx|셀프 점 dx]를 뒤집어요."],
+    "hint-3": ["맨 아래에 [while True|와일 트루]를 쓰고, 그 안에서 공들을 돌면서 움직이기를 불러요. 안쪽 반복이 끝나면 [update|업데이트]와 [sleep|슬립]을 써요. 칠판에 비슷한 예제를 적었어요."],
+    "praise-both": ["가로와 세로의 빠르기를 따로 넣고, 벽마다 맞는 쪽의 부호를 뒤집었어요."],
+    "both-pos": ["공의 자리가 선생님 것과 달라요. 가로 벽([220|이백이십])에서는 dx만, 세로 벽([160|백육십])에서는 dy만 뒤집는지 봐요."],
+    "both-hint-1": ["움직이기 안에서 몸의 가로 자리에 [self.dx|셀프 점 dx]를, 세로 자리에 [self.dy|셀프 점 dy]를 더해요."],
+    "both-hint-2": ["가로 자리가 [220|이백이십]보다 크거나 [-220|빼기 이백이십]보다 작으면 dx를, 세로 자리가 [160|백육십]보다 크거나 [-160|빼기 백육십]보다 작으면 dy를 뒤집어요. 반복은 앞의 문제와 같아요."],
+
+    "done-1": ["오늘은 거북이와 빠르기를 한 객체에 넣어서, 스스로 움직이는 공을 만들었어요."],
+    "done-2": ["움직이는 법을 객체 안에 넣으면, 놀이의 반복이 짧아져요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "객체 안의 거북이", "items": ["self.몸 = turtle.Turtle()  내 거북이", "self.dx = dx  내 빠르기", "self.몸.shape(\"circle\")  내 몸에게 명령한다"] } },
+      { "say": "body-intro" },
+      { "say": "body-dots" },
+      { "type": "import turtle\nclass 공:\n    def __init__(self, y, dx):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.penup()\n        self.몸.sety(y)\n        self.dx = dx\n가 = 공(60, 3)\n나 = 공(-60, 5)\nprint(가.dx, 나.dx)" },
+      { "trace": "import turtle\nclass 공:\n    def __init__(self, y, dx):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.penup()\n        self.몸.sety(y)\n        self.dx = dx\n가 = 공(60, 3)\n나 = 공(-60, 5)\nprint(가.dx, 나.dx)" },
+      { "say": "body-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "움직이는 법도 공 안에", "items": ["움직이기: 내 몸을 내 dx만큼 옮기고, 벽이면 뒤집는다", "반복 안: 공마다 움직이기를 부른다"], "code": "    def 움직이기(self):\n        self.몸.setx(self.몸.xcor() + self.dx)\n        if self.몸.xcor() > 220 or self.몸.xcor() < -220:\n            self.dx = -self.dx" } },
+      { "say": "move-intro" },
+      { "play": "import turtle\nimport time\nturtle.tracer(0)\nclass 공:\n    def __init__(self, y, dx):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.penup()\n        self.몸.sety(y)\n        self.dx = dx\n    def 움직이기(self):\n        self.몸.setx(self.몸.xcor() + self.dx)\n        if self.몸.xcor() > 220 or self.몸.xcor() < -220:\n            self.dx = -self.dx\n공들 = [공(100, 3), 공(0, 7), 공(-100, -5)]\nwhile True:\n    for 한개 in 공들:\n        한개.움직이기()\n    turtle.update()\n    time.sleep(0.02)", "ms": 7000 },
+      { "say": "move-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "def 움직이기(self):\n이 안에서 내 빠르기를 쓰려면?",
+          "ask": "check-ask",
+          "choices": ["self.dx", "dx"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "import turtle\nclass 공:\n    def __init__(self, dx):\n        self.몸 = turtle.Turtle()\n        self.dx = dx\n    def 움직이기(self):\n        self.몸.forward(self.dx)\n가 = 공(30)\n가.움직이기()\n가.움직이기()\nprint(가.몸.xcor())" } },
+      { "follow": { "code": "import turtle\nclass 공:\n    def __init__(self, dx):\n        self.몸 = turtle.Turtle()\n        self.dx = dx\n    def 움직이기(self):\n        self.몸.forward(self.dx)\n가 = 공(30)\n가.움직이기()\n가.움직이기()\nprint(가.몸.xcor())", "expect": ["60.0"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["self.몸 = turtle.Turtle()  객체 안에 거북이", "self.몸.setx( )  내 몸에게 명령", "def 움직이기(self):  움직이는 법을 공 안에", "for 한개 in 공들:  한개.움직이기()"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "import turtle\nclass 공:\n    def __init__(self, dx):\n        self.몸 = turtle.Turtle()\n        self.dx = dx\n    def 움직이기(self):\n        self.몸.forward(self.dx)\n가 = 공(10)\n나 = 공(20)\nfor i in range(3):\n    가.움직이기()\n나.움직이기()\nprint(가.몸.xcor(), 나.몸.xcor())",
+      "answer": 0,
+      "choices": [
+        { "text": "30.0 20.0", "say": "q1-right" },
+        { "text": "30.0 60.0", "say": "q1-loop" },
+        { "text": "10.0 20.0", "say": "q1-once" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "class 공:\n    def __init__(self, x, dx):\n        self.x = x\n        self.dx = dx\n    def 움직이기(self):\n        self.x += self.dx\n        if self.x > 100:\n            self.dx = -self.dx\n가 = 공(90, 20)\nfor i in range(3):\n    가.움직이기()\nprint(가.x, 가.dx)",
+      "answer": 1,
+      "choices": [
+        { "text": "150 20", "say": "q2-on" },
+        { "text": "70 -20", "say": "q2-right" },
+        { "text": "110 -20", "say": "q2-stop" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "ask": "그림판에 보이는 거북이는 몇 마리일까요?",
+      "code": "import turtle\nclass 공:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n공들 = []\nfor i in range(3):\n    공들.append(공())\n가 = 공들[0]",
+      "outcome": { "output": [], "turtles": 3 },
+      "answer": 2,
+      "choices": [
+        { "text": "1마리", "say": "q3-one" },
+        { "text": "4마리", "say": "q3-four" },
+        { "text": "3마리", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "three",
+      "title": "저마다 튕기는 공",
+      "story": "편집기에 클래스 '공'과, 공 세 개가 든 리스트 '공들'이 있어요. 공마다 빠르기(dx)가 달라요. 공이 스스로 움직이고 튕기게 해요. 벽은 가로 자리 200과 -200이에요.",
+      "steps": ["클래스 공 안에 메서드 움직이기를 만들어요. 몸의 가로 자리를 self.dx만큼 옮겨요.", "옮긴 뒤 가로 자리가 200보다 크거나 -200보다 작으면 self.dx의 부호를 뒤집어요.", "맨 아래에 while True를 쓰고, 공들을 돌면서 움직이기를 불러요.", "안쪽 반복이 끝나면 turtle.update()와 time.sleep(0.02)를 써요."],
+      "start": "import turtle\nimport time\nturtle.tracer(0)\nclass 공:\n    def __init__(self, y, dx):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.penup()\n        self.몸.sety(y)\n        self.dx = dx\n\n공들 = [공(100, 2), 공(0, 4), 공(-100, -6)]\n",
+      "cases": [
+        { "keys": [], "frames": 30, "inputs": [], "expect": [] },
+        { "keys": [], "frames": 150, "inputs": [], "expect": [] },
+        { "keys": [], "frames": 400, "inputs": [], "expect": [] }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "mistakes": [
+        { "game": "game-pos", "code": "^(?![\\s\\S]*self\\s*\\.\\s*dx\\s*(=\\s*-|\\*=\\s*-))", "say": "three-nobounce" },
+        { "game": "game-pos", "say": "three-pos" }
+      ],
+      "praise": "praise-three",
+      "solution": "import turtle\nimport time\nturtle.tracer(0)\nclass 공:\n    def __init__(self, y, dx):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.penup()\n        self.몸.sety(y)\n        self.dx = dx\n    def 움직이기(self):\n        self.몸.setx(self.몸.xcor() + self.dx)\n        if self.몸.xcor() > 200 or self.몸.xcor() < -200:\n            self.dx = -self.dx\n\n공들 = [공(100, 2), 공(0, 4), 공(-100, -6)]\nwhile True:\n    for 한개 in 공들:\n        한개.움직이기()\n    turtle.update()\n    time.sleep(0.02)",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "import turtle\nimport time\nturtle.tracer(0)\nclass 별:\n    def __init__(self, x, 빠르기):\n        self.몸 = turtle.Turtle()\n        self.몸.penup()\n        self.몸.setx(x)\n        self.빠르기 = 빠르기\n    def 내리기(self):\n        self.몸.sety(self.몸.ycor() - self.빠르기)\n\n별들 = [별(-50, 2), 별(50, 3)]\nfor 번 in range(30):\n    for 한개 in 별들:\n        한개.내리기()\n    turtle.update()\n    time.sleep(0.02)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "both",
+    "title": "심화: 비스듬히 튕기는 공",
+    "story": "이번 공은 가로 빠르기(dx)와 세로 빠르기(dy)를 함께 가졌어요. 공 두 개가 비스듬히 날아가며 네 벽에서 튕기게 해요. 가로 벽은 220과 -220, 세로 벽은 160과 -160이에요.",
+    "steps": ["메서드 움직이기를 만들어요. 몸의 가로 자리를 self.dx만큼, 세로 자리를 self.dy만큼 옮겨요.", "가로 자리가 220보다 크거나 -220보다 작으면 self.dx를, 세로 자리가 160보다 크거나 -160보다 작으면 self.dy를 뒤집어요.", "맨 아래에 반복을 만들어서, 공마다 움직이기를 불러요."],
+    "start": "import turtle\nimport time\nturtle.tracer(0)\nclass 공:\n    def __init__(self, dx, dy):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.penup()\n        self.dx = dx\n        self.dy = dy\n\n공들 = [공(5, 3), 공(-4, 6)]\n",
+    "cases": [
+      { "keys": [], "frames": 40, "inputs": [], "expect": [] },
+      { "keys": [], "frames": 130, "inputs": [], "expect": [] },
+      { "keys": [], "frames": 350, "inputs": [], "expect": [] }
+    ],
+    "expect": [],
+    "game": true,
+    "showCases": 2,
+    "mistakes": [{ "game": "game-pos", "say": "both-pos" }],
+    "praise": "praise-both",
+    "solution": "import turtle\nimport time\nturtle.tracer(0)\nclass 공:\n    def __init__(self, dx, dy):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.penup()\n        self.dx = dx\n        self.dy = dy\n    def 움직이기(self):\n        self.몸.setx(self.몸.xcor() + self.dx)\n        self.몸.sety(self.몸.ycor() + self.dy)\n        if self.몸.xcor() > 220 or self.몸.xcor() < -220:\n            self.dx = -self.dx\n        if self.몸.ycor() > 160 or self.몸.ycor() < -160:\n            self.dy = -self.dy\n\n공들 = [공(5, 3), 공(-4, 6)]\nwhile True:\n    for 한개 in 공들:\n        한개.움직이기()\n    turtle.update()\n    time.sleep(0.02)",
+    "hints": [{ "say": "both-hint-1" }, { "say": "both-hint-2" }]
+  }
+}

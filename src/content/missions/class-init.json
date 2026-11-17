@@ -1,0 +1,191 @@
+{
+  "_설명": "클래스 단원 2번 수업. 객체를 만들 때 값을 함께 넣는 __init__과 self를 배운다. 엔트리에 해당하는 블록이 없어서 짝짓지 않는다. self는 '지금 만들고 있는 그 객체'라고 가르치고, 한 줄씩 보기의 이름표 칸에서 self가 차례로 채워지는 것을 보여 준다. 겨냥하는 오개념: self 자리에도 값을 넣어야 한다, self. 을 붙이지 않아도 객체에 들어간다(함수 안의 이름표일 뿐이라 함수가 끝나면 사라진다. 8단원 '함수 안의 이름'과 잇는다), 밑줄을 하나만 쓴다, 만들 때 값을 빼먹어도 된다.",
+  "id": "class-init",
+  "unit": "클래스",
+  "no": 2,
+  "title": "만들 때 값 넣기",
+  "desc": "객체를 만들면서 값을 한 번에 넣는 __init__과 self를 배워요.",
+  "minutes": 20,
+  "knows": ["variables", "loops", "functions", "classes"],
+  "showVars": true,
+  "learned": [
+    { "rule": "클래스 안에 def __init__(self, …): 를 만들면, 객체를 만들 때 저절로 불려요. 밑줄은 앞뒤로 두 개씩이에요.", "code": "class 학생:\n    def __init__(self, 이름, 점수):\n        self.이름 = 이름\n        self.점수 = 점수" },
+    { "rule": "self는 지금 만들고 있는 그 객체예요. self.이름 = 이름 은 받은 값을 그 객체 안에 넣어요." },
+    { "rule": "만들 때는 self 자리를 빼고, 그다음 자리부터 값을 넣어요.", "code": "가 = 학생(\"민수\", 90)" },
+    { "rule": "self와 점을 붙이지 않으면 함수 안의 이름표일 뿐이라, 객체에 들어가지 않아요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["지난 시간에는 객체를 만들고 나서 값을 한 줄씩 넣었어요. 학생이 세 명이면 여섯 줄이고, 하나라도 빼먹으면 오류가 나요. 오늘은 만들 때 값을 한 번에 넣어요."],
+    "init-intro": ["클래스 안에 함수를 하나 만들어요. 이름은 [__init__|이닛]이에요. 밑줄 두 개, [init|이닛], 밑줄 두 개예요. 이 함수는 객체를 만들 때 저절로 불려요."],
+    "init-self": ["괄호 안의 맨 앞은 [self|셀프]예요. [self|셀프]는 지금 만들고 있는 바로 그 객체예요. [self.이름|셀프 점 이름]에 받은 이름을 넣으면, 그 객체 안에 들어가요."],
+    "init-after": ["이름표 칸을 봤나요? [self|셀프]가 빈 학생이었다가, 이름이 들어가고, 점수가 들어갔어요. 다 만들어진 다음에 가라는 이름표가 붙었어요. 만들 때 괄호 안에 넣은 민수와 [90|구십]은 [self|셀프] 다음 자리부터 차례로 들어갔어요."],
+    "two-intro": ["이제 학생을 몇 명이든 한 줄씩으로 만들 수 있어요. 두 명을 만들어 볼게요."],
+    "two-after": ["가를 만들 때는 [self|셀프]가 가였고, 나를 만들 때는 [self|셀프]가 나였어요. 같은 함수가 불리지만, 그때마다 다른 객체에 값을 넣어요."],
+    "miss-intro": ["[self|셀프]와 점을 빼먹으면 어떻게 될까요? 이름 등호 이름이라고만 써 볼게요."],
+    "miss-after": ["오류가 났어요. 가에 이름이 없대요. [self|셀프]를 붙이지 않은 이름은 함수 안의 이름표일 뿐이에요. 함수가 끝나면 사라져요. 객체에 넣으려면 꼭 [self|셀프]와 점을 붙여요."],
+    "check-ask": ["하나 물어볼게요. [__init__|이닛] 안에서, 받은 점수를 객체에 넣는 줄은 어느 것일까요?"],
+    "check-right": ["맞아요. [self.점수|셀프 점 점수]에 넣어야 객체 안에 남아요."],
+    "check-teach-1": ["[self|셀프]가 없으면 함수 안의 이름표에 넣는 거예요. 함수가 끝나면 사라져요."],
+    "check-teach-2": ["등호의 왼쪽에 [self|셀프]와 점을 붙여요."],
+    "zero-intro": ["받지 않는 값도 넣어 둘 수 있어요. 저금통은 만들 때 이름만 받고, 돈은 늘 [0|영]에서 시작해요."],
+    "zero-after": ["만들 때는 이름만 넣었지만, 돈도 [0|영]으로 들어 있어요. 그래서 바로 더할 수 있어요."],
+    "follow-ok": ["좋아요. 공을 만들면서 빠르기 [3|삼]을 넣었어요."],
+    "summary": ["정리해요. [__init__|이닛]은 만들 때 불리고, [self|셀프]는 지금 만드는 객체예요. [self.이름|셀프 점 이름]에 넣어야 객체에 남아요."],
+
+    "q1-right": ["맞아요. 가의 dx는 [3|삼], 나의 dy는 [4|사]예요. 더해서 [7|칠]이에요."],
+    "q1-own": ["뒤의 것은 가의 dy가 아니라 나의 dy예요."],
+    "q1-order": ["괄호 안의 값은 차례대로 들어가요. 나의 dy는 둘째 값인 [4|사]예요."],
+    "q1-explain": ["가는 dx가 [3|삼], 나는 dy가 [4|사]예요. 더하면 [7|칠]이에요."],
+    "q2-right": ["맞아요. 돈은 만들 때 [0|영]으로 들어갔고, 그 뒤에 [500|오백]을 더했어요."],
+    "q2-zero": ["만든 다음에 [500|오백]을 더했어요."],
+    "q2-error": ["돈은 [__init__|이닛] 안에서 [0|영]으로 넣어 뒀어요. 그래서 오류 없이 더할 수 있어요."],
+    "q2-explain": ["만들 때 돈이 [0|영]으로 들어가고, 그 뒤에 [500|오백]을 더해요."],
+    "q3-right": ["맞아요. dx를 받기로 했는데 넣지 않았어요. 오류가 나요."],
+    "q3-nothing": ["내보내는 줄이 없는 것은 맞지만, 그 전에 오류가 나요. 받기로 한 값을 넣지 않았어요."],
+    "q3-zero": ["넣지 않은 값이 저절로 [0|영]이 되지는 않아요."],
+    "q3-explain": ["[__init__|이닛]이 dx를 받기로 했어요. 만들 때 괄호 안이 비어 있으면 [TypeError|타입 에러]가 나요."],
+
+    "praise-book": ["[__init__|이닛]에서 제목과 쪽수를 받아 [self|셀프]에 넣었어요. 그래서 책을 한 줄에 하나씩 만들 수 있어요."],
+    "need-init": ["출력은 맞아요. 그런데 이번에는 클래스 책 안에 [__init__|이닛]을 만들어서 풀어 봐요."],
+    "hint-1": ["맨 위에 [class|클래스] 책, 콜론을 써요. 그 안에 [def|데프] [__init__|이닛]을 만들어요. 괄호 안에는 [self|셀프], 제목, 쪽수를 써요."],
+    "hint-2": ["[__init__|이닛] 안은 두 줄이에요. [self.제목|셀프 점 제목]에 제목을, [self.쪽수|셀프 점 쪽수]에 쪽수를 넣어요."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. 이걸 보고 써 봐요."],
+    "praise-age": ["물어서 받은 값으로 객체를 만들고, 객체 안의 나이를 한 살 올렸어요."],
+    "age-same": ["나이가 그대로예요. 객체를 만든 다음, 그 객체의 나이에 [1|일]을 더해요."],
+    "age-hint-1": ["이름과 나이를 [input|인풋]으로 물어요. 나이는 [int|인트]로 숫자로 바꿔요."],
+    "age-hint-2": ["두 값을 괄호 안에 넣어서 사람 객체를 만들어요. 그 객체의 나이에 [1|일]을 더하고, 이름과 나이를 내보내요."],
+
+    "done-1": ["오늘은 [__init__|이닛]과 [self|셀프]를 배웠어요."],
+    "done-2": ["만들 때 받은 값을 [self.이름|셀프 점 이름]에 넣어요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "__init__과 self", "items": ["def __init__(self, 이름, 점수):  만들 때 저절로 불린다", "self  지금 만들고 있는 그 객체", "self.이름 = 이름  받은 값을 객체에 넣는다", "밑줄은 앞에 두 개, 뒤에 두 개"], "code": "class 학생:\n    def __init__(self, 이름, 점수):\n        self.이름 = 이름\n        self.점수 = 점수" } },
+      { "say": "init-intro" },
+      { "say": "init-self" },
+      { "type": "class 학생:\n    def __init__(self, 이름, 점수):\n        self.이름 = 이름\n        self.점수 = 점수\n가 = 학생(\"민수\", 90)\nprint(가.이름, 가.점수)" },
+      { "trace": "class 학생:\n    def __init__(self, 이름, 점수):\n        self.이름 = 이름\n        self.점수 = 점수\n가 = 학생(\"민수\", 90)\nprint(가.이름, 가.점수)" },
+      { "say": "init-after" }
+    ],
+    [
+      { "say": "two-intro" },
+      { "type": "class 학생:\n    def __init__(self, 이름, 점수):\n        self.이름 = 이름\n        self.점수 = 점수\n가 = 학생(\"민수\", 90)\n나 = 학생(\"지아\", 85)\nprint(가.이름, 나.이름)\nprint(가.점수 + 나.점수)" },
+      { "trace": "class 학생:\n    def __init__(self, 이름, 점수):\n        self.이름 = 이름\n        self.점수 = 점수\n가 = 학생(\"민수\", 90)\n나 = 학생(\"지아\", 85)\nprint(가.이름, 나.이름)\nprint(가.점수 + 나.점수)" },
+      { "say": "two-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "self. 을 빼먹으면", "items": ["이름 = 이름  함수 안의 이름표일 뿐. 함수가 끝나면 사라진다", "self.이름 = 이름  객체 안에 남는다"] } },
+      { "say": "miss-intro" },
+      { "type": "class 학생:\n    def __init__(self, 이름):\n        이름 = 이름\n가 = 학생(\"민수\")\nprint(가.이름)" },
+      { "trace": "class 학생:\n    def __init__(self, 이름):\n        이름 = 이름\n가 = 학생(\"민수\")\nprint(가.이름)", "expectError": "AttributeError" },
+      { "say": "miss-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "def __init__(self, 점수):\n받은 점수를 객체에 넣는 줄은?",
+          "ask": "check-ask",
+          "choices": ["self.점수 = 점수", "점수 = 점수"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "zero-intro" },
+      { "type": "class 저금통:\n    def __init__(self, 이름):\n        self.이름 = 이름\n        self.돈 = 0\n통 = 저금통(\"돼지\")\n통.돈 += 300\nprint(통.이름, 통.돈)" },
+      { "trace": "class 저금통:\n    def __init__(self, 이름):\n        self.이름 = 이름\n        self.돈 = 0\n통 = 저금통(\"돼지\")\n통.돈 += 300\nprint(통.이름, 통.돈)" },
+      { "say": "zero-after" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "class 공:\n    def __init__(self, dx):\n        self.dx = dx\n가 = 공(3)\nprint(가.dx)" } },
+      { "follow": { "code": "class 공:\n    def __init__(self, dx):\n        self.dx = dx\n가 = 공(3)\nprint(가.dx)", "expect": ["3"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["def __init__(self, 이름, 점수):  만들 때 불린다", "self  지금 만드는 객체", "self.이름 = 이름  객체에 넣는다", "가 = 학생(\"민수\", 90)  self 다음 자리부터 넣는다"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "class 공:\n    def __init__(self, dx, dy):\n        self.dx = dx\n        self.dy = dy\n가 = 공(3, 5)\n나 = 공(2, 4)\nprint(가.dx + 나.dy)",
+      "answer": 0,
+      "choices": [
+        { "text": "7", "say": "q1-right" },
+        { "text": "8", "say": "q1-own" },
+        { "text": "5", "say": "q1-order" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "class 저금통:\n    def __init__(self, 이름):\n        self.이름 = 이름\n        self.돈 = 0\n통 = 저금통(\"돼지\")\n통.돈 += 500\nprint(통.이름, 통.돈)",
+      "answer": 1,
+      "choices": [
+        { "text": "돼지 0", "say": "q2-zero" },
+        { "text": "돼지 500", "say": "q2-right" },
+        { "text": "(오류만 나온다)", "say": "q2-error" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "class 공:\n    def __init__(self, dx):\n        self.dx = dx\n가 = 공()",
+      "outcome": { "output": [], "error": "TypeError" },
+      "answer": 2,
+      "choices": [
+        { "text": "(아무것도 안 나온다)", "say": "q3-nothing" },
+        { "text": "0", "say": "q3-zero" },
+        { "text": "(오류만 나온다)", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "book",
+      "title": "책 클래스 만들기",
+      "story": "편집기의 아래쪽 다섯 줄은 '책'이라는 클래스로 책 두 권을 만들어서 내보내요. 그 클래스를 만들어요. 책은 만들 때 제목과 쪽수를 받아요.",
+      "steps": ["메모 아래에 클래스 책을 만들어요.", "__init__에서 제목과 쪽수를 받아 self에 넣어요.", "아래쪽 다섯 줄은 고치지 않아요."],
+      "start": "# 여기에 클래스 책을 만들어요\n\n가 = 책(\"모험\", 120)\n나 = 책(\"우주\", 80)\nprint(가.제목, 가.쪽수)\nprint(나.제목, 나.쪽수)\nprint(가.쪽수 + 나.쪽수)",
+      "expect": ["모험 120", "우주 80", "200"],
+      "show": true,
+      "checks": [{ "pattern": "__init__", "say": "need-init" }],
+      "praise": "praise-book",
+      "solution": "class 책:\n    def __init__(self, 제목, 쪽수):\n        self.제목 = 제목\n        self.쪽수 = 쪽수\n\n가 = 책(\"모험\", 120)\n나 = 책(\"우주\", 80)\nprint(가.제목, 가.쪽수)\nprint(나.제목, 나.쪽수)\nprint(가.쪽수 + 나.쪽수)",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "class 과일:\n    def __init__(self, 이름, 값):\n        self.이름 = 이름\n        self.값 = 값\n\n가 = 과일(\"귤\", 500)\nprint(가.이름, 가.값)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "age",
+    "title": "심화: 물어서 만들기",
+    "story": "편집기에 클래스 '사람'이 있어요. 이름과 나이를 물어서 사람 객체를 만들어요. 그리고 한 살을 더 먹게 한 다음, 이름과 나이를 내보내요.",
+    "steps": ["input으로 이름과 나이를 물어요. 나이는 숫자로 바꿔요.", "두 값으로 사람 객체를 만들어요.", "그 객체의 나이를 1 올리고, \"하늘 11\"처럼 내보내요."],
+    "start": "class 사람:\n    def __init__(self, 이름, 나이):\n        self.이름 = 이름\n        self.나이 = 나이\n",
+    "cases": [
+      { "inputs": ["하늘", "10"], "expect": ["하늘 11"] },
+      { "inputs": ["바다", "9"], "expect": ["바다 10"] }
+    ],
+    "expect": ["하늘 11"],
+    "show": true,
+    "mistakes": [{ "inputs": "^하늘,10$", "output": "^하늘 10$", "say": "age-same" }],
+    "praise": "praise-age",
+    "solution": "class 사람:\n    def __init__(self, 이름, 나이):\n        self.이름 = 이름\n        self.나이 = 나이\n이름 = input(\"이름: \")\n나이 = int(input(\"나이: \"))\n가 = 사람(이름, 나이)\n가.나이 += 1\nprint(가.이름, 가.나이)",
+    "hints": [{ "say": "age-hint-1" }, { "say": "age-hint-2" }]
+  }
+}

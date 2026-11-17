@@ -154,6 +154,17 @@
         "game-list",
         "unit14-review"
       ]
+    },
+    {
+      "title": "클래스",
+      "lessons": [
+        "class-basic",
+        "class-init",
+        "class-method",
+        "class-list",
+        "class-move",
+        "unit15-review"
+      ]
     }
   ]
 }
