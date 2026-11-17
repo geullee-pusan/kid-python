@@ -37,6 +37,14 @@ export function explain(error, knows = {}) {
     if (/positional argument follows keyword argument/.test(message)) return 'end= 은 괄호 안의 맨 뒤에 써요. 내보낼 값을 먼저 쓰고, 그 뒤에 쉼표와 end= 을 써요.';
     if (/forgot a comma/.test(message) && /[^,(\s]\s+end\s*=/.test(bare)) return 'end 앞에 쉼표가 빠졌어요. 내보낼 값 뒤에 쉼표를 찍고 end= 을 써요.';
     if (/expected ':'/.test(message)) return '줄 끝에 콜론(:)이 빠졌어요.';
+    if (/'\{' was never closed/.test(message)) return '여는 중괄호 { 를 닫지 않았어요. 닫는 중괄호 } 를 써요.';
+    if (/unmatched '\}'/.test(message)) return '닫는 중괄호 } 가 하나 더 많아요.';
+    // 딕셔너리에서 키와 값 사이의 콜론을 빼거나 등호로 쓴 경우: {"사과" 1000}, {"사과" = 1000}
+    if (/\{\s*""\s*=[^=]/.test(bare)) return '딕셔너리에서 키와 값 사이에는 등호가 아니라 콜론(:)을 써요.';
+    if (/forgot a comma/.test(message) && /[{,]\s*""\s+[^\s:,}]/.test(bare)) return '딕셔너리에서 키와 값 사이에는 콜론(:)을 써요. "사과": 1000 처럼 써요.';
+    if (/forgot a comma/.test(message) && /\{[^}]*:\s*[^\s,}]+\s+""\s*:/.test(bare)) return '딕셔너리의 짝과 짝 사이에 쉼표가 빠졌어요.';
+    // 키와 값의 짝을 대괄호 안에 쓴 경우: ["사과": 1000]
+    if (/\[\s*""\s*:\s*[^\]]/.test(bare) && /=\s*\[/.test(bare)) return '키와 값의 짝은 대괄호가 아니라 중괄호 { } 안에 써요.';
     if (/'\[' was never closed/.test(message)) return '여는 대괄호 [ 를 닫지 않았어요. 닫는 대괄호 ] 를 써요.';
     if (/was never closed/.test(message)) return '여는 괄호를 닫지 않았어요. 닫는 괄호 )를 써요.';
     if (/unmatched '\]'/.test(message)) return '닫는 대괄호 ] 가 하나 더 많아요.';
@@ -83,6 +91,10 @@ export function explain(error, knows = {}) {
     if (name && knows.functions && new RegExp(`(^|[^\\w가-힣])${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\(`, 'm').test(text)) {
       return `${called(name)} 함수가 아직 없어요. 부르기 전에 def로 먼저 만들었는지, 철자가 같은지 봐요.`;
     }
+    // 대괄호 안에 따옴표 없이 한글을 쓴 경우: 가격[사과]
+    if (name && HANGUL.test(name) && knows.functions && new RegExp(`\\[\\s*${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\]`).test(text)) {
+      return `${called(name)} 이름표가 없어요. 대괄호 안에 키를 글자로 쓰려던 거라면 따옴표로 감싸요. 이름표라면 값을 넣었는지, 철자가 같은지 봐요.`;
+    }
     if (name && knows.functions) return `${called(name)} 이름표가 여기서는 보이지 않아요. 함수 안에서 만든 이름은 함수 밖에서 쓸 수 없어요. 값을 넣었는지, 철자가 같은지도 봐요.`;
     if (name && knows.variables) return `${called(name)} 이름표가 아직 없어요. 먼저 값을 넣었는지, 철자가 같은지 봐요. 글자를 쓰려던 거라면 따옴표로 감싸요.`;
     if (name && HANGUL.test(name)) return `"${name}"에 따옴표가 없는 것 같아요. 글자는 따옴표로 감싸요.`;
@@ -95,6 +107,9 @@ export function explain(error, knows = {}) {
     if (keyword && keyword[1].toLowerCase() === 'end') return 'end는 모두 작은 글자로 써요. end="" 처럼 써요.';
     if (keyword) return 'print( ) 안에서 등호(=)와 함께 쓰는 이름은 end예요. 철자를 확인해요.';
     if (/(end|sep) must be None or a string/.test(message)) return 'end= 뒤에는 글자를 써요. 따옴표로 감싸요.';
+    if (/as a dict key|unhashable type/.test(message)) return '리스트는 딕셔너리의 키로 쓸 수 없어요. 키는 글자나 숫자로 써요.';
+    if (/'dict' object is not callable/.test(message)) return '딕셔너리에서 꺼낼 때는 둥근 괄호가 아니라 대괄호를 써요. 값["사과"] 처럼 써요.';
+    if (/'dict_(keys|values|items)' object is not subscriptable/.test(message)) return '여기에는 번호를 쓸 수 없어요. 딕셔너리는 키로 꺼내요. 차례로 보려면 for로 돌아요.';
     if (/NoneType/.test(message)) return '값을 돌려주지 않는 함수의 결과(None)로 계산하려고 했어요. 함수 안에서 return으로 값을 돌려줘요.';
     if (/'str' object does not support item assignment/.test(message)) return '글자는 한 글자만 바꿀 수 없어요. 새 글자를 만들어서 이름표에 다시 넣어요.';
     if (/for -: 'str' and 'str'/.test(message)) return '글자에서 글자를 뺄 수는 없어요. 지우려면 replace( )로 빈 글자("")로 바꿔요.';
@@ -126,6 +141,12 @@ export function explain(error, knows = {}) {
     if (strName) return '글자 뒤의 점(.) 다음 이름을 파이썬이 몰라요. replace, count, find, split 의 철자를 확인해요.';
     if (/'list' object has no attribute '(replace|find|split|join|upper|lower)'/.test(message)) return '글자에 쓰는 명령을 리스트에 썼어요. 리스트에서 글자를 하나 꺼내서 써요.';
     if (/'int' object has no attribute/.test(message)) return '숫자 뒤에는 점(.) 명령을 쓸 수 없어요. 글자로 다루려면 str( )로 바꿔요.';
+    if (/'dict' object has no attribute '(append|add|push|insert)'/.test(message)) return '딕셔너리에는 append( )를 쓰지 않아요. 이름[키] = 값 으로 넣어요.';
+    if (/'dict' object has no attribute '(remove|delete)'/.test(message)) return '딕셔너리에서 지울 때는 pop(키)를 써요.';
+    const dictName = /'dict' object has no attribute '(.+?)'/.exec(message);
+    if (dictName && /^[a-zA-Z_]+$/.test(dictName[1]) && dictName[1] !== dictName[1].toLowerCase()) return '점(.) 뒤의 명령은 모두 작은 글자로 써요.';
+    if (dictName && !/^[a-zA-Z_]+$/.test(dictName[1])) return '딕셔너리에서 꺼낼 때는 점(.)이 아니라 대괄호를 써요. 값["사과"] 처럼, 키를 따옴표로 감싸서 대괄호 안에 넣어요.';
+    if (dictName) return '딕셔너리 뒤의 점(.) 다음 이름을 파이썬이 몰라요. pop 의 철자를 확인해요. 넣을 때는 이름[키] = 값 이라고 써요.';
     if (/'list' object has no attribute '(add|push|insert_end|appned|apend)'/.test(message)) return '리스트에 값을 더할 때는 append 라고 써요. 철자를 확인해요.';
     if (/'list' object has no attribute/.test(message)) return '리스트 뒤의 점(.) 다음 이름을 파이썬이 몰라요. append, remove, index 의 철자를 확인해요.';
     return '점(.) 뒤에 쓴 이름을 파이썬이 몰라요. 철자를 확인해요.';
@@ -155,6 +176,15 @@ export function explain(error, knows = {}) {
     if (/string index/.test(message)) return '없는 번호를 썼어요. 번호는 0부터 세어서, 마지막 번호는 글자 수보다 하나 작아요.';
     return '없는 번호를 썼어요. 번호는 0부터 세어서, 마지막 번호는 항목 수보다 하나 작아요.';
   }
+  if (type === 'KeyError') {
+    // 파이썬은 없는 키를 그대로 보여 준다: '수박' 또는 0
+    const key = /^'(.*)'$/.exec(message);
+    if (key && key[1] !== key[1].trim()) return `"${key[1]}"에는 앞이나 뒤에 빈칸이 있어요. 딕셔너리의 키와 한 글자도 다르지 않아야 해요.`;
+    if (key) return `${called(key[1])} 키가 딕셔너리에 없어요. 철자가 같은지 봐요. 없을 수도 있으면 먼저 in으로 물어봐요. 처음 넣을 때는 += 가 아니라 = 로 넣어요.`;
+    if (/^-?\d+$/.test(message)) return `딕셔너리에는 ${message}이라는 키가 없어요. 딕셔너리는 번호가 아니라 키로 꺼내요.`;
+    return '그 키가 딕셔너리에 없어요. 먼저 in으로 있는지 물어봐요.';
+  }
+  if (type === 'RuntimeError' && /dictionary changed size during iteration/.test(message)) return '딕셔너리를 for로 도는 동안에는 키를 넣거나 지울 수 없어요. 반복이 끝난 뒤에 바꿔요.';
   if (type === 'EOFError') return '입력을 받을 수 없었어요.';
   return `${type} 오류가 났어요.`;
 }

@@ -112,6 +112,12 @@ def __kidpy_error(e, name):
     return {"type": type(e).__name__, "message": message, "line": line, "col": col, "text": text}
 
 # 변수 표에 보여 줄 값들. 글자는 따옴표를 붙여서(큰따옴표로) 숫자와 구분되게 한다.
+def __kidpy_plain(x):
+    return isinstance(x, (str, int, float)) and not isinstance(x, bool)
+
+def __kidpy_plain_list(value):
+    return isinstance(value, list) and all(__kidpy_plain(x) for x in value)
+
 def __kidpy_vars(scope):
     out = {}
     for key, value in list(scope.items()):
@@ -121,7 +127,10 @@ def __kidpy_vars(scope):
             # 글자와 리스트는 아이가 치는 모양 그대로(큰따옴표로) 보여 준다. 리스트 안에 True 같은 값이 있으면 파이썬 모양으로.
             if isinstance(value, str):
                 text = json.dumps(value, ensure_ascii=False)
-            elif isinstance(value, list) and all(isinstance(x, (str, int, float)) and not isinstance(x, bool) for x in value):
+            elif __kidpy_plain_list(value):
+                text = json.dumps(value, ensure_ascii=False)
+            # 딕셔너리도 아이가 치는 모양으로(키가 글자이고 값이 글자·숫자·그런 것의 리스트일 때)
+            elif isinstance(value, dict) and all(isinstance(k, str) and (__kidpy_plain(v) or __kidpy_plain_list(v)) for k, v in value.items()):
                 text = json.dumps(value, ensure_ascii=False)
             else:
                 text = repr(value)

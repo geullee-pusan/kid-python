@@ -110,6 +110,17 @@
         "nest-search",
         "unit10-review"
       ]
+    },
+    {
+      "title": "딕셔너리",
+      "lessons": [
+        "dict-basic",
+        "dict-change",
+        "dict-for",
+        "dict-count",
+        "dict-table",
+        "unit11-review"
+      ]
     }
   ]
 }
