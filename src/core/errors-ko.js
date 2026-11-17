@@ -18,6 +18,10 @@ const TURTLE_WORDS = new Set([
 const TURTLE_LATER = /^(onclick|onscreenclick|ondrag|onrelease|stamp|clearstamp|clearstamps|undo|towards|shapesize|turtlesize|tilt|register_shape|addshape|textinput|numinput|colormode|getscreen|clone|begin_poly|end_poly|degrees|radians|teleport)$/;
 /** "키" → "키"라는, "점수" → "점수"라는, "값" → "값"이라는 */
 const called = (name) => `"${name}"${hasBatchim(name) ? '이라는' : '라는'}`;
+const topic = (name) => `${name}${hasBatchim(name) ? '은' : '는'}`;
+
+// 파이썬에 처음부터 있는 종류의 이름. 여기에 없으면 아이가 만든 클래스로 본다.
+const BUILTIN_TYPES = new Set(['str', 'int', 'float', 'bool', 'list', 'dict', 'tuple', 'set', 'NoneType', 'range', 'function', 'module', 'Turtle', 'method', 'builtin_function_or_method', 'type']);
 
 export function explain(error, knows = {}) {
   const { type, message } = error;
@@ -92,6 +96,9 @@ export function explain(error, knows = {}) {
     if (name && name !== 'print' && name.toLowerCase() === 'print') return 'print는 모두 작은 글자로 써요.';
     if (name && name !== 'input' && name.toLowerCase() === 'input') return 'input은 모두 작은 글자로 써요.';
     if (name && /^(true|false|TRUE|FALSE)$/.test(name)) return 'True와 False는 첫 글자만 큰 글자로 써요.';
+    if (name === 'self') return 'self는 클래스 안의 함수에서만 써요. 그 함수의 괄호 안 맨 앞에 self가 있는지 봐요. 클래스 밖에서는 가.이름 처럼 객체의 이름표를 써요.';
+    // 클래스 안의 함수에서 self. 을 빼먹은 경우(실행기가 hint로 알려 준다)
+    if (error.hint) return `클래스 안에서 객체가 가진 값을 쓸 때는 앞에 self와 점을 붙여요. ${error.hint} 라고 써요.`;
     if (name === 'turtle') return 'turtle을 쓰려면, 맨 윗줄에 import turtle 을 먼저 써요.';
     // 그림판 명령을 turtle. 없이 부른 경우: forward(100)
     if (TURTLE_WORDS.has(name) && text.replace(/\s+\(/g, '(').includes(`${name}(`)) return `${name}는 앞에 turtle과 점을 붙여 써요. turtle.${name}( ) 처럼 써요. 맨 윗줄에 import turtle 도 있어야 해요.`;
@@ -99,6 +106,7 @@ export function explain(error, knows = {}) {
     if (name === 'randint') return 'randint는 random.randint( ) 처럼, 앞에 random과 점을 붙여 써요.';
     // 함수를 부르려던 경우: 오류가 난 줄에 "이름(" 꼴이 있다.
     if (name && knows.functions && new RegExp(`(^|[^\\w가-힣])${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\(`, 'm').test(text)) {
+      if (knows.classes) return `${called(name)} 함수나 클래스가 아직 없어요. 쓰기 전에 def나 class로 먼저 만들었는지, 철자가 같은지 봐요.`;
       return `${called(name)} 함수가 아직 없어요. 부르기 전에 def로 먼저 만들었는지, 철자가 같은지 봐요.`;
     }
     // 대괄호 안에 따옴표 없이 한글을 쓴 경우: 가격[사과]
@@ -111,6 +119,7 @@ export function explain(error, knows = {}) {
     if (name) return `${called(name)} 이름을 파이썬이 몰라요. 글자라면 따옴표로 감싸고, 명령이라면 철자를 확인해요.`;
     return '파이썬이 모르는 이름을 썼어요.';
   }
+  if (type === 'UnboundLocalError' && error.hint) return `클래스 안에서 객체가 가진 값을 바꿀 때는 앞에 self와 점을 붙여요. ${error.hint} 라고 써요.`;
   if (type === 'UnboundLocalError') return '함수 안에서 값을 넣는 이름은 함수 안의 새 이름표예요. 밖의 값을 쓰려면 괄호로 넘겨받고, 바꾼 값은 return으로 돌려줘요.';
   if (type === 'TypeError') {
     const keyword = /print\(\) got an unexpected keyword argument '(.+?)'/.exec(message);
@@ -122,6 +131,7 @@ export function explain(error, knows = {}) {
     if (/Turtle\.\w+\(\) takes \d+ positional arguments? but \d+ (was|were) given/.test(message)) return '이 명령의 괄호 안에 넣은 값의 개수가 맞지 않아요.';
     if (/cannot unpack non-iterable/.test(message) && /goto|setpos/.test(text)) return 'goto( ) 안에는 가로 위치와 세로 위치, 숫자 두 개를 쉼표로 넣어요.';
     if (/as a dict key|unhashable type/.test(message)) return '리스트는 딕셔너리의 키로 쓸 수 없어요. 키는 글자나 숫자로 써요.';
+    if (/'(str|int|float|bool|list)' object is not callable/.test(message)) return '둥근 괄호는 함수나 클래스 뒤에만 붙여요. 값을 꺼내 쓸 때는 괄호 없이 이름만 써요.';
     if (/'dict' object is not callable/.test(message)) return '딕셔너리에서 꺼낼 때는 둥근 괄호가 아니라 대괄호를 써요. 값["사과"] 처럼 써요.';
     if (/'dict_(keys|values|items)' object is not subscriptable/.test(message)) return '여기에는 번호를 쓸 수 없어요. 딕셔너리는 키로 꺼내요. 차례로 보려면 for로 돌아요.';
     if (/indices must be integers or slices, not tuple/.test(message)) return '대괄호 하나에 번호 두 개를 쉼표로 쓸 수 없어요. 표[0][1] 처럼 대괄호를 따로 써요. 표를 만드는 중이라면, 줄과 줄 사이에 쉼표가 빠졌는지 봐요.';
@@ -135,6 +145,8 @@ export function explain(error, knows = {}) {
     if (/expected str instance/.test(message)) return 'join( )은 글자만 이을 수 있어요. 숫자는 str( )로 글자로 바꿔요.';
     if (/has no len\(\)/.test(message)) return 'len( )은 글자나 리스트에 써요. 숫자라면 str( )로 글자로 바꿔요.';
     if (/indices must be integers.*'float'|slice indices must be integers/.test(message)) return '대괄호 안의 번호는 소수점이 없는 숫자여야 해요. 나눌 때는 몫(//)을 쓰고, 글자라면 int( )로 바꿔요.';
+    const joined = /can only concatenate str \(not "(.+?)"\) to str/.exec(message);
+    if (joined && !BUILTIN_TYPES.has(joined[1])) return '글자에 객체를 그대로 이을 수 없어요. 가.이름 처럼 점을 찍어서 안에 든 값을 꺼내 이어요.';
     if (/can only concatenate str|unsupported operand type\(s\) for \+/.test(message)) return '글자와 숫자는 더하기(+)로 이을 수 없어요. 숫자로 계산하려면 int( )로, 글자로 이으려면 str( )로 바꿔요.';
     if (/unsupported operand type\(s\) for [-/*%]|can't multiply sequence/.test(message)) return '글자로는 이 계산을 할 수 없어요. int( )로 숫자로 바꿔요.';
     if (/(list|string) indices must be integers/.test(message)) return '대괄호 안의 번호는 숫자여야 해요. 글자라면 int( )로 숫자로 바꿔요.';
@@ -143,6 +155,20 @@ export function explain(error, knows = {}) {
     if (/can only concatenate list/.test(message)) return '리스트에 값 하나를 더할 때는 append( )를 써요.';
     if (/not supported between instances of/.test(message)) return '글자와 숫자는 크기를 견줄 수 없어요. input의 답이라면 int( )로 숫자로 바꿔요.';
     if (/cannot be interpreted as an integer/.test(message)) return 'range( ) 안에는 숫자를 넣어요. 글자라면 int( )로 숫자로 바꿔요.';
+    // 클래스: 파이썬은 "학생.소개()"처럼 클래스 이름과 함께 알려 주고, 값의 개수에 self도 넣어서 센다.
+    const noInit = /^(.+?)\(\) takes no arguments/.exec(message);
+    if (noInit) return `${noInit[1]}에 값을 넣어서 만들려면, 클래스 안에 __init__ 이 있어야 해요. 밑줄이 앞에 두 개, 뒤에 두 개인지 봐요.`;
+    const method = /^([^\s.()]+)\.([^\s.()]+)\(\) (missing|takes) /.exec(message);
+    if (method) {
+      const [, cls, fn] = method;
+      const what = fn === '__init__' ? `${cls}( )로 만들 때` : `${fn}( )를 부를 때`;
+      const missing = /missing \d+ required positional arguments?: (.+)$/.exec(message);
+      if (missing && missing[1] === "'self'") return `${topic(cls)} 클래스의 이름이에요. ${fn}( )는 만들어 둔 객체에 점을 찍어 불러요. ${cls}( ) 처럼 괄호를 붙여서 객체를 만들었는지 봐요.`;
+      if (missing) return `${what} 넣을 값이 모자라요. 빠진 것: ${missing[1].replace(/'/g, '').replace(/,? and /, ', ')}`;
+      const counts = /takes (\d+) positional arguments? but (\d+) (?:was|were) given/.exec(message);
+      if (counts && counts[1] === '0') return `클래스 안의 함수는 괄호 안의 맨 앞에 self를 써야 해요. def ${fn}(self): 처럼 써요.`;
+      if (counts) return `${what} 값을 ${counts[2] - 1}개 넣었는데, 받기로 한 것은 ${counts[1] - 1}개예요. def ${fn} 줄의 괄호 안을 봐요. 맨 앞의 self는 세지 않아요.`;
+    }
     if (knows.functions && /missing \d+ required positional argument/.test(message)) return '함수가 받기로 한 값을 다 넘기지 않았어요. 부를 때 괄호 안에 값을 넣어요.';
     if (knows.functions && /takes \d+ positional arguments? but \d+ (was|were) given/.test(message)) return '함수가 받기로 한 것보다 값을 많이 넘겼어요. def 줄의 괄호 안과 개수를 맞춰요.';
     if (/missing \d+ required positional argument|takes \d+ positional argument/.test(message)) return '괄호 안에 넣은 값의 개수가 맞지 않아요.';
@@ -169,6 +195,10 @@ export function explain(error, knows = {}) {
     if (dictName) return '딕셔너리 뒤의 점(.) 다음 이름을 파이썬이 몰라요. pop 의 철자를 확인해요. 넣을 때는 이름[키] = 값 이라고 써요.';
     if (/'list' object has no attribute '(add|push|insert_end|appned|apend)'/.test(message)) return '리스트에 값을 더할 때는 append 라고 써요. 철자를 확인해요.';
     if (/'list' object has no attribute/.test(message)) return '리스트 뒤의 점(.) 다음 이름을 파이썬이 몰라요. append, remove, index 의 철자를 확인해요.';
+    const classAttr = /type object '(.+?)' has no attribute '(.+?)'/.exec(message);
+    if (classAttr) return `${topic(classAttr[1])} 클래스의 이름이에요. ${classAttr[1]}( ) 처럼 괄호를 붙여야 객체가 만들어져요.`;
+    const objectAttr = /^'(.+?)' object has no attribute '(.+?)'/.exec(message);
+    if (objectAttr && !BUILTIN_TYPES.has(objectAttr[1])) return `이 객체에는 ${called(objectAttr[2])} 이름이 없어요. 철자를 확인해요. 값이라면 __init__ 안에서 self.${objectAttr[2]} 에 넣었는지, 할 일이라면 클래스 안에 def로 만들었는지 봐요.`;
     return '점(.) 뒤에 쓴 이름을 파이썬이 몰라요. 철자를 확인해요.';
   }
   if (type === 'ModuleNotFoundError' || type === 'ImportError') return 'import 뒤의 이름을 파이썬이 몰라요. random 은 모두 작은 글자로 써요.';

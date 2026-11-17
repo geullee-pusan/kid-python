@@ -141,7 +141,21 @@ def __kidpy_error(e, name):
             text = "Traceback (most recent call last):" + chr(10) + "".join(traceback.format_list(mine)) + "".join(traceback.format_exception_only(type(e), e))
         else:
             text = "".join(traceback.format_exception(type(e), e, tb))
-    return {"type": type(e).__name__, "message": message, "line": line, "col": col, "text": text}
+    # 클래스 안의 함수에서 self. 을 빼먹고 이름만 쓴 경우를 알아본다(그 객체에 그 이름의 값이 있을 때): hint = "self.점수"
+    hint = None
+    if isinstance(e, NameError):
+        last = None
+        tb = e.__traceback__
+        while tb is not None:
+            if tb.tb_frame.f_code.co_filename == name:
+                last = tb.tb_frame
+            tb = tb.tb_next
+        parts = str(e).split("'")
+        if last is not None and len(parts) > 1:
+            me = last.f_locals.get("self")
+            if me is not None and parts[1] in getattr(me, "__dict__", {}):
+                hint = "self." + parts[1]
+    return {"type": type(e).__name__, "message": message, "line": line, "col": col, "text": text, "hint": hint}
 
 # 변수 표에 보여 줄 값들. 글자는 따옴표를 붙여서(큰따옴표로) 숫자와 구분되게 한다.
 def __kidpy_plain(x):
@@ -150,14 +164,45 @@ def __kidpy_plain(x):
 def __kidpy_plain_list(value):
     return isinstance(value, list) and all(__kidpy_plain(x) for x in value)
 
-def __kidpy_vars(scope):
+# 아이가 만든 클래스의 객체인가. 파이썬은 <__main__.공 object at 0x...>라고만 보여 줘서 안에 든 값을 알 수 없다.
+# (거북이처럼 보여 줄 모양을 스스로 정한 것은 그 모양대로 둔다.)
+def __kidpy_is_object(value):
+    cls = type(value)
+    return (not isinstance(value, type)) and cls.__module__ == "__main__" and cls.__repr__ is object.__repr__ and hasattr(value, "__dict__") and not isinstance(value, BaseException)
+
+# 객체 안에 든 값 하나를 짧게: 글자는 따옴표로, 다른 객체는 <이름>으로만.
+def __kidpy_brief(value):
+    if isinstance(value, str) or __kidpy_plain_list(value):
+        text = json.dumps(value, ensure_ascii=False)
+    elif __kidpy_is_object(value):
+        text = "<" + type(value).__name__ + ">"
+    else:
+        text = repr(value)
+    return text if len(text) <= 24 else text[:21] + "..."
+
+# 객체는 공(x=0, dx=3)처럼, 클래스 이름과 그 안에 든 이름·값으로 보여 준다.
+def __kidpy_object(value):
+    parts = [k + "=" + __kidpy_brief(v) for k, v in vars(value).items() if not k.startswith("__")]
+    return type(value).__name__ + "(" + ", ".join(parts) + ")"
+
+# local: 함수 안에서만 보이는 이름들. 그 가운데 바깥의 이름표가 가리키는 바로 그 객체가 있으면(self가 대개 그렇다)
+# 안의 값을 되풀이하지 않고 그 이름표의 이름을 보여 준다: self → 가
+def __kidpy_vars(scope, local=None):
     out = {}
     for key, value in list(scope.items()):
         if key.startswith("__") or callable(value) or isinstance(value, type(sys)):
             continue
+        limit = 48
         try:
             # 글자와 리스트는 아이가 치는 모양 그대로(큰따옴표로) 보여 준다. 리스트 안에 True 같은 값이 있으면 파이썬 모양으로.
-            if isinstance(value, str):
+            if __kidpy_is_object(value):
+                limit = 80
+                same = [k for k, v in scope.items() if v is value and not k.startswith("__") and k not in local] if local is not None and key in local else []
+                text = same[0] if same else __kidpy_object(value)
+            elif isinstance(value, list) and value and all(__kidpy_is_object(x) for x in value):
+                limit = 80
+                text = "[" + ", ".join(__kidpy_object(x) for x in value) + "]"
+            elif isinstance(value, str):
                 text = json.dumps(value, ensure_ascii=False)
             elif __kidpy_plain_list(value):
                 text = json.dumps(value, ensure_ascii=False)
@@ -171,8 +216,8 @@ def __kidpy_vars(scope):
                 text = repr(value)
         except Exception:
             text = "?"
-        if len(text) > 48:
-            text = text[:45] + "..."
+        if len(text) > limit:
+            text = text[:limit - 3] + "..."
         out[key] = text
     return out
 
@@ -731,8 +776,9 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]", key
             if len(marks) >= limit:
                 raise __KidpyTraceLimit()
             # 함수 안을 실행하는 동안에는 함수 안의 이름(넘겨받은 값 포함)도 함께 보여 준다. 함수가 끝나면 사라진다.
-            seen = frame.f_globals if frame.f_locals is frame.f_globals else {**frame.f_globals, **frame.f_locals}
-            marks.append((frame.f_lineno, len(buf.getvalue()), __kidpy_vars(seen), len(_kidpy_draws)))
+            inside = frame.f_locals is not frame.f_globals
+            seen = {**frame.f_globals, **frame.f_locals} if inside else frame.f_globals
+            marks.append((frame.f_lineno, len(buf.getvalue()), __kidpy_vars(seen, frame.f_locals if inside else None), len(_kidpy_draws)))
         return tracer
     error = None
     old = sys.stdout
