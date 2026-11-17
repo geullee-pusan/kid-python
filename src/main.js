@@ -175,7 +175,7 @@ async function main() {
       ? '안녕하세요. 파이썬을 같이 배워요. 아래에서 첫 수업을 시작해요.'
       : next
         ? '다시 왔네요. 이어서 배울까요, 아니면 무엇을 만들어 볼까요?'
-        : '지금 있는 수업을 모두 끝냈어요. 만들기에서 마음대로 써 봐요.';
+        : '수업을 모두 끝냈어요. 이제 만들기에서 나만의 프로그램을 만들어 봐요.';
 
     // 배우기: 이어서 하기
     const cont = $('continue');
@@ -188,7 +188,7 @@ async function main() {
       button.addEventListener('click', () => startMission(next.id));
       cont.append(button);
     } else {
-      cont.append(el('p', 'panel-desc', '새 수업을 준비하고 있어요. 끝낸 수업은 다시 해도 돼요.'));
+      cont.append(el('p', 'panel-desc', '수업을 모두 끝냈어요. 끝낸 수업은 다시 해도 돼요.'));
     }
 
     // 배우기: 단원별 수업 목록(아직 없는 단원도 이름은 보인다)
@@ -312,10 +312,11 @@ async function main() {
 
   /** 지금 아이가 무엇을 배웠는지. 오류 설명의 말을 고르는 데 쓴다(변수를 배우기 전에는 "이름표"라는 말을 쓰지 않는다). */
   function knows() {
-    if (screen === 'play' && mission) return { variables: Boolean(mission.knows?.includes('variables')), loops: Boolean(mission.knows?.includes('loops')) };
+    const has = (what) => Boolean(mission.knows?.includes(what));
+    if (screen === 'play' && mission) return { variables: has('variables'), loops: has('loops'), functions: has('functions') };
     const progress = store.get('kidpy.progress', {});
     const learned = (what) => LESSONS.some((m) => m.knows?.includes(what) && progress[m.id]);
-    return { variables: learned('variables'), loops: learned('loops') };
+    return { variables: learned('variables'), loops: learned('loops'), functions: learned('functions') };
   }
 
   // 이름표 칸: 지금 어떤 이름에 어떤 값이 붙어 있는지 보여 준다. 변수를 배우는 수업부터 보인다.

@@ -197,7 +197,9 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]"):
         if event == "line":
             if len(marks) >= limit:
                 raise __KidpyTraceLimit()
-            marks.append((frame.f_lineno, len(buf.getvalue()), __kidpy_vars(frame.f_globals)))
+            # 함수 안을 실행하는 동안에는 함수 안의 이름(넘겨받은 값 포함)도 함께 보여 준다. 함수가 끝나면 사라진다.
+            seen = frame.f_globals if frame.f_locals is frame.f_globals else {**frame.f_globals, **frame.f_locals}
+            marks.append((frame.f_lineno, len(buf.getvalue()), __kidpy_vars(seen)))
         return tracer
     error = None
     old = sys.stdout

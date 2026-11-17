@@ -50,8 +50,9 @@ export function explain(error, knows = {}) {
     if (/^\s*F[oO][rR]\s/m.test(text) || /^\s*fOR\s|^\s*FOR\s/m.test(text)) return 'for는 모두 작은 글자로 써요.';
     if (/'break' outside loop/.test(message)) return 'break는 반복 안에서만 쓸 수 있어요. 반복 안에 들여썼는지 봐요.';
     if (/'continue' not properly in loop/.test(message)) return 'continue는 반복 안에서만 쓸 수 있어요. 반복 안에 들여썼는지 봐요.';
-    // if, else, elif, while을 큰 글자로 쓴 경우
-    const shouted = /^\s*(If|IF|Else|ELSE|Elif|ELIF|While|WHILE)\b/m.exec(text);
+    if (/'return' outside function/.test(message)) return 'return은 함수 안에서만 쓸 수 있어요. def 아래에 들여썼는지 봐요.';
+    // if, else, elif, while, def를 큰 글자로 쓴 경우
+    const shouted = /^\s*(If|IF|Else|ELSE|Elif|ELIF|While|WHILE|Def|DEF)\b/m.exec(text);
     if (shouted) return `${shouted[1].toLowerCase()}는 모두 작은 글자로 써요.`;
     // else나 elif가 짝이 되는 if와 줄이 맞지 않는 경우
     if (/^\s*(else\s*:|elif\b)/m.test(text)) return 'else와 elif는 짝이 되는 if와 줄의 앞을 맞춰 써요. if가 위에 있는지도 봐요.';
@@ -72,12 +73,19 @@ export function explain(error, knows = {}) {
     if (name && /^(true|false|TRUE|FALSE)$/.test(name)) return 'True와 False는 첫 글자만 큰 글자로 써요.';
     if (name === 'random') return 'random을 쓰려면, 맨 윗줄에 import random 을 먼저 써요.';
     if (name === 'randint') return 'randint는 random.randint( ) 처럼, 앞에 random과 점을 붙여 써요.';
+    // 함수를 부르려던 경우: 오류가 난 줄에 "이름(" 꼴이 있다.
+    if (name && knows.functions && new RegExp(`(^|[^\\w가-힣])${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\(`, 'm').test(text)) {
+      return `${called(name)} 함수가 아직 없어요. 부르기 전에 def로 먼저 만들었는지, 철자가 같은지 봐요.`;
+    }
+    if (name && knows.functions) return `${called(name)} 이름표가 여기서는 보이지 않아요. 함수 안에서 만든 이름은 함수 밖에서 쓸 수 없어요. 값을 넣었는지, 철자가 같은지도 봐요.`;
     if (name && knows.variables) return `${called(name)} 이름표가 아직 없어요. 먼저 값을 넣었는지, 철자가 같은지 봐요. 글자를 쓰려던 거라면 따옴표로 감싸요.`;
     if (name && HANGUL.test(name)) return `"${name}"에 따옴표가 없는 것 같아요. 글자는 따옴표로 감싸요.`;
     if (name) return `${called(name)} 이름을 파이썬이 몰라요. 글자라면 따옴표로 감싸고, 명령이라면 철자를 확인해요.`;
     return '파이썬이 모르는 이름을 썼어요.';
   }
+  if (type === 'UnboundLocalError') return '함수 안에서 값을 넣는 이름은 함수 안의 새 이름표예요. 밖의 값을 쓰려면 괄호로 넘겨받고, 바꾼 값은 return으로 돌려줘요.';
   if (type === 'TypeError') {
+    if (/NoneType/.test(message)) return '값을 돌려주지 않는 함수의 결과(None)로 계산하려고 했어요. 함수 안에서 return으로 값을 돌려줘요.';
     if (/can only concatenate str|unsupported operand type\(s\) for \+/.test(message)) return '글자와 숫자는 더하기(+)로 이을 수 없어요. 숫자로 계산하려면 int( )로, 글자로 이으려면 str( )로 바꿔요.';
     if (/unsupported operand type\(s\) for [-/*%]|can't multiply sequence/.test(message)) return '글자로는 이 계산을 할 수 없어요. int( )로 숫자로 바꿔요.';
     if (/list indices must be integers/.test(message)) return '대괄호 안의 번호는 숫자여야 해요. 글자라면 int( )로 숫자로 바꿔요.';
@@ -86,6 +94,8 @@ export function explain(error, knows = {}) {
     if (/can only concatenate list/.test(message)) return '리스트에 값 하나를 더할 때는 append( )를 써요.';
     if (/not supported between instances of/.test(message)) return '글자와 숫자는 크기를 견줄 수 없어요. input의 답이라면 int( )로 숫자로 바꿔요.';
     if (/cannot be interpreted as an integer/.test(message)) return 'range( ) 안에는 숫자를 넣어요. 글자라면 int( )로 숫자로 바꿔요.';
+    if (knows.functions && /missing \d+ required positional argument/.test(message)) return '함수가 받기로 한 값을 다 넘기지 않았어요. 부를 때 괄호 안에 값을 넣어요.';
+    if (knows.functions && /takes \d+ positional arguments? but \d+ (was|were) given/.test(message)) return '함수가 받기로 한 것보다 값을 많이 넘겼어요. def 줄의 괄호 안과 개수를 맞춰요.';
     if (/missing \d+ required positional argument|takes \d+ positional argument/.test(message)) return '괄호 안에 넣은 값의 개수가 맞지 않아요.';
     return '종류가 맞지 않는 값끼리 계산하려고 했어요.';
   }

@@ -394,6 +394,41 @@ const WRONG = [
   ['unit7-review', 'guide', '역 = ["노포", "범어사", "남산", "두실", "구서", "장전"]\n분 = [3, 2, 2, 2, 2]\n출발 = input()\n도착 = input()\n시작 = 역.index(출발)\n끝 = 역.index(도착)\n합 = 0\nfor i in range(len(역)):\n    print(역[i])\nprint(합, "분")', 'mistake', 'guide-all'],
   ['unit7-review', 'guide', '역 = ["노포", "범어사", "남산", "두실", "구서", "장전"]\n분 = [3, 2, 2, 2, 2]\n시작 = int(input())\n끝 = int(input())\nprint(역[시작])', 'error'],
   ['unit7-review', 'guide', '역 = ["노포", "범어사", "남산", "두실", "구서", "장전"]\n분 = [3, 2, 2, 2, 2]\n출발 = input()\nprint(출발)', 'input-few'],
+  // 함수 단원
+  ['def-basic', 'ruler', 'def 줄긋기():\n    print("=" * 10)', 'mistake', 'line-no-call'],
+  ['def-basic', 'ruler', 'def 줄긋기():\n    print("=" * 10)\n    줄긋기()\n    print("파이썬")', 'mistake', 'line-no-call'],
+  ['def-basic', 'ruler', 'print("=" * 10)\nprint("파이썬")\nprint("=" * 10)\nprint("끝")\nprint("=" * 10)', 'mistake', 'need-def'],
+  ['def-basic', 'ruler', '줄긋기()\ndef 줄긋기():\n    print("=" * 10)', 'error'],
+  ['def-basic', 'ruler', 'def 줄긋기():\n    print("=" * 10)\n줄긋기()\nprint("파이썬")\n줄긋기()\nprint("끝")', 'count'],
+  ['def-basic', 'ruler', 'def 줄긋기()\n    print("=" * 10)\n줄긋기()', 'error'],
+  ['def-param', 'ruler-n', 'def 줄긋기():\n    print("-" * 3)\n줄긋기()\n줄긋기()\n줄긋기()', 'mistake', 'ruler-same'],
+  ['def-param', 'ruler-n', 'print("-" * 3)\nprint("-" * 6)\nprint("-" * 9)', 'mistake', 'need-param'],
+  ['def-param', 'ruler-n', 'def 줄긋기(길이):\n    print("-" * 길이)\n줄긋기()', 'error'],
+  ['def-param', 'ruler-n', 'def 줄긋기(길이):\n    print("-" * 길이)\n줄긋기(3, 6)', 'error'],
+  ['def-param', 'rect', 'def 네모(가로, 세로):\n    for i in range(가로):\n        print("*" * 세로)\n네모(4, 2)\n네모(2, 3)', 'mistake', 'rect-swap'],
+  ['def-return', 'bigger', 'def 큰수(가, 나):\n    if 가 > 나:\n        print(가)\n    else:\n        print(나)\n\nprint(큰수(3, 8))\nprint(큰수(10, 2))\nprint(큰수(5, 5))', 'mistake', 'big-print'],
+  ['def-return', 'bigger', 'def 큰수(가, 나):\n    if 가 > 나:\n        return 가\n    if 가 < 나:\n        return 나\n\nprint(큰수(3, 8))\nprint(큰수(10, 2))\nprint(큰수(5, 5))', 'mistake', 'big-same'],
+  ['def-return', 'bigger', '# 여기에 큰수 함수를 만들어요\n\nprint(큰수(3, 8))\nprint(큰수(10, 2))\nprint(큰수(5, 5))', 'error'],
+  ['def-return', 'bigger', 'def 큰수(가, 나):\n    return 가\n\nprint(큰수(3, 8))\nprint(큰수(10, 2))\nprint(큰수(5, 5))', 'line-diff'],
+  ['def-return', 'medal', 'def 메달(점수):\n    if 점수 >= 90:\n        return "금"\n    if 점수 >= 70:\n        return "은"\n\nprint(메달(95))\nprint(메달(75))\nprint(메달(50))', 'mistake', 'big-print'],
+  ['def-scope', 'fix-scope', 'def 더하기(가, 나):\n    합 = 가 + 나\n\nprint(더하기(3, 4))\nprint(더하기(10, 20))', 'mistake', 'fix-none'],
+  ['def-scope', 'fix-scope', 'def 더하기(가, 나):\n    합 = 가 + 나\n    return 합\n\n합 = 더하기(3, 4)\nprint(합)\n더하기(10, 20)\nprint(합)', 'mistake', 'fix-same'],
+  ['def-scope', 'fix-scope', 'def 더하기(가, 나):\n    합 = 가 + 나\n\n더하기(3, 4)\nprint(합)\n더하기(10, 20)\nprint(합)', 'error'],
+  ['def-scope', 'fix-scope', 'print(7)\nprint(30)', 'mistake', 'need-return'],
+  ['def-split', 'primes-fn', 'def 약수개수(수):\n    개수 = 0\n    for i in range(1, 수 + 1):\n        if 수 % i == 0:\n            개수 += 1\n    return 개수\n\nfor 수 in range(2, 31):\n    if 약수개수(수) == 2:\n        print(수)', 'mistake', 'need-two'],
+  ['def-split', 'primes-fn', 'def 약수개수(수):\n    개수 = 0\n    for i in range(1, 수 + 1):\n        if 수 % i == 0:\n            개수 += 1\n    return 개수\n\ndef 소수인가(수):\n    return 약수개수(수) <= 2\n\nfor 수 in range(1, 31):\n    if 소수인가(수):\n        print(수)', 'mistake', 'prime-one'],
+  ['def-split', 'primes-fn', 'def 약수개수(수):\n    개수 = 0\n    for i in range(1, 수 + 1):\n        if 수 % i == 0:\n            개수 += 1\n    return 개수\n\ndef 소수인가(수):\n    return 약수개수(수) == 2\n\nfor 수 in range(2, 31):\n    print(소수인가(수))', 'mistake', 'prime-bool'],
+  ['def-split', 'primes-fn', 'def 약수개수(수):\n    개수 = 0\n    for i in range(1, 수 + 1):\n        if 수 % i == 0:\n            개수 += 1\n    return 개수\n\ndef 소수인가(수):\n    약수개수(수) == 2\n\nfor 수 in range(2, 31):\n    if 소수인가(수):\n        print(수)', 'no-output'],
+  ['def-split', 'twin', 'def 약수개수(수):\n    개수 = 0\n    for i in range(1, 수 + 1):\n        if 수 % i == 0:\n            개수 += 1\n    return 개수\n\ndef 소수인가(수):\n    return 약수개수(수) == 2\n\nfor 수 in range(2, 31):\n    if 소수인가(수) or 소수인가(수 + 2):\n        print(수, 수 + 2)', 'mistake', 'twin-or'],
+  ['unit8-review', 'average', 'def 평균(가, 나):\n    print((가 + 나) / 2)\n\nprint(평균(80, 100))\nprint(평균(7, 4))', 'mistake', 'avg-none'],
+  ['unit8-review', 'average', 'def 평균(가, 나):\n    return (가 + 나) // 2\n\nprint(평균(80, 100))\nprint(평균(7, 4))', 'mistake', 'avg-int'],
+  ['unit8-review', 'average', 'def 평균(가, 나):\n    return 가 + 나 / 2\n\nprint(평균(80, 100))\nprint(평균(7, 4))', 'mistake', 'avg-paren'],
+  ['unit8-review', 'table-fn', '단 = int(input("몇 단? "))\nfor i in range(1, 10):\n    print(단, "x", i, "=", 단 * i)', 'count'],
+  ['unit8-review', 'table-fn', 'def 구구단(단):\n    for i in range(1, 10):\n        print(단, "x", i, "=", 단 * i)\n\n단 = int(input())\n구구단(단)', 'mistake', 'table-once'],
+  ['unit8-review', 'table-fn', 'def 구구단(단):\n    for i in range(1, 10):\n        print(단, "x", i, "=", 단 * i)\n\n단 = int(input())\n구구단(단)\n구구단(단)', 'mistake', 'table-twice'],
+  ['unit8-review', 'table-fn', 'def 구구단(단):\n    for i in range(1, 10):\n        print(단, "x", i, "=", 단 * i)\n\n단 = int(input())', 'mistake', 'table-none'],
+  ['unit8-review', 'table-fn', '단 = int(input())\nfor i in range(1, 10):\n    print(단, "x", i, "=", 단 * i)\nfor i in range(1, 10):\n    print(단 + 1, "x", i, "=", (단 + 1) * i)', 'mistake', 'need-def-table'],
+  ['unit8-review', 'table-fn', 'def 구구단(단):\n    for i in range(1, 10):\n        print(단, "x", i, "=", 단 * i)\n\n구구단(3)\n구구단(4)', 'input-few'],
 ];
 
 test('흔한 오답에 의도한 말이 나온다', () => {
@@ -409,6 +444,7 @@ test('흔한 오답에 의도한 말이 나온다', () => {
 test('파이썬이 내는 오류를 우리 설명이 알아듣는다', () => {
   const variables = { variables: true };
   const loops = { variables: true, loops: true };
+  const functions = { variables: true, loops: true, functions: true };
   // [코드, 오류 종류, 설명에 들어 있어야 하는 말, 아이가 배운 것]
   const cases = [
     ['print("하나")\nprint(둘)\nprint("셋")', 'NameError', /따옴표/],
@@ -480,6 +516,17 @@ test('파이썬이 내는 오류를 우리 설명이 알아듣는다', () => {
     ['수 = 5\nprint(수[0])', 'TypeError', /리스트와 글자/, loops],
     ['수 = [1, 2]\n수 = 수 + 3', 'TypeError', /append/, loops],
     ['수 = [1 2 3]', 'SyntaxError', /쉼표/, loops],
+    // 함수를 배운 뒤
+    ['인사()\ndef 인사():\n    print("안녕")', 'NameError', /함수가 아직 없어요/, functions],
+    ['def 계산():\n    답 = 3\n계산()\nprint(답)', 'NameError', /함수 안에서 만든 이름은 함수 밖에서 쓸 수 없어요/, functions],
+    ['def 인사(이름):\n    print(이름)\n인사()', 'TypeError', /다 넘기지 않았어요/, functions],
+    ['def 인사():\n    print("안녕")\n인사("하늘")', 'TypeError', /많이 넘겼어요/, functions],
+    ['def 두배(수):\n    print(수 * 2)\n답 = 두배(3) + 1', 'TypeError', /return으로 값을 돌려줘요/, functions],
+    ['return 3', 'SyntaxError', /함수 안에서만/, functions],
+    ['Def 인사():\n    print("안녕")', 'SyntaxError', /def는 모두 작은 글자/, functions],
+    ['def 인사()\n    print("안녕")', 'SyntaxError', /콜론/, functions],
+    ['점수 = 0\ndef 올리기():\n    점수 = 점수 + 10\n올리기()', 'UnboundLocalError', /넘겨받고/, functions],
+    ['def 인사():\nprint("안녕")', 'IndentationError', /들여써야/, functions],
   ];
   for (const [code, type, pattern, knows] of cases) {
     const ran = scripted(code, [], false);

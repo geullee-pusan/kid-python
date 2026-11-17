@@ -79,7 +79,15 @@
       ]
     },
     {
-      "title": "함수"
+      "title": "함수",
+      "lessons": [
+        "def-basic",
+        "def-param",
+        "def-return",
+        "def-scope",
+        "def-split",
+        "unit8-review"
+      ]
     }
   ]
 }
