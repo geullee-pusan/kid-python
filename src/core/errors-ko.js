@@ -110,6 +110,8 @@ export function explain(error, knows = {}) {
     if (/as a dict key|unhashable type/.test(message)) return '리스트는 딕셔너리의 키로 쓸 수 없어요. 키는 글자나 숫자로 써요.';
     if (/'dict' object is not callable/.test(message)) return '딕셔너리에서 꺼낼 때는 둥근 괄호가 아니라 대괄호를 써요. 값["사과"] 처럼 써요.';
     if (/'dict_(keys|values|items)' object is not subscriptable/.test(message)) return '여기에는 번호를 쓸 수 없어요. 딕셔너리는 키로 꺼내요. 차례로 보려면 for로 돌아요.';
+    if (/indices must be integers or slices, not tuple/.test(message)) return '대괄호 하나에 번호 두 개를 쉼표로 쓸 수 없어요. 표[0][1] 처럼 대괄호를 따로 써요. 표를 만드는 중이라면, 줄과 줄 사이에 쉼표가 빠졌는지 봐요.';
+    if (/for \+: 'int' and 'list'|for \+=: 'int' and 'list'/.test(message)) return '숫자에 리스트를 더할 수 없어요. 표의 한 줄은 리스트예요. 줄 안의 값을 하나씩 꺼내서 더하거나, sum( )에 한 줄을 넣어요.';
     if (/NoneType/.test(message)) return '값을 돌려주지 않는 함수의 결과(None)로 계산하려고 했어요. 함수 안에서 return으로 값을 돌려줘요.';
     if (/'str' object does not support item assignment/.test(message)) return '글자는 한 글자만 바꿀 수 없어요. 새 글자를 만들어서 이름표에 다시 넣어요.';
     if (/for -: 'str' and 'str'/.test(message)) return '글자에서 글자를 뺄 수는 없어요. 지우려면 replace( )로 빈 글자("")로 바꿔요.';

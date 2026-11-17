@@ -129,6 +129,9 @@ def __kidpy_vars(scope):
                 text = json.dumps(value, ensure_ascii=False)
             elif __kidpy_plain_list(value):
                 text = json.dumps(value, ensure_ascii=False)
+            # 리스트 안의 리스트(표)도 아이가 치는 모양으로
+            elif isinstance(value, list) and all(__kidpy_plain_list(x) for x in value):
+                text = json.dumps(value, ensure_ascii=False)
             # 딕셔너리도 아이가 치는 모양으로(키가 글자이고 값이 글자·숫자·그런 것의 리스트일 때)
             elif isinstance(value, dict) and all(isinstance(k, str) and (__kidpy_plain(v) or __kidpy_plain_list(v)) for k, v in value.items()):
                 text = json.dumps(value, ensure_ascii=False)
