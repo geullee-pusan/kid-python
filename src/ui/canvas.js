@@ -21,7 +21,7 @@ export function turtleKey(event) {
 }
 
 /** 다 그려진 것 하나를 종이에 그린다. */
-function paintItem(ctx, item) {
+function paintItem(ctx, item, minText = 0) {
   if (item.k === 'line') {
     ctx.strokeStyle = item.c;
     // 그림판을 줄여서 보여 주므로, 굵기 1인 선이 흐려지지 않게 조금 굵게 긋는다(보이는 굵기만 다르다).
@@ -45,7 +45,7 @@ function paintItem(ctx, item) {
     ctx.fill();
   } else if (item.k === 'text') {
     ctx.fillStyle = item.c;
-    ctx.font = `${item.z ?? 16}px system-ui, "Noto Sans KR", sans-serif`;
+    ctx.font = `${Math.max(item.z ?? 16, minText)}px system-ui, "Noto Sans KR", sans-serif`;
     ctx.textAlign = ['left', 'center', 'right'].includes(item.a) ? item.a : 'left';
     ctx.textBaseline = 'alphabetic';
     ctx.fillText(item.s, X(item.x), Y(item.y));
@@ -130,9 +130,10 @@ function apply(state, cmd) {
  * @param {HTMLCanvasElement} canvas
  * @param {object[]} cmds
  * @param {{turtle?: boolean, origin?: boolean, fit?: boolean}} options turtle: 거북이도 그릴지. origin: 가운데 (0, 0)에 옅은 십자.
+ * minText: 글자의 가장 작은 크기(작은 본보기 그림에서도 점수판 글자가 읽히게).
  * fit: 그림이 작으면 그림과 가운데 (0, 0)이 함께 보이는 만큼 키워서 보여 준다(칠판의 작은 본보기 그림에서 쓴다).
  */
-export function paintDrawing(canvas, cmds, { turtle = false, origin = false, fit = false } = {}) {
+export function paintDrawing(canvas, cmds, { turtle = false, origin = false, fit = false, minText = 0 } = {}) {
   canvas.width = VIEW.w * SCALE;
   canvas.height = VIEW.h * SCALE;
   const ctx = canvas.getContext('2d');
@@ -165,7 +166,7 @@ export function paintDrawing(canvas, cmds, { turtle = false, origin = false, fit
     ctx.lineTo(X(0), Y(8));
     ctx.stroke();
   }
-  for (const item of state.items) paintItem(ctx, item);
+  for (const item of state.items) paintItem(ctx, item, minText);
   if (turtle) for (const t of state.turtles.values()) paintTurtle(ctx, t);
 }
 

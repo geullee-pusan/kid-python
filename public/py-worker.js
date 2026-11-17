@@ -515,8 +515,10 @@ def _kidpy_poll():
             raise _KidpyGameEnd()
         game["tick"] += 1
         if game["keys"]:
+            # 빈 칸(None)은 그 장면에 아무 키도 누르지 않는다는 뜻이다.
             name = game["keys"].pop(0)
-            _kidpy_call_keys([["press", name], ["release", name]])
+            if name:
+                _kidpy_call_keys([["press", name], ["release", name]])
         _kidpy_call_timers(_kidpy_state["clock"])
 
 def _kidpy_maybe_poll():

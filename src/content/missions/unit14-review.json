@@ -1,0 +1,155 @@
+{
+  "_설명": "움직이는 그림과 게임 단원 마무리. 강의가 없다. 섞어 풀기(예측 4문제, 쓰기 1문제)와 만들기 과제다. 만들기 과제는 별 받기 놀이다: 떨어지는 별을 바구니로 받으면 점수가 오르고, 놓치면 끝난다. 거북이 세 마리(바구니, 별, 점수판)는 시작 코드로 주고, 아이는 키로 바구니를 움직이는 함수와 놀이의 반복을 쓴다. 채점은 정해 둔 키와 장면 수, 정해 둔 무작위 수로 돌린 뒤의 모습(거북이들의 자리와 점수판의 글자)을 모범 답과 견준다. 마지막에 쓴 프로그램은 '별 받기'라는 이름으로 '만들기'에 들어간다.",
+  "id": "unit14-review",
+  "unit": "움직이는 그림과 게임",
+  "no": 6,
+  "title": "단원 마무리: 별 받기",
+  "titleSay": "단원 마무리",
+  "desc": "배운 것을 섞어서 풀고, 떨어지는 별을 받는 놀이를 만들어요.",
+  "minutes": 30,
+  "knows": ["variables", "loops", "functions"],
+  "showVars": true,
+  "canvas": true,
+  "saveAs": "별 받기",
+  "doneCard": {
+    "title": "움직이는 그림과 게임 단원을 마쳤어요",
+    "items": ["공 = turtle.Turtle()  거북이 여러 마리", "움직이기 → update() → sleep()  을 되풀이", "onkeypress(함수 이름, \"키 이름\"), listen()", "공.distance(먹이) < 20  닿았는지", "리스트에 넣어 한꺼번에 움직이기", "'만들기'에 별 받기가 들어 있어요. 별을 여러 개로 늘리거나, 점점 빨라지게 해 봐요"]
+  },
+  "done": ["done-1", "done-2", "done-3", "done-bye"],
+  "lines": {
+    "q1-right": ["맞아요. [8|팔]씩 가다가 [20|이십]을 넘은 [24|이십사]에서 부호가 뒤집혀서, 그다음은 [16|십육]이에요."],
+    "q1-on": ["[24|이십사]는 [20|이십]보다 커요. 그때 부호가 뒤집혀요."],
+    "q1-stay": ["부호가 뒤집힌 다음 장면에서 [8|팔]만큼 되돌아와요."],
+    "q1-explain": ["[8|팔], [16|십육], [24|이십사], 여기서 뒤집혀서 [16|십육]이에요."],
+    "q2-right": ["맞아요. 뛰기를 두 번 불러서 [60|육십], 내리기를 한 번 불러서 [40|사십]이에요."],
+    "q2-up": ["마지막 줄에서 내리기를 불렀어요. [20|이십]을 빼요."],
+    "q2-none": ["함수 이름 뒤에 괄호를 붙여 불렀어요. 부르면 실행돼요."],
+    "q2-explain": ["[30|삼십] 더하기 [30|삼십] 빼기 [20|이십], [40|사십]이에요."],
+    "q3-right": ["맞아요. 거리가 [20|이십]보다 작은 것은 [0|영]번과 [2|이]번 별이에요. 두 개를 숨겼으니 하나가 남아요."],
+    "q3-all": ["가까운 별은 숨겼어요. 숨긴 별은 세지 않아요."],
+    "q3-two": ["가로 자리가 [10|십]인 별과 [-15|빼기 십오]인 별이 [20|이십]보다 가까워요. 두 개를 숨겨요."],
+    "q3-explain": ["가운데에서 [10|십], [100|백], [15|십오]만큼 떨어져 있어요. [100|백]인 별만 남아요."],
+    "q4-right": ["맞아요. 번호가 클수록 많이 내려와요. [0|영]번은 그대로, [1|일]번은 [10|십], [2|이]번은 [20|이십] 내려왔어요."],
+    "q4-same": ["내려오는 길이에 i를 곱했어요. 별마다 달라요."],
+    "q4-up": ["세로 자리에서 뺐어요. 아래로 내려가요."],
+    "q4-explain": ["i 곱하기 [10|십]만큼 뺐어요. [100|백], [90|구십], [80|팔십]이에요."],
+
+    "task-intro": ["이제 써 봐요. 두 문제예요. 둘째 문제에서는 별 받기 놀이를 만들어요."],
+    "task-how": ["실행해서 직접 해 보고, 멈춤 버튼으로 멈춰요. 잘 되면 '제출'을 눌러요."],
+    "praise-jump": ["스페이스 키에는 뛰는 함수를, 아래 화살표 키에는 내려오는 함수를 붙였어요. 바닥보다 아래로는 못 가게 조건도 넣었어요."],
+    "jump-floor": ["거북이가 바닥보다 아래로 내려갔어요. 내려오는 함수 안에서, 세로 자리가 [0|영]보다 클 때만 내려요."],
+    "jump-nolisten": ["키를 눌러도 움직이지 않아요. [listen|리슨]이 있는지 봐요."],
+    "jump-hint-1": ["뛰기 함수는 세로 자리를 [30|삼십] 올려요. 내리기 함수는 세로 자리가 [0|영]보다 클 때만 [30|삼십] 내려요."],
+    "jump-hint-2": ["뛰기는 스페이스 키에, 내리기는 아래 화살표 키에 붙여요. 스페이스의 키 이름은 작은 글자로 [space|스페이스]예요. 그리고 [listen|리슨]과 [done|던]을 써요."],
+    "task-next": ["이번에는 별 받기 놀이예요. 위에서 떨어지는 별을 바구니로 받아요. 편집기에 바구니와 별, 점수판이 준비돼 있어요."],
+    "star-nolisten": ["키를 눌러도 바구니가 움직이지 않아요. 함수를 키에 붙였는지, [listen|리슨]을 썼는지 봐요."],
+    "star-text": ["거북이의 자리는 맞는데 점수판의 글자가 달라요. 별을 받으면 점수를 올리고 점수라고 다시 쓰는지, 놓치면 끝이라고 쓰는지 봐요."],
+    "star-pos": ["별이나 바구니의 자리가 달라요. 별은 장면마다 [5|오]씩 내려와요. 받았을 때 별을 옮기는 줄과, 놓쳤을 때 멈추는 것을 칠판과 견줘 봐요."],
+    "star-hint-1": ["먼저 바구니를 움직이는 함수 두 개를 만들어서 왼쪽, 오른쪽 화살표 키에 붙이고, [listen|리슨]을 써요."],
+    "star-hint-2": ["[while True|와일 트루] 안에서 별을 [5|오] 내려요. 별과 바구니 사이의 거리가 [40|사십]보다 작으면 점수를 올리고, 별을 칠판에 적힌 줄대로 위로 보내요. 그리고 점수판을 지우고 다시 써요."],
+    "star-hint-3": ["별의 세로 자리가 [-170|빼기 백칠십]보다 작으면 놓친 거예요. 점수판을 지우고 끝이라고 쓴 다음, [update|업데이트]를 하고 [break|브레이크]로 반복을 끝내요. 놓치지 않았으면 평소대로 [update|업데이트]와 [sleep|슬립]을 해요."],
+    "praise-star": ["키로 바구니를 움직이고, 별을 떨어뜨리고, 받았는지 거리로 알아보고, 점수를 쓰고, 놓치면 끝냈어요. 진짜로 할 수 있는 놀이를 만들었어요."],
+
+    "done-1": ["움직이는 그림과 게임 단원을 마쳤어요. 수고했어요."],
+    "done-2": ["이제 거북이를 스스로 움직이게 하고, 키로 조종하고, 닿았는지 알아보고, 점수를 셀 줄 알아요."],
+    "done-3": ["만든 별 받기는 만들기에 들어 있어요. 별을 리스트에 넣어 여러 개로 늘리거나, 점수가 오를수록 빨라지게 해 봐요."]
+  },
+
+  "lecture": [],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "x = 0\ndx = 8\nfor i in range(4):\n    x += dx\n    if x > 20:\n        dx = -dx\nprint(x)",
+      "answer": 0,
+      "choices": [
+        { "text": "16", "say": "q1-right" },
+        { "text": "32", "say": "q1-on" },
+        { "text": "24", "say": "q1-stay" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "import turtle\n공 = turtle.Turtle()\ndef 뛰기():\n    공.sety(공.ycor() + 30)\ndef 내리기():\n    공.sety(공.ycor() - 20)\n뛰기()\n뛰기()\n내리기()\nprint(공.ycor())",
+      "answer": 1,
+      "choices": [
+        { "text": "60.0", "say": "q2-up" },
+        { "text": "40.0", "say": "q2-right" },
+        { "text": "0.0", "say": "q2-none" }
+      ]
+    },
+    {
+      "id": "q3",
+      "ask": "그림판에 보이는 거북이는 몇 마리일까요? (공까지 세요)",
+      "explain": "q3-explain",
+      "code": "import turtle\n공 = turtle.Turtle()\n별들 = []\nfor x in [10, 100, -15]:\n    별 = turtle.Turtle()\n    별.penup()\n    별.setx(x)\n    별들.append(별)\nfor 별 in 별들:\n    if 공.distance(별) < 20:\n        별.hideturtle()",
+      "outcome": { "output": [], "turtles": 2 },
+      "answer": 2,
+      "choices": [
+        { "text": "4마리", "say": "q3-all" },
+        { "text": "3마리", "say": "q3-two" },
+        { "text": "2마리", "say": "q3-right" }
+      ]
+    },
+    {
+      "id": "q4",
+      "explain": "q4-explain",
+      "code": "import turtle\n별들 = []\nfor i in range(3):\n    별 = turtle.Turtle()\n    별.penup()\n    별.sety(100)\n    별들.append(별)\nfor i in range(3):\n    별들[i].sety(별들[i].ycor() - i * 10)\nprint(별들[0].ycor(), 별들[1].ycor(), 별들[2].ycor())",
+      "answer": 0,
+      "choices": [
+        { "text": "100.0 90.0 80.0", "say": "q4-right" },
+        { "text": "90.0 90.0 90.0", "say": "q4-same" },
+        { "text": "100.0 110.0 120.0", "say": "q4-up" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "jump",
+      "title": "뛰는 거북이",
+      "story": "편집기에 거북이 '공'이 준비돼 있어요. 스페이스 키를 누르면 위로 30 올라가고, 아래 화살표 키를 누르면 30 내려와요. 그런데 바닥(세로 자리 0)보다 아래로는 내려갈 수 없어요.",
+      "steps": ["뛰기 함수: 세로 자리를 30 올려요.", "내리기 함수: 세로 자리가 0보다 클 때만 30 내려요.", "뛰기는 \"space\" 키에, 내리기는 \"Down\" 키에 붙이고, listen과 done을 써요."],
+      "start": "import turtle\n공 = turtle.Turtle()\n공.shape(\"turtle\")\n공.penup()\n",
+      "cases": [
+        { "keys": ["space", "space", "Down"], "frames": 6, "inputs": [], "expect": [] },
+        { "keys": ["space", "Down", "Down", "Down"], "frames": 8, "inputs": [], "expect": [] }
+      ],
+      "expect": [],
+      "game": true,
+      "mistakes": [
+        { "game": "game-pos", "code": "^(?![\\s\\S]*listen)", "say": "jump-nolisten" },
+        { "game": "game-pos", "say": "jump-floor" }
+      ],
+      "praise": "praise-jump",
+      "solution": "import turtle\n공 = turtle.Turtle()\n공.shape(\"turtle\")\n공.penup()\ndef 뛰기():\n    공.sety(공.ycor() + 30)\ndef 내리기():\n    if 공.ycor() > 0:\n        공.sety(공.ycor() - 30)\nturtle.onkeypress(뛰기, \"space\")\nturtle.onkeypress(내리기, \"Down\")\nturtle.listen()\nturtle.done()",
+      "hints": [{ "say": "jump-hint-1" }, { "say": "jump-hint-2" }]
+    },
+    {
+      "id": "star",
+      "title": "만들기: 별 받기",
+      "story": "위에서 떨어지는 별을 바구니로 받는 놀이예요. 편집기에 바구니, 별, 점수판, 점수가 준비돼 있어요. 그 아래에 놀이를 만들어요.",
+      "steps": ["왼쪽, 오른쪽 화살표 키로 바구니를 가로로 20씩 움직여요.", "장면마다 별이 5씩 내려와요.", "별과 바구니 사이의 거리가 40보다 작으면 받은 거예요. 점수를 1 올리고, 별을 별.goto(random.randint(-10, 10) * 20, 160) 으로 다시 위로 보내요.", "장면마다 점수판을 지우고 \"점수: 1\"처럼 다시 써요.", "별의 세로 자리가 -170보다 작아지면 놓친 거예요. 점수판을 지우고 \"끝! 점수: 1\"처럼 쓴 다음, 반복을 끝내요."],
+      "start": "import turtle\nimport time\nimport random\nturtle.tracer(0)\n바구니 = turtle.Turtle()\n바구니.shape(\"square\")\n바구니.shapesize(1, 4)\n바구니.color(\"blue\")\n바구니.penup()\n바구니.goto(0, -150)\n별 = turtle.Turtle()\n별.shape(\"circle\")\n별.color(\"gold\")\n별.penup()\n별.goto(0, 160)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\n점수 = 0\n",
+      "cases": [
+        { "keys": [], "frames": 40, "randoms": [3, -4], "inputs": [], "expect": [] },
+        { "keys": [], "frames": 140, "randoms": [3, -4], "inputs": [], "expect": [] },
+        { "keys": ["Right", "Right", "Right", "Right", "Right", "Right"], "frames": 160, "randoms": [3, -4], "inputs": [], "expect": [] },
+        { "keys": ["Left", "Left", "Right"], "frames": 20, "randoms": [3, -4], "inputs": [], "expect": [] }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 3,
+      "mistakes": [
+        { "game": "game-pos", "code": "^(?![\\s\\S]*listen)", "say": "star-nolisten" },
+        { "game": "game-text", "say": "star-text" },
+        { "game": "game-pos", "say": "star-pos" }
+      ],
+      "praise": "praise-star",
+      "solution": "import turtle\nimport time\nimport random\nturtle.tracer(0)\n바구니 = turtle.Turtle()\n바구니.shape(\"square\")\n바구니.shapesize(1, 4)\n바구니.color(\"blue\")\n바구니.penup()\n바구니.goto(0, -150)\n별 = turtle.Turtle()\n별.shape(\"circle\")\n별.color(\"gold\")\n별.penup()\n별.goto(0, 160)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\n점수 = 0\ndef 왼쪽():\n    바구니.setx(바구니.xcor() - 20)\ndef 오른쪽():\n    바구니.setx(바구니.xcor() + 20)\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\nwhile True:\n    별.sety(별.ycor() - 5)\n    if 별.distance(바구니) < 40:\n        점수 += 1\n        별.goto(random.randint(-10, 10) * 20, 160)\n    판.clear()\n    if 별.ycor() < -170:\n        판.write(\"끝! 점수: \" + str(점수))\n        turtle.update()\n        break\n    판.write(\"점수: \" + str(점수))\n    turtle.update()\n    time.sleep(0.02)",
+      "hints": [{ "say": "star-hint-1" }, { "say": "star-hint-2" }, { "say": "star-hint-3" }]
+    }
+  ]
+}

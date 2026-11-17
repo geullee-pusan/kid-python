@@ -1,0 +1,180 @@
+{
+  "_설명": "단원 14 '움직이는 그림과 게임'의 연습 문제. 쓸 수 있는 것: turtle.Turtle()로 거북이 여러 마리, shape, shapesize, color, hideturtle, setx, sety, xcor, ycor, 움직임의 틀(tracer(0), while True, update, sleep), dx = -dx, onkeypress와 listen, distance, 점수판, 리스트에 든 거북이. 모든 문제는 정해 둔 키와 장면 수만큼 돌린 뒤의 모습을 모범 답과 견줘 채점한다(\"game\"). 틀은 unit1.json과 같다.",
+  "id": "practice-14",
+  "unit": "움직이는 그림과 게임",
+  "title": "연습 문제",
+  "knows": ["variables", "loops", "functions"],
+  "showVars": true,
+  "canvas": true,
+  "lines": {
+    "light-praise": ["거북이 세 마리를 동그라미로 만들어 색을 정하고, 세로로 나란히 놓았어요."],
+    "light-look": ["자리는 맞는데 색이나 모양이 달라요. 위에서부터 빨강, 노랑, 초록 동그라미예요."],
+    "light-pos": ["자리가 달라요. 가로는 모두 [0|영]이고, 세로는 위에서부터 [60|육십], [0|영], [-60|빼기 육십]이에요."],
+    "light-hint-1": ["거북이를 만들어 동그라미 모양과 빨간색으로 정하고, 펜을 들고 가로 [0|영], 세로 [60|육십]으로 보내요."],
+    "light-hint-2": ["같은 일을 색과 세로 자리만 바꿔서 두 번 더 해요. 색 이름과 세로 자리를 리스트에 넣고 반복으로 해도 돼요."],
+
+    "slide-praise": ["움직임의 틀을 그대로 써서, 공이 왼쪽으로 미끄러지다가 벽을 지나면 오른쪽 끝에서 다시 나오게 했어요."],
+    "slide-nosleep": ["[sleep|슬립]이나 [update|업데이트]가 빠졌어요. 움직이고, 보여 주고, 쉬는 세 가지가 모두 있어야 해요."],
+    "slide-pos": ["공의 자리가 달라요. 한 장면에 왼쪽으로 [4|사]씩 가고, 가로 자리가 [-240|빼기 이백사십]보다 작아지면 [240|이백사십]으로 보내요."],
+    "slide-hint-1": ["[while True|와일 트루] 안에서 공의 가로 자리를 [4|사]만큼 줄여요."],
+    "slide-hint-2": ["가로 자리가 [-240|빼기 이백사십]보다 작으면 [240|이백사십]으로 보내요. 그다음에 [update|업데이트]와 [sleep|슬립]을 써요."],
+
+    "fixk-praise": ["함수 이름 뒤의 괄호를 지워서, 키를 누를 때 불리게 고쳤어요."],
+    "fixk-hint-1": ["오류의 설명을 읽어 봐요. 키에 붙이는 줄에서, 함수 이름 뒤에 괄호가 붙어 있어요."],
+    "fixk-hint-2": ["괄호를 붙이면 그 자리에서 실행돼 버려요. 이름만 남기고 괄호를 지워요."],
+
+    "grow-praise": ["스페이스를 누를 때마다 지금 크기를 알아내서 하나 더 크게 했어요. 거북이의 크기를 이름표처럼 쓴 거예요."],
+    "grow-look": ["자리는 맞는데 크기가 달라요. 스페이스를 한 번 누를 때마다 세로와 가로가 [1|일]씩 커져야 해요."],
+    "grow-hint-1": ["크기를 넣어 둘 리스트를 하나 만들어요. 함수 안에서는 밖의 이름표에 새 값을 넣을 수 없지만, 리스트에 붙이는 것은 할 수 있어요. 스페이스를 누를 때마다 리스트에 하나를 붙여요."],
+    "grow-hint-2": ["그다음 공의 크기를, 리스트의 길이에 [1|일]을 더한 값으로 정해요. 세로와 가로에 같은 수를 넣어요."],
+
+    "pick-praise": ["키로 거북이를 움직이면서, 장면마다 별을 모두 살펴서 닿은 별을 숨기고 세었어요."],
+    "pick-text": ["거북이의 자리는 맞는데 글자가 달라요. 숨긴 별의 수를 세어서 별이라고 다시 써요. 이미 숨긴 별을 또 세지 않게 해요."],
+    "pick-count": ["보이는 별의 수가 달라요. 공과의 거리가 [20|이십]보다 작은 별만 숨겨요."],
+    "pick-hint-1": ["반복 안에서 별들을 [for|포]로 돌아요. 별이 보이고, 공과의 거리가 [20|이십]보다 작으면 숨기고 개수를 올려요. 보이는지는 별, 점, [isvisible|이즈 비저블]로 알 수 있어요."],
+    "pick-hint-2": ["그다음에 판을 지우고 별이라는 글자와 개수를 다시 써요. 마지막에 [update|업데이트]와 [sleep|슬립]을 써요."],
+
+    "pong-praise": ["공을 비스듬히 움직이고, 벽 세 곳과 판에서 튕기게 하고, 판을 키로 움직이고, 놓치면 끝냈어요. 공 튕기기 놀이를 만들었어요."],
+    "pong-text": ["자리는 맞는데 글자가 달라요. 공을 놓쳤을 때만 끝이라고 써요."],
+    "pong-pos": ["공이나 판의 자리가 달라요. 벽과 판에서 튕기는 조건을 칠판과 하나씩 견줘 봐요."],
+    "pong-hint-1": ["먼저 판을 움직이는 함수 두 개를 키에 붙여요. 반복 안에서는 공의 가로와 세로 자리를 [dx|디 엑스], [dy|디 와이]만큼 바꿔요."],
+    "pong-hint-2": ["가로 벽을 넘으면 [dx|디 엑스]를, 위쪽 벽을 넘으면 [dy|디 와이]를 뒤집어요. 공이 아래로 내려가는 중이고 판과의 거리가 [50|오십]보다 작으면 [dy|디 와이]를 뒤집어요. 세로 자리가 [-180|빼기 백팔십]보다 작으면 끝이라고 쓰고 반복을 끝내요."]
+  },
+  "tasks": [
+    {
+      "id": "p14-light",
+      "level": "기본",
+      "kind": "쓰기",
+      "title": "신호등",
+      "summary": "동그라미 거북이 세 마리로 신호등을 만들어요.",
+      "story": "동그라미 거북이 세 마리를 세로로 놓아서 신호등을 만들어요. 위에서부터 빨강(red)은 (0, 60), 노랑(yellow)은 (0, 0), 초록(green)은 (0, -60)이에요. 선이 남지 않게 펜을 들어요.",
+      "steps": ["거북이를 세 마리 만들어요.", "모양을 동그라미로, 색을 정하고, 펜을 들고 제자리로 보내요."],
+      "start": "import turtle\n",
+      "cases": [{ "keys": [], "frames": 1, "inputs": [], "expect": [] }],
+      "expect": [],
+      "game": { "look": true },
+      "mistakes": [
+        { "game": "game-look", "say": "light-look" },
+        { "game": "game-pos", "say": "light-pos" }
+      ],
+      "praise": "light-praise",
+      "solution": "import turtle\n색 = [\"red\", \"yellow\", \"green\"]\nfor i in range(3):\n    불 = turtle.Turtle()\n    불.shape(\"circle\")\n    불.color(색[i])\n    불.penup()\n    불.goto(0, 60 - i * 60)",
+      "hints": [{ "say": "light-hint-1" }, { "say": "light-hint-2" }]
+    },
+    {
+      "id": "p14-slide",
+      "level": "기본",
+      "kind": "쓰기",
+      "title": "돌아 나오는 공",
+      "summary": "왼쪽으로 가다가 벽을 지나면 오른쪽에서 다시 나오는 공을 만들어요.",
+      "story": "편집기에 공이 준비돼 있어요. 공이 한 장면에 4씩 왼쪽으로 가요. 가로 자리가 -240보다 작아지면 오른쪽 끝(240)으로 보내서, 계속 지나가는 것처럼 보이게 해요.",
+      "steps": ["while True 안에서 가로 자리를 4 줄여요.", "가로 자리가 -240보다 작으면 240으로 보내요.", "turtle.update()와 time.sleep(0.02)를 써요."],
+      "start": "import turtle\nimport time\n공 = turtle.Turtle()\n공.shape(\"circle\")\n공.penup()\nturtle.tracer(0)\n",
+      "cases": [
+        { "keys": [], "frames": 40, "inputs": [], "expect": [] },
+        { "keys": [], "frames": 140, "inputs": [], "expect": [] }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "mistakes": [
+        { "game": "game-pos", "code": "^(?![\\s\\S]*sleep)|^(?![\\s\\S]*update)", "say": "slide-nosleep" },
+        { "game": "game-pos", "say": "slide-pos" }
+      ],
+      "praise": "slide-praise",
+      "solution": "import turtle\nimport time\n공 = turtle.Turtle()\n공.shape(\"circle\")\n공.penup()\nturtle.tracer(0)\nwhile True:\n    공.setx(공.xcor() - 4)\n    if 공.xcor() < -240:\n        공.setx(240)\n    turtle.update()\n    time.sleep(0.02)",
+      "hints": [{ "say": "slide-hint-1" }, { "say": "slide-hint-2" }]
+    },
+    {
+      "id": "p14-fix-key",
+      "level": "응용",
+      "kind": "고치기",
+      "title": "고치기: 듣지 않는 키",
+      "summary": "키를 눌러도 움직이지 않고 오류가 나는 프로그램을 고쳐요.",
+      "story": "위 화살표 키를 누르면 거북이가 위로 20씩 올라가게 하려는 프로그램이에요. 그런데 실행하자마자 거북이가 한 번 움직이고 오류가 나요.",
+      "steps": ["먼저 실행해서 오류의 설명을 읽어 봐요.", "위 화살표 키를 누를 때마다 20씩 올라가게 고쳐요."],
+      "start": "import turtle\n공 = turtle.Turtle()\n공.penup()\ndef 위():\n    공.sety(공.ycor() + 20)\nturtle.onkeypress(위(), \"Up\")\nturtle.listen()\nturtle.done()",
+      "cases": [
+        { "keys": ["Up", "Up"], "frames": 6, "inputs": [], "expect": [] },
+        { "keys": [], "frames": 3, "inputs": [], "expect": [] }
+      ],
+      "expect": [],
+      "game": true,
+      "praise": "fixk-praise",
+      "solution": "import turtle\n공 = turtle.Turtle()\n공.penup()\ndef 위():\n    공.sety(공.ycor() + 20)\nturtle.onkeypress(위, \"Up\")\nturtle.listen()\nturtle.done()",
+      "hints": [{ "say": "fixk-hint-1" }, { "say": "fixk-hint-2" }]
+    },
+    {
+      "id": "p14-grow",
+      "level": "응용",
+      "kind": "쓰기",
+      "title": "커지는 공",
+      "summary": "스페이스를 누를 때마다 공이 커지게 해요.",
+      "story": "편집기에 동그라미 공이 준비돼 있어요. 스페이스 키를 누를 때마다 공이 한 단계씩 커지게 해요. 처음 크기는 1이고, 한 번 누르면 세로와 가로가 모두 2, 두 번 누르면 3이 돼요. 지금까지 몇 번 눌렀는지는 리스트에 하나씩 붙여서 세요(함수 안에서는 밖의 이름표에 새 값을 넣을 수 없어요).",
+      "steps": ["빈 리스트를 하나 만들어요.", "커지기 함수: 리스트에 하나를 붙이고, 공의 크기를 (리스트의 길이 + 1)로 정해요.", "함수를 \"space\" 키에 붙이고, listen과 done을 써요."],
+      "start": "import turtle\n공 = turtle.Turtle()\n공.shape(\"circle\")\n공.penup()\n",
+      "cases": [
+        { "keys": ["space", "space"], "frames": 6, "inputs": [], "expect": [] },
+        { "keys": ["space", "space", "space", "space"], "frames": 8, "inputs": [], "expect": [] }
+      ],
+      "expect": [],
+      "game": { "look": true },
+      "mistakes": [{ "game": "game-look", "say": "grow-look" }],
+      "praise": "grow-praise",
+      "solution": "import turtle\n공 = turtle.Turtle()\n공.shape(\"circle\")\n공.penup()\n누름 = []\ndef 커지기():\n    누름.append(1)\n    공.shapesize(len(누름) + 1, len(누름) + 1)\nturtle.onkeypress(커지기, \"space\")\nturtle.listen()\nturtle.done()",
+      "hints": [{ "say": "grow-hint-1" }, { "say": "grow-hint-2" }]
+    },
+    {
+      "id": "p14-pick",
+      "level": "응용",
+      "kind": "쓰기",
+      "title": "별 줍기",
+      "summary": "키로 움직여서 별을 주우면 별이 사라지고 개수가 올라가게 해요.",
+      "story": "편집기에 거북이(공), 별 세 개가 든 리스트, 글자판, 키로 움직이는 함수가 준비돼 있어요. 반복 안을 채워요. 장면마다 별을 모두 살펴서, 보이는 별 가운데 공과의 거리가 20보다 작은 별은 숨기고 개수를 1 올려요. 그리고 글자판을 지우고 \"별: 1\"처럼 다시 써요. 별이 보이는지는 별.isvisible()로 알 수 있어요(보이면 True).",
+      "steps": ["while True 안, turtle.update() 위에 써요.", "별들을 돌면서, 보이고 가까운 별을 숨기고 개수를 올려요.", "글자판을 지우고 다시 써요."],
+      "start": "import turtle\nimport time\nturtle.tracer(0)\n공 = turtle.Turtle()\n공.shape(\"turtle\")\n공.penup()\n별들 = []\nfor x in [60, 120, -80]:\n    별 = turtle.Turtle()\n    별.shape(\"circle\")\n    별.color(\"gold\")\n    별.penup()\n    별.setx(x)\n    별들.append(별)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\n개수 = 0\ndef 오른쪽():\n    공.setx(공.xcor() + 20)\ndef 왼쪽():\n    공.setx(공.xcor() - 20)\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.listen()\nwhile True:\n\n    turtle.update()\n    time.sleep(0.02)\n",
+      "cases": [
+        {"inputs":[],"expect":[],"keys":["Right",null,"Right",null,"Right",null],"frames":12},
+        {"inputs":[],"expect":[],"keys":["Right",null,"Right",null,"Right",null,"Right",null,"Right",null,"Right",null,"Left",null,"Left",null],"frames":30},
+        {"inputs":[],"expect":[],"keys":["Left",null,"Left",null,"Left",null,"Left",null],"frames":14}
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "mistakes": [
+        { "game": "game-count", "say": "pick-count" },
+        { "game": "game-text", "say": "pick-text" }
+      ],
+      "praise": "pick-praise",
+      "solution": "import turtle\nimport time\nturtle.tracer(0)\n공 = turtle.Turtle()\n공.shape(\"turtle\")\n공.penup()\n별들 = []\nfor x in [60, 120, -80]:\n    별 = turtle.Turtle()\n    별.shape(\"circle\")\n    별.color(\"gold\")\n    별.penup()\n    별.setx(x)\n    별들.append(별)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\n개수 = 0\ndef 오른쪽():\n    공.setx(공.xcor() + 20)\ndef 왼쪽():\n    공.setx(공.xcor() - 20)\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.listen()\nwhile True:\n    for 별 in 별들:\n        if 별.isvisible() and 공.distance(별) < 20:\n            별.hideturtle()\n            개수 += 1\n    판.clear()\n    판.write(\"별: \" + str(개수))\n    turtle.update()\n    time.sleep(0.02)\n",
+      "hints": [{ "say": "pick-hint-1" }, { "say": "pick-hint-2" }]
+    },
+    {
+      "id": "p14-pong",
+      "level": "도전",
+      "kind": "쓰기",
+      "title": "공 튕기기",
+      "summary": "판으로 공을 받아 치는 놀이를 만들어요.",
+      "story": "편집기에 공, 판, 글자판, dx와 dy가 준비돼 있어요. 공은 한 장면에 가로로 dx, 세로로 dy만큼 움직여요. 가로 자리가 220보다 커지거나 -220보다 작아지면 dx를, 세로 자리가 160보다 커지면 dy를 뒤집어요. 공이 내려오는 중(dy가 0보다 작다)이고 판과의 거리가 50보다 작으면 dy를 뒤집어서 위로 쳐 올려요. 왼쪽, 오른쪽 화살표 키로 판을 30씩 움직여요. 공의 세로 자리가 -180보다 작아지면 놓친 거예요. 글자판에 \"끝\"이라고 쓰고 반복을 끝내요.",
+      "steps": ["판을 움직이는 함수 두 개를 키에 붙이고 listen을 써요.", "반복 안에서 공을 움직이고, 벽 세 곳에서 튕겨요.", "내려오는 공이 판에 가까우면 위로 쳐 올려요.", "놓치면 \"끝\"이라고 쓰고, update를 한 다음 break로 끝내요.", "놓치지 않았으면 update와 sleep을 해요."],
+      "start": "import turtle\nimport time\nturtle.tracer(0)\n공 = turtle.Turtle()\n공.shape(\"circle\")\n공.penup()\n공.goto(0, 100)\n판 = turtle.Turtle()\n판.shape(\"square\")\n판.shapesize(1, 5)\n판.color(\"blue\")\n판.penup()\n판.goto(0, -150)\n글자판 = turtle.Turtle()\n글자판.hideturtle()\n글자판.penup()\ndx = 3\ndy = -4\n",
+      "cases": [
+        {"inputs":[],"expect":[],"keys":[],"frames":60},
+        {"inputs":[],"expect":[],"keys":["Right",null,"Right",null,"Right",null,"Right",null,"Right",null,"Right",null],"frames":150},
+        {"inputs":[],"expect":[],"keys":["Right",null,"Right",null,"Right",null,"Right",null,"Right",null,"Right",null],"frames":320},
+        {"inputs":[],"expect":[],"keys":[],"frames":200},
+        {"inputs":[],"expect":[],"keys":["Left",null,"Left",null,"Left",null],"frames":200}
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "mistakes": [
+        { "game": "game-text", "say": "pong-text" },
+        { "game": "game-pos", "say": "pong-pos" }
+      ],
+      "praise": "pong-praise",
+      "solution": "import turtle\nimport time\nturtle.tracer(0)\n공 = turtle.Turtle()\n공.shape(\"circle\")\n공.penup()\n공.goto(0, 100)\n판 = turtle.Turtle()\n판.shape(\"square\")\n판.shapesize(1, 5)\n판.color(\"blue\")\n판.penup()\n판.goto(0, -150)\n글자판 = turtle.Turtle()\n글자판.hideturtle()\n글자판.penup()\ndx = 3\ndy = -4\ndef 왼쪽():\n    판.setx(판.xcor() - 30)\ndef 오른쪽():\n    판.setx(판.xcor() + 30)\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\nwhile True:\n    공.setx(공.xcor() + dx)\n    공.sety(공.ycor() + dy)\n    if 공.xcor() > 220 or 공.xcor() < -220:\n        dx = -dx\n    if 공.ycor() > 160:\n        dy = -dy\n    if dy < 0 and 공.distance(판) < 50:\n        dy = -dy\n    if 공.ycor() < -180:\n        글자판.write(\"끝\")\n        turtle.update()\n        break\n    turtle.update()\n    time.sleep(0.02)",
+      "hints": [{ "say": "pong-hint-1" }, { "say": "pong-hint-2" }]
+    }
+  ]
+}

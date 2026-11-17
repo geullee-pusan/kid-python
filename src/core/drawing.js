@@ -11,7 +11,7 @@ const OFFSET_TOL = 0.75;
 const GAP_TOL = 0.75;
 
 /** 지운 것을 뺀다. clear는 그 거북이(t)가 그때까지 그린 것만 지운다. */
-function afterClear(cmds) {
+export function afterClear(cmds) {
   let kept = [];
   for (const cmd of cmds) {
     if (cmd.k === 'clear') kept = kept.filter((one) => one.t !== cmd.t);

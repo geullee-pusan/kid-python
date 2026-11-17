@@ -1,0 +1,165 @@
+{
+  "_설명": "움직이는 그림과 게임 단원 5번 수업. 거북이를 반복으로 여러 마리 만들어 리스트에 넣고, 장면마다 리스트를 돌면서 모두 움직인다(리스트 단원의 append와 for를 거북이에 쓴다). 엔트리 블록 '[자신] 의 복제본 만들기'는 docs.playentry.org/user/block_flow.html 에서 확인했다(2026-11-18). 겨냥하는 오개념: 리스트에 명령하면 든 것이 모두 따른다(별들.forward는 없다. 하나씩 꺼내서 명령한다), 반복 안에서 같은 이름표에 새 거북이를 넣으면 앞의 거북이가 사라진다(리스트에 넣어 두었으므로 남아 있다).",
+  "id": "game-list",
+  "unit": "움직이는 그림과 게임",
+  "no": 5,
+  "title": "여러 개 한꺼번에",
+  "desc": "거북이를 리스트에 넣어서, 여러 마리를 한꺼번에 움직여요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions"],
+  "showVars": true,
+  "canvas": true,
+  "learned": [
+    { "rule": "반복 안에서 거북이를 만들어 리스트에 넣으면, 여러 마리를 한 이름으로 다룰 수 있어요.", "code": "별들 = []\nfor i in range(4):\n    별 = turtle.Turtle()\n    별들.append(별)" },
+    { "rule": "모두 움직이려면 리스트를 for로 돌면서 하나씩 꺼내 명령해요.", "code": "for 별 in 별들:\n    별.sety(별.ycor() - 3)" },
+    { "rule": "저마다 다르게 하려면 번호로 돌아요. 별들[i]처럼 번호로 꺼내고, i를 계산에 써요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["별이 열 개 떨어지는 놀이를 만들려면, 이름표를 열 개 만들어야 할까요? 오늘은 거북이를 리스트에 넣어서 한꺼번에 다뤄요."],
+    "make-intro": ["엔트리에서는 복제본을 만들었죠. 파이썬에서는 반복 안에서 거북이를 새로 만들고, 리스트에 붙여요. 이름표 별은 돌 때마다 새 거북이를 가리키지만, 앞에 만든 거북이는 리스트 안에 남아 있어요."],
+    "make-after": ["별 네 개가 한 줄로 놓였어요. 가로 자리는 i로 계산했어요. 리스트의 길이는 [4|사]예요."],
+    "move-intro": ["이제 모두 움직여요. 장면마다 리스트를 [for|포]로 돌면서, 별을 하나씩 꺼내 조금 내려요. 바닥 아래로 내려간 별은 다시 위로 보내요. 선생님이 실행해 볼게요."],
+    "move-after": ["별 네 개가 함께 떨어지고, 바닥에 닿으면 위에서 다시 떨어졌어요. 반복 안의 반복이에요. 바깥은 장면을, 안쪽은 별을 돌아요."],
+    "check-ask": ["하나 물어볼게요. 리스트에 든 거북이를 모두 움직이려면 어떻게 쓸까요?"],
+    "check-right": ["맞아요. 하나씩 꺼내서, 꺼낸 거북이에게 명령해요."],
+    "check-teach-1": ["리스트는 거북이가 아니에요. 리스트에게 앞으로 가라고 할 수 없어요."],
+    "check-teach-2": ["[for|포]로 리스트를 돌면서 하나씩 꺼내고, 꺼낸 거북이에게 명령해요."],
+    "follow-ok": ["좋아요. 거북이 세 마리가 리스트에 들어갔어요."],
+    "summary": ["정리해요. 만들어서 리스트에 넣고, 돌면서 하나씩 움직여요."],
+
+    "q1-right": ["맞아요. i가 [0, 2, 4|영, 이, 사]일 때만 리스트에 넣었어요. 세 마리예요."],
+    "q1-all": ["만든 것은 다섯 마리지만, 리스트에는 i가 짝수일 때만 넣었어요."],
+    "q1-two": ["[0|영]도 짝수예요. [0, 2, 4|영, 이, 사], 세 번이에요."],
+    "q1-explain": ["[0|영], [2|이], [4|사]일 때 넣어서 세 마리예요."],
+    "q2-right": ["맞아요. [2|이]번 거북이는 i가 [2|이]일 때 만들어서, 가로 자리가 [100|백]이에요."],
+    "q2-last": ["번호는 [0|영]부터 세요. [2|이]번은 셋째 거북이예요."],
+    "q2-second": ["[2|이]에 [50|오십]을 곱해요."],
+    "q2-explain": ["가로 자리는 i 곱하기 [50|오십]이에요. [2|이]번은 [100|백]이에요."],
+    "q3-right": ["맞아요. 두 거북이가 저마다 [10|십]씩 갔어요. 처음 자리가 달라서 [10|십]과 [60|육십]이에요."],
+    "q3-first": ["리스트를 돌면서 두 마리 모두에게 명령했어요. 둘째 거북이도 [10|십]을 갔어요."],
+    "q3-twice": ["한 번 돌 때 거북이마다 한 번씩만 명령해요."],
+    "q3-explain": ["첫째는 [0|영]에서 [10|십]으로, 둘째는 [50|오십]에서 [60|육십]으로 갔어요."],
+
+    "task-how": ["실행해서 움직임을 보고, 멈춤 버튼으로 멈춰요. 잘 되면 '제출'을 눌러요."],
+    "praise-rain": ["장면마다 리스트를 돌면서 별을 번호만큼 다르게 내리고, 바닥을 지난 별은 위로 보냈어요."],
+    "rain-same": ["별들이 모두 같은 빠르기로 내려왔어요. 번호로 돌아서, i번 별은 i 더하기 [2|이]만큼 내려요."],
+    "rain-pos": ["별의 자리가 선생님 것과 달라요. 세로 자리가 [-150|빼기 백오십]보다 작아진 별을 [150|백오십]으로 보내는지 봐요."],
+    "hint-1": ["[while True|와일 트루] 안에서 번호로 돌아요. [range|레인지] 안에 [3|삼]을 넣어요."],
+    "hint-2": ["i번 별의 세로 자리를, 지금보다 i 더하기 [2|이]만큼 작게 바꿔요. 그다음, 세로 자리가 [-150|빼기 백오십]보다 작으면 [150|백오십]으로 보내요."],
+    "hint-3": ["안쪽 반복이 끝난 뒤에 [update|업데이트]와 [sleep|슬립]을 써요. 칠판에 비슷한 예제를 적었어요."],
+
+    "done-1": ["오늘은 거북이를 리스트에 넣어 한꺼번에 움직이는 법을 배웠어요."],
+    "done-2": ["만들어서 리스트에 넣고, 돌면서 하나씩 움직여요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      {
+        "pair": {
+          "entry": [{ "cat": "flow", "parts": [{ "drop": "자신" }, "의 복제본 만들기"] }],
+          "python": "별 = turtle.Turtle()\n별들.append(별)",
+          "note": "파이썬: 새 거북이를 만들어 리스트에 넣어 둔다"
+        }
+      },
+      { "say": "make-intro" },
+      { "type": "import turtle\n별들 = []\nfor i in range(4):\n    별 = turtle.Turtle()\n    별.shape(\"circle\")\n    별.penup()\n    별.goto(i * 100 - 150, 100)\n    별들.append(별)\nprint(len(별들))" },
+      { "trace": "import turtle\n별들 = []\nfor i in range(4):\n    별 = turtle.Turtle()\n    별.shape(\"circle\")\n    별.penup()\n    별.goto(i * 100 - 150, 100)\n    별들.append(별)\nprint(len(별들))" },
+      { "say": "make-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "모두 움직이기", "items": ["바깥 반복:  장면", "안쪽 반복:  별을 하나씩 꺼내 움직인다"], "code": "while True:\n    for 별 in 별들:\n        별.sety(별.ycor() - 3)\n    turtle.update()\n    time.sleep(0.02)" } },
+      { "say": "move-intro" },
+      { "play": "import turtle\nimport time\nturtle.tracer(0)\n별들 = []\nfor i in range(4):\n    별 = turtle.Turtle()\n    별.shape(\"circle\")\n    별.color(\"gold\")\n    별.penup()\n    별.goto(i * 100 - 150, 150)\n    별들.append(별)\nwhile True:\n    for 별 in 별들:\n        별.sety(별.ycor() - 4)\n        if 별.ycor() < -170:\n            별.sety(170)\n    turtle.update()\n    time.sleep(0.02)", "ms": 5000 },
+      { "say": "move-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "리스트 '별들'에 든 거북이를 모두 움직이려면?",
+          "ask": "check-ask",
+          "choices": ["for 별 in 별들:  로 하나씩 꺼내서 명령한다", "별들.forward(10)  이라고 쓴다"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "import turtle\n공들 = []\nfor i in range(3):\n    공 = turtle.Turtle()\n    공.penup()\n    공.goto(i * 60, 0)\n    공들.append(공)\nprint(len(공들))" } },
+      { "follow": { "code": "import turtle\n공들 = []\nfor i in range(3):\n    공 = turtle.Turtle()\n    공.penup()\n    공.goto(i * 60, 0)\n    공들.append(공)\nprint(len(공들))", "expect": ["3"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["별들 = []  →  만들어서 별들.append(별)", "for 별 in 별들:  하나씩 꺼내 움직인다", "별들[i]  번호로 꺼내면 저마다 다르게 할 수 있다"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "import turtle\n별들 = []\nfor i in range(5):\n    별 = turtle.Turtle()\n    if i % 2 == 0:\n        별들.append(별)\nprint(len(별들))",
+      "answer": 0,
+      "choices": [
+        { "text": "3", "say": "q1-right" },
+        { "text": "5", "say": "q1-all" },
+        { "text": "2", "say": "q1-two" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "import turtle\n별들 = []\nfor i in range(4):\n    별 = turtle.Turtle()\n    별.penup()\n    별.goto(i * 50, 0)\n    별들.append(별)\nprint(별들[2].xcor())",
+      "answer": 1,
+      "choices": [
+        { "text": "150.0", "say": "q2-last" },
+        { "text": "100.0", "say": "q2-right" },
+        { "text": "50.0", "say": "q2-second" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "import turtle\n별들 = []\nfor i in range(2):\n    별 = turtle.Turtle()\n    별.penup()\n    별.goto(i * 50, 0)\n    별들.append(별)\nfor 별 in 별들:\n    별.forward(10)\nprint(별들[0].xcor(), 별들[1].xcor())",
+      "answer": 2,
+      "choices": [
+        { "text": "10.0 50.0", "say": "q3-first" },
+        { "text": "20.0 60.0", "say": "q3-twice" },
+        { "text": "10.0 60.0", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "rain",
+      "title": "빠르기가 다른 별",
+      "story": "편집기에 별 세 개가 리스트 '별들'에 들어 있어요. 별들이 저마다 다른 빠르기로 떨어지게 해요. 0번 별은 한 장면에 2씩, 1번 별은 3씩, 2번 별은 4씩 내려와요(i번 별은 i + 2씩). 세로 자리가 -150보다 작아진 별은 150으로 보내요.",
+      "steps": ["while True 안에서 번호 0, 1, 2를 돌아요.", "별들[i]의 세로 자리를 i + 2만큼 줄여요.", "세로 자리가 -150보다 작으면 150으로 보내요.", "안쪽 반복이 끝나면 turtle.update()와 time.sleep(0.02)를 써요."],
+      "start": "import turtle\nimport time\nturtle.tracer(0)\n별들 = []\nfor i in range(3):\n    별 = turtle.Turtle()\n    별.shape(\"circle\")\n    별.color(\"gold\")\n    별.penup()\n    별.goto(i * 100 - 100, 150)\n    별들.append(별)\n",
+      "cases": [
+        { "keys": [], "frames": 40, "inputs": [], "expect": [] },
+        { "keys": [], "frames": 200, "inputs": [], "expect": [] },
+        { "keys": [], "frames": 330, "inputs": [], "expect": [] }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "mistakes": [
+        { "game": "game-pos", "code": "^(?![\\s\\S]*\\bi\\s*\\+\\s*2)(?![\\s\\S]*2\\s*\\+\\s*i\\b)", "say": "rain-same" },
+        { "game": "game-pos", "say": "rain-pos" }
+      ],
+      "praise": "praise-rain",
+      "solution": "import turtle\nimport time\nturtle.tracer(0)\n별들 = []\nfor i in range(3):\n    별 = turtle.Turtle()\n    별.shape(\"circle\")\n    별.color(\"gold\")\n    별.penup()\n    별.goto(i * 100 - 100, 150)\n    별들.append(별)\nwhile True:\n    for i in range(3):\n        별들[i].sety(별들[i].ycor() - (i + 2))\n        if 별들[i].ycor() < -150:\n            별들[i].sety(150)\n    turtle.update()\n    time.sleep(0.02)",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "import turtle\n공들 = []\nfor i in range(3):\n    공 = turtle.Turtle()\n    공.penup()\n    공들.append(공)\nfor 번 in range(10):\n    for i in range(3):\n        공들[i].setx(공들[i].xcor() + i + 1)" } }
+      ]
+    }
+  ]
+}

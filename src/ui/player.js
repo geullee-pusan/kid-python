@@ -141,6 +141,38 @@ export function createPlayer(ctx) {
           await trace(scene.code, scene.inputs, { limit: scene.limit, randoms: scene.randoms });
           teacher.pose('idle');
           break;
+        case 'play': {
+          // 프로그램을 실제로 돌리고, 정해 둔 때에 키를 눌러 준 다음, 정해 둔 시간이 지나면 멈춘다.
+          teacher.pose('point');
+          editor.setLocked(true);
+          if (editor.getCode() !== scene.code) editor.setCode(scene.code);
+          output.clear();
+          ctx.ui.vars?.({});
+          ctx.ui.drawStart?.(scene.code);
+          let ended = false;
+          const running = ctx.runner.run(scene.code).finally(() => {
+            ended = true;
+          });
+          const timers = [];
+          for (const [at, name] of scene.keys) {
+            timers.push(setTimeout(() => ctx.runner.sendKey('press', name), at / speed));
+            timers.push(setTimeout(() => ctx.runner.sendKey('release', name), (at + 90) / speed));
+          }
+          const total = scene.ms / speed;
+          const started = performance.now();
+          // 강의를 건너뛰면 바로 멈춘다.
+          while (performance.now() - started < total && !stopped && !ended) await wait(100);
+          for (const timer of timers) clearTimeout(timer);
+          ctx.runner.stop();
+          const result = await running;
+          ctx.ui.drawEnd?.();
+          if (result.error && !stopped) {
+            output.append(`\n${explain(result.error, ctx.knows?.())}\n`, 'ko');
+            await pause(900 / slow);
+          }
+          teacher.pose('idle');
+          break;
+        }
         case 'follow': {
           teacher.pose('idle');
           const answer = await ctx.ui.follow(scene);

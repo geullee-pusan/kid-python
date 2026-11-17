@@ -61,6 +61,8 @@ function toScene(script, spec, seed) {
   if (spec.type !== undefined) return { kind: 'code-type', code: spec.type };
   // limit: 끝나지 않는 반복을 시연할 때 보여 줄 줄 수. randoms: 무작위 수를 정해 둘 때.
   if (spec.trace !== undefined) return { kind: 'trace', code: spec.trace, inputs: spec.inputs ?? [], limit: spec.limit, randoms: spec.randoms };
+  // 선생님이 프로그램을 실제로 돌려 보인다(끝없이 도는 게임은 한 줄씩 볼 수 없다). keys: [[몇 ms 뒤, 키 이름], …], ms: 돌릴 시간.
+  if (spec.play !== undefined) return { kind: 'play', code: spec.play, keys: spec.keys ?? [], ms: spec.ms ?? 4000 };
   // 따라 하기: say는 아이가 치는 동안 선생님이 하는 말이다(말이 끝나기를 기다리지 않고 바로 칠 수 있다).
   if (spec.follow) return { kind: 'follow', ...spec.follow, say: (spec.follow.say ?? []).map((key) => line(script, key, seed)) };
   if (spec.check) {
@@ -109,8 +111,8 @@ export function taskFeedback(script, task, diagnosis, seed = 0) {
     if (task.praise) scenes.push(line(script, task.praise, seed));
     return scenes;
   }
-  // 정해진 입력으로 채점했을 때는 어떤 입력에서 틀렸는지 먼저 알려 준다.
-  const scenes = diagnosis.inputs?.length ? [line(script, 'task-case', seed, { inputs: diagnosis.inputs.join(', ') })] : [];
+  // 정해진 입력으로 채점했을 때는 어떤 입력에서 틀렸는지 먼저 알려 준다. 게임은 어떤 키를 눌러 봤는지 알려 준다.
+  const scenes = diagnosis.keys ? [line(script, 'task-keys', seed, { keys: diagnosis.keys })] : diagnosis.inputs?.length ? [line(script, 'task-case', seed, { inputs: diagnosis.inputs.join(', ') })] : [];
   if (diagnosis.kind === 'error') scenes.push({ kind: 'say', key: 'task-error', text: diagnosis.text, speech: diagnosis.text, pose: 'talk' });
   else if (diagnosis.kind === 'mistake') scenes.push(line(script, diagnosis.say, seed));
   else scenes.push(line(script, `task-${diagnosis.kind}`, seed, diagnosis.vars));
@@ -140,10 +142,10 @@ export function allTasks(script) {
 export function missingLines(script) {
   const used = new Set([
     'intro-ask', 'intro-solve', 'follow-different', 'follow-different-draw', 'follow-not-run', 'follow-not-stopped', 'follow-show', 'predict-ask', 'predict-run',
-    'task-intro', 'task-next', 'task-how', 'task-correct-first', 'task-correct', 'skip-ok', 'lecture-back', 'done-bye',
+    'task-intro', 'task-next', 'task-how', 'task-keys', 'play-intro', 'task-correct-first', 'task-correct', 'skip-ok', 'lecture-back', 'done-bye',
     'challenge-ask', 'challenge-intro', 'challenge-skip',
   ]);
-  for (const kind of ['not-computed', 'quoted-calc', 'order', 'count', 'spacing', 'line-diff', 'no-output', 'input-few', 'input-many', 'case', 'endless', 'draw-none', 'draw-mirror', 'draw-flip', 'draw-moved', 'draw-size', 'draw-missing', 'draw-extra', 'draw-diff', 'draw-color', 'draw-fill']) used.add(`task-${kind}`);
+  for (const kind of ['not-computed', 'quoted-calc', 'order', 'count', 'spacing', 'line-diff', 'no-output', 'input-few', 'input-many', 'case', 'endless', 'draw-none', 'draw-mirror', 'draw-flip', 'draw-moved', 'draw-size', 'draw-missing', 'draw-extra', 'draw-diff', 'draw-color', 'draw-fill', 'game-none', 'game-count', 'game-pos', 'game-heading', 'game-look', 'game-text', 'game-output']) used.add(`task-${kind}`);
   const walk = (spec) => {
     if (spec.say) used.add(spec.say);
     for (const key of spec.follow?.say ?? []) used.add(key);

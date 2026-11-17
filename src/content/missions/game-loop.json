@@ -1,0 +1,195 @@
+{
+  "_설명": "움직이는 그림과 게임 단원 2번 수업. 움직임의 틀을 배운다: turtle.tracer(0)으로 한 장면씩 그리게 하고, while True 안에서 조금 움직이고, turtle.update()로 장면을 보여 주고, time.sleep()으로 잠깐 쉰다. 벽에 닿으면 한 장면에 가는 거리(dx)의 부호를 뒤집어 튕긴다. 엔트리 블록 '계속 반복하기', '(2) 초 기다리기'는 docs.playentry.org/user/block_flow.html 에서 확인했다(2026-11-18). 끝없이 도는 프로그램은 한 줄씩 볼 수 없어서, 강의에서는 선생님이 실제로 실행해 보인다(\"play\"). 겨냥하는 오개념: update를 빼도 보인다, sleep을 빼도 된다(너무 빨라서 보이지 않는다), 벽에서 멈추게 하려면 dx를 0으로 한다. 쓰기 문제는 정해 둔 장면 수만큼 돌린 뒤 거북이의 자리를 모범 답과 견준다(update와 sleep이 장면을 하나씩 센다).",
+  "id": "game-loop",
+  "unit": "움직이는 그림과 게임",
+  "no": 2,
+  "title": "움직임 만들기",
+  "desc": "조금 움직이고, 보여 주고, 쉬기를 되풀이해서 움직이는 그림을 만들어요.",
+  "minutes": 20,
+  "knows": ["variables", "loops", "functions"],
+  "showVars": true,
+  "canvas": true,
+  "learned": [
+    { "rule": "움직임의 틀: 조금 움직이고, turtle.update()로 보여 주고, time.sleep()으로 잠깐 쉬기를 while True로 되풀이해요. 맨 앞에 turtle.tracer(0)을 한 번 써요.", "code": "turtle.tracer(0)\nwhile True:\n    공.forward(3)\n    turtle.update()\n    time.sleep(0.02)" },
+    { "rule": "한 장면에 가는 거리를 이름표(dx)에 넣어 두면, 부호를 뒤집어서(dx = -dx) 반대쪽으로 가게 할 수 있어요.", "code": "if 공.xcor() > 220 or 공.xcor() < -220:\n    dx = -dx" },
+    { "rule": "끝없이 도는 프로그램은 멈춤 버튼으로 멈춰요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["지난 시간에는 거북이를 놓기만 했어요. 오늘은 거북이가 스스로 움직이게 해요. 만화 영화처럼, 조금씩 다른 장면을 빠르게 이어서 보여 주는 거예요."],
+    "frame-intro": ["엔트리에서는 계속 반복하기 안에 움직이기를 넣었죠. 파이썬에서는 [while True|와일 트루]예요. 그 안에서 세 가지를 해요. 조금 움직이고, [update|업데이트]로 장면을 보여 주고, [sleep|슬립]으로 아주 잠깐 쉬어요."],
+    "frame-first": ["맨 앞의 [tracer|트레이서] [0|영]은, 움직임을 하나하나 보여 주지 말고 [update|업데이트]를 부를 때 한 장면씩 보여 달라는 뜻이에요. 선생님이 실행해 볼게요."],
+    "frame-after": ["공이 오른쪽으로 미끄러지듯 가다가 그림판 밖으로 나가 버렸어요. 한 장면에 [3|삼]씩, 일 초에 쉰 장면쯤 보여 준 거예요. 끝없이 도는 프로그램이라서 선생님이 멈춤 버튼으로 멈췄어요."],
+    "wall-intro": ["밖으로 나가지 않게, 벽에 닿으면 되돌아오게 해 봐요. 한 장면에 가는 거리를 [dx|디 엑스]라는 이름표에 넣어 둬요. 벽을 넘으면 그 수의 부호를 뒤집어요. [4|사]가 [-4|빼기 사]가 되면 왼쪽으로 가요."],
+    "wall-after": ["공이 오른쪽 벽에서 튕겨서 왼쪽으로, 왼쪽 벽에서 튕겨서 다시 오른쪽으로 갔어요. 가로 자리에 [dx|디 엑스]를 더하기만 했는데, [dx|디 엑스]의 부호가 바뀌니까 방향이 바뀐 거예요."],
+    "check-ask": ["하나 물어볼게요. [dx|디 엑스]가 [4|사]일 때 부호를 뒤집으면 어떻게 될까요?"],
+    "check-right": ["맞아요. [-4|빼기 사]가 돼요. 가로 자리에 더하면 왼쪽으로 가요."],
+    "check-teach-1": ["부호만 뒤집혀요. 크기는 그대로 [4|사]예요."],
+    "check-teach-2": ["[4|사] 앞에 빼기 표시가 붙어서 [-4|빼기 사]가 돼요. 한 번 더 뒤집으면 다시 [4|사]예요."],
+    "follow-ok": ["좋아요. 공이 오른쪽으로 움직였어요. 멈춤 버튼으로 멈췄죠."],
+    "follow-intro-game": ["이제 직접 쳐 봐요. 칠판의 코드와 똑같이 치고 실행을 눌러요. 끝없이 도니까, 다 봤으면 멈춤 버튼을 눌러요."],
+    "summary": ["정리해요. 조금 움직이고, 보여 주고, 쉬기를 되풀이해요. 벽에서는 가는 거리의 부호를 뒤집어요."],
+
+    "q1-right": ["맞아요. [3|삼]씩 다섯 번 더해서 [15|십오]예요. 한 장면에 [3|삼]씩 간 것과 같아요."],
+    "q1-once": ["반복 안에서 다섯 번 더했어요."],
+    "q1-count": ["되풀이한 횟수가 아니라, 더한 값을 내보냈어요."],
+    "q1-explain": ["[0|영]에서 시작해서 [3|삼]씩 다섯 번, [15|십오]예요."],
+    "q2-right": ["맞아요. [110|백십]이 되자 [100|백]을 넘어서 부호가 뒤집혔어요. 그다음부터는 [20|이십]씩 줄어요."],
+    "q2-on": ["[110|백십]은 [100|백]보다 커요. 그때 [dx|디 엑스]의 부호가 뒤집혀요."],
+    "q2-small": ["[dx|디 엑스]의 크기는 그대로 [20|이십]이에요. 부호만 바뀌어요."],
+    "q2-explain": ["[110|백십], 부호가 뒤집혀서 [90|구십], [70|칠십]이에요. 벽에서 튕긴 거예요."],
+    "q3-right": ["맞아요. 두 번 뒤집으면 처음으로 돌아와요."],
+    "q3-minus": ["두 번 뒤집었어요. [-5|빼기 오]가 됐다가 다시 [5|오]가 돼요."],
+    "q3-zero": ["뒤집어도 크기는 그대로예요. [0|영]이 되지 않아요."],
+    "q3-explain": ["[5|오], [-5|빼기 오], 다시 [5|오]예요."],
+
+    "task-how": ["실행해서 움직임을 보고, 멈춤 버튼으로 멈춰요. 잘 되면 '제출'을 눌러요. 제출하면 선생님이 잠깐씩 돌려 봐요."],
+    "praise-bounce": ["세로 자리에 [dy|디 와이]를 더하고, 위아래 벽을 넘으면 부호를 뒤집었어요. 보여 주기와 쉬기도 빠뜨리지 않았어요."],
+    "bounce-nosleep": ["[sleep|슬립]이 없어요. 쉬지 않으면 너무 빨라서 움직임이 보이지 않아요. [update|업데이트] 다음 줄에 [time.sleep|타임 슬립]을 써요."],
+    "bounce-noupdate": ["[update|업데이트]가 없어요. 장면을 보여 주는 줄이 없으면 움직여도 화면이 바뀌지 않아요."],
+    "bounce-pos": ["공이 선생님 것과 다른 자리에 있어요. 한 장면에 [dy|디 와이]만큼만 움직이는지, 세로 자리가 [150|백오십]보다 커지거나 [-150|빼기 백오십]보다 작아질 때 부호를 뒤집는지 봐요."],
+    "hint-1": ["[while True|와일 트루]로 되풀이해요. 그 안에서 공의 세로 자리를, 지금 세로 자리에 [dy|디 와이]를 더한 값으로 바꿔요."],
+    "hint-2": ["세로 자리가 [150|백오십]보다 크거나 [-150|빼기 백오십]보다 작으면 [dy|디 와이]의 부호를 뒤집어요. 그다음에 [update|업데이트]와 [sleep|슬립]을 써요."],
+    "hint-3": ["칠판에 비슷한 예제를 적었어요. 가로로 튕기는 예제예요. 이걸 보고 써 봐요."],
+    "praise-both": ["가로와 세로를 따로 움직이고, 벽도 따로 살폈어요. 그래서 공이 비스듬히 날아가다가 네 벽에서 모두 튕겨요."],
+    "both-hint-1": ["한 장면에 가로 자리에는 [dx|디 엑스]를, 세로 자리에는 [dy|디 와이]를 더해요."],
+    "both-hint-2": ["가로 벽을 넘으면 [dx|디 엑스]의 부호를, 세로 벽을 넘으면 [dy|디 와이]의 부호를 뒤집어요. 조건을 따로 두 번 물어요."],
+
+    "done-1": ["오늘은 움직임을 만드는 틀을 배웠어요."],
+    "done-2": ["조금 움직이고, 보여 주고, 쉬기를 되풀이해요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      {
+        "pair": {
+          "entry": [
+            { "cat": "flow", "parts": ["계속 반복하기"] },
+            { "cat": "move", "indent": 1, "parts": ["이동 방향으로", { "in": "3" }, "만큼 움직이기"] },
+            { "cat": "flow", "indent": 1, "parts": [{ "in": "0.02" }, "초 기다리기"] }
+          ],
+          "python": "while True:\n    공.forward(3)\n    turtle.update()\n    time.sleep(0.02)",
+          "note": "파이썬은 장면을 보여 주는 줄(update)이 하나 더 있다"
+        }
+      },
+      { "say": "frame-intro" },
+      { "say": "frame-first" },
+      { "play": "import turtle\nimport time\n공 = turtle.Turtle()\n공.shape(\"circle\")\n공.penup()\nturtle.tracer(0)\nwhile True:\n    공.forward(3)\n    turtle.update()\n    time.sleep(0.02)", "ms": 3500 },
+      { "say": "frame-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "벽에서 튕기기", "items": ["dx:  한 장면에 가는 거리", "dx = -dx  부호를 뒤집는다 (반대쪽으로 간다)", "그림판의 가로는 -240부터 240까지"], "code": "공.setx(공.xcor() + dx)\nif 공.xcor() > 220 or 공.xcor() < -220:\n    dx = -dx" } },
+      { "say": "wall-intro" },
+      { "play": "import turtle\nimport time\n공 = turtle.Turtle()\n공.shape(\"circle\")\n공.penup()\nturtle.tracer(0)\ndx = 6\nwhile True:\n    공.setx(공.xcor() + dx)\n    if 공.xcor() > 220 or 공.xcor() < -220:\n        dx = -dx\n    turtle.update()\n    time.sleep(0.02)", "ms": 6000 },
+      { "say": "wall-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "dx가 4일 때  dx = -dx  를 하면?",
+          "ask": "check-ask",
+          "choices": ["-4가 된다  (반대쪽으로 간다)", "0이 된다  (멈춘다)"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "따라 쳐요 (다 봤으면 멈춤 버튼)", "code": "import turtle\nimport time\n공 = turtle.Turtle()\n공.penup()\nturtle.tracer(0)\nwhile True:\n    공.forward(3)\n    turtle.update()\n    time.sleep(0.02)" } },
+      { "follow": { "code": "import turtle\nimport time\n공 = turtle.Turtle()\n공.penup()\nturtle.tracer(0)\nwhile True:\n    공.forward(3)\n    turtle.update()\n    time.sleep(0.02)", "game": { "keys": [], "frames": 20 }, "say": ["follow-intro-game", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["turtle.tracer(0)  한 장면씩 그리기 (맨 앞에 한 번)", "while True:  계속 되풀이", "움직이기 → turtle.update() → time.sleep(0.02)", "dx = -dx  벽에서 튕기기"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "x = 0\nfor i in range(5):\n    x += 3\nprint(x)",
+      "answer": 0,
+      "choices": [
+        { "text": "15", "say": "q1-right" },
+        { "text": "3", "say": "q1-once" },
+        { "text": "5", "say": "q1-count" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "x = 90\ndx = 20\nfor i in range(3):\n    x += dx\n    if x > 100:\n        dx = -dx\n    print(x)",
+      "answer": 1,
+      "choices": [
+        { "text": "110\n130\n150", "say": "q2-on" },
+        { "text": "110\n90\n70", "say": "q2-right" },
+        { "text": "110\n100\n90", "say": "q2-small" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "dx = 5\ndx = -dx\ndx = -dx\nprint(dx)",
+      "answer": 2,
+      "choices": [
+        { "text": "-5", "say": "q3-minus" },
+        { "text": "0", "say": "q3-zero" },
+        { "text": "5", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "bounce",
+      "title": "위아래로 튕기는 공",
+      "story": "편집기에 공과 dy(한 장면에 세로로 가는 거리)가 준비돼 있어요. 공이 위로 올라가다가, 세로 자리가 150보다 커지면 아래로, -150보다 작아지면 다시 위로 튕기게 해요.",
+      "steps": ["준비된 코드 아래에 while True를 써요.", "한 장면에 세로 자리를 dy만큼 바꿔요.", "세로 자리가 150보다 크거나 -150보다 작으면 dy의 부호를 뒤집어요.", "turtle.update()와 time.sleep(0.02)를 써요."],
+      "start": "import turtle\nimport time\n공 = turtle.Turtle()\n공.shape(\"circle\")\n공.penup()\nturtle.tracer(0)\ndy = 5\n",
+      "cases": [
+        { "keys": [], "frames": 20, "inputs": [], "expect": [] },
+        { "keys": [], "frames": 80, "inputs": [], "expect": [] },
+        { "keys": [], "frames": 220, "inputs": [], "expect": [] }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "mistakes": [
+        { "game": "game-pos", "code": "^(?![\\s\\S]*sleep)", "say": "bounce-nosleep" },
+        { "game": "game-pos", "code": "^(?![\\s\\S]*update)", "say": "bounce-noupdate" },
+        { "game": "game-pos", "say": "bounce-pos" }
+      ],
+      "praise": "praise-bounce",
+      "solution": "import turtle\nimport time\n공 = turtle.Turtle()\n공.shape(\"circle\")\n공.penup()\nturtle.tracer(0)\ndy = 5\nwhile True:\n    공.sety(공.ycor() + dy)\n    if 공.ycor() > 150 or 공.ycor() < -150:\n        dy = -dy\n    turtle.update()\n    time.sleep(0.02)",
+      "hints": [
+        { "say": "hint-1" },
+        { "say": "hint-2" },
+        { "say": "hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "import turtle\nimport time\n공 = turtle.Turtle()\n공.penup()\nturtle.tracer(0)\ndx = 4\nfor i in range(40):\n    공.setx(공.xcor() + dx)\n    if 공.xcor() > 50 or 공.xcor() < -50:\n        dx = -dx\n    turtle.update()\n    time.sleep(0.02)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "both",
+    "title": "심화: 네 벽에서 튕기는 공",
+    "story": "이번에는 공이 비스듬히 날아가요. 한 장면에 가로로 dx, 세로로 dy만큼 움직여요. 가로 자리가 220보다 커지거나 -220보다 작아지면 dx의 부호를, 세로 자리가 160보다 커지거나 -160보다 작아지면 dy의 부호를 뒤집어요.",
+    "steps": ["한 장면에 가로 자리와 세로 자리를 모두 바꿔요.", "가로 벽과 세로 벽을 따로 물어요.", "turtle.update()와 time.sleep(0.02)를 써요."],
+    "start": "import turtle\nimport time\n공 = turtle.Turtle()\n공.shape(\"circle\")\n공.penup()\nturtle.tracer(0)\ndx = 6\ndy = 4\n",
+    "cases": [
+      { "keys": [], "frames": 40, "inputs": [], "expect": [] },
+      { "keys": [], "frames": 120, "inputs": [], "expect": [] },
+      { "keys": [], "frames": 300, "inputs": [], "expect": [] }
+    ],
+    "expect": [],
+    "game": true,
+    "showCases": 2,
+    "praise": "praise-both",
+    "solution": "import turtle\nimport time\n공 = turtle.Turtle()\n공.shape(\"circle\")\n공.penup()\nturtle.tracer(0)\ndx = 6\ndy = 4\nwhile True:\n    공.setx(공.xcor() + dx)\n    공.sety(공.ycor() + dy)\n    if 공.xcor() > 220 or 공.xcor() < -220:\n        dx = -dx\n    if 공.ycor() > 160 or 공.ycor() < -160:\n        dy = -dy\n    turtle.update()\n    time.sleep(0.02)",
+    "hints": [{ "say": "both-hint-1" }, { "say": "both-hint-2" }]
+  }
+}

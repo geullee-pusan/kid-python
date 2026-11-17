@@ -16,6 +16,7 @@
 //            - again: true면, 준 답을 다 쓰고도 프로그램이 또 물었을 때만 본다(그때까지의 출력으로 견준다)
 
 import { compareDrawing } from './drawing.js';
+import { compareScene } from './scene.js';
 
 /** 출력을 줄 목록으로. 줄 끝 빈칸과 맨 끝 빈 줄은 뺀다. */
 export function outputLines(output) {
@@ -108,5 +109,26 @@ export function diagnoseDrawing(task, code, got, want) {
   }
   const typed = (task.inputs ?? []).join(',');
   const mistake = (task.mistakes ?? []).find((m) => m.draw === result.kind && (!m.code || new RegExp(m.code).test(bare)) && (!m.inputs || new RegExp(m.inputs).test(typed)));
+  return mistake ? { kind: 'mistake', say: mistake.say } : result;
+}
+
+/**
+ * 게임 문제 채점. 정해 둔 키와 장면 수만큼 돌린 뒤의 모습(거북이들의 자리와 글자, 출력)을 모범 답의 것과 견준다(src/core/scene.js).
+ * @param {{game: true|{heading?: boolean, look?: boolean, text?: boolean}, checks?: object[], mistakes?: object[]}} task
+ *   mistakes의 { game: 'game-pos', say } 는 그 어긋남일 때 이 문제에 맞는 말을 하게 한다(code 정규식을 함께 적을 수 있다).
+ * @param {string} code 아이가 쓴 코드
+ * @param {{draw: object[], output: string}} got 아이의 프로그램을 돌린 결과
+ * @param {{draw: object[], output: string}} want 모범 답을 돌린 결과
+ * @returns {{kind: string, vars?: object, say?: string}} kind: correct, mistake, game-pos, … , game-output(출력이 다르다)
+ */
+export function diagnoseGame(task, code, got, want) {
+  let result = compareScene(got.draw ?? [], want.draw ?? [], task.game === true ? {} : task.game);
+  if (result.kind === 'game-correct' && outputLines(got.output).join('\n') !== outputLines(want.output).join('\n')) result = { kind: 'game-output' };
+  const bare = stripStrings(code);
+  if (result.kind === 'game-correct') {
+    const skipped = (task.checks ?? []).find((rule) => !new RegExp(rule.pattern).test(bare));
+    return skipped ? { kind: 'mistake', say: skipped.say } : { kind: 'correct' };
+  }
+  const mistake = (task.mistakes ?? []).find((m) => m.game === result.kind && (!m.code || new RegExp(m.code).test(bare)));
   return mistake ? { kind: 'mistake', say: mistake.say } : result;
 }

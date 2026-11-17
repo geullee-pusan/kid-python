@@ -6,7 +6,8 @@ import './app.css';
 import curriculum from './content/curriculum.json';
 import look from './content/teacher-look.json';
 import teacherVoice from './content/teacher.json';
-import { diagnoseDrawing, diagnoseTask, outputLines } from './core/diagnose.js';
+import { diagnoseDrawing, diagnoseGame, diagnoseTask, outputLines } from './core/diagnose.js';
+import { compareScene } from './core/scene.js';
 import { compareDrawing } from './core/drawing.js';
 import { explain } from './core/errors-ko.js';
 import { hasBatchim } from './core/korean.js';
@@ -218,6 +219,25 @@ async function main() {
     if (!wanted.has(key)) wanted.set(key, (await runner.run(code, { check: true, inputs })).draw ?? []);
     return wanted.get(key);
   }
+  // 게임 문제: 모범 답을 정해 둔 키와 장면 수로 돌린 결과(그린 것과 출력).
+  async function wantGame(code, one) {
+    const key = JSON.stringify([code, one]);
+    if (!wanted.has(key)) {
+      const ran = await runner.run(code, { check: true, inputs: one.inputs ?? [], randoms: one.randoms, keys: one.keys, frames: one.frames });
+      wanted.set(key, { draw: ran.draw ?? [], output: ran.output ?? '' });
+    }
+    return wanted.get(key);
+  }
+  const KEY_WORDS = { Left: '왼쪽', Right: '오른쪽', Up: '위', Down: '아래', space: '스페이스', Return: '엔터' };
+  /** 눌러 본 키를 말로: ["Right", "Right", null, "Up"] → "오른쪽 2번, 위". 같은 키를 이어 누른 것은 몇 번인지로 줄인다. */
+  const keyWords = (keys) => {
+    const runs = [];
+    for (const name of (keys ?? []).filter(Boolean)) {
+      if (runs.at(-1)?.name === name) runs.at(-1).n += 1;
+      else runs.push({ name, n: 1 });
+    }
+    return runs.map(({ name, n }) => (KEY_WORDS[name] ?? name) + (n > 1 ? ` ${n}번` : '')).join(', ');
+  };
 
   function showScreen(name) {
     screen = name;
@@ -565,6 +585,7 @@ async function main() {
         showCanvas(lessonCanvas, usesTurtle(code) || Boolean(mission?.canvas));
       },
       draw: (cmds, maxMs) => lessonCanvas.push(cmds, { maxMs }),
+      drawEnd: () => lessonCanvas.endRun(),
     },
     knows,
   });
@@ -614,7 +635,10 @@ async function main() {
         // draw: 그리기 따라 하기는 출력이 아니라 그림을 견준다.
         const same = scene.stopped
           ? Boolean(ran?.stopped)
-          : scene.draw
+          : scene.game
+            ? // 게임 따라 하기: 아이가 실행해 본 뒤(멈춤으로 끝내도 된다), 정해 둔 키와 장면 수로 돌려서 선생님 것과 견준다.
+              ran && !ran.error && (await sameGame(editor.getCode(), scene.code, scene.game))
+            : scene.draw
             ? ran && !ran.error && !ran.stopped && compareDrawing(ran.draw ?? [], await wantDrawing(scene.code)).kind === 'draw-correct'
             : ran && !ran.error && !ran.stopped && (scene.match ? new RegExp(scene.match).test(ran.output) : outputLines(ran.output).join('\n') === scene.expect.join('\n'));
         log('follow', { mission: mission.id, ok: Boolean(same), tries, code: editor.getCode() });
@@ -630,7 +654,7 @@ async function main() {
         if (!ran) await say('follow-not-run');
         else if (scene.stopped) await say('follow-not-stopped');
         else if (ran.error) await player.say(explain(ran.error, knows()));
-        else await say(scene.draw ? 'follow-different-draw' : 'follow-different');
+        else await say(scene.draw || scene.game ? 'follow-different-draw' : 'follow-different');
         if (player.stopped) return 'stop';
         allowRun(true);
       }
@@ -639,6 +663,13 @@ async function main() {
       allowRun(false);
       show('skip');
     }
+  }
+
+  /** 두 프로그램을 같은 키와 장면 수로 돌렸을 때 마지막 모습이 같은가 */
+  async function sameGame(mine, theirs, game) {
+    const ran = await runner.run(mine, { check: true, keys: game.keys, frames: game.frames, randoms: game.randoms });
+    if (ran.error) return false;
+    return compareScene(ran.draw ?? [], (await wantGame(theirs, game)).draw, game).kind === 'game-correct';
   }
 
   /** 강의 중 확인 문제: 고른 보기 번호를 돌려준다. 강의를 건너뛰면 'stop'. */
@@ -737,10 +768,12 @@ async function main() {
     let diagnosis = { kind: 'correct' };
     for (const one of task.cases) {
       // randoms: 무작위 수를 쓰는 문제는 채점할 때 나올 수를 정해 둔다.
-      const result = await runner.run(code, { check: true, inputs: one.inputs, randoms: one.randoms });
+      const result = await runner.run(code, { check: true, inputs: one.inputs ?? [], randoms: one.randoms, keys: one.keys, frames: one.frames });
       if (result.stopped) return null;
+      // 게임 문제: 어떤 키를 눌러 봤는지 남긴다.
+      if (task.game) lessonConsole.append(keyWords(one.keys) ? `▶ ${keyWords(one.keys)} 키를 눌러 봤어요\n` : '▶ 잠깐 돌려 봤어요\n', 'note');
       // 무엇을 넣어 돌려 봤는지 아이가 볼 수 있게 출력 칸에 남긴다(묻지 않는 문제는 적을 것이 없다).
-      if (one.inputs.length) lessonConsole.append(`▶ ${picked(one)}${asAnswer(one.inputs)} 답해 봤어요\n`, 'note');
+      if (one.inputs?.length) lessonConsole.append(`▶ ${picked(one)}${asAnswer(one.inputs)} 답해 봤어요\n`, 'note');
       // 끝나지 않는 반복은 출력이 수만 줄일 수 있다. 앞의 몇 줄만 보여 준다.
       const endless = result.error?.type === 'TraceLimit';
       const printed = result.output ?? '';
@@ -755,7 +788,7 @@ async function main() {
       } else if (result.error?.type === 'EOFError') {
         // 준 답을 다 쓰고도 또 물었다. 이 문제에서 흔한 실수(예: break를 빼먹음)로 짚을 수 있으면 그 말을 한다.
         const guess = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, { error: null, output: result.output, again: true });
-        diagnosis = guess.kind === 'mistake' ? guess : { kind: 'input-many', vars: { want: one.inputs.length } };
+        diagnosis = guess.kind === 'mistake' ? guess : { kind: 'input-many', vars: { want: (one.inputs ?? []).length } };
       } else if (result.error) {
         const at = result.error.line ? ` (${result.error.line}번 줄)` : '';
         lessonConsole.append(`\n${explain(result.error, knows())}${at}\n`, 'ko');
@@ -763,14 +796,17 @@ async function main() {
         if (result.error.line) editor.markErrorLine(result.error.line);
         diagnosis = { kind: 'error', text: explain(result.error, knows()) };
       } else if (result.unused > 0) {
-        diagnosis = { kind: 'input-few', vars: { want: one.inputs.length, got: one.inputs.length - result.unused } };
+        diagnosis = { kind: 'input-few', vars: { want: (one.inputs ?? []).length, got: (one.inputs ?? []).length - result.unused } };
+      } else if (task.game) {
+        diagnosis = diagnoseGame(task, code, result, await wantGame(task.solution, one));
+        if (diagnosis.kind !== 'correct' && keyWords(one.keys)) diagnosis.keys = keyWords(one.keys);
       } else if (task.draw) {
         diagnosis = diagnoseDrawing({ ...task, inputs: one.inputs }, code, result.draw, await wantDrawing(task.solution, one.inputs));
       } else {
         diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, result);
       }
       if (diagnosis.kind !== 'correct') {
-        diagnosis.inputs = one.inputs;
+        diagnosis.inputs = one.inputs ?? [];
         break;
       }
       lessonConsole.append('\n');
@@ -787,7 +823,16 @@ async function main() {
     const several = task.show && task.cases && (task.showCases ?? 1) > 1 ? task.cases.slice(0, task.showCases) : null;
     // 그리기 문제는 글 대신 본보기 그림을 보여 준다(모범 답을 돌려서 얻는다).
     let pictures = null;
-    if (task.draw) {
+    if (task.game) {
+      // 게임 문제는 정해 둔 키를 누른 뒤의 모습을 거북이와 함께 보여 준다.
+      pictures = [];
+      for (const one of task.cases.slice(0, task.showCases ?? 1)) {
+        // 키 없이 보여 주는 장면이 둘이면 뒤의 것은 시간이 더 지난 모습이다.
+        const idle = pictures.some((p) => p.idle) ? '시간이 더 지나면' : '조금 지나면';
+        pictures.push({ scene: true, idle: !keyWords(one.keys), note: keyWords(one.keys) ? `${keyWords(one.keys)} 키를 누르면` : idle, cmds: (await wantGame(task.solution, one)).draw });
+      }
+      checkAbort();
+    } else if (task.draw) {
       pictures = [];
       const shown = task.cases ? task.cases.slice(0, task.showCases ?? 1) : [null];
       for (const one of shown) {
@@ -800,9 +845,9 @@ async function main() {
         ...task,
         pictures,
         title: total > 1 ? `${task.title} (${index + 1} / ${total})` : task.title,
-        want: task.show && !task.draw ? (sample ? sample.expect : task.expect) : null,
-        wantNote: task.show && !task.draw && sample?.inputs.length ? `${picked(sample)}${asAnswer(sample.inputs)} 답했을 때 이렇게 나와야 해요` : null,
-        wants: several && !task.draw ? several.map((one) => ({ note: `${picked(one)}${asAnswer(one.inputs)} 답하면`, lines: one.expect })) : null,
+        want: task.show && !task.draw && !task.game ? (sample ? sample.expect : task.expect) : null,
+        wantNote: task.show && !task.draw && !task.game && sample?.inputs?.length ? `${picked(sample)}${asAnswer(sample.inputs)} 답했을 때 이렇게 나와야 해요` : null,
+        wants: several && !task.draw && !task.game ? several.map((one) => ({ note: `${picked(one)}${asAnswer(one.inputs)} 답하면`, lines: one.expect })) : null,
       });
     showTask();
     // 쓰던 것이 있으면 이어서, 없으면 문제에 딸린 시작 코드(고치기 문제)로 시작한다.

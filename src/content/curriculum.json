@@ -143,6 +143,17 @@
         "turtle-goto",
         "unit13-review"
       ]
+    },
+    {
+      "title": "움직이는 그림과 게임",
+      "lessons": [
+        "game-many",
+        "game-loop",
+        "game-key",
+        "game-touch",
+        "game-list",
+        "unit14-review"
+      ]
     }
   ]
 }

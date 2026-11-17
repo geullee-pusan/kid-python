@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 
 import { loadPyodide } from 'pyodide';
 
-import { diagnoseDrawing, diagnoseTask, outputLines } from '../src/core/diagnose.js';
+import { diagnoseDrawing, diagnoseGame, diagnoseTask, outputLines } from '../src/core/diagnose.js';
 import { strokes } from '../src/core/drawing.js';
 import { explain } from '../src/core/errors-ko.js';
 import { allTasks } from '../src/core/lesson.js';
@@ -30,7 +30,9 @@ before(async () => {
   pyodide.runPython(new Function(`return \`${body}\`;`)());
   const call = pyodide.globals.get('__kidpy_scripted');
   // limit: 한 줄씩 보기에서 보여 줄 줄 수의 한도. randoms: random.randint가 차례로 돌려줄 값.
-  scripted = (code, inputs, trace, { limit, randoms } = {}) => JSON.parse(call(code, JSON.stringify(inputs ?? []), trace, limit ?? 300, JSON.stringify(randoms ?? [])));
+  // keys, frames: 게임을 돌려 볼 때 차례로 누를 키와 돌릴 장면 수.
+  scripted = (code, inputs, trace, { limit, randoms, keys, frames } = {}) =>
+    JSON.parse(call(code, JSON.stringify(inputs ?? []), trace, limit ?? 300, JSON.stringify(randoms ?? []), JSON.stringify(keys ?? []), frames ?? 0));
 });
 
 /** 한 줄씩 보기로 돌린다. 화면에 보이는 그대로(질문과 넣은 답 포함)의 출력을 돌려준다. */
@@ -56,7 +58,7 @@ function grade(task, code) {
   }
   let diagnosis = { kind: 'correct' };
   for (const one of task.cases) {
-    const ran = scripted(code, one.inputs, false, { randoms: one.randoms });
+    const ran = scripted(code, one.inputs, false, { randoms: one.randoms, keys: one.keys, frames: one.frames });
     // 끝나지 않는 반복은 실행기가 줄 수를 세다가 멈춘다.
     if (ran.error?.type === 'TraceLimit') diagnosis = { kind: 'endless' };
     else if (ran.error?.type === 'EOFError') {
@@ -66,6 +68,7 @@ function grade(task, code) {
     }
     else if (ran.error) diagnosis = { kind: 'error', error: ran.error };
     else if (ran.unused > 0) diagnosis = { kind: 'input-few' };
+    else if (task.game) diagnosis = diagnoseGame(task, code, ran, scripted(task.solution, one.inputs, false, { randoms: one.randoms, keys: one.keys, frames: one.frames }));
     else if (task.draw) diagnosis = diagnoseDrawing({ ...task, inputs: one.inputs }, code, ran.draw, want(one.inputs));
     else diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, ran);
     if (diagnosis.kind !== 'correct') {
@@ -89,6 +92,7 @@ for (const m of Object.values(SCRIPTS)) {
         if (q.outcome.strokes !== undefined) assert.equal(strokes(ran.draw).length, q.outcome.strokes, `${q.id}: 선의 수`);
         if (q.outcome.heading !== undefined) assert.equal(last.h, q.outcome.heading, `${q.id}: 끝난 방향`);
         if (q.outcome.at !== undefined) assert.ok(Math.hypot(last.x - q.outcome.at[0], last.y - q.outcome.at[1]) < 0.5, `${q.id}: 끝난 자리 (${last.x}, ${last.y})`);
+        if (q.outcome.turtles !== undefined) assert.equal(new Map((ran.draw ?? []).filter((cmd) => cmd.k === 'pose').map((cmd) => [cmd.t, cmd.v])).values().filter((v) => v).toArray().length, q.outcome.turtles, `${q.id}: 보이는 거북이의 수`);
         if (q.outcome.home !== undefined) assert.equal(Math.hypot(last.x, last.y) < 0.5, q.outcome.home, `${q.id}: 제자리로 돌아왔는지`);
       } else {
         assert.equal(ran.error, null, `${q.id}: 오류가 나면 안 돼요 (${ran.error?.message})`);
@@ -127,7 +131,13 @@ for (const m of Object.values(SCRIPTS)) {
     for (const part of m.lecture ?? []) {
       for (const spec of part) {
         if (spec.follow) {
-          const ran = typedRun(spec.follow.code, spec.follow.inputs, { randoms: spec.follow.randoms });
+          const ran = typedRun(spec.follow.code, spec.follow.inputs, { randoms: spec.follow.randoms, keys: spec.follow.game?.keys, frames: spec.follow.game?.frames, limit: spec.follow.game ? 5000 : undefined });
+          // 게임 따라 하기: 정해 둔 키와 장면 수로 돌렸을 때 오류 없이 거북이가 나와야 한다.
+          if (spec.follow.game) {
+            assert.equal(ran.error, null, `게임 따라 하기에서 오류 (${ran.error?.message})`);
+            assert.ok(ran.draw.some((cmd) => cmd.k === 'pose'), '게임 따라 하기는 거북이가 나와야 해요');
+            continue;
+          }
           // 멈춤 버튼 연습: 끝나지 않는 프로그램이어야 한다.
           if (spec.follow.stopped) {
             assert.equal(ran.error?.type, 'TraceLimit', '멈춤 연습은 끝나지 않는 프로그램이어야 해요');
@@ -141,6 +151,11 @@ for (const m of Object.values(SCRIPTS)) {
           }
           if (spec.follow.match) assert.match(ran.output, new RegExp(spec.follow.match), '따라 하기 출력 모양');
           else assert.deepEqual(outputLines(ran.output), spec.follow.expect, '따라 하기 출력');
+        }
+        if (spec.play !== undefined) {
+          // 선생님이 실행해 보이는 프로그램: 적어 둔 키를 차례로 눌러 가며 얼마쯤 돌려도 오류가 없어야 한다.
+          const ran = scripted(spec.play, [], false, { keys: (spec.keys ?? []).map(([, name]) => name), frames: 80 });
+          assert.equal(ran.error, null, `실행해 보이기에서 오류 (${ran.error?.message}): ${spec.play.replace(/\n/g, ' ⏎ ')}`);
         }
         if (spec.trace !== undefined) {
           const ran = shown(spec.trace, spec.inputs, { limit: spec.limit, randoms: spec.randoms });
@@ -683,6 +698,39 @@ const WRONG = [
   ['unit13-review', 'house', 'import turtle\ndef 네모(x, y, 가로, 세로):\n    turtle.penup()\n    turtle.goto(x, y)\n    turtle.pendown()\n    for i in range(2):\n        turtle.forward(가로)\n        turtle.left(90)\n        turtle.forward(세로)\n        turtle.left(90)\n네모(-60, -80, 120, 100)\nturtle.penup()\nturtle.goto(-60, 20)\nturtle.pendown()\nturtle.color("red")\nturtle.begin_fill()\nturtle.goto(60, 20)\nturtle.goto(0, 90)\nturtle.goto(-60, 20)\nturtle.end_fill()', 'mistake', 'house-missing'],
   ['unit13-review', 'house', 'import turtle\nturtle.color("red")\nturtle.begin_fill()\ndef 네모(x, y, 가로, 세로):\n    turtle.penup()\n    turtle.goto(x, y)\n    turtle.pendown()\n    for i in range(2):\n        turtle.forward(가로)\n        turtle.left(90)\n        turtle.forward(세로)\n        turtle.left(90)\n네모(-60, -80, 120, 100)\n네모(-15, -80, 30, 50)\nturtle.end_fill()\nturtle.penup()\nturtle.goto(-60, 20)\nturtle.pendown()\nturtle.color("red")\nturtle.begin_fill()\nturtle.goto(60, 20)\nturtle.goto(0, 90)\nturtle.goto(-60, 20)\nturtle.end_fill()', 'mistake', 'house-fill'],
   ['unit13-review', 'house', 'import turtle\nturtle.penup()\nturtle.goto(-60, 20)\nturtle.pendown()\nturtle.color("red")\nturtle.begin_fill()\nturtle.goto(60, 20)\nturtle.goto(0, 90)\nturtle.goto(-60, 20)\nturtle.end_fill()\nturtle.color("black")\nturtle.goto(-60, -80)\nturtle.goto(60, -80)\nturtle.goto(60, 20)\nturtle.penup()\nturtle.goto(-15, -80)\nturtle.pendown()\nturtle.goto(-15, -30)\nturtle.goto(15, -30)\nturtle.goto(15, -80)', 'correct'],
+  // 움직이는 그림과 게임 단원
+  ['game-many', 'two', 'import turtle\n공 = turtle.Turtle()\n공.shape("circle")\n공.color("blue")\n공.penup()\n공.goto(100, 0)\n판 = turtle.Turtle()\n판.shape("square")\n판.color("red")\n판.penup()\n판.goto(-100, 0)', 'mistake', 'two-look'],
+  ['game-many', 'two', 'import turtle\n공 = turtle.Turtle()\n공.shape("circle")\n공.color("red")\n공.penup()\n공.goto(0, 100)\n판 = turtle.Turtle()\n판.shape("square")\n판.color("blue")\n판.penup()\n판.goto(0, -100)', 'mistake', 'two-pos'],
+  ['game-many', 'two', 'import turtle\n공 = turtle.Turtle()\n공.shape("circle")\n공.color("red")\n공.penup()\n공.goto(100, 0)', 'mistake', 'two-count'],
+  ['game-many', 'two', 'import turtle\n공 = turtle.turtle()', 'error'],
+  ['game-many', 'two', 'import turtle\n판 = turtle.Turtle()\n판.penup()\n판.shape("square")\n판.color("blue")\n판.setx(-100)\n공 = turtle.Turtle()\n공.penup()\n공.shape("circle")\n공.color("red")\n공.setx(100)', 'correct'],
+  ['game-many', 'row', 'import turtle\nfor i in range(5):\n    공 = turtle.Turtle()\n    공.shape("circle")\n    공.penup()\n    공.goto(i * 50, 0)', 'game-pos'],
+  ['game-many', 'row', 'import turtle\nfor x in [-100, -50, 0, 50, 100]:\n    공 = turtle.Turtle()\n    공.shape("circle")\n    공.penup()\n    공.setx(x)', 'correct'],
+  ['game-loop', 'bounce', 'import turtle\nimport time\n공 = turtle.Turtle()\n공.shape("circle")\n공.penup()\nturtle.tracer(0)\ndy = 5\nwhile True:\n    공.sety(공.ycor() + dy)\n    if 공.ycor() > 150 or 공.ycor() < -150:\n        dy = -dy\n    turtle.update()', 'mistake', 'bounce-nosleep'],
+  ['game-loop', 'bounce', 'import turtle\nimport time\n공 = turtle.Turtle()\n공.shape("circle")\n공.penup()\nturtle.tracer(0)\ndy = 5\nwhile True:\n    공.sety(공.ycor() + dy)\n    if 공.ycor() > 150 or 공.ycor() < -150:\n        dy = -dy\n    time.sleep(0.02)', 'mistake', 'bounce-noupdate'],
+  ['game-loop', 'bounce', 'import turtle\nimport time\n공 = turtle.Turtle()\n공.shape("circle")\n공.penup()\nturtle.tracer(0)\ndy = 5\nwhile True:\n    공.sety(공.ycor() + dy)\n    turtle.update()\n    time.sleep(0.02)', 'mistake', 'bounce-pos'],
+  ['game-loop', 'bounce', 'import turtle\nimport time\n공 = turtle.Turtle()\n공.shape("circle")\n공.penup()\nturtle.tracer(0)\ndy = 5\nwhile True:\n    공.sety(공.ycor() + dy)\n    if 공.ycor() > 150:\n        dy = 0\n    turtle.update()\n    time.sleep(0.02)', 'mistake', 'bounce-pos'],
+  ['game-loop', 'bounce', 'import turtle\nimport time\n공 = turtle.Turtle()\n공.shape("circle")\n공.penup()\nturtle.tracer(0)\ndy = 5\nwhile True:\n    공.goto(0, 공.ycor() + dy)\n    if 공.ycor() > 150:\n        dy = -5\n    if 공.ycor() < -150:\n        dy = 5\n    turtle.update()\n    time.sleep(0.02)', 'correct'],
+  ['game-loop', 'both', 'import turtle\nimport time\n공 = turtle.Turtle()\n공.shape("circle")\n공.penup()\nturtle.tracer(0)\ndx = 6\ndy = 4\nwhile True:\n    공.setx(공.xcor() + dx)\n    공.sety(공.ycor() + dy)\n    if 공.xcor() > 220 or 공.xcor() < -220 or 공.ycor() > 160 or 공.ycor() < -160:\n        dx = -dx\n        dy = -dy\n    turtle.update()\n    time.sleep(0.02)', 'game-pos'],
+  ['game-key', 'four', 'import turtle\n공 = turtle.Turtle()\n공.shape("turtle")\n공.penup()\ndef 오른쪽():\n    공.setx(공.xcor() + 20)\ndef 왼쪽():\n    공.setx(공.xcor() - 20)\ndef 위():\n    공.sety(공.ycor() + 20)\ndef 아래():\n    공.sety(공.ycor() - 20)\nturtle.onkeypress(오른쪽, "Right")\nturtle.onkeypress(왼쪽, "Left")\nturtle.onkeypress(위, "Up")\nturtle.onkeypress(아래, "Down")\nturtle.done()', 'mistake', 'four-nolisten'],
+  ['game-key', 'four', 'import turtle\n공 = turtle.Turtle()\n공.shape("turtle")\n공.penup()\ndef 오른쪽():\n    공.setx(공.xcor() + 20)\ndef 왼쪽():\n    공.setx(공.xcor() - 20)\ndef 위():\n    공.sety(공.ycor() + 20)\ndef 아래():\n    공.sety(공.ycor() - 20)\nturtle.onkeypress(오른쪽, "Right")\nturtle.onkeypress(왼쪽, "Left")\nturtle.onkeypress(아래, "Up")\nturtle.onkeypress(위, "Down")\nturtle.listen()\nturtle.done()', 'mistake', 'four-pos'],
+  ['game-key', 'four', 'import turtle\n공 = turtle.Turtle()\n공.shape("turtle")\n공.penup()\ndef 오른쪽():\n    공.setx(공.xcor() + 20)\ndef 왼쪽():\n    공.setx(공.xcor() - 20)\ndef 위():\n    공.sety(공.ycor() + 20)\ndef 아래():\n    공.sety(공.ycor() - 20)\nturtle.onkeypress(오른쪽(), "Right")\nturtle.listen()', 'error'],
+  ['game-key', 'four', 'import turtle\n공 = turtle.Turtle()\n공.shape("turtle")\n공.penup()\ndef 오른쪽():\n    공.setx(공.xcor() + 20)\ndef 왼쪽():\n    공.setx(공.xcor() - 20)\ndef 위():\n    공.sety(공.ycor() + 20)\ndef 아래():\n    공.sety(공.ycor() - 20)\nturtle.onkeypress(오른쪽, "right")\nturtle.listen()', 'error'],
+  ['game-key', 'four', 'import turtle\n공 = turtle.Turtle()\n공.shape("turtle")\n공.penup()\ndef 오른쪽():\n    공.setx(공.xcor() + 20)\ndef 왼쪽():\n    공.setx(공.xcor() - 20)\ndef 위():\n    공.sety(공.ycor() + 20)\ndef 아래():\n    공.sety(공.ycor() - 20)\nturtle.onkeypress(오른쪽, "Right")\nturtle.onkeypress(왼쪽, "Left")\nturtle.onkeypress(위, "Up")\nturtle.onkeypress(아래, "Down")\nturtle.listen()', 'correct'],
+  ['game-key', 'wall', 'import turtle\n공 = turtle.Turtle()\n공.shape("turtle")\n공.penup()\n공.setx(160)\ndef 오른쪽():\n    공.setx(공.xcor() + 20)\ndef 왼쪽():\n    공.setx(공.xcor() - 20)\nturtle.onkeypress(오른쪽, "Right")\nturtle.onkeypress(왼쪽, "Left")\nturtle.listen()\nturtle.done()', 'mistake', 'wall-out'],
+  ['game-touch', 'eat', 'import turtle\nimport time\nimport random\nturtle.tracer(0)\n공 = turtle.Turtle()\n공.shape("turtle")\n공.penup()\n먹이 = turtle.Turtle()\n먹이.shape("circle")\n먹이.color("red")\n먹이.penup()\n먹이.goto(100, 0)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\n점수 = 0\ndef 오른쪽():\n    공.setx(공.xcor() + 20)\ndef 왼쪽():\n    공.setx(공.xcor() - 20)\nturtle.onkeypress(오른쪽, "Right")\nturtle.onkeypress(왼쪽, "Left")\nturtle.listen()\nwhile True:\n    if 공.distance(먹이) < 20:\n        먹이.setx(random.randint(-10, 10) * 20)\n    판.clear()\n    판.write("점수: " + str(점수))\n    turtle.update()\n    time.sleep(0.02)', 'mistake', 'eat-text'],
+  ['game-touch', 'eat', 'import turtle\nimport time\nimport random\nturtle.tracer(0)\n공 = turtle.Turtle()\n공.shape("turtle")\n공.penup()\n먹이 = turtle.Turtle()\n먹이.shape("circle")\n먹이.color("red")\n먹이.penup()\n먹이.goto(100, 0)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\n점수 = 0\ndef 오른쪽():\n    공.setx(공.xcor() + 20)\ndef 왼쪽():\n    공.setx(공.xcor() - 20)\nturtle.onkeypress(오른쪽, "Right")\nturtle.onkeypress(왼쪽, "Left")\nturtle.listen()\nwhile True:\n    if 공.distance(먹이) < 20:\n        점수 += 1\n    판.clear()\n    판.write("점수: " + str(점수))\n    turtle.update()\n    time.sleep(0.02)', 'mistake', 'eat-pos'],
+  ['game-touch', 'eat', 'import turtle\nimport time\nimport random\nturtle.tracer(0)\n공 = turtle.Turtle()\n공.shape("turtle")\n공.penup()\n먹이 = turtle.Turtle()\n먹이.shape("circle")\n먹이.color("red")\n먹이.penup()\n먹이.goto(100, 0)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\n점수 = 0\ndef 오른쪽():\n    공.setx(공.xcor() + 20)\ndef 왼쪽():\n    공.setx(공.xcor() - 20)\nturtle.onkeypress(오른쪽, "Right")\nturtle.onkeypress(왼쪽, "Left")\nturtle.listen()\nwhile True:\n    if 공.distance(먹이) < 20:\n        점수 += 1\n        먹이.setx(random.randint(-10, 10) * 20)\n    판.clear()\n    판.write("점수: " + 점수)\n    turtle.update()\n    time.sleep(0.02)', 'error'],
+  ['game-touch', 'eat', 'import turtle\nimport time\nimport random\nturtle.tracer(0)\n공 = turtle.Turtle()\n공.shape("turtle")\n공.penup()\n먹이 = turtle.Turtle()\n먹이.shape("circle")\n먹이.color("red")\n먹이.penup()\n먹이.goto(100, 0)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\n점수 = 0\ndef 오른쪽():\n    공.setx(공.xcor() + 20)\ndef 왼쪽():\n    공.setx(공.xcor() - 20)\nturtle.onkeypress(오른쪽, "Right")\nturtle.onkeypress(왼쪽, "Left")\nturtle.listen()\nwhile True:\n    if 공.distance(먹이) < 20:\n        점수 = 점수 + 1\n        먹이.goto(random.randint(-10, 10) * 20, 0)\n    판.clear()\n    판.write("점수: " + str(점수))\n    turtle.update()\n    time.sleep(0.02)', 'correct'],
+  ['game-list', 'rain', 'import turtle\nimport time\nturtle.tracer(0)\n별들 = []\nfor i in range(3):\n    별 = turtle.Turtle()\n    별.shape("circle")\n    별.color("gold")\n    별.penup()\n    별.goto(i * 100 - 100, 150)\n    별들.append(별)\nwhile True:\n    for 별 in 별들:\n        별.sety(별.ycor() - 3)\n        if 별.ycor() < -150:\n            별.sety(150)\n    turtle.update()\n    time.sleep(0.02)', 'mistake', 'rain-same'],
+  ['game-list', 'rain', 'import turtle\nimport time\nturtle.tracer(0)\n별들 = []\nfor i in range(3):\n    별 = turtle.Turtle()\n    별.shape("circle")\n    별.color("gold")\n    별.penup()\n    별.goto(i * 100 - 100, 150)\n    별들.append(별)\nwhile True:\n    for i in range(3):\n        별들[i].sety(별들[i].ycor() - (i + 2))\n    turtle.update()\n    time.sleep(0.02)', 'mistake', 'rain-pos'],
+  ['game-list', 'rain', 'import turtle\nimport time\nturtle.tracer(0)\n별들 = []\nfor i in range(3):\n    별 = turtle.Turtle()\n    별.shape("circle")\n    별.color("gold")\n    별.penup()\n    별.goto(i * 100 - 100, 150)\n    별들.append(별)\nwhile True:\n    별들.sety(-3)\n    turtle.update()\n    time.sleep(0.02)', 'error'],
+  ['unit14-review', 'jump', 'import turtle\n공 = turtle.Turtle()\n공.shape("turtle")\n공.penup()\ndef 뛰기():\n    공.sety(공.ycor() + 30)\ndef 내리기():\n    공.sety(공.ycor() - 30)\nturtle.onkeypress(뛰기, "space")\nturtle.onkeypress(내리기, "Down")\nturtle.listen()\nturtle.done()', 'mistake', 'jump-floor'],
+  ['unit14-review', 'jump', 'import turtle\n공 = turtle.Turtle()\n공.shape("turtle")\n공.penup()\ndef 뛰기():\n    공.sety(공.ycor() + 30)\ndef 내리기():\n    if 공.ycor() > 0:\n        공.sety(공.ycor() - 30)\nturtle.onkeypress(뛰기, "space")\nturtle.onkeypress(내리기, "Down")\nturtle.done()', 'mistake', 'jump-nolisten'],
+  ['unit14-review', 'star', 'import turtle\nimport time\nimport random\nturtle.tracer(0)\n바구니 = turtle.Turtle()\n바구니.shape("square")\n바구니.shapesize(1, 4)\n바구니.color("blue")\n바구니.penup()\n바구니.goto(0, -150)\n별 = turtle.Turtle()\n별.shape("circle")\n별.color("gold")\n별.penup()\n별.goto(0, 160)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\n점수 = 0\ndef 왼쪽():\n    바구니.setx(바구니.xcor() - 20)\ndef 오른쪽():\n    바구니.setx(바구니.xcor() + 20)\nturtle.onkeypress(왼쪽, "Left")\nturtle.onkeypress(오른쪽, "Right")\nwhile True:\n    별.sety(별.ycor() - 5)\n    if 별.distance(바구니) < 40:\n        점수 += 1\n        별.goto(random.randint(-10, 10) * 20, 160)\n    판.clear()\n    판.write("점수: " + str(점수))\n    turtle.update()\n    time.sleep(0.02)', 'mistake', 'star-nolisten'],
+  ['unit14-review', 'star', 'import turtle\nimport time\nimport random\nturtle.tracer(0)\n바구니 = turtle.Turtle()\n바구니.shape("square")\n바구니.shapesize(1, 4)\n바구니.color("blue")\n바구니.penup()\n바구니.goto(0, -150)\n별 = turtle.Turtle()\n별.shape("circle")\n별.color("gold")\n별.penup()\n별.goto(0, 160)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\n점수 = 0\ndef 왼쪽():\n    바구니.setx(바구니.xcor() - 20)\ndef 오른쪽():\n    바구니.setx(바구니.xcor() + 20)\nturtle.onkeypress(왼쪽, "Left")\nturtle.onkeypress(오른쪽, "Right")\nturtle.listen()\nwhile True:\n    별.sety(별.ycor() - 5)\n    if 별.distance(바구니) < 40:\n        별.goto(random.randint(-10, 10) * 20, 160)\n    판.clear()\n    if 별.ycor() < -170:\n        판.write("끝! 점수: " + str(점수))\n        turtle.update()\n        break\n    판.write("점수: " + str(점수))\n    turtle.update()\n    time.sleep(0.02)', 'mistake', 'star-text'],
+  ['unit14-review', 'star', 'import turtle\nimport time\nimport random\nturtle.tracer(0)\n바구니 = turtle.Turtle()\n바구니.shape("square")\n바구니.shapesize(1, 4)\n바구니.color("blue")\n바구니.penup()\n바구니.goto(0, -150)\n별 = turtle.Turtle()\n별.shape("circle")\n별.color("gold")\n별.penup()\n별.goto(0, 160)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\n점수 = 0\ndef 왼쪽():\n    바구니.setx(바구니.xcor() - 20)\ndef 오른쪽():\n    바구니.setx(바구니.xcor() + 20)\nturtle.onkeypress(왼쪽, "Left")\nturtle.onkeypress(오른쪽, "Right")\nturtle.listen()\nwhile True:\n    별.sety(별.ycor() - 5)\n    if 별.distance(바구니) < 40:\n        점수 += 1\n        별.goto(random.randint(-10, 10) * 20, 160)\n    판.clear()\n    판.write("점수: " + str(점수))\n    turtle.update()\n    time.sleep(0.02)', 'mistake', 'star-pos'],
+  ['unit14-review', 'star', 'import turtle\nimport time\nimport random\nturtle.tracer(0)\n바구니 = turtle.Turtle()\n바구니.shape("square")\n바구니.shapesize(1, 4)\n바구니.color("blue")\n바구니.penup()\n바구니.goto(0, -150)\n별 = turtle.Turtle()\n별.shape("circle")\n별.color("gold")\n별.penup()\n별.goto(0, 160)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 140)\n점수 = 0\ndef 왼쪽():\n    바구니.setx(바구니.xcor() - 20)\ndef 오른쪽():\n    바구니.setx(바구니.xcor() + 20)\nturtle.onkeypress(왼쪽, "Left")\nturtle.onkeypress(오른쪽, "Right")\nturtle.listen()\nwhile True:\n    별.sety(별.ycor() - 3)\n    판.clear()\n    판.write("점수: " + str(점수))\n    turtle.update()\n    time.sleep(0.02)', 'mistake', 'star-pos'],
 ];
 
 test('흔한 오답에 의도한 말이 나온다', () => {

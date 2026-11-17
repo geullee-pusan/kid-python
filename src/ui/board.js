@@ -138,7 +138,8 @@ export function createBoard(root) {
           const box = el('div', 'board-want');
           const canvas = document.createElement('canvas');
           canvas.className = 'board-picture';
-          paintDrawing(canvas, picture.cmds, { origin: true, fit: true });
+          // scene: 게임 문제는 그림판 전체를 거북이와 함께 보여 준다(자리가 중요하다).
+          paintDrawing(canvas, picture.cmds, picture.scene ? { turtle: true, minText: 30 } : { origin: true, fit: true });
           box.append(el('div', 'pair-label', picture.note), canvas);
           row.append(box);
         }
