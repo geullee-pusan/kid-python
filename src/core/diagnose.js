@@ -14,6 +14,11 @@
 //            - inputs: 채점할 때 넣은 답(쉼표로 이은 것)이 이 정규식에 맞을 때만 본다. 예: "^130$"
 //            - output을 "^$"로 적으면 아무것도 나오지 않은 경우를 가리킨다
 //            - again: true면, 준 답을 다 쓰고도 프로그램이 또 물었을 때만 본다(그때까지의 출력으로 견준다)
+//            - file, content: 프로그램이 끝난 뒤 그 파일의 내용(줄을 \n으로 이은 것)이 content 정규식에 맞을 때만 본다.
+//              content 없이 file만 적으면 그 파일이 없을 때를 가리킨다.
+//  files        프로그램이 시작할 때 폴더에 있을 파일 { 이름: 내용 } (cases의 것이 있으면 그것을 쓴다. 화면 쪽에서 넣어 준다)
+//  expectFiles  프로그램이 끝난 뒤 있어야 하는 파일 { 이름: [줄 목록] } (cases의 것이 있으면 그것을 쓴다)
+//               출력과 파일이 모두 맞아야 통과한다. 적지 않은 파일은 보지 않는다.
 
 import { compareDrawing } from './drawing.js';
 import { compareScene } from './scene.js';
@@ -49,8 +54,12 @@ export function diagnoseTask(task, code, run) {
   const want = task.expect;
   const bare = stripStrings(code);
   const compute = task.compute ?? [];
+  const files = run.files ?? {};
+  const fileText = (name) => (name in files ? outputLines(files[name]).join('\n') : null);
 
-  const same = got.length === want.length && got.every((line, i) => line === want[i]);
+  const outputSame = got.length === want.length && got.every((line, i) => line === want[i]);
+  const fileWrong = task.expectFiles ? fileProblem(task.expectFiles, files, got) : null;
+  const same = outputSame && !fileWrong;
   if (same && !run.again) {
     const missing = compute.find((item) => !new RegExp(item.pattern).test(bare));
     if (missing) return { kind: 'not-computed', vars: { calc: missing.literal } };
@@ -66,15 +75,18 @@ export function diagnoseTask(task, code, run) {
   const mistake = (task.mistakes ?? []).find(
     (m) =>
       // 아무것도 나오지 않았을 때는, 출력 조건을 따로 적어 둔 실수만 본다(나머지는 "아직 아무것도 안 나왔다"고 알려 준다).
-      (got.length > 0 || m.output !== undefined) &&
+      (got.length > 0 || m.output !== undefined || m.file !== undefined) &&
       // again: 준 답을 다 쓰고도 또 물었을 때(run.again)만 보는 실수. 예: 기회가 끝났는데도 계속 묻는다.
       Boolean(m.again) === Boolean(run.again) &&
       (!m.code || new RegExp(m.code).test(bare)) &&
       (m.output === undefined || new RegExp(m.output).test(text)) &&
       (!m.want || new RegExp(m.want).test(wanted)) &&
-      (!m.inputs || new RegExp(m.inputs).test(typed)),
+      (!m.inputs || new RegExp(m.inputs).test(typed)) &&
+      (m.file === undefined || (m.content === undefined ? fileText(m.file) === null : fileText(m.file) !== null && new RegExp(m.content).test(fileText(m.file)))),
   );
   if (mistake) return { kind: 'mistake', say: mistake.say };
+  // 출력은 맞고 파일이 틀린 경우, 또는 파일에 쓸 것을 출력 칸에 내보낸 경우
+  if (fileWrong && (outputSame || fileWrong.kind === 'file-printed')) return fileWrong;
   if (got.length === 0) return { kind: 'no-output' };
 
   // 계산할 것을 따옴표 안에 넣어 글자 그대로 나온 경우
@@ -88,6 +100,32 @@ export function diagnoseTask(task, code, run) {
   const vars = { no: ORDINAL[at] ?? `${at + 1}번째`, want: want[at], got: got[at] };
   if (squeeze(got[at]) === squeeze(want[at])) return { kind: 'spacing', vars };
   return { kind: 'line-diff', vars };
+}
+
+/**
+ * 있어야 하는 파일들과 실제 파일들을 견줘 처음 어긋난 것을 알려 준다. 다 맞으면 null.
+ * @param {Record<string, string[]>} expected 이름 → 있어야 하는 줄들
+ * @param {Record<string, string>} files 프로그램이 끝난 뒤의 파일들
+ * @param {string[]} printed 출력 칸에 나온 줄들(파일에 쓸 것을 출력 칸에 낸 것을 알아보려고)
+ */
+export function fileProblem(expected, files, printed = []) {
+  for (const [name, want] of Object.entries(expected)) {
+    const has = name in files;
+    const got = has ? outputLines(files[name]) : [];
+    if (has && got.length === want.length && got.every((line, i) => line === want[i])) continue;
+    // 파일이 비었거나 없는데, 쓸 것이 출력 칸에 모두 나왔다: print에 file= 을 빼먹었다.
+    if (got.length === 0 && want.length > 0 && want.every((line) => printed.includes(line))) return { kind: 'file-printed', vars: { name } };
+    if (!has) {
+      const others = Object.keys(files).filter((other) => !(other in expected));
+      if (!others.length) return { kind: 'file-none', vars: { name } };
+      return { kind: 'file-missing', vars: { name, got: others.join(', ') } };
+    }
+    if (got.length === 0) return { kind: 'file-empty', vars: { name } };
+    if (got.length !== want.length) return { kind: 'file-count', vars: { name, want: want.length, got: got.length } };
+    const at = got.findIndex((line, i) => line !== want[i]);
+    return { kind: 'file-diff', vars: { name, no: ORDINAL[at] ?? `${at + 1}번째`, want: want[at], got: got[at] } };
+  }
+  return null;
 }
 
 /**

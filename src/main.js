@@ -6,7 +6,7 @@ import './app.css';
 import curriculum from './content/curriculum.json';
 import look from './content/teacher-look.json';
 import teacherVoice from './content/teacher.json';
-import { diagnoseDrawing, diagnoseGame, diagnoseTask, outputLines } from './core/diagnose.js';
+import { diagnoseDrawing, diagnoseGame, diagnoseTask, fileProblem, outputLines } from './core/diagnose.js';
 import { compareScene } from './core/scene.js';
 import { compareDrawing } from './core/drawing.js';
 import { explain } from './core/errors-ko.js';
@@ -16,6 +16,7 @@ import { createBoard } from './ui/board.js';
 import { createCanvas, usesTurtle } from './ui/canvas.js';
 import { createConsole } from './ui/console.js';
 import { createEditor } from './ui/editor.js';
+import { createFilesView } from './ui/files.js';
 import { flushLog, log, setBuild } from './ui/log.js';
 import { setupOffline } from './ui/offline.js';
 import { createPlayer } from './ui/player.js';
@@ -119,6 +120,49 @@ async function main() {
   const lessonConsole = createConsole($('console'), getRunner);
   const studioConsole = createConsole($('studio-console'), getRunner);
 
+  // 파일 칸: 파일을 읽거나 쓰는 프로그램일 때만 보인다.
+  // 수업에서는 그 문제(또는 따라 하기, 예측 문제)에 딸린 파일(givenFiles)을 넣고 시작한다.
+  // 만들기에서는 "내 파일"을 이 기기에 남겨 두고, 실행할 때마다 넣어 준다(프로그램끼리 같이 쓴다).
+  const lessonFilesView = createFilesView($('files'));
+  let givenFiles = null;
+  /** 수업 화면의 파일 칸. files가 비었으면 감춘다. before가 있으면 새로 생긴 것과 바뀐 것을 표시한다. */
+  function showLessonFiles(files, before = null) {
+    const shown = lessonFilesView.show(files, before);
+    $('files-col').hidden = !shown;
+  }
+  const FILES_KEY = 'kidpy.files';
+  const MAX_FILE_CHARS = 50000; // "내 파일" 하나에 남기는 글자 수
+  const MAX_FILES_CHARS = 300000; // "내 파일"을 모두 합한 글자 수
+  const studioFilesView = createFilesView($('studio-files'), {
+    onDelete(name) {
+      const files = { ...store.get(FILES_KEY, {}) };
+      delete files[name];
+      store.set(FILES_KEY, files);
+      log('file-delete', { name });
+      showStudioFiles(files);
+    },
+  });
+  function showStudioFiles(files, before = null) {
+    $('studio-files-col').hidden = !studioFilesView.show(files, before);
+  }
+  /** 만들기에서 돌린 프로그램이 남긴 파일을 "내 파일"로 저장한다. 너무 크면 앞부분만 남기고 알려 준다. */
+  function keepStudioFiles(files) {
+    const kept = {};
+    let total = 0;
+    let cut = false;
+    for (const [name, text] of Object.entries(files)) {
+      let value = text.length > MAX_FILE_CHARS ? ((cut = true), text.slice(0, MAX_FILE_CHARS)) : text;
+      if (total + value.length > MAX_FILES_CHARS) {
+        cut = true;
+        value = value.slice(0, Math.max(0, MAX_FILES_CHARS - total));
+      }
+      total += value.length;
+      kept[name] = value;
+    }
+    store.set(FILES_KEY, kept);
+    return { kept, cut };
+  }
+
   // 그림판: turtle을 쓰는 프로그램일 때만 보인다. 수업 화면에서는 출력 칸 왼쪽에, 만들기 화면에서는 출력 칸 위에 놓인다.
   // 키를 받는 프로그램(turtle.listen())이 돌면: 그림판이 키를 받아 프로그램에 넘기고, 수업 화면에서는 그림판을 크게 보여 준다.
   const canvasHooks = (which) => ({
@@ -186,7 +230,8 @@ async function main() {
    * 편집기의 코드를 실행해 출력 칸에 보여 준다.
    * 오류가 나면 한국어 한 문장과 파이썬의 원래 글을 함께 보여 주고, 그 줄을 표시한다.
    */
-  async function runCode(editor, out, where, canvas) {
+  // files: 프로그램이 시작할 때 폴더에 있을 파일. 결과의 files에 끝난 뒤의 파일들이 온다(파일을 안 쓰면 null).
+  async function runCode(editor, out, where, canvas, files = null) {
     if (!isReady()) return null;
     const code = editor.getCode();
     activeConsole = out;
@@ -196,7 +241,7 @@ async function main() {
     showCanvas(canvas, usesTurtle(code) || (canvas === lessonCanvas && Boolean(mission?.canvas)));
     out.clear();
     editor.markErrorLine(null);
-    const result = await runner.run(code);
+    const result = await runner.run(code, { files });
     out.flush();
     canvas.endRun();
     if (result.stopped) {
@@ -209,7 +254,7 @@ async function main() {
       if (result.error.line) editor.markErrorLine(result.error.line);
     }
     log('run', { ...where, code, ok: result.ok, error: result.error ? { type: result.error.type, line: result.error.line, message: result.error.message } : null, ms: result.ms });
-    return { code, output: result.output, error: result.error, stopped: result.stopped, vars: result.vars, draw: result.draw };
+    return { code, output: result.output, error: result.error, stopped: result.stopped, vars: result.vars, draw: result.draw, files: result.files };
   }
 
   // 그리기 문제: 모범 답이 그리는 그림. 문제를 보여 줄 때와 채점할 때 쓴다(한 번 구하면 적어 둔다).
@@ -419,11 +464,13 @@ async function main() {
 
   /** 지금 아이가 무엇을 배웠는지. 오류 설명의 말을 고르는 데 쓴다(변수를 배우기 전에는 "이름표"라는 말을 쓰지 않는다). */
   function knows() {
+    // tries: try와 except를 배운 뒤(단원 17)
+    const KINDS = ['variables', 'loops', 'functions', 'classes', 'tries'];
     const has = (what) => Boolean(mission.knows?.includes(what));
-    if (screen === 'play' && mission) return { variables: has('variables'), loops: has('loops'), functions: has('functions'), classes: has('classes') };
+    if (screen === 'play' && mission) return Object.fromEntries(KINDS.map((k) => [k, has(k)]));
     const progress = store.get('kidpy.progress', {});
     const learned = (what) => LESSONS.some((m) => m.knows?.includes(what) && progress[m.id]);
-    return { variables: learned('variables'), loops: learned('loops'), functions: learned('functions'), classes: learned('classes') };
+    return Object.fromEntries(KINDS.map((k) => [k, learned(k)]));
   }
 
   // 이름표 칸: 지금 어떤 이름에 어떤 값이 붙어 있는지 보여 준다. 변수를 배우는 수업부터 보인다.
@@ -524,10 +571,12 @@ async function main() {
 
   async function runUser() {
     if (!canRun) return null;
-    const ran = await runCode(editor, lessonConsole, { mission: mission.id, phase: currentPhase }, lessonCanvas);
+    const ran = await runCode(editor, lessonConsole, { mission: mission.id, phase: currentPhase }, lessonCanvas, givenFiles);
     if (ran) {
       lastRun = ran;
       showVars(ran.vars ?? {});
+      // 파일을 읽거나 쓴 프로그램: 끝난 뒤의 파일을 보여 준다(새로 생긴 것과 바뀐 것을 표시한다).
+      if (ran.files) showLessonFiles(ran.files, givenFiles ?? {});
     }
     if (canRun) editor.focus();
     return ran;
@@ -586,6 +635,7 @@ async function main() {
       },
       draw: (cmds, maxMs) => lessonCanvas.push(cmds, { maxMs }),
       drawEnd: () => lessonCanvas.endRun(),
+      files: showLessonFiles,
     },
     knows,
   });
@@ -621,6 +671,8 @@ async function main() {
     lessonConsole.clear();
     lessonCanvas.reset();
     showVars({});
+    givenFiles = scene.files ?? null;
+    showLessonFiles(givenFiles);
     allowRun(true);
     show('done', 'skip');
     background(scene.say ?? []);
@@ -640,7 +692,9 @@ async function main() {
               ran && !ran.error && (await sameGame(editor.getCode(), scene.code, scene.game))
             : scene.draw
             ? ran && !ran.error && !ran.stopped && compareDrawing(ran.draw ?? [], await wantDrawing(scene.code)).kind === 'draw-correct'
-            : ran && !ran.error && !ran.stopped && (scene.match ? new RegExp(scene.match).test(ran.output) : outputLines(ran.output).join('\n') === scene.expect.join('\n'));
+            : ran && !ran.error && !ran.stopped && (scene.match ? new RegExp(scene.match).test(ran.output) : outputLines(ran.output).join('\n') === scene.expect.join('\n')) &&
+              // 파일에 쓰는 따라 하기: 파일도 선생님 것과 같아야 한다.
+              (!scene.expectFiles || !fileProblem(scene.expectFiles, ran.files ?? {}));
         log('follow', { mission: mission.id, ok: Boolean(same), tries, code: editor.getCode() });
         if (same) return 'done';
         tries += 1;
@@ -648,12 +702,13 @@ async function main() {
         if (tries >= 3) {
           // 막다른 길을 만들지 않는다. 세 번째에는 선생님이 다시 보여 주고 넘어간다.
           await say('follow-show');
-          await player.play([{ kind: 'code-type', code: scene.code }, { kind: 'trace', code: scene.code, inputs: scene.inputs ?? [], limit: scene.limit }]);
+          await player.play([{ kind: 'code-type', code: scene.code, files: scene.files }, { kind: 'trace', code: scene.code, inputs: scene.inputs ?? [], limit: scene.limit, files: scene.files }]);
           return 'done';
         }
         if (!ran) await say('follow-not-run');
         else if (scene.stopped) await say('follow-not-stopped');
         else if (ran.error) await player.say(explain(ran.error, knows()));
+        else if (scene.expectFiles && outputLines(ran.output).join('\n') === (scene.expect ?? []).join('\n')) await say('follow-different-file');
         else await say(scene.draw || scene.game ? 'follow-different-draw' : 'follow-different');
         if (player.stopped) return 'stop';
         allowRun(true);
@@ -662,6 +717,7 @@ async function main() {
       hush();
       allowRun(false);
       show('skip');
+      givenFiles = null;
     }
   }
 
@@ -719,6 +775,8 @@ async function main() {
       lessonConsole.clear();
       lessonCanvas.reset();
       showCanvas(lessonCanvas, usesTurtle(question.code) || Boolean(mission.canvas));
+      // 파일을 읽는 예측 문제: 파일에 무엇이 들어 있는지 먼저 보여 준다.
+      showLessonFiles(question.files ?? null);
       let pick;
       const picked = new Promise((resolve) => (pick = resolve));
       showVars({});
@@ -768,8 +826,11 @@ async function main() {
     let diagnosis = { kind: 'correct' };
     for (const one of task.cases) {
       // randoms: 무작위 수를 쓰는 문제는 채점할 때 나올 수를 정해 둔다.
-      const result = await runner.run(code, { check: true, inputs: one.inputs ?? [], randoms: one.randoms, keys: one.keys, frames: one.frames });
+      // files: 경우마다 처음 파일이 다를 수 있다(예: 파일이 있을 때와 없을 때).
+      const startFiles = one.files ?? task.files ?? null;
+      const result = await runner.run(code, { check: true, inputs: one.inputs ?? [], randoms: one.randoms, keys: one.keys, frames: one.frames, files: startFiles });
       if (result.stopped) return null;
+      if (result.files || startFiles) showLessonFiles(result.files ?? startFiles, startFiles ?? {});
       // 게임 문제: 어떤 키를 눌러 봤는지 남긴다.
       if (task.game) lessonConsole.append(keyWords(one.keys) ? `▶ ${keyWords(one.keys)} 키를 눌러 봤어요\n` : '▶ 잠깐 돌려 봤어요\n', 'note');
       // 무엇을 넣어 돌려 봤는지 아이가 볼 수 있게 출력 칸에 남긴다(묻지 않는 문제는 적을 것이 없다).
@@ -787,7 +848,7 @@ async function main() {
         diagnosis = { kind: 'endless' };
       } else if (result.error?.type === 'EOFError') {
         // 준 답을 다 쓰고도 또 물었다. 이 문제에서 흔한 실수(예: break를 빼먹음)로 짚을 수 있으면 그 말을 한다.
-        const guess = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, { error: null, output: result.output, again: true });
+        const guess = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs, expectFiles: one.expectFiles ?? task.expectFiles }, code, { error: null, output: result.output, files: result.files, again: true });
         diagnosis = guess.kind === 'mistake' ? guess : { kind: 'input-many', vars: { want: (one.inputs ?? []).length } };
       } else if (result.error) {
         const at = result.error.line ? ` (${result.error.line}번 줄)` : '';
@@ -803,7 +864,7 @@ async function main() {
       } else if (task.draw) {
         diagnosis = diagnoseDrawing({ ...task, inputs: one.inputs }, code, result.draw, await wantDrawing(task.solution, one.inputs));
       } else {
-        diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, result);
+        diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs, expectFiles: one.expectFiles ?? task.expectFiles }, code, result);
       }
       if (diagnosis.kind !== 'correct') {
         diagnosis.inputs = one.inputs ?? [];
@@ -848,8 +909,14 @@ async function main() {
         want: task.show && !task.draw && !task.game ? (sample ? sample.expect : task.expect) : null,
         wantNote: task.show && !task.draw && !task.game && sample?.inputs?.length ? `${picked(sample)}${asAnswer(sample.inputs)} 답했을 때 이렇게 나와야 해요` : null,
         wants: several && !task.draw && !task.game ? several.map((one) => ({ note: `${picked(one)}${asAnswer(one.inputs)} 답하면`, lines: one.expect })) : null,
+        // 파일에 쓰는 문제: 끝난 뒤 파일에 있어야 하는 줄들(task.show일 때)
+        fileWants: task.show ? Object.entries(sample?.expectFiles ?? task.expectFiles ?? {}).map(([name, lines]) => ({ note: `📄 ${name} 파일에는`, lines })) : null,
       });
     showTask();
+    // 파일을 읽는 문제: 처음에 있는 파일을 파일 칸에 보여 준다.
+    // (경우마다 파일이 다른 문제는, 실행 버튼으로 돌릴 때 첫째 경우의 파일을 쓴다.)
+    givenFiles = task.files ?? sample?.files ?? null;
+    showLessonFiles(givenFiles);
     // 쓰던 것이 있으면 이어서, 없으면 문제에 딸린 시작 코드(고치기 문제)로 시작한다.
     editor.setCode(store.get(key, '') || task.start || '');
     lessonConsole.clear();
@@ -902,6 +969,8 @@ async function main() {
         draftSaving = null;
         await lecture();
         showTask();
+        givenFiles = task.files ?? sample?.files ?? null;
+        showLessonFiles(givenFiles);
         editor.setCode(draft);
         lessonConsole.clear();
         draftSaving = key;
@@ -1010,6 +1079,8 @@ async function main() {
     activeCanvas = lessonCanvas;
     lessonCanvas.reset();
     showCanvas(lessonCanvas, Boolean(mission.canvas));
+    givenFiles = null;
+    showLessonFiles(null);
     setPhase('');
     currentPhase = 'intro';
     shownVars = {};
@@ -1251,7 +1322,14 @@ async function main() {
   async function runStudio() {
     if (screen !== 'studio') return;
     saveWork();
-    await runCode(studioEditor, studioConsole, { where: 'studio', work: work.id }, studioCanvas);
+    const before = store.get(FILES_KEY, {});
+    const ran = await runCode(studioEditor, studioConsole, { where: 'studio', work: work.id }, studioCanvas, Object.keys(before).length ? before : null);
+    // 파일을 쓴 프로그램이면 남은 파일을 "내 파일"로 저장한다. 일꾼을 껐다 켰으면(files가 undefined) 앞의 것을 그대로 둔다.
+    if (ran?.files) {
+      const { kept, cut } = keepStudioFiles(ran.files);
+      showStudioFiles(kept, before);
+      if (cut) studioConsole.append('\n■ 파일이 너무 커서 앞부분만 남겼어요\n', 'note');
+    }
     refreshStudio();
     if (runner.state !== 'waiting-input') studioEditor.focus();
   }
@@ -1268,6 +1346,7 @@ async function main() {
     studioConsole.clear();
     studioCanvas.reset();
     showCanvas(studioCanvas, usesTurtle(work.code));
+    showStudioFiles(store.get(FILES_KEY, {}));
     showScreen('studio');
     activeConsole = studioConsole;
     activeCanvas = studioCanvas;

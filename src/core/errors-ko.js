@@ -103,6 +103,8 @@ export function explain(error, knows = {}) {
     // 그림판 명령을 turtle. 없이 부른 경우: forward(100)
     if (TURTLE_WORDS.has(name) && text.replace(/\s+\(/g, '(').includes(`${name}(`)) return `${name}는 앞에 turtle과 점을 붙여 써요. turtle.${name}( ) 처럼 써요. 맨 윗줄에 import turtle 도 있어야 해요.`;
     if (name === 'random') return 'random을 쓰려면, 맨 윗줄에 import random 을 먼저 써요.';
+    // 파일 이름에 따옴표를 빼먹은 경우: open(점수.txt)
+    if (name && new RegExp(`open\\s*\\(\\s*${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.\\w+`).test(text)) return '파일 이름은 글자예요. open("점수.txt") 처럼 따옴표로 감싸요.';
     if (name === 'randint') return 'randint는 random.randint( ) 처럼, 앞에 random과 점을 붙여 써요.';
     // 함수를 부르려던 경우: 오류가 난 줄에 "이름(" 꼴이 있다.
     if (name && knows.functions && new RegExp(`(^|[^\\w가-힣])${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\(`, 'm').test(text)) {
@@ -136,6 +138,8 @@ export function explain(error, knows = {}) {
     if (/'dict_(keys|values|items)' object is not subscriptable/.test(message)) return '여기에는 번호를 쓸 수 없어요. 딕셔너리는 키로 꺼내요. 차례로 보려면 for로 돌아요.';
     if (/indices must be integers or slices, not tuple/.test(message)) return '대괄호 하나에 번호 두 개를 쉼표로 쓸 수 없어요. 표[0][1] 처럼 대괄호를 따로 써요. 표를 만드는 중이라면, 줄과 줄 사이에 쉼표가 빠졌는지 봐요.';
     if (/for \+: 'int' and 'list'|for \+=: 'int' and 'list'/.test(message)) return '숫자에 리스트를 더할 수 없어요. 표의 한 줄은 리스트예요. 줄 안의 값을 하나씩 꺼내서 더하거나, sum( )에 한 줄을 넣어요.';
+    if (/write\(\) argument must be str, not/.test(message)) return 'write( ) 안에는 글자만 넣어요. 숫자는 str( )로 글자로 바꾸거나, print( ..., file=파일) 로 써요.';
+    if (/file name must be str/.test(message)) return 'open( ) 안의 파일 이름은 글자로 써요. 따옴표로 감싸요.';
     if (/NoneType/.test(message)) return '값을 돌려주지 않는 함수의 결과(None)로 계산하려고 했어요. 함수 안에서 return으로 값을 돌려줘요.';
     if (/'str' object does not support item assignment/.test(message)) return '글자는 한 글자만 바꿀 수 없어요. 새 글자를 만들어서 이름표에 다시 넣어요.';
     if (/for -: 'str' and 'str'/.test(message)) return '글자에서 글자를 뺄 수는 없어요. 지우려면 replace( )로 빈 글자("")로 바꿔요.';
@@ -204,7 +208,11 @@ export function explain(error, knows = {}) {
   if (type === 'ModuleNotFoundError' || type === 'ImportError') return 'import 뒤의 이름을 파이썬이 몰라요. random 은 모두 작은 글자로 써요.';
   if (type === 'ValueError') {
     const bad = /invalid literal for int\(\) with base 10: (.+)$/.exec(message);
+    // 파일의 빈 줄을 숫자로 바꾸려던 경우: '' 또는 '\n'
+    if (bad && /^'(\\n|\\r\\n|\s*)'$/.test(bad[1])) return '빈 줄은 숫자로 바꿀 수 없어요. 파일 끝에 빈 줄이 있는지 봐요. 빈 줄은 건너뛰게 해요.';
     if (bad) return `${bad[1]}은(는) 숫자로 바꿀 수 없어요. int( ) 안에는 숫자로 된 글자만 넣어요.`;
+    if (/I\/O operation on closed file/.test(message)) return '닫힌 파일이에요. with 아래에 들여쓴 줄에서만 파일을 읽고 쓸 수 있어요. 파일을 쓰는 줄을 with 안으로 들여써요.';
+    if (/invalid mode|must have exactly one of create\/read\/write\/append mode/.test(message)) return 'open( )의 둘째 칸에는 "r"(읽기), "w"(쓰기), "a"(이어 쓰기) 가운데 하나를 써요.';
     if (/substring not found/.test(message)) return '찾는 글자가 없어요. 먼저 in으로 있는지 물어봐요. find( )는 없을 때 -1을 알려 줘요.';
     if (/empty separator/.test(message)) return 'split( ) 안에 빈 글자는 넣을 수 없어요. 빈칸에서 자르려면 괄호 안을 비워요.';
     if (/empty range/.test(message)) return 'randint( ) 안에는 작은 수를 먼저, 큰 수를 나중에 써요.';
@@ -248,6 +256,22 @@ export function explain(error, knows = {}) {
     if (/no shape named/.test(message)) return '그런 모양은 없어요. "turtle", "arrow", "circle", "square", "triangle" 가운데에서 골라요.';
     return '그림판 명령을 실행할 수 없었어요.';
   }
+  // 파일
+  if (type === 'FileNotFoundError') {
+    const name = /: '(.+)'$/.exec(message)?.[1];
+    const what = name ? `${called(name)} 파일이 없어요.` : '그런 파일이 없어요.';
+    if (knows.tries) return `${what} 이름의 철자와 .txt 같은 끝을 확인해요. 처음에는 없을 수 있는 파일이면 try와 except FileNotFoundError로 감싸요.`;
+    return `${what} 파일 칸에서 이름을 보고, 철자와 .txt 같은 끝까지 똑같이 써요.`;
+  }
+  if (type === 'FileExistsError') return '"x"는 없는 파일을 새로 만들 때만 써요. 이미 있는 파일을 처음부터 다시 쓰려면 "w"를 써요.';
+  if (type === 'UnsupportedOperation') {
+    if (/not readable/.test(message)) return '쓰려고 연 파일은 읽을 수 없어요. 읽으려면 open("이름.txt") 처럼 "r"로 열어요.';
+    if (/not writable/.test(message)) return '읽으려고 연 파일에는 쓸 수 없어요. 쓰려면 open("이름.txt", "w") 처럼 "w"나 "a"로 열어요.';
+    return '이 파일로는 그 일을 할 수 없어요. 연 방법("r", "w", "a")을 확인해요.';
+  }
+  if (type === 'PermissionError' && /only a file name/.test(message)) return '파일 이름에는 / 나 .. 같은 폴더 길을 쓸 수 없어요. "점수.txt" 처럼 이름만 써요.';
+  if (type === 'IsADirectoryError') return '그건 파일이 아니라 폴더예요. "점수.txt" 처럼 파일 이름을 써요.';
+  if (type === 'OSError' && /File too large/.test(message)) return '파일에 너무 많이 써서 멈췄어요. 반복이 끝나지 않는 것 같아요.';
   if (type === 'EOFError') return '입력을 받을 수 없었어요.';
   return `${type} 오류가 났어요.`;
 }

@@ -706,11 +706,115 @@ def _kidpy_turtle_module():
 
 sys.modules["turtle"] = _kidpy_turtle_module()
 
-def __kidpy_run(code):
+# ---- 파일: 프로그램이 읽고 쓰는 파일은 한 폴더(_KIDPY_HOME)에만 둔다 ----
+# 실행할 때마다 폴더를 비우고, 화면이 준 파일(수업에 딸린 파일, 만들기의 "내 파일")만 넣어 둔다.
+# 그래서 앞 실행이나 채점에서 쓴 파일이 섞이지 않는다. 끝나면 폴더에 남은 파일을 모아 화면에 돌려준다.
+# open은 아이의 이름 공간에만 바꿔 넣는다(파이썬 자체가 쓰는 open은 건드리지 않는다).
+import os as _kidpy_os
+import builtins as _kidpy_builtins
+
+_KIDPY_HOME = "/home/kidpy"
+_KIDPY_FILE_SHOW = 100000   # 화면에 돌려줄 때 파일 하나의 글자 수 한도
+_KIDPY_WRITE_MAX = 2000000  # 한 번 실행에서 쓸 수 있는 글자 수(끝없이 쓰는 반복이 메모리를 다 쓰지 않게)
+_kidpy_file_state = {"open": [], "written": 0, "used": False}
+_KIDPY_MODES = {"r": "읽기", "w": "쓰기", "a": "이어 쓰기", "x": "새로 쓰기"}
+
+class _KidpyFile:
+    # 진짜 파일을 감싼다. 하는 일은 같고, 이름표 칸에 <점수.txt, 읽기로 열림>처럼 보이게 하고, 쓰는 양을 센다.
+    def __init__(self, f, name, mode):
+        object.__setattr__(self, "_f", f)
+        object.__setattr__(self, "_name", name)
+        object.__setattr__(self, "_mode", mode)
+    def __getattr__(self, key):
+        return getattr(self._f, key)
+    def __iter__(self):
+        self._f.__iter__()
+        return self
+    def __next__(self):
+        return self._f.__next__()
+    def __enter__(self):
+        self._f.__enter__()
+        return self
+    def __exit__(self, *args):
+        return self._f.__exit__(*args)
+    def write(self, text):
+        if isinstance(text, (str, bytes)):
+            _kidpy_file_state["written"] += len(text)
+            if _kidpy_file_state["written"] > _KIDPY_WRITE_MAX:
+                raise OSError("File too large")
+        return self._f.write(text)
+    def __repr__(self):
+        if self._f.closed:
+            return "<" + self._name + ", 닫힘>"
+        kind = "읽고 쓰기" if "+" in self._mode else _KIDPY_MODES.get(self._mode.replace("b", "").replace("t", ""), self._mode)
+        return "<" + self._name + ", " + kind + "로 열림>"
+
+def _kidpy_open(file, mode="r", *args, **kwargs):
+    # 폴더를 거쳐 가는 이름(/, .., 앞 폴더)은 막는다. 파이썬이 쓰는 파일을 건드리지 않게 하려는 것이다.
+    if not isinstance(file, str):
+        raise TypeError("file name must be str, not " + type(file).__name__)
+    if "/" in file or chr(92) in file or file.strip() in ("", ".", ".."):
+        raise PermissionError(13, "Permission denied (only a file name, no folders)", file)
+    if "b" not in mode and "encoding" not in kwargs and len(args) < 2:
+        kwargs["encoding"] = "utf-8"
+    f = _kidpy_builtins.open(file, mode, *args, **kwargs)
+    _kidpy_file_state["used"] = True
+    wrapped = _KidpyFile(f, file, mode)
+    _kidpy_file_state["open"].append(f)
+    return wrapped
+
+def _kidpy_files_setup(files_json, scope):
+    _kidpy_os.makedirs(_KIDPY_HOME, exist_ok=True)
+    _kidpy_os.chdir(_KIDPY_HOME)
+    for name in _kidpy_os.listdir(_KIDPY_HOME):
+        path = _KIDPY_HOME + "/" + name
+        if _kidpy_os.path.isdir(path):
+            import shutil
+            shutil.rmtree(path, ignore_errors=True)
+        else:
+            _kidpy_os.remove(path)
+    files = json.loads(files_json or "null") or {}
+    for name, text in files.items():
+        if "/" in name or name in (".", ".."):
+            continue
+        with _kidpy_builtins.open(_KIDPY_HOME + "/" + name, "w", encoding="utf-8", newline="") as f:
+            f.write(str(text))
+    _kidpy_file_state["open"] = []
+    _kidpy_file_state["written"] = 0
+    _kidpy_file_state["used"] = bool(files)
+    scope["open"] = _kidpy_open
+
+# 폴더의 파일들: {이름: 내용}. close=True면 닫지 않은 파일을 먼저 닫는다(파이썬도 끝날 때 닫으며 남은 것을 쓴다).
+def _kidpy_files_collect(close=True):
+    if close:
+        for f in _kidpy_file_state["open"]:
+            try:
+                f.close()
+            except BaseException:
+                pass
+        _kidpy_file_state["open"] = []
+    out = {}
+    try:
+        names = sorted(_kidpy_os.listdir(_KIDPY_HOME))
+    except BaseException:
+        return out
+    for name in names:
+        path = _KIDPY_HOME + "/" + name
+        if not _kidpy_os.path.isfile(path):
+            continue
+        try:
+            with _kidpy_builtins.open(path, "r", encoding="utf-8", errors="replace", newline="") as f:
+                out[name] = f.read(_KIDPY_FILE_SHOW + 1)
+        except BaseException:
+            out[name] = ""
+    return out
+
+def __kidpy_run(code, files_json="null"):
     _kidpy_turtle_reset(True)
     name = "main.py"
     linecache.cache[name] = (len(code), None, code.splitlines(True), name)
     scope = {"__name__": "__main__"}
+    _kidpy_files_setup(files_json, scope)
     error = None
     try:
         exec(compile(code, name, "exec"), scope)
@@ -725,7 +829,9 @@ def __kidpy_run(code):
             sys.stderr.flush()
         except BaseException:
             pass
-    return json.dumps({"error": error, "vars": __kidpy_vars(scope)})
+    vars_now = __kidpy_vars(scope)
+    files = _kidpy_files_collect() if _kidpy_file_state["used"] else None
+    return json.dumps({"error": error, "vars": vars_now, "files": files})
 
 class __KidpyTraceLimit(Exception):
     pass
@@ -734,11 +840,13 @@ class __KidpyTraceLimit(Exception):
 # randoms_json: 무작위 수를 정해 둘 때 쓴다. 비어 있지 않으면 random.randint가 이 값들을 차례로 돌려준다(채점과 시연이 늘 같게).
 # 채점(trace=False)에서도 줄 수를 세어, 너무 많으면(끝나지 않는 반복) TraceLimit으로 멈춘다.
 # keys_json: 차례로 넣을 키 이름들(장면마다 하나씩). frames: 돌릴 장면 수. 0이 아니면 그만큼 돈 뒤에 프로그램을 끝낸다(오류가 아니다).
-def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]", keys_json="[]", frames=0):
+# files_json: 프로그램이 시작할 때 폴더에 있을 파일 {이름: 내용}. 한 줄씩 보기에서는 파일이 바뀐 줄에 그때의 파일들을 함께 적는다.
+def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]", keys_json="[]", frames=0, files_json="null"):
     _kidpy_turtle_reset(False, json.loads(keys_json), frames)
     name = "main.py"
     linecache.cache[name] = (len(code), None, code.splitlines(True), name)
     scope = {"__name__": "__main__"}
+    _kidpy_files_setup(files_json, scope)
     inputs = [str(x) for x in json.loads(inputs_json)]
     randoms = list(json.loads(randoms_json))
     asked = [0]
@@ -778,7 +886,7 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]", key
             # 함수 안을 실행하는 동안에는 함수 안의 이름(넘겨받은 값 포함)도 함께 보여 준다. 함수가 끝나면 사라진다.
             inside = frame.f_locals is not frame.f_globals
             seen = {**frame.f_globals, **frame.f_locals} if inside else frame.f_globals
-            marks.append((frame.f_lineno, len(buf.getvalue()), __kidpy_vars(seen, frame.f_locals if inside else None), len(_kidpy_draws)))
+            marks.append((frame.f_lineno, len(buf.getvalue()), __kidpy_vars(seen, frame.f_locals if inside else None), len(_kidpy_draws), _kidpy_files_collect(False) if _kidpy_file_state["used"] else None))
         return tracer
     error = None
     old = sys.stdout
@@ -805,9 +913,11 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]", key
         __kidpy_random.randint = old_randint
     total = buf.getvalue()
     final = __kidpy_vars(scope)
+    files = _kidpy_files_collect() if _kidpy_file_state["used"] else None
     steps = []
     draws = list(_kidpy_draws)
-    for i, (line, pos, _, drawn) in enumerate(marks):
+    shown_files = None
+    for i, (line, pos, _, drawn, _files) in enumerate(marks):
         end = marks[i + 1][1] if i + 1 < len(marks) else len(total)
         # 이 줄을 실행한 뒤의 변수 값 = 다음 줄을 실행하기 직전의 값(마지막 줄이면 끝났을 때의 값)
         after = marks[i + 1][2] if i + 1 < len(marks) else final
@@ -816,8 +926,13 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]", key
         drawn_end = marks[i + 1][3] if i + 1 < len(marks) else len(draws)
         if drawn_end > drawn:
             step["draw"] = draws[drawn:drawn_end]
+        # 이 줄을 실행한 뒤의 파일들(앞 줄 뒤와 달라졌을 때만 적는다)
+        after_files = marks[i + 1][4] if i + 1 < len(marks) else files
+        if after_files is not None and after_files != shown_files:
+            step["files"] = after_files
+            shown_files = after_files
         steps.append(step)
-    return json.dumps({"steps": steps, "output": total, "error": error, "vars": final, "asked": asked[0], "unused": len(inputs), "draw": draws})
+    return json.dumps({"steps": steps, "output": total, "error": error, "vars": final, "asked": asked[0], "unused": len(inputs), "draw": draws, "files": files})
 `;
 
 async function init(message) {
@@ -863,10 +978,10 @@ function run(message) {
   try {
     if (message.mode === 'trace' || message.mode === 'check') {
       result = JSON.parse(
-        runScripted(message.code, JSON.stringify(message.inputs ?? []), message.mode === 'trace', message.limit ?? 300, JSON.stringify(message.randoms ?? []), JSON.stringify(message.keys ?? []), message.frames ?? 0),
+        runScripted(message.code, JSON.stringify(message.inputs ?? []), message.mode === 'trace', message.limit ?? 300, JSON.stringify(message.randoms ?? []), JSON.stringify(message.keys ?? []), message.frames ?? 0, JSON.stringify(message.files ?? null)),
       );
     } else {
-      result = JSON.parse(runUser(message.code));
+      result = JSON.parse(runUser(message.code, JSON.stringify(message.files ?? null)));
     }
   } catch (e) {
     // 여기로 오면 파이썬 안에서 잡지 못한 오류다(실행기 자체의 문제일 수 있다).
@@ -882,6 +997,7 @@ function run(message) {
     output: result.output ?? null,
     draw: result.draw ?? null,
     vars: result.vars ?? {},
+    files: result.files ?? null,
     unused: result.unused ?? 0,
     ms: Math.round(performance.now() - started),
   });

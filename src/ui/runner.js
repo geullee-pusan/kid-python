@@ -103,7 +103,7 @@ export class Runner {
     } else if (message.type === 'done') {
       const current = this.current;
       if (!current || current.id !== message.id) return;
-      this.finish({ error: message.error, ms: message.ms, hardStop: false, steps: message.steps, output: message.output, vars: message.vars, unused: message.unused, draw: message.draw });
+      this.finish({ error: message.error, ms: message.ms, hardStop: false, steps: message.steps, output: message.output, vars: message.vars, unused: message.unused, draw: message.draw, files: message.files });
     }
   }
 
@@ -121,19 +121,21 @@ export class Runner {
    * randoms: trace와 check에서 random.randint가 차례로 돌려줄 값들(무작위 수를 쓰는 프로그램을 늘 같게 돌리려고).
    * check에서 프로그램이 끝나지 않으면(줄을 20만 번 넘게 실행하면) 오류 종류가 TraceLimit으로 온다.
    * keys, frames: trace와 check에서 게임을 돌려 볼 때. keys의 키를 장면마다 하나씩 누르고, frames 장면이 지나면 끝낸다.
+   * files: 프로그램이 시작할 때 폴더에 있을 파일 { 이름: 내용 }. 실행할 때마다 폴더를 비우고 이것만 넣는다.
+   *   끝나면 files에 폴더의 파일들이 온다(파일을 쓰지도 받지도 않은 프로그램이면 null, 일꾼을 껐다 켰으면 undefined).
    */
-  async run(code, { trace = false, check = false, inputs = [], limit, randoms, keys, frames } = {}) {
+  async run(code, { trace = false, check = false, inputs = [], limit, randoms, keys, frames, files } = {}) {
     await this.ready;
     if (this.current) throw new Error('이미 돌아가는 프로그램이 있어요');
     const id = this.nextId++;
     this.setState('running');
     return new Promise((resolve) => {
       this.current = { id, resolve, output: '', draws: [], stopRequested: false, stopTimer: null, started: performance.now() };
-      this.worker.postMessage({ type: 'run', id, code, mode: trace ? 'trace' : check ? 'check' : 'run', inputs, limit, randoms, keys, frames });
+      this.worker.postMessage({ type: 'run', id, code, mode: trace ? 'trace' : check ? 'check' : 'run', inputs, limit, randoms, keys, frames, files });
     });
   }
 
-  finish({ error, ms, hardStop, steps = null, output = null, vars = {}, unused = 0, draw = null }) {
+  finish({ error, ms, hardStop, steps = null, output = null, vars = {}, unused = 0, draw = null, files = undefined }) {
     const current = this.current;
     this.current = null;
     if (current.stopTimer) clearTimeout(current.stopTimer);
@@ -152,6 +154,7 @@ export class Runner {
       unused,
       // 프로그램이 그린 것 전부(그림판 명령 목록). 그냥 실행에서는 화면으로 보낸 것을 모아 둔 것이다.
       draw: draw ?? current.draws,
+      files,
     });
   }
 

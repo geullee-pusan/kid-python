@@ -6,9 +6,11 @@
 //  board-pair   칠판에 엔트리 블록과 파이썬 문장을 나란히 { entry, python, note }
 //  board-card   칠판에 글 카드 { title, items, code }
 //  board-clear  칠판 지우기
-//  code-type    편집기에 코드를 한 글자씩 친다 { code }
-//  trace        편집기의 코드를 한 줄씩 실행해 보인다 { code }
-//  follow       아이가 따라 치고 실행한 뒤 "다 했어요"를 누를 때까지 기다린다 { code, expect, say }
+//  code-type    편집기에 코드를 한 글자씩 친다 { code, files }
+//  trace        편집기의 코드를 한 줄씩 실행해 보인다 { code, files }
+//  follow       아이가 따라 치고 실행한 뒤 "다 했어요"를 누를 때까지 기다린다 { code, expect, say, files, expectFiles }
+//  (files: 시작할 때 폴더에 있을 파일 { 이름: 내용 }. 파일 칸에 보여 주고 그 파일을 넣어 돌린다.
+//   expectFiles: 따라 하기가 끝난 뒤 있어야 하는 파일 { 이름: [줄 목록] })
 //  check        강의 중에 묻는 확인 문제 { title, ask, choices, answer, right, teach }
 //               맞히면 right 장면만, 틀리면 teach 장면(설명)을 재생한다. 이미 아는 것은 설명을 건너뛰게 하려는 것이다.
 //  nod          끄덕이기
@@ -58,9 +60,9 @@ function toScene(script, spec, seed) {
   if (spec.pair) return { kind: 'board-pair', ...spec.pair };
   if (spec.card) return { kind: 'board-card', ...spec.card };
   if (spec.clearBoard) return { kind: 'board-clear' };
-  if (spec.type !== undefined) return { kind: 'code-type', code: spec.type };
+  if (spec.type !== undefined) return { kind: 'code-type', code: spec.type, files: spec.files };
   // limit: 끝나지 않는 반복을 시연할 때 보여 줄 줄 수. randoms: 무작위 수를 정해 둘 때.
-  if (spec.trace !== undefined) return { kind: 'trace', code: spec.trace, inputs: spec.inputs ?? [], limit: spec.limit, randoms: spec.randoms };
+  if (spec.trace !== undefined) return { kind: 'trace', code: spec.trace, inputs: spec.inputs ?? [], limit: spec.limit, randoms: spec.randoms, files: spec.files };
   // 선생님이 프로그램을 실제로 돌려 보인다(끝없이 도는 게임은 한 줄씩 볼 수 없다). keys: [[몇 ms 뒤, 키 이름], …], ms: 돌릴 시간.
   if (spec.play !== undefined) return { kind: 'play', code: spec.play, keys: spec.keys ?? [], ms: spec.ms ?? 4000 };
   // 따라 하기: say는 아이가 치는 동안 선생님이 하는 말이다(말이 끝나기를 기다리지 않고 바로 칠 수 있다).
@@ -100,7 +102,7 @@ export function predictFeedback(script, question, choiceIndex, seed = 0) {
 
 /** 예측 문제: 실행해서 확인하는 장면 */
 export function predictRevealScenes(script, question, seed = 0) {
-  return [line(script, 'predict-run', seed), { kind: 'trace', code: question.code, inputs: question.inputs ?? [], limit: question.limit, randoms: question.randoms }];
+  return [line(script, 'predict-run', seed), { kind: 'trace', code: question.code, inputs: question.inputs ?? [], limit: question.limit, randoms: question.randoms, files: question.files }];
 }
 
 /** 쓰기 문제: 채점 뒤 선생님 말. diagnosis는 src/core/diagnose.js의 결과다. */
@@ -141,7 +143,7 @@ export function allTasks(script) {
 /** 대본 점검: 장면과 문제가 가리키는 대사가 모두 있는가. 테스트에서 쓴다. */
 export function missingLines(script) {
   const used = new Set([
-    'intro-ask', 'intro-solve', 'follow-different', 'follow-different-draw', 'follow-not-run', 'follow-not-stopped', 'follow-show', 'predict-ask', 'predict-run',
+    'intro-ask', 'intro-solve', 'follow-different', 'follow-different-draw', 'follow-different-file','follow-not-run', 'follow-not-stopped', 'follow-show', 'predict-ask', 'predict-run',
     'task-intro', 'task-next', 'task-how', 'task-keys', 'play-intro', 'task-correct-first', 'task-correct', 'skip-ok', 'lecture-back', 'done-bye',
     'challenge-ask', 'challenge-intro', 'challenge-skip',
   ]);

@@ -68,12 +68,14 @@ export function createPlayer(ctx) {
   }
 
   /** 코드를 한 줄씩 실행해 보인다: 실행하는 줄을 표시하고, 그 줄이 내보낸 글자를 출력 창에 더한다. */
-  async function trace(code, inputs = [], { limit, randoms } = {}) {
+  async function trace(code, inputs = [], { limit, randoms, files } = {}) {
     if (editor.getCode() !== code) editor.setCode(code);
     output.clear();
     ctx.ui.vars?.({});
     ctx.ui.drawStart?.(code);
-    const result = await ctx.runner.run(code, { trace: true, inputs, limit, randoms });
+    // 파일을 쓰는 코드: 시작할 때 있는 파일을 먼저 보여 주고, 파일이 바뀐 줄마다 다시 보여 준다.
+    ctx.ui.files?.(files ?? null, null);
+    const result = await ctx.runner.run(code, { trace: true, inputs, limit, randoms, files });
     const steps = result.steps ?? [];
     for (const [index, step] of steps.entries()) {
       if (stopped) break;
@@ -87,6 +89,7 @@ export function createPlayer(ctx) {
         else if (piece) output.append(piece);
       }
       ctx.ui.vars?.(step.vars ?? {});
+      if (step.files) ctx.ui.files?.(step.files, files ?? {});
       // 이 줄이 그린 것: 다음 줄로 넘어가기 전에 다 그려지게 시간을 정해 준다.
       if (step.draw) ctx.ui.draw?.(step.draw, (450 * pace) / slow / speed);
       await pause((550 * pace) / slow);
@@ -131,6 +134,7 @@ export function createPlayer(ctx) {
           teacher.pose('demo');
           output.clear();
           ctx.ui.vars?.({}); // 새 코드를 치기 시작하면 앞 예제의 이름표는 지운다
+          ctx.ui.files?.(scene.files ?? null, null);
           editor.setLocked(true);
           await editor.typeCode(scene.code, 55 / slow / speed);
           teacher.pose('idle');
@@ -138,7 +142,7 @@ export function createPlayer(ctx) {
         case 'trace':
           teacher.pose('point');
           editor.setLocked(true);
-          await trace(scene.code, scene.inputs, { limit: scene.limit, randoms: scene.randoms });
+          await trace(scene.code, scene.inputs, { limit: scene.limit, randoms: scene.randoms, files: scene.files });
           teacher.pose('idle');
           break;
         case 'play': {
@@ -149,6 +153,7 @@ export function createPlayer(ctx) {
           output.clear();
           ctx.ui.vars?.({});
           ctx.ui.drawStart?.(scene.code);
+          ctx.ui.files?.(null, null);
           let ended = false;
           const running = ctx.runner.run(scene.code).finally(() => {
             ended = true;

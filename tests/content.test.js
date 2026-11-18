@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 
 import { loadPyodide } from 'pyodide';
 
-import { diagnoseDrawing, diagnoseGame, diagnoseTask, outputLines } from '../src/core/diagnose.js';
+import { diagnoseDrawing, diagnoseGame, diagnoseTask, fileProblem, outputLines } from '../src/core/diagnose.js';
 import { strokes } from '../src/core/drawing.js';
 import { explain } from '../src/core/errors-ko.js';
 import { allTasks } from '../src/core/lesson.js';
@@ -31,8 +31,9 @@ before(async () => {
   const call = pyodide.globals.get('__kidpy_scripted');
   // limit: 한 줄씩 보기에서 보여 줄 줄 수의 한도. randoms: random.randint가 차례로 돌려줄 값.
   // keys, frames: 게임을 돌려 볼 때 차례로 누를 키와 돌릴 장면 수.
-  scripted = (code, inputs, trace, { limit, randoms, keys, frames } = {}) =>
-    JSON.parse(call(code, JSON.stringify(inputs ?? []), trace, limit ?? 300, JSON.stringify(randoms ?? []), JSON.stringify(keys ?? []), frames ?? 0));
+  // files: 프로그램이 시작할 때 폴더에 있을 파일.
+  scripted = (code, inputs, trace, { limit, randoms, keys, frames, files } = {}) =>
+    JSON.parse(call(code, JSON.stringify(inputs ?? []), trace, limit ?? 300, JSON.stringify(randoms ?? []), JSON.stringify(keys ?? []), frames ?? 0, JSON.stringify(files ?? null)));
 });
 
 /** 한 줄씩 보기로 돌린다. 화면에 보이는 그대로(질문과 넣은 답 포함)의 출력을 돌려준다. */
@@ -52,25 +53,26 @@ function grade(task, code) {
   // 그리기 문제: 모범 답이 그린 그림과 견준다.
   const want = (inputs) => scripted(task.solution, inputs ?? [], false).draw;
   if (!task.cases) {
-    const ran = scripted(code, [], false);
+    const ran = scripted(code, [], false, { files: task.files });
     if (ran.error) return { kind: 'error', error: ran.error };
     return task.draw ? diagnoseDrawing(task, code, ran.draw, want()) : diagnoseTask(task, code, ran);
   }
   let diagnosis = { kind: 'correct' };
   for (const one of task.cases) {
-    const ran = scripted(code, one.inputs, false, { randoms: one.randoms, keys: one.keys, frames: one.frames });
+    const ran = scripted(code, one.inputs, false, { randoms: one.randoms, keys: one.keys, frames: one.frames, files: one.files ?? task.files });
+    const expectFiles = one.expectFiles ?? task.expectFiles;
     // 끝나지 않는 반복은 실행기가 줄 수를 세다가 멈춘다.
     if (ran.error?.type === 'TraceLimit') diagnosis = { kind: 'endless' };
     else if (ran.error?.type === 'EOFError') {
       // 준 답을 다 쓰고도 또 물었다. 이 문제의 흔한 실수로 짚을 수 있으면 그 말을 한다(앱과 같다).
-      const guess = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, { error: null, output: ran.output, again: true });
+      const guess = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs, expectFiles }, code, { error: null, output: ran.output, files: ran.files, again: true });
       diagnosis = guess.kind === 'mistake' ? guess : { kind: 'input-many' };
     }
     else if (ran.error) diagnosis = { kind: 'error', error: ran.error };
     else if (ran.unused > 0) diagnosis = { kind: 'input-few' };
     else if (task.game) diagnosis = diagnoseGame(task, code, ran, scripted(task.solution, one.inputs, false, { randoms: one.randoms, keys: one.keys, frames: one.frames }));
     else if (task.draw) diagnosis = diagnoseDrawing({ ...task, inputs: one.inputs }, code, ran.draw, want(one.inputs));
-    else diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs }, code, ran);
+    else diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs, expectFiles }, code, ran);
     if (diagnosis.kind !== 'correct') {
       diagnosis.inputs = one.inputs;
       break;
@@ -82,7 +84,7 @@ function grade(task, code) {
 for (const m of Object.values(SCRIPTS)) {
   test(`${m.id}: 예측 문제의 정답이 실제 출력과 같다`, () => {
     for (const q of m.predict ?? []) {
-      const ran = shown(q.code, q.inputs, { limit: q.limit, randoms: q.randoms });
+      const ran = shown(q.code, q.inputs, { limit: q.limit, randoms: q.randoms, files: q.files });
       if (q.outcome) {
         // 오류가 답인 문제: 보기 글은 설명이라서, 대본에 적어 둔 실제 결과(outcome)와 견준다.
         assert.equal(ran.error?.type ?? null, q.outcome.error ?? null, `${q.id}: 오류 종류`);
@@ -120,7 +122,7 @@ for (const m of Object.values(SCRIPTS)) {
       for (const hint of task.hints ?? []) {
         if (!hint.card?.code) continue;
         // 힌트 예제가 묻는 횟수나 무작위 수가 정해져 있어야 하면 카드에 inputs, randoms를 적는다.
-        const ran = scripted(hint.card.code, hint.card.inputs ?? ['1', '2', '3'], false, { randoms: hint.card.randoms });
+        const ran = scripted(hint.card.code, hint.card.inputs ?? ['1', '2', '3'], false, { randoms: hint.card.randoms, files: hint.card.files ?? task.files ?? task.cases?.[0]?.files });
         assert.equal(ran.error, null, `${task.id}: 힌트 예제에서 오류 (${ran.error?.message})`);
         assert.notEqual(grade(task, hint.card.code).kind, 'correct', `${task.id}: 힌트 예제가 정답이에요`);
       }
@@ -131,7 +133,7 @@ for (const m of Object.values(SCRIPTS)) {
     for (const part of m.lecture ?? []) {
       for (const spec of part) {
         if (spec.follow) {
-          const ran = typedRun(spec.follow.code, spec.follow.inputs, { randoms: spec.follow.randoms, keys: spec.follow.game?.keys, frames: spec.follow.game?.frames, limit: spec.follow.game ? 5000 : undefined });
+          const ran = typedRun(spec.follow.code, spec.follow.inputs, { randoms: spec.follow.randoms, keys: spec.follow.game?.keys, frames: spec.follow.game?.frames, limit: spec.follow.game ? 5000 : undefined, files: spec.follow.files });
           // 게임 따라 하기: 정해 둔 키와 장면 수로 돌렸을 때 오류 없이 거북이가 나와야 한다.
           if (spec.follow.game) {
             assert.equal(ran.error, null, `게임 따라 하기에서 오류 (${ran.error?.message})`);
@@ -151,6 +153,8 @@ for (const m of Object.values(SCRIPTS)) {
           }
           if (spec.follow.match) assert.match(ran.output, new RegExp(spec.follow.match), '따라 하기 출력 모양');
           else assert.deepEqual(outputLines(ran.output), spec.follow.expect, '따라 하기 출력');
+          // 파일에 쓰는 따라 하기: 적어 둔 파일이 그대로 생겨야 한다.
+          if (spec.follow.expectFiles) assert.equal(fileProblem(spec.follow.expectFiles, ran.files ?? {}), null, '따라 하기 파일');
         }
         if (spec.play !== undefined) {
           // 선생님이 실행해 보이는 프로그램: 적어 둔 키를 차례로 눌러 가며 얼마쯤 돌려도 오류가 없어야 한다.
@@ -158,7 +162,7 @@ for (const m of Object.values(SCRIPTS)) {
           assert.equal(ran.error, null, `실행해 보이기에서 오류 (${ran.error?.message}): ${spec.play.replace(/\n/g, ' ⏎ ')}`);
         }
         if (spec.trace !== undefined) {
-          const ran = shown(spec.trace, spec.inputs, { limit: spec.limit, randoms: spec.randoms });
+          const ran = shown(spec.trace, spec.inputs, { limit: spec.limit, randoms: spec.randoms, files: spec.files });
           // 일부러 오류를 내는 시연은 대본에 expectError로 적어 둔다.
           assert.equal(ran.error?.type ?? null, spec.expectError ?? null, `시연: ${spec.trace.replace(/\n/g, ' ⏎ ')}`);
           assert.equal(ran.unused, 0, '시연에 쓰지 않은 입력이 남았어요');

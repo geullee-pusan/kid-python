@@ -59,7 +59,15 @@ for (const m of Object.values(MISSIONS)) {
     const ids = allTasks(m).map((t) => t.id);
     assert.equal(new Set(ids).size, ids.length, '문제 id가 겹쳐요');
     for (const task of allTasks(m)) {
-      assert.ok(task.id && task.title && task.steps.length && (task.expect.length || task.draw || task.game) && task.solution, `${task.id}: 빠진 것`);
+      // 파일에 쓰는 문제는 출력이 없어도 된다(expectFiles로 채점한다).
+      const fileTask = Boolean(task.expectFiles || task.cases?.some((one) => one.expectFiles));
+      assert.ok(task.id && task.title && task.steps.length && (task.expect.length || task.draw || task.game || fileTask) && task.solution, `${task.id}: 빠진 것`);
+      if (fileTask) {
+        for (const kind of ['file-none', 'file-printed', 'file-empty']) assert.ok(taskFeedback(m, task, { kind, vars: { name: '점수.txt' } })[0].text);
+        assert.ok(taskFeedback(m, task, { kind: 'file-missing', vars: { name: '점수.txt', got: '점수.text' } })[0].text);
+        assert.ok(taskFeedback(m, task, { kind: 'file-count', vars: { name: '점수.txt', want: 3, got: 2 } })[0].text);
+        assert.ok(taskFeedback(m, task, { kind: 'file-diff', vars: { name: '점수.txt', no: '첫째', want: '90', got: '9' } })[0].text);
+      }
       const vars = { calc: '12 + 30', got: 2, want: 3, no: '첫째' };
       assert.ok(taskFeedback(m, task, { kind: 'correct', first: true }).length >= 2);
       for (const kind of ['not-computed', 'quoted-calc', 'order', 'count']) assert.ok(taskFeedback(m, task, { kind, vars })[0].text);

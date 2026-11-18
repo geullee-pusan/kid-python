@@ -502,6 +502,139 @@ a.btn {
   display: none;
 }
 
+/* 파일 칸: 프로그램이 읽고 쓰는 파일(파일을 쓰는 프로그램일 때만 보인다) */
+.files-col {
+  flex: 0 0 40%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.files-col[hidden] {
+  display: none;
+}
+
+.files-note {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.files {
+  flex: 1;
+  min-height: 0;
+  margin-top: -8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 0 10px 10px 10px;
+  background: #f8f9fa;
+  overflow: auto;
+}
+
+.files-empty {
+  margin: 4px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.file-card {
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+/* 이번 실행에서 새로 생겼거나 바뀐 파일 */
+.file-card.changed {
+  border-color: #f08c00;
+  border-width: 2px;
+}
+
+.file-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--line);
+  background: #f1f3f5;
+  border-radius: 8px 8px 0 0;
+}
+
+.file-name {
+  font: 700 15px var(--mono);
+}
+
+.file-badge {
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.file-badge.new {
+  background: #d3f9d8;
+  color: #2b8a3e;
+}
+
+.file-badge.changed {
+  background: #fff3bf;
+  color: #a35e00;
+}
+
+.file-delete {
+  margin-left: auto;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  font-size: 13px;
+}
+
+.file-delete[data-sure] {
+  border-color: #e03131;
+  color: #c92a2a;
+}
+
+.file-lines {
+  margin: 0;
+  padding: 6px 10px 6px 44px;
+  font: 16px/1.45 var(--mono);
+}
+
+.file-line::marker {
+  color: #868e96;
+  font-size: 13px;
+}
+
+.file-line code {
+  font: inherit;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.file-line.empty,
+.file-line.more {
+  list-style: none;
+  margin-left: -34px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* 만들기 화면: 파일 칸은 출력 칸 위에 낮게 놓인다 */
+.studio-grid .files-col {
+  flex: none;
+}
+
+.studio-grid .files {
+  flex: none;
+  max-height: 30vh;
+}
+
 /* 그림판을 쓰는 동안에는 편집기를 조금 줄이고 아래쪽을 키운다 */
 .right.drawing .editor {
   flex: 1;

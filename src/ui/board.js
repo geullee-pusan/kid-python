@@ -113,7 +113,7 @@ export function createBoard(root) {
       };
     },
     /** 쓰기 문제: 할 일 목록 */
-    task({ title, story, steps, want, wantNote, wants, pictures }) {
+    task({ title, story, steps, want, wantNote, wants, pictures, fileWants }) {
       const list = el('ol', 'board-steps');
       for (const step of steps) list.append(el('li', '', step));
       const children = [el('h3', 'board-title', title)];
@@ -121,7 +121,8 @@ export function createBoard(root) {
       children.push(list);
       // want: 나와야 하는 출력을 그대로 보여 줄 때(띄어쓰기까지 맞춰야 하는 문제)
       // wants: 답에 따라 출력이 달라지는 문제는 여러 경우를 나란히 보여 준다 [{ note, lines }]
-      const samples = wants ?? (want ? [{ note: wantNote ?? '이렇게 나와야 해요', lines: want }] : []);
+      // fileWants: 파일에 있어야 하는 줄들 [{ note, lines }] (출력 본보기 옆에 놓는다)
+      const samples = [...(wants ?? (want ? [{ note: wantNote ?? '이렇게 나와야 해요', lines: want }] : [])), ...(fileWants ?? [])];
       if (samples.length) {
         const row = el('div', 'board-wants');
         for (const sample of samples) {
