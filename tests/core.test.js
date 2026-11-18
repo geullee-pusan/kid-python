@@ -67,6 +67,9 @@ for (const m of Object.values(MISSIONS)) {
         assert.ok(taskFeedback(m, task, { kind: 'file-missing', vars: { name: '점수.txt', got: '점수.text' } })[0].text);
         assert.ok(taskFeedback(m, task, { kind: 'file-count', vars: { name: '점수.txt', want: 3, got: 2 } })[0].text);
         assert.ok(taskFeedback(m, task, { kind: 'file-diff', vars: { name: '점수.txt', no: '첫째', want: '90', got: '9' } })[0].text);
+        // 칠판과 다른 파일(또는 파일이 없을 때)로 돌려서 틀렸으면 그 말을 먼저 한다.
+        assert.equal(taskFeedback(m, task, { kind: 'line-diff', otherFiles: 'other', vars: { no: '첫째', want: '1', got: '2' } })[0].key, 'task-case-files');
+        assert.equal(taskFeedback(m, task, { kind: 'error', otherFiles: 'none', text: '파일이 없어요' })[0].key, 'task-case-nofile');
       }
       const vars = { calc: '12 + 30', got: 2, want: 3, no: '첫째' };
       assert.ok(taskFeedback(m, task, { kind: 'correct', first: true }).length >= 2);

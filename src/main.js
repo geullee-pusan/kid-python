@@ -868,6 +868,13 @@ async function main() {
       }
       if (diagnosis.kind !== 'correct') {
         diagnosis.inputs = one.inputs ?? [];
+        // 칠판에 보인 경우(첫째)와 다른 파일로 돌렸다: 파일 칸에 그때의 파일이 보인다고 알려 준다.
+        if (one !== task.cases[0] && JSON.stringify(startFiles ?? {}) !== JSON.stringify(task.cases[0].files ?? task.files ?? {})) {
+          // 파일이 하나도 없을 때(처음 켠 경우)는 따로 말한다. 파일 칸에 보여 줄 것이 없다.
+          const none = !Object.keys(startFiles ?? {}).length;
+          diagnosis.otherFiles = none ? 'none' : 'other';
+          lessonConsole.append(none ? '▶ 파일이 아직 없을 때도 돌려 봤어요\n' : '▶ 처음 파일을 바꿔서 돌려 봤어요(파일 칸)\n', 'note');
+        }
         break;
       }
       lessonConsole.append('\n');

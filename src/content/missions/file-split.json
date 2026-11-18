@@ -1,0 +1,195 @@
+{
+  "_설명": "파일에 남기기 단원 4번 수업. 한 줄에 여러 값을 쉼표로 이어 적은 파일을 읽는다. 새 문법은 없다: 9단원의 split(\",\")과 11단원의 딕셔너리, 1단원의 sep=\",\"를 파일과 잇는다. 나눈 리스트를 그대로 내보내 ['하늘', '90\\n']처럼 마지막 값에 줄바꿈이 붙는 것을 보여 주고, strip을 먼저 하게 한다. 겨냥하는 오개념: 나눈 값은 숫자처럼 보여도 글자다(글자끼리 견주면 \"9\"가 \"10\"보다 크다), 마지막 값에 줄바꿈이 붙는다.",
+  "id": "file-split",
+  "unit": "파일에 남기기",
+  "no": 4,
+  "title": "쉼표로 나눈 줄",
+  "desc": "이름과 점수처럼 한 줄에 여러 값을 적은 파일을 읽고 써요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes"],
+  "showVars": true,
+  "learned": [
+    { "rule": "줄.strip().split(\",\")으로 줄바꿈을 떼고 쉼표에서 나눠요. 나눈 값은 모두 글자예요.", "code": "칸 = 줄.strip().split(\",\")\n점수[칸[0]] = int(칸[1])" },
+    { "rule": "strip을 하지 않으면 마지막 값에 줄바꿈이 붙어 있어요(\"90\\n\")." },
+    { "rule": "쉼표로 이어 쓰려면 print에 sep=\",\"를 넣어요.", "code": "print(이름, 점수[이름], sep=\",\", file=파일)" }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["점수만 적은 파일로는 누구 점수인지 알 수 없어요. 그래서 한 줄에 이름, 쉼표, 점수처럼 여러 값을 적어요. 오늘은 그런 파일을 읽고 써요."],
+    "split-intro": ["글자를 쉼표에서 나누는 [split|스플릿]을 배웠죠? 파일의 줄에도 똑같이 써요."],
+    "split-after": ["나눈 리스트를 봐요. 둘째 값이 [\"90\\n\"|구십 역슬래시 n]이에요. 마지막 값에 줄 끝의 줄바꿈이 붙어 있어요."],
+    "strip-intro": ["그래서 먼저 [strip|스트립]으로 줄바꿈을 떼고, 그다음에 나눠요. 점을 이어서 한 줄에 쓸 수 있어요."],
+    "strip-after": ["이제 깨끗하게 나뉘었어요. 그런데 [\"90\"|따옴표 구십]처럼 따옴표가 있어요. 나눈 값은 모두 글자예요."],
+    "dict-intro": ["이름은 키로, 점수는 [int|인트]로 숫자로 바꿔 값으로 넣어 딕셔너리를 만들어요."],
+    "dict-after": ["파일이 딕셔너리가 됐어요. 이제 이름으로 점수를 꺼내 계산할 수 있어요."],
+    "write-intro": ["거꾸로, 딕셔너리를 파일에 쓸 수도 있어요. [print|프린트]에 [sep|셉] 등호 쉼표를 넣으면 값 사이에 빈칸 대신 쉼표가 들어가요. 모두 [5|오]점씩 올려서 새 파일에 써 볼게요."],
+    "write-after": ["새점수 파일에 쉼표로 이어 쓴 줄이 생겼어요. 이 파일도 같은 방법으로 다시 읽을 수 있어요."],
+    "check-ask": ["하나 물어볼게요. [strip|스트립]하고 나눈 칸의 [1|일]번, 구십은 글자일까요, 숫자일까요?"],
+    "check-right": ["맞아요. 파일에서 읽은 것은 모두 글자예요. 계산하려면 [int|인트]로 바꿔요."],
+    "check-teach-1": ["파일에서 읽은 것은 숫자처럼 보여도 글자예요. 이름표 칸에 따옴표가 있었죠?"],
+    "check-teach-2": ["계산하려면 [int|인트]로 숫자로 바꿔요."],
+    "follow-ok": ["좋아요. 줄마다 이름과 키가 나뉘어 나왔어요."],
+    "summary": ["정리해요. 줄을 [strip|스트립]하고 [split|스플릿]으로 나눠요. 나눈 값은 글자라서, 계산할 값은 [int|인트]로 바꿔요. 쓸 때는 [sep|셉] 등호 쉼표예요."],
+
+    "q1-right": ["맞아요. 나눈 칸은 글자라서 숫자 [0|영]에 더할 수 없어요. 오류가 나요."],
+    "q1-num": ["칸의 [1|일]번은 [\"3\"|따옴표 삼]이라는 글자예요. [int|인트]로 바꾸지 않으면 더할 수 없어요."],
+    "q1-text": ["글자끼리라면 이어 붙겠지만, 합은 숫자 [0|영]에서 시작했어요. 숫자와 글자는 더할 수 없어요."],
+    "q1-explain": ["[int|인트] 없이 글자를 숫자에 더해서 오류가 나요."],
+    "q2-right": ["맞아요. [strip|스트립]을 하지 않아서 마지막 칸은 [\"3\\n\"|삼 역슬래시 n]이에요. [\"3\"|따옴표 삼]과 같지 않아요."],
+    "q2-true": ["마지막 칸 끝에는 줄바꿈이 붙어 있어요. 그래서 같지 않아요."],
+    "q2-error": ["오류는 나지 않아요. 같지 않으니 [False|폴스]가 나와요."],
+    "q2-explain": ["마지막 값에는 줄바꿈이 붙어요. [False|폴스]가 나와요."],
+    "q3-right": ["맞아요. 바다의 점수는 [int|인트]로 바꾼 숫자 [75|칠십오]라서, [5|오]를 더하면 [80|팔십]이에요."],
+    "q3-text": ["[int|인트]로 바꿔서 넣었어요. 숫자끼리 더해요."],
+    "q3-error": ["바다는 파일에 있어서 딕셔너리에 들어갔어요. 오류가 나지 않아요."],
+    "q3-explain": ["[75|칠십오] 더하기 [5|오]는 [80|팔십]이에요."],
+
+    "task-how": ["다 쓰면 실행해 보고, 맞는 것 같으면 '제출'을 눌러요. 파일 칸에 점수 파일이 있어요."],
+    "praise-top": ["줄마다 나눠서 점수를 숫자로 바꾸고, 더 높을 때만 사람을 바꿨어요. 아홉 점과 열 점도 바르게 견줬어요."],
+    "top-text": ["[9|구]점이 [10|십]점보다 높다고 나왔어요. 글자끼리 견주면 앞 글자부터 봐서 [\"9\"|구]가 [\"10\"|십]보다 커요. 점수를 [int|인트]로 바꿔서 견줘요."],
+    "top-hint-1": ["가장 높은 점수를 담을 이름표는 [-1|빼기 일], 사람은 빈 글자로 시작해요. 줄마다 [strip|스트립]하고 [split|스플릿]해서 이름과 점수로 나눠요."],
+    "top-hint-2": ["점수를 [int|인트]로 바꾸고, 지금까지 가장 높은 점수보다 크면 사람과 점수를 바꿔요. 반복이 끝나면 둘을 내보내요."],
+    "top-hint-3": ["칠판에 비슷한 예제를 적었어요. 이걸 보고 써 봐요."],
+    "praise-subject": ["줄마다 과목과 세 점수를 나누고, 평균을 계산해서 쉼표로 이어 새 파일에 썼어요. 읽고, 계산하고, 쓰기를 다 했어요."],
+    "subject-space": ["평균 파일에 쉼표 대신 빈칸이 들어갔어요. [print|프린트]에 [sep|셉] 등호 쉼표를 넣어요."],
+    "subject-hint-1": ["평균 파일을 [\"w\"|따옴표 w]로 먼저 열고, 그 안에서 시험 파일을 열어 한 줄씩 꺼내요. 칸의 [0|영]번이 과목, [1|일], [2|이], [3|삼]번이 점수예요."],
+    "subject-hint-2": ["세 점수를 [int|인트]로 바꿔 더하고 [3|삼]으로 몫을 구해요. 과목과 평균을 [sep|셉] 등호 쉼표로 평균 파일에 써요. 끝나면 다 썼어요를 내보내요."],
+
+    "done-1": ["오늘은 쉼표로 나눈 줄을 읽고 썼어요."],
+    "done-2": ["다음 시간에는 파일이 아직 없을 때를 다뤄요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "say": "split-intro" },
+      { "type": "with open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        칸 = 줄.split(\",\")\n        print(칸)", "files": { "점수.txt": "하늘,90\n바다,75\n별,88\n" } },
+      { "trace": "with open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        칸 = 줄.split(\",\")\n        print(칸)", "files": { "점수.txt": "하늘,90\n바다,75\n별,88\n" } },
+      { "say": "split-after" }
+    ],
+    [
+      { "card": { "title": "쉼표로 나눈 줄", "items": ["줄.strip().split(\",\")  줄바꿈을 떼고 나눈다", "나눈 값은 모두 글자", "계산할 값은 int( )로"], "code": "칸 = 줄.strip().split(\",\")" } },
+      { "say": "strip-intro" },
+      { "type": "with open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        칸 = 줄.strip().split(\",\")\n        print(칸)", "files": { "점수.txt": "하늘,90\n바다,75\n별,88\n" } },
+      { "trace": "with open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        칸 = 줄.strip().split(\",\")\n        print(칸)", "files": { "점수.txt": "하늘,90\n바다,75\n별,88\n" } },
+      { "say": "strip-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "칸 = \"하늘,90\\n\".strip().split(\",\")\n칸[1]은?",
+          "ask": "check-ask",
+          "choices": ["\"90\"  (글자)", "90  (숫자)"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "dict-intro" },
+      { "type": "점수 = {}\nwith open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        칸 = 줄.strip().split(\",\")\n        점수[칸[0]] = int(칸[1])\nprint(점수)", "files": { "점수.txt": "하늘,90\n바다,75\n별,88\n" } },
+      { "trace": "점수 = {}\nwith open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        칸 = 줄.strip().split(\",\")\n        점수[칸[0]] = int(칸[1])\nprint(점수)", "files": { "점수.txt": "하늘,90\n바다,75\n별,88\n" } },
+      { "say": "dict-after" }
+    ],
+    [
+      { "card": { "title": "쉼표로 이어 쓰기", "items": ["print(가, 나, sep=\",\", file=파일)", "→  가,나"] } },
+      { "say": "write-intro" },
+      { "type": "점수 = {\"하늘\": 90, \"바다\": 75}\nwith open(\"새점수.txt\", \"w\") as 파일:\n    for 이름 in 점수:\n        print(이름, 점수[이름] + 5, sep=\",\", file=파일)" },
+      { "trace": "점수 = {\"하늘\": 90, \"바다\": 75}\nwith open(\"새점수.txt\", \"w\") as 파일:\n    for 이름 in 점수:\n        print(이름, 점수[이름] + 5, sep=\",\", file=파일)" },
+      { "say": "write-after" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "with open(\"키.txt\") as 파일:\n    for 줄 in 파일:\n        칸 = 줄.strip().split(\",\")\n        print(칸[0], 칸[1], \"cm\")" } },
+      { "follow": { "code": "with open(\"키.txt\") as 파일:\n    for 줄 in 파일:\n        칸 = 줄.strip().split(\",\")\n        print(칸[0], 칸[1], \"cm\")", "files": { "키.txt": "하늘,135\n바다,142\n" }, "expect": ["하늘 135 cm", "바다 142 cm"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["줄.strip().split(\",\")", "나눈 값은 글자 → 계산할 것은 int( )", "print(…, sep=\",\", file=파일)  쉼표로 이어 쓴다"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "ask": "실행하면 어떻게 될까요?",
+      "code": "합 = 0\nwith open(\"수.txt\") as 파일:\n    for 줄 in 파일:\n        칸 = 줄.strip().split(\",\")\n        합 += 칸[1]\nprint(합)",
+      "files": { "수.txt": "가,3\n나,4\n" },
+      "outcome": { "output": [], "error": "TypeError" },
+      "answer": 2,
+      "choices": [
+        { "text": "7", "say": "q1-num" },
+        { "text": "34", "say": "q1-text" },
+        { "text": "오류가 난다", "say": "q1-right" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "with open(\"물건.txt\") as 파일:\n    줄 = 파일.read()\n칸 = 줄.split(\",\")\nprint(칸[2] == \"3\")",
+      "files": { "물건.txt": "사과,500,3\n" },
+      "answer": 1,
+      "choices": [
+        { "text": "True", "say": "q2-true" },
+        { "text": "False", "say": "q2-right" },
+        { "text": "(오류만 나온다)", "say": "q2-error" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "점수 = {}\nwith open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        칸 = 줄.strip().split(\",\")\n        점수[칸[0]] = int(칸[1])\nprint(점수[\"바다\"] + 5)",
+      "files": { "점수.txt": "하늘,90\n바다,75\n" },
+      "answer": 0,
+      "choices": [
+        { "text": "80", "say": "q3-right" },
+        { "text": "755", "say": "q3-text" },
+        { "text": "(오류만 나온다)", "say": "q3-error" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "top",
+      "title": "가장 높은 사람",
+      "story": "'점수.txt'에 한 줄에 \"이름,점수\"가 적혀 있어요. 점수가 가장 높은 사람의 이름과 점수를 \"하늘 90\"처럼 내보내요. 가장 높은 사람은 한 명뿐이에요.",
+      "steps": ["\"점수.txt\"를 열어 한 줄씩 꺼내요.", "줄을 strip하고 쉼표에서 나눠 이름과 점수를 얻어요.", "점수를 숫자로 바꿔서 견주고, 가장 높은 사람을 기억해요.", "이름과 점수를 내보내요."],
+      "cases": [
+        { "inputs": [], "files": { "점수.txt": "하늘,90\n바다,75\n별,88\n" }, "expect": ["하늘 90"] },
+        { "inputs": [], "files": { "점수.txt": "솔,9\n빛,10\n" }, "expect": ["빛 10"] },
+        { "inputs": [], "files": { "점수.txt": "가람,60\n나래,100\n다솜,95\n" }, "expect": ["나래 100"] }
+      ],
+      "expect": ["하늘 90"],
+      "show": true,
+      "mistakes": [{ "output": "^솔 9$", "say": "top-text" }],
+      "praise": "praise-top",
+      "solution": "사람 = \"\"\n높은 = -1\nwith open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        칸 = 줄.strip().split(\",\")\n        if int(칸[1]) > 높은:\n            사람 = 칸[0]\n            높은 = int(칸[1])\nprint(사람, 높은)",
+      "hints": [
+        { "say": "top-hint-1" },
+        { "say": "top-hint-2" },
+        { "say": "top-hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "합 = 0\nwith open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        칸 = 줄.strip().split(\",\")\n        합 += int(칸[1])\nprint(\"점수의 합\", 합)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "subject",
+    "title": "심화: 과목별 평균",
+    "story": "'시험.txt'에 한 줄에 \"과목,점수,점수,점수\"가 적혀 있어요. 과목마다 세 점수의 평균(몫)을 구해서 '평균.txt'에 \"국어,80\"처럼 한 줄씩 써요. 다 쓰면 '다 썼어요'를 내보내요.",
+    "steps": ["\"평균.txt\"를 \"w\"로 열고, 그 안에서 \"시험.txt\"를 읽어요.", "줄마다 과목과 세 점수로 나누고, 점수를 숫자로 바꿔 평균(// 3)을 구해요.", "과목과 평균을 쉼표로 이어 평균.txt에 써요.", "'다 썼어요'를 내보내요."],
+    "cases": [
+      { "inputs": [], "files": { "시험.txt": "국어,80,90,70\n수학,100,95,90\n" }, "expect": ["다 썼어요"], "expectFiles": { "평균.txt": ["국어,80", "수학,95"] } },
+      { "inputs": [], "files": { "시험.txt": "과학,60,70,80\n영어,50,51,52\n음악,99,99,100\n" }, "expect": ["다 썼어요"], "expectFiles": { "평균.txt": ["과학,70", "영어,51", "음악,99"] } }
+    ],
+    "expect": ["다 썼어요"],
+    "show": true,
+    "mistakes": [{ "file": "평균.txt", "content": "^국어 80", "say": "subject-space" }],
+    "praise": "praise-subject",
+    "solution": "with open(\"평균.txt\", \"w\") as 쓸파일:\n    with open(\"시험.txt\") as 파일:\n        for 줄 in 파일:\n            칸 = 줄.strip().split(\",\")\n            합 = int(칸[1]) + int(칸[2]) + int(칸[3])\n            print(칸[0], 합 // 3, sep=\",\", file=쓸파일)\nprint(\"다 썼어요\")",
+    "hints": [{ "say": "subject-hint-1" }, { "say": "subject-hint-2" }]
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "_설명": "파일에 남기기 단원 5번 수업. 처음 켤 때는 기록 파일이 아직 없다는 데서 출발한다. 새로 나오는 것은 try: / except FileNotFoundError: 다. 다른 오류를 잡는 것과 맨 except:, finally, else는 다루지 않는다. 이 수업부터 knows에 tries가 들어가서, 없는 파일 오류 안내가 try로 감싸라고 권한다. 겨냥하는 오개념: 오류가 나면 언제나 프로그램이 멈춘다, except 아래는 늘 실행된다, try 안에서 오류가 난 줄 뒤의 줄도 실행된다.",
+  "id": "file-try",
+  "unit": "파일에 남기기",
+  "no": 5,
+  "title": "파일이 없을 때",
+  "desc": "처음이라 파일이 없어도 멈추지 않게 해요. 몇 번 켰는지 세어요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes", "tries"],
+  "showVars": true,
+  "learned": [
+    { "rule": "try: 아래를 해 보다가 FileNotFoundError가 나면, 멈추지 않고 except FileNotFoundError: 아래로 가요.", "code": "try:\n    with open(\"기록.txt\") as 파일:\n        기록 = int(파일.read())\nexcept FileNotFoundError:\n    기록 = 0" },
+    { "rule": "오류가 난 줄 뒤의 try 안 줄은 하지 않아요. 오류가 나지 않으면 except 아래는 하지 않아요." },
+    { "rule": "읽고, 바꾸고, \"w\"로 다시 쓰면 다음에 켰을 때 바뀐 값을 읽어요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["게임의 최고 기록을 파일에 남긴다고 해 봐요. 맨 처음 켰을 때는 기록 파일이 아직 없어요. 없는 파일을 읽으면 어떻게 될까요?"],
+    "none-after": ["오류가 나고 프로그램이 멈췄어요. 처음 켜는 사람은 늘 이 오류를 만나게 돼요."],
+    "try-intro": ["이럴 때 [try|트라이]를 써요. [try|트라이] 아래를 해 보다가, 파일이 없다는 오류가 나면 멈추지 않고 [except|익셉트] 아래로 가요. [except|익셉트] 뒤에는 어떤 오류인지 써요. 파일이 없다는 오류는 [FileNotFoundError|파일 낫 파운드 에러]예요."],
+    "try-after": ["파일이 없어서 [except|익셉트] 아래로 갔어요. 기록에 [0|영]이 들어가고, 프로그램은 끝까지 갔어요."],
+    "have-intro": ["이번에는 기록 파일이 있을 때예요. 파일 칸에 [15|십오]가 적혀 있어요."],
+    "have-after": ["오류가 나지 않아서 [except|익셉트] 아래는 건너뛰었어요. 파일에서 읽은 [15|십오]가 나왔어요."],
+    "save-intro": ["이제 읽은 기록을 바꿔서 다시 써요. [\"w\"|따옴표 w]로 열면 처음부터 새로 써서, 파일에는 늘 새 기록 하나만 남아요."],
+    "save-after": ["[15|십오]를 읽고 [5|오]를 더해서 [20|이십]을 다시 썼어요. 만들기에서는 이 파일이 남아서, 다음에 켜면 [20|이십]을 읽어요."],
+    "check-ask": ["하나 물어볼게요. [except|익셉트] 아래는 언제 할까요?"],
+    "check-right": ["맞아요. [try|트라이] 안에서 그 오류가 났을 때만 해요."],
+    "check-teach-1": ["파일이 있어서 오류가 나지 않으면 [except|익셉트] 아래는 건너뛰어요."],
+    "check-teach-2": ["[try|트라이] 안에서 파일이 없다는 오류가 났을 때만 해요."],
+    "follow-ok": ["좋아요. 파일이 없어도 멈추지 않고 알려 줬어요."],
+    "summary": ["정리해요. 없을 수도 있는 파일은 [try|트라이]로 감싸고, [except FileNotFoundError|익셉트 파일 낫 파운드 에러] 아래에 파일이 없을 때 할 일을 써요."],
+
+    "q1-right": ["맞아요. 하나를 내보내고, 파일을 열다가 오류가 나서 [except|익셉트]로 갔어요. 둘과 셋은 건너뛰고, 넷, 그다음 다섯이에요."],
+    "q1-all": ["오류가 난 줄 뒤의 [try|트라이] 안 줄은 하지 않아요. 둘과 셋은 나오지 않아요."],
+    "q1-stop": ["[except|익셉트]가 오류를 받아서 프로그램은 멈추지 않아요. 넷과 다섯도 나와요."],
+    "q1-explain": ["하나, 넷, 다섯이 나와요."],
+    "q2-right": ["맞아요. 파일이 있어서 [7|칠]을 읽었고, [except|익셉트] 아래는 건너뛰었어요. [7|칠] 더하기 [1|일]은 [8|팔]이에요."],
+    "q2-zero": ["파일이 있으니 오류가 나지 않아요. [except|익셉트] 아래의 [0|영]은 넣지 않아요."],
+    "q2-both": ["[try|트라이]와 [except|익셉트] 가운데 하나만 해요. 여기서는 오류가 없어서 [try|트라이]만 했어요."],
+    "q2-explain": ["[7|칠]을 읽고 [1|일]을 더해서 [8|팔]이에요."],
+    "q3-right": ["맞아요. 파일이 없어서 없어요가 나오고, 멈추지 않고 다음 줄로 가서 파일을 새로 쓰고 썼어요가 나와요."],
+    "q3-stop": ["[except|익셉트]가 오류를 받았으니 멈추지 않아요. 아래 줄도 해요."],
+    "q3-open": ["점수 파일은 아직 없어서 여는 줄에서 오류가 나요. 열었어요는 나오지 않아요."],
+    "q3-explain": ["없어요, 그리고 썼어요가 나와요."],
+
+    "task-how": ["다 쓰면 실행해 보고, 파일 칸과 출력 칸이 칠판과 같으면 '제출'을 눌러요."],
+    "praise-runs": ["파일이 없을 때는 [0|영]으로 시작하고, 읽은 수에 [1|일]을 더해 [\"w\"|따옴표 w]로 다시 썼어요. 만들기에 옮기면 켤 때마다 정말 하나씩 늘어나요."],
+    "runs-append": ["파일에 줄이 쌓였어요. [\"a\"|따옴표 a]로 열면 뒤에 덧붙어요. 켠 횟수는 하나만 남아야 하니 [\"w\"|따옴표 w]로 열어요."],
+    "runs-hint-1": ["[try|트라이] 아래에서 [\"켠횟수.txt\"|켠 횟수 점 티 엑스 티]를 열어 [int(파일.read())|인트 파일 점 리드]로 횟수를 읽어요. [except FileNotFoundError|익셉트 파일 낫 파운드 에러] 아래에서는 횟수에 [0|영]을 넣어요."],
+    "runs-hint-2": ["횟수에 [1|일]을 더하고, [\"w\"|따옴표 w]로 열어 새 횟수를 써요. 마지막에 칠판의 모양대로 내보내요."],
+    "runs-hint-3": ["칠판에 비슷한 예제를 적었어요. 이걸 보고 써 봐요."],
+    "praise-words": ["단어장이 없으면 기본 단어장을 만들어 파일에도 남기고, 있으면 파일에서 읽었어요. 다음에 켜면 파일에서 읽게 돼요."],
+    "words-nosave": ["기본 단어장을 쓰기는 했는데 파일로 남기지 않았어요. 파일이 없을 때는 기본 단어장을 [\"w\"|따옴표 w]로 단어장 파일에 써 둬요."],
+    "words-default": ["단어장 파일이 있는데도 기본 단어장을 썼어요. 파일이 있으면 파일에서 읽은 단어만 써요."],
+    "words-hint-1": ["[try|트라이] 아래에서 단어장 파일을 읽어 딕셔너리에 넣어요. 줄을 [strip|스트립]하고 쉼표에서 나눠요."],
+    "words-hint-2": ["[except|익셉트] 아래에서는 기본 단어장을 딕셔너리에 넣고, [\"w\"|따옴표 w]로 단어장 파일을 열어 쉼표로 이어 써요. 그다음 낱말을 물어서, 키에 있으면 뜻을, 없으면 모르는 낱말이라고 내보내요."],
+
+    "done-1": ["오늘은 파일이 없을 때도 멈추지 않게 하는 법을 배웠어요."],
+    "done-2": ["다음 시간은 단원 마무리예요. 기록이 남는 게임을 만들어요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "type": "with open(\"기록.txt\") as 파일:\n    기록 = int(파일.read())\nprint(\"기록\", 기록)" },
+      { "trace": "with open(\"기록.txt\") as 파일:\n    기록 = int(파일.read())\nprint(\"기록\", 기록)", "expectError": "FileNotFoundError" },
+      { "say": "none-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "try와 except", "items": ["try:  해 본다", "except FileNotFoundError:  파일이 없다는 오류가 나면 여기로", "오류가 나지 않으면 except 아래는 건너뛴다"], "code": "try:\n    with open(\"기록.txt\") as 파일:\n        기록 = int(파일.read())\nexcept FileNotFoundError:\n    기록 = 0" } },
+      { "say": "try-intro" },
+      { "type": "try:\n    with open(\"기록.txt\") as 파일:\n        기록 = int(파일.read())\nexcept FileNotFoundError:\n    기록 = 0\nprint(\"기록\", 기록)" },
+      { "trace": "try:\n    with open(\"기록.txt\") as 파일:\n        기록 = int(파일.read())\nexcept FileNotFoundError:\n    기록 = 0\nprint(\"기록\", 기록)" },
+      { "say": "try-after" },
+      { "say": "have-intro" },
+      { "trace": "try:\n    with open(\"기록.txt\") as 파일:\n        기록 = int(파일.read())\nexcept FileNotFoundError:\n    기록 = 0\nprint(\"기록\", 기록)", "files": { "기록.txt": "15\n" } },
+      { "say": "have-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "except 아래는 언제 할까요?",
+          "ask": "check-ask",
+          "choices": ["언제나 한다", "try 안에서 그 오류가 났을 때만"],
+          "answer": 1,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "읽고, 바꾸고, 다시 쓰기", "items": ["없으면 0으로 시작", "\"w\"로 다시 쓰면 새 값 하나만 남는다"] } },
+      { "say": "save-intro" },
+      { "type": "try:\n    with open(\"기록.txt\") as 파일:\n        기록 = int(파일.read())\nexcept FileNotFoundError:\n    기록 = 0\n기록 += 5\nwith open(\"기록.txt\", \"w\") as 파일:\n    print(기록, file=파일)", "files": { "기록.txt": "15\n" } },
+      { "trace": "try:\n    with open(\"기록.txt\") as 파일:\n        기록 = int(파일.read())\nexcept FileNotFoundError:\n    기록 = 0\n기록 += 5\nwith open(\"기록.txt\", \"w\") as 파일:\n    print(기록, file=파일)", "files": { "기록.txt": "15\n" } },
+      { "say": "save-after" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "try:\n    with open(\"인사.txt\") as 파일:\n        print(파일.read())\nexcept FileNotFoundError:\n    print(\"아직 파일이 없어요\")" } },
+      { "follow": { "code": "try:\n    with open(\"인사.txt\") as 파일:\n        print(파일.read())\nexcept FileNotFoundError:\n    print(\"아직 파일이 없어요\")", "expect": ["아직 파일이 없어요"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["try:  해 본다", "except FileNotFoundError:  파일이 없을 때", "오류가 난 줄 뒤의 try 안은 건너뛴다", "읽고 → 바꾸고 → \"w\"로 다시 쓴다"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "try:\n    print(\"하나\")\n    with open(\"없는.txt\") as 파일:\n        print(\"둘\")\n    print(\"셋\")\nexcept FileNotFoundError:\n    print(\"넷\")\nprint(\"다섯\")",
+      "answer": 0,
+      "choices": [
+        { "text": "하나\n넷\n다섯", "say": "q1-right" },
+        { "text": "하나\n둘\n셋\n넷\n다섯", "say": "q1-all" },
+        { "text": "하나", "say": "q1-stop" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "try:\n    with open(\"수.txt\") as 파일:\n        수 = int(파일.read())\nexcept FileNotFoundError:\n    수 = 0\nprint(수 + 1)",
+      "files": { "수.txt": "7\n" },
+      "answer": 2,
+      "choices": [
+        { "text": "1", "say": "q2-zero" },
+        { "text": "8\n1", "say": "q2-both" },
+        { "text": "8", "say": "q2-right" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "try:\n    with open(\"점수.txt\") as 파일:\n        print(\"열었어요\")\nexcept FileNotFoundError:\n    print(\"없어요\")\nwith open(\"점수.txt\", \"w\") as 파일:\n    print(100, file=파일)\nprint(\"썼어요\")",
+      "answer": 1,
+      "choices": [
+        { "text": "없어요", "say": "q3-stop" },
+        { "text": "없어요\n썼어요", "say": "q3-right" },
+        { "text": "열었어요\n썼어요", "say": "q3-open" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "runs",
+      "title": "몇 번 켰나",
+      "story": "프로그램을 켤 때마다 '켠횟수.txt'의 수를 1 늘려서 다시 쓰고, \"3번째로 켰어요\"처럼 내보내요. 맨 처음이라 파일이 없으면 1번째예요.",
+      "steps": ["try로 \"켠횟수.txt\"를 읽어 숫자로 바꿔요. 파일이 없으면(except FileNotFoundError) 0으로 해요.", "1을 더해요.", "\"w\"로 열어 새 수를 써요.", "\"3번째로 켰어요\"처럼 내보내요."],
+      "cases": [
+        { "inputs": [], "files": { "켠횟수.txt": "2\n" }, "expect": ["3번째로 켰어요"], "expectFiles": { "켠횟수.txt": ["3"] } },
+        { "inputs": [], "files": {}, "expect": ["1번째로 켰어요"], "expectFiles": { "켠횟수.txt": ["1"] } },
+        { "inputs": [], "files": { "켠횟수.txt": "9\n" }, "expect": ["10번째로 켰어요"], "expectFiles": { "켠횟수.txt": ["10"] } }
+      ],
+      "expect": ["3번째로 켰어요"],
+      "show": true,
+      "mistakes": [{ "file": "켠횟수.txt", "content": "^2\\n3$", "say": "runs-append" }],
+      "praise": "praise-runs",
+      "solution": "try:\n    with open(\"켠횟수.txt\") as 파일:\n        횟수 = int(파일.read())\nexcept FileNotFoundError:\n    횟수 = 0\n횟수 += 1\nwith open(\"켠횟수.txt\", \"w\") as 파일:\n    print(횟수, file=파일)\nprint(str(횟수) + \"번째로 켰어요\")",
+      "hints": [
+        { "say": "runs-hint-1" },
+        { "say": "runs-hint-2" },
+        { "say": "runs-hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "try:\n    with open(\"돈.txt\") as 파일:\n        돈 = int(파일.read())\nexcept FileNotFoundError:\n    돈 = 1000\n돈 -= 300\nwith open(\"돈.txt\", \"w\") as 파일:\n    print(돈, file=파일)\nprint(\"남은 돈\", 돈)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "words",
+    "title": "심화: 없으면 기본 단어장",
+    "story": "'단어장.txt'에 한 줄에 \"낱말,뜻\"이 적혀 있어요. 파일이 없으면 기본 단어장(사과,apple / 바나나,banana)을 쓰고, 그 두 줄을 단어장.txt에 써 둬요. 그다음 낱말을 물어서 뜻을 내보내고, 단어장에 없으면 '모르는 낱말이에요'를 내보내요.",
+    "steps": ["try로 단어장.txt를 읽어 딕셔너리에 넣어요.", "파일이 없으면 기본 단어장을 딕셔너리에 넣고, \"w\"로 단어장.txt에 \"사과,apple\"처럼 두 줄을 써요.", "낱말을 물어서 뜻을 내보내요. 없으면 '모르는 낱말이에요'예요."],
+    "cases": [
+      { "inputs": ["사과"], "files": {}, "expect": ["apple"], "expectFiles": { "단어장.txt": ["사과,apple", "바나나,banana"] } },
+      { "inputs": ["고양이"], "files": { "단어장.txt": "개,dog\n고양이,cat\n" }, "expect": ["cat"] },
+      { "inputs": ["사과"], "files": { "단어장.txt": "개,dog\n" }, "expect": ["모르는 낱말이에요"] }
+    ],
+    "expect": ["apple"],
+    "show": true,
+    "mistakes": [
+      { "inputs": "^사과$", "output": "^apple$", "file": "단어장.txt", "say": "words-nosave" },
+      { "inputs": "^사과$", "output": "^apple$", "say": "words-default" }
+    ],
+    "praise": "praise-words",
+    "solution": "단어장 = {}\ntry:\n    with open(\"단어장.txt\") as 파일:\n        for 줄 in 파일:\n            칸 = 줄.strip().split(\",\")\n            단어장[칸[0]] = 칸[1]\nexcept FileNotFoundError:\n    단어장 = {\"사과\": \"apple\", \"바나나\": \"banana\"}\n    with open(\"단어장.txt\", \"w\") as 파일:\n        for 낱말 in 단어장:\n            print(낱말, 단어장[낱말], sep=\",\", file=파일)\n낱말 = input(\"낱말: \")\nif 낱말 in 단어장:\n    print(단어장[낱말])\nelse:\n    print(\"모르는 낱말이에요\")",
+    "hints": [{ "say": "words-hint-1" }, { "say": "words-hint-2" }]
+  }
+}

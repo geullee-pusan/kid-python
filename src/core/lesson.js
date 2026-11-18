@@ -87,7 +87,8 @@ export function lectureParts(script, seed = 0) {
 
 /** 예측 문제: 묻는 장면 */
 export function predictAskScenes(script, question, seed = 0) {
-  return [line(script, 'predict-ask', seed)];
+  // askSay: 출력이 아니라 파일에 남는 것을 묻는 문제처럼, 묻는 말을 바꿀 때
+  return [line(script, question.askSay ?? 'predict-ask', seed)];
 }
 
 /** 예측 문제: 고른 뒤. 무엇을 골랐는지에 따라 다른 말을 한다(왜 그런지 알려 준다). */
@@ -115,6 +116,9 @@ export function taskFeedback(script, task, diagnosis, seed = 0) {
   }
   // 정해진 입력으로 채점했을 때는 어떤 입력에서 틀렸는지 먼저 알려 준다. 게임은 어떤 키를 눌러 봤는지 알려 준다.
   const scenes = diagnosis.keys ? [line(script, 'task-keys', seed, { keys: diagnosis.keys })] : diagnosis.inputs?.length ? [line(script, 'task-case', seed, { inputs: diagnosis.inputs.join(', ') })] : [];
+  // 칠판에 보인 것과 다른 파일을 넣어 돌렸을 때 틀렸으면, 그 파일로 돌렸다고 먼저 알려 준다.
+  // otherFiles: 'other'(다른 내용의 파일) 또는 'none'(파일이 하나도 없을 때)
+  if (diagnosis.otherFiles) scenes.push(line(script, diagnosis.otherFiles === 'none' ? 'task-case-nofile' : 'task-case-files', seed));
   if (diagnosis.kind === 'error') scenes.push({ kind: 'say', key: 'task-error', text: diagnosis.text, speech: diagnosis.text, pose: 'talk' });
   else if (diagnosis.kind === 'mistake') scenes.push(line(script, diagnosis.say, seed));
   else scenes.push(line(script, `task-${diagnosis.kind}`, seed, diagnosis.vars));
@@ -144,7 +148,7 @@ export function allTasks(script) {
 export function missingLines(script) {
   const used = new Set([
     'intro-ask', 'intro-solve', 'follow-different', 'follow-different-draw', 'follow-different-file','follow-not-run', 'follow-not-stopped', 'follow-show', 'predict-ask', 'predict-run',
-    'task-intro', 'task-next', 'task-how', 'task-keys', 'play-intro', 'task-correct-first', 'task-correct', 'skip-ok', 'lecture-back', 'done-bye',
+    'task-intro', 'task-next', 'task-how', 'task-keys', 'task-case-files', 'task-case-nofile', 'play-intro', 'task-correct-first', 'task-correct', 'skip-ok', 'lecture-back', 'done-bye',
     'challenge-ask', 'challenge-intro', 'challenge-skip',
   ]);
   for (const kind of ['not-computed', 'quoted-calc', 'order', 'count', 'spacing', 'line-diff', 'no-output', 'input-few', 'input-many', 'case', 'endless', 'draw-none', 'draw-mirror', 'draw-flip', 'draw-moved', 'draw-size', 'draw-missing', 'draw-extra', 'draw-diff', 'draw-color', 'draw-fill', 'game-none', 'game-count', 'game-pos', 'game-heading', 'game-look', 'game-text', 'game-output']) used.add(`task-${kind}`);
@@ -159,6 +163,7 @@ export function missingLines(script) {
   for (const part of script.lecture ?? []) for (const spec of part) walk(spec);
   for (const question of script.predict ?? []) {
     used.add(question.explain);
+    if (question.askSay) used.add(question.askSay);
     for (const choice of question.choices) used.add(choice.say);
   }
   for (const task of allTasks(script)) {

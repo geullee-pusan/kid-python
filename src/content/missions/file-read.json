@@ -1,0 +1,219 @@
+{
+  "_설명": "파일에 남기기 단원 2번 수업. 새로 나오는 것은 open(\"이름.txt\")(둘째 칸이 없으면 읽기), for 줄 in 파일:, 줄.strip(), 파일.read()다. 이름표 칸에 줄이 \"85\\n\"처럼 보이는 것으로 줄 끝의 줄바꿈을 보여 준다. int( )는 줄바꿈이 붙어 있어도 숫자로 바꿔 주므로, strip이 꼭 필요한 곳은 글자를 견줄 때와 길이를 셀 때로 가르친다. 겨냥하는 오개념: 줄 끝에 아무것도 없다(그래서 print하면 빈 줄이 생기는 것과 == 로 견주면 다른 것을 모른다), with 밖에서도 파일을 읽을 수 있다.",
+  "id": "file-read",
+  "unit": "파일에 남기기",
+  "no": 2,
+  "title": "파일 읽기",
+  "desc": "파일에 적힌 것을 한 줄씩 읽어서 계산해요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes"],
+  "showVars": true,
+  "learned": [
+    { "rule": "open(\"이름.txt\")처럼 둘째 칸을 쓰지 않으면 읽으려고 열어요.", "code": "with open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        print(줄.strip())" },
+    { "rule": "for 줄 in 파일: 은 파일을 한 줄씩 꺼내요. 줄 끝에는 줄바꿈이 붙어 있어요(\"85\\n\")." },
+    { "rule": "줄.strip()은 앞뒤의 빈칸과 줄바꿈을 떼어 낸 글자를 돌려줘요. 글자를 견주거나 길이를 셀 때 써요." },
+    { "rule": "파일.read()는 파일 전체를 글자 하나로 돌려줘요. 파일은 with 안에서만 읽을 수 있어요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["지난 시간에는 파일에 썼어요. 오늘은 파일에 적힌 것을 읽어서 써먹어요. 파일 칸에 점수 파일이 미리 들어 있어요."],
+    "read-intro": ["읽을 때는 [open|오픈] 괄호 안에 이름만 써요. 둘째 칸이 없으면 읽기예요. 그리고 [for 줄 in 파일|포 줄 인 파일]로 한 줄씩 꺼내요."],
+    "read-after": ["줄 사이가 한 줄씩 비었어요. 이름표 칸을 다시 봐요. 줄에 [\"85\\n\"|팔십오 역슬래시 n]처럼 끝에 줄바꿈이 붙어 있었어요. 파일의 줄은 끝에 줄바꿈이 있고, [print|프린트]도 줄을 바꾸니까 빈 줄이 생겨요."],
+    "strip-intro": ["줄 뒤에 점 [strip|스트립]을 붙이면 앞뒤의 빈칸과 줄바꿈을 떼어 낸 글자를 돌려줘요."],
+    "strip-after": ["이제 빈 줄이 없어요."],
+    "match-intro": ["줄바꿈은 눈에 잘 안 보여서 조심해야 해요. 이름 파일에서 바다를 찾아볼게요."],
+    "match-after": ["바다가 파일에 있는데 못 찾았어요. 줄은 [\"바다\\n\"|바다 역슬래시 n]이라서 [\"바다\"|바다]와 같지 않아요."],
+    "match2-after": ["[strip|스트립]을 붙였더니 찾았어요. 글자를 견줄 때는 꼭 [strip|스트립]을 해요."],
+    "sum-intro": ["점수를 더할 때는 [int|인트]로 숫자로 바꿔요. [int|인트]는 줄바꿈이 붙어 있어도 숫자로 바꿔 줘요."],
+    "sum-after": ["세 점수를 더한 [245|이백사십오]가 나왔어요."],
+    "read2-intro": ["파일을 통째로 읽을 수도 있어요. 점 [read|리드]는 파일 전체를 글자 하나로 돌려줘요."],
+    "read2-after": ["글에 시 전체가 들어갔어요. 읽어 둔 글은 [with|위드] 밖에서 써도 돼요."],
+    "closed-intro": ["그런데 파일 자체는 [with|위드] 밖에서 읽을 수 없어요. 들여쓰기를 빼먹으면 어떻게 되는지 볼게요."],
+    "closed-after": ["오류가 났어요. [with|위드]가 끝나면 파일이 닫혀요. 파일을 읽는 줄은 [with|위드] 아래에 들여써요."],
+    "check-ask": ["하나 물어볼게요. 파일의 첫 줄이 [85|팔십오]라면, 반복에서 처음 꺼낸 줄에는 무엇이 들어 있을까요?"],
+    "check-right": ["맞아요. 끝에 줄바꿈이 붙어 있어요."],
+    "check-teach-1": ["파일의 줄에는 끝에 줄바꿈이 붙어 있어요. 이름표 칸에서 봤죠?"],
+    "check-teach-2": ["떼어 내려면 점 [strip|스트립]을 써요."],
+    "follow-ok": ["좋아요. 파일에 적힌 과일마다 맛있다가 붙었어요."],
+    "summary": ["정리해요. 읽을 때는 이름만 써서 열고, [for|포]로 한 줄씩 꺼내요. 줄 끝의 줄바꿈은 점 [strip|스트립]으로 떼어요."],
+
+    "q1-right": ["맞아요. 줄 끝의 줄바꿈과 [print|프린트]의 줄바꿈이 겹쳐서 줄 사이가 비어요."],
+    "q1-plain": ["줄에는 끝에 줄바꿈이 붙어 있어요. [print|프린트]도 줄을 바꿔서, 사이에 빈 줄이 생겨요."],
+    "q1-one": ["[for|포]로 한 줄씩 꺼내니까 가와 나가 따로 나와요."],
+    "q1-explain": ["[strip|스트립]을 하지 않아서 가와 나 사이에 빈 줄이 생겨요."],
+    "q2-right": ["맞아요. 줄은 [\"바다\\n\"|바다 역슬래시 n]이라서 [\"바다\"|바다]와 같지 않아요. 하나도 세지 않아요."],
+    "q2-one": ["바다는 파일에 있지만, 꺼낸 줄은 끝에 줄바꿈이 붙은 [\"바다\\n\"|바다 역슬래시 n]이에요. 같지 않아요."],
+    "q2-two": ["바다와 같은지 묻고 있어요. 하늘은 처음부터 달라요. 그리고 바다도 줄바꿈 때문에 같지 않아요."],
+    "q2-explain": ["[strip|스트립]을 하지 않아서 바다를 못 찾았어요. [0|영]이 나와요."],
+    "q3-right": ["맞아요. 글에는 파일 전체가 들어 있어요. [strip|스트립]은 맨 앞과 맨 뒤만 떼어서 가운데의 줄바꿈은 그대로예요."],
+    "q3-error": ["읽은 것은 [with|위드] 안이에요. 글에 담아 둔 것은 밖에서 써도 돼요."],
+    "q3-first": ["점 [read|리드]는 한 줄이 아니라 파일 전체를 읽어요."],
+    "q3-explain": ["[read|리드]는 파일 전체를 읽어요. 하나와 둘이 두 줄로 나와요."],
+
+    "task-how": ["다 쓰면 실행해 보고, 맞는 것 같으면 '제출'을 눌러요. 파일 칸에 점수 파일이 있어요."],
+    "praise-avg": ["파일에서 한 줄씩 읽어서 사람 수를 세고, 점수를 숫자로 바꿔 더했어요. 파일의 점수가 바뀌어도 맞게 나와요."],
+    "avg-slash": ["평균에 소수점이 나왔어요. 몫만 구하는 [//|빗금 두 개]로 나눠요."],
+    "avg-hint-1": ["[with open|위드 오픈]으로 [\"점수.txt\"|점수 점 티 엑스 티]를 열고, [for 줄 in 파일|포 줄 인 파일]로 한 줄씩 꺼내요. 사람 수와 합을 담을 이름표는 반복 위에서 [0|영]으로 시작해요."],
+    "avg-hint-2": ["반복 안에서 사람 수를 [1|일] 올리고, 합에 [int(줄)|인트 줄]을 더해요. 반복이 끝나면 칠판의 모양대로 세 줄을 내보내요. 평균은 합을 사람 수로 [//|빗금 두 개] 나눠요."],
+    "avg-hint-3": ["칠판에 비슷한 예제를 적었어요. 이걸 보고 써 봐요."],
+    "praise-long": ["[strip|스트립]으로 줄바꿈을 떼고 길이를 셌어요. 더 길 때만 바꿔서 먼저 나온 것을 지켰어요."],
+    "long-strip": ["낱말 뒤에 줄바꿈이 붙어서 길이가 하나 더 크게 세어졌어요. [strip|스트립]으로 떼어 낸 다음에 길이를 세요."],
+    "long-tie": ["길이가 같은 낱말이 여럿이면 먼저 나온 것을 내보내요. 더 길 때만 바꾸려면 [>=|크거나 같다]가 아니라 [>|크다]를 써요."],
+    "long-hint-1": ["가장 긴 낱말을 담을 이름표를 빈 글자 [\"\"|따옴표 두 개]로 시작해요. 줄을 꺼낼 때마다 [strip|스트립]을 해요."],
+    "long-hint-2": ["꺼낸 낱말의 길이가 지금까지 가장 긴 것의 길이보다 크면 바꿔요. 반복이 끝나면 낱말과 그 길이를 내보내요."],
+
+    "done-1": ["오늘은 파일을 읽는 법을 배웠어요."],
+    "done-2": ["다음 시간에는 파일 뒤에 덧붙이는 법을 배워요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "파일 읽기", "items": ["open(\"점수.txt\")  둘째 칸이 없으면 읽기", "for 줄 in 파일:  한 줄씩 꺼낸다"], "code": "with open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        print(줄)" } },
+      { "say": "read-intro" },
+      { "type": "with open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        print(줄)", "files": { "점수.txt": "85\n90\n70\n" } },
+      { "trace": "with open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        print(줄)", "files": { "점수.txt": "85\n90\n70\n" } },
+      { "say": "read-after" }
+    ],
+    [
+      { "card": { "title": "줄.strip()", "items": ["앞뒤의 빈칸과 줄바꿈을 떼어 낸 글자", "\"85\\n\".strip()  →  \"85\""] } },
+      { "say": "strip-intro" },
+      { "type": "with open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        print(줄.strip())", "files": { "점수.txt": "85\n90\n70\n" } },
+      { "trace": "with open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        print(줄.strip())", "files": { "점수.txt": "85\n90\n70\n" } },
+      { "say": "strip-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "match-intro" },
+      { "type": "with open(\"이름.txt\") as 파일:\n    for 줄 in 파일:\n        if 줄 == \"바다\":\n            print(\"찾았다\")", "files": { "이름.txt": "하늘\n바다\n별\n" } },
+      { "trace": "with open(\"이름.txt\") as 파일:\n    for 줄 in 파일:\n        if 줄 == \"바다\":\n            print(\"찾았다\")", "files": { "이름.txt": "하늘\n바다\n별\n" } },
+      { "say": "match-after" },
+      { "type": "with open(\"이름.txt\") as 파일:\n    for 줄 in 파일:\n        if 줄.strip() == \"바다\":\n            print(\"찾았다\")", "files": { "이름.txt": "하늘\n바다\n별\n" } },
+      { "trace": "with open(\"이름.txt\") as 파일:\n    for 줄 in 파일:\n        if 줄.strip() == \"바다\":\n            print(\"찾았다\")", "files": { "이름.txt": "하늘\n바다\n별\n" } },
+      { "say": "match2-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "파일의 첫 줄이 85일 때,\n처음 꺼낸 줄에는?",
+          "ask": "check-ask",
+          "choices": ["\"85\"", "\"85\\n\""],
+          "answer": 1,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "sum-intro" },
+      { "type": "합 = 0\nwith open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        합 += int(줄)\nprint(합)", "files": { "점수.txt": "85\n90\n70\n" } },
+      { "trace": "합 = 0\nwith open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        합 += int(줄)\nprint(합)", "files": { "점수.txt": "85\n90\n70\n" } },
+      { "say": "sum-after" }
+    ],
+    [
+      { "card": { "title": "파일.read()", "items": ["파일 전체를 글자 하나로", "파일은 with 안에서만 읽을 수 있다"] } },
+      { "say": "read2-intro" },
+      { "type": "with open(\"시.txt\") as 파일:\n    글 = 파일.read()\nprint(글)", "files": { "시.txt": "봄이 오면\n꽃이 핀다\n" } },
+      { "trace": "with open(\"시.txt\") as 파일:\n    글 = 파일.read()\nprint(글)", "files": { "시.txt": "봄이 오면\n꽃이 핀다\n" } },
+      { "say": "read2-after" },
+      { "say": "closed-intro" },
+      { "type": "with open(\"시.txt\") as 파일:\n    print(\"열었어요\")\n글 = 파일.read()", "files": { "시.txt": "봄이 오면\n꽃이 핀다\n" } },
+      { "trace": "with open(\"시.txt\") as 파일:\n    print(\"열었어요\")\n글 = 파일.read()", "files": { "시.txt": "봄이 오면\n꽃이 핀다\n" }, "expectError": "ValueError" },
+      { "say": "closed-after" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "with open(\"과일.txt\") as 파일:\n    for 줄 in 파일:\n        print(줄.strip(), \"맛있다\")" } },
+      { "follow": { "code": "with open(\"과일.txt\") as 파일:\n    for 줄 in 파일:\n        print(줄.strip(), \"맛있다\")", "files": { "과일.txt": "사과\n배\n귤\n" }, "expect": ["사과 맛있다", "배 맛있다", "귤 맛있다"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["open(\"이름.txt\")  읽으려고 연다", "for 줄 in 파일:  한 줄씩", "줄.strip()  줄바꿈을 뗀다", "파일.read()  전체를 한 번에"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "with open(\"a.txt\") as 파일:\n    for 줄 in 파일:\n        print(줄)",
+      "files": { "a.txt": "가\n나\n" },
+      "answer": 2,
+      "choices": [
+        { "text": "가\n나", "say": "q1-plain" },
+        { "text": "가나", "say": "q1-one" },
+        { "text": "가\n\n나", "say": "q1-right" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "수 = 0\nwith open(\"이름.txt\") as 파일:\n    for 줄 in 파일:\n        if 줄 == \"바다\":\n            수 += 1\nprint(수)",
+      "files": { "이름.txt": "하늘\n바다\n" },
+      "answer": 0,
+      "choices": [
+        { "text": "0", "say": "q2-right" },
+        { "text": "1", "say": "q2-one" },
+        { "text": "2", "say": "q2-two" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "with open(\"a.txt\") as 파일:\n    글 = 파일.read()\nprint(글.strip())",
+      "files": { "a.txt": "하나\n둘\n" },
+      "answer": 1,
+      "choices": [
+        { "text": "하나", "say": "q3-first" },
+        { "text": "하나\n둘", "say": "q3-right" },
+        { "text": "(오류만 나온다)", "say": "q3-error" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "avg",
+      "title": "점수의 합과 평균",
+      "story": "'점수.txt'에 한 줄에 하나씩 점수가 적혀 있어요. 몇 명인지, 점수의 합, 평균(몫)을 내보내요. 점수가 몇 개든, 무슨 점수든 맞게 나와야 해요.",
+      "steps": ["\"점수.txt\"를 열어서 한 줄씩 꺼내요.", "사람 수를 세고, 점수를 숫자로 바꿔 더해요.", "\"사람 4\", \"합 320\", \"평균 80\"처럼 세 줄을 내보내요. 평균은 합 // 사람 수예요."],
+      "cases": [
+        { "inputs": [], "files": { "점수.txt": "80\n95\n70\n75\n" }, "expect": ["사람 4", "합 320", "평균 80"] },
+        { "inputs": [], "files": { "점수.txt": "100\n60\n90\n" }, "expect": ["사람 3", "합 250", "평균 83"] },
+        { "inputs": [], "files": { "점수.txt": "50\n55\n60\n65\n70\n75\n" }, "expect": ["사람 6", "합 375", "평균 62"] }
+      ],
+      "expect": ["사람 4", "합 320", "평균 80"],
+      "show": true,
+      "mistakes": [{ "output": "평균 \\d+\\.\\d", "say": "avg-slash" }],
+      "praise": "praise-avg",
+      "solution": "수 = 0\n합 = 0\nwith open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        수 += 1\n        합 += int(줄)\nprint(\"사람\", 수)\nprint(\"합\", 합)\nprint(\"평균\", 합 // 수)",
+      "hints": [
+        { "say": "avg-hint-1" },
+        { "say": "avg-hint-2" },
+        { "say": "avg-hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "가장큰 = 0\nwith open(\"점수.txt\") as 파일:\n    for 줄 in 파일:\n        if int(줄) > 가장큰:\n            가장큰 = int(줄)\nprint(\"가장 큰 점수\", 가장큰)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "long",
+    "title": "심화: 가장 긴 낱말",
+    "story": "'낱말.txt'에 한 줄에 하나씩 낱말이 있어요. 가장 긴 낱말과 그 글자 수를 \"오랑우탄 4\"처럼 내보내요. 길이가 같은 낱말이 여럿이면 먼저 나온 것을 내보내요.",
+    "steps": ["낱말을 한 줄씩 꺼내서 strip으로 줄바꿈을 떼어요.", "지금까지 가장 긴 낱말보다 길면 바꿔요.", "가장 긴 낱말과 글자 수를 내보내요."],
+    "cases": [
+      { "inputs": [], "files": { "낱말.txt": "고양이\n코끼리\n하마\n오랑우탄\n개\n" }, "expect": ["오랑우탄 4"] },
+      { "inputs": [], "files": { "낱말.txt": "나무\n바다\n하늘\n" }, "expect": ["나무 2"] },
+      { "inputs": [], "files": { "낱말.txt": "해\n무지개\n구름" }, "expect": ["무지개 3"] }
+    ],
+    "expect": ["오랑우탄 4"],
+    "show": true,
+    "mistakes": [
+      { "output": "\\n ?\\d+$", "say": "long-strip" },
+      { "output": "^하늘 2$", "say": "long-tie" }
+    ],
+    "praise": "praise-long",
+    "solution": "긴 = \"\"\nwith open(\"낱말.txt\") as 파일:\n    for 줄 in 파일:\n        낱말 = 줄.strip()\n        if len(낱말) > len(긴):\n            긴 = 낱말\nprint(긴, len(긴))",
+    "hints": [{ "say": "long-hint-1" }, { "say": "long-hint-2" }]
+  }
+}

@@ -1,0 +1,197 @@
+{
+  "_설명": "파일에 남기기 단원 3번 수업. 새로 나오는 것은 \"a\"(이어 쓰기)다. 없는 파일을 \"a\"로 열면 새로 만들어진다는 것도 보인다. 수업에서는 실행할 때마다 폴더가 처음으로 돌아가므로, 두 번 덧붙이는 것은 한 프로그램 안에서 두 번 여는 것으로 보여 주고, 만들기에서는 파일이 남아 돌릴 때마다 늘어난다고 말로 알려 준다. 겨냥하는 오개념: \"w\"와 \"a\"를 헷갈린다, 두 번 덧붙이면 몇 줄인지, 덧붙이기 전에 센 것과 뒤에 센 것.",
+  "id": "file-append",
+  "unit": "파일에 남기기",
+  "no": 3,
+  "title": "이어 쓰기",
+  "desc": "파일을 지우지 않고 뒤에 덧붙여요. 방명록을 만들어요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes"],
+  "showVars": true,
+  "learned": [
+    { "rule": "\"a\"로 열면 파일 뒤에 이어 써요. 앞의 내용은 그대로 있어요.", "code": "with open(\"방명록.txt\", \"a\") as 파일:\n    print(이름, file=파일)" },
+    { "rule": "\"a\"로 연 파일이 없으면 새로 만들어요." },
+    { "rule": "\"w\"는 처음부터 새로 쓰기, \"a\"는 뒤에 덧붙이기, 아무것도 안 쓰면 읽기예요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["방명록은 손님이 올 때마다 한 줄씩 늘어나요. 그런데 [\"w\"|따옴표 w]로 열면 앞의 손님이 다 지워져요. 오늘은 지우지 않고 뒤에 덧붙이는 법을 배워요."],
+    "append-intro": ["[open|오픈]의 둘째 칸에 [\"a\"|따옴표 a]를 써요. [a|에이]는 덧붙인다는 뜻이에요. 방명록에는 하늘이 먼저 적혀 있어요."],
+    "append-after": ["하늘은 그대로 있고, 뒤에 바다가 붙었어요."],
+    "twice-intro": ["[\"a\"|따옴표 a]로 두 번 열면 어떻게 될까요? 이번에는 파일이 처음에 없어요."],
+    "twice-after": ["파일이 없어도 [\"a\"|따옴표 a]로 열면 새로 만들어요. 그리고 열 때마다 뒤에 붙어서 두 줄이 됐어요."],
+    "studio-note": ["수업에서는 실행할 때마다 파일이 처음으로 돌아가요. 하지만 만들기에서는 파일이 남아서, 방명록 프로그램을 돌릴 때마다 한 줄씩 늘어나요."],
+    "count-intro": ["덧붙인 다음에 다시 읽으면 모두 몇 줄인지 셀 수 있어요."],
+    "count-after": ["별을 덧붙이고 다시 읽어서 세니까 세 줄이에요. 덧붙인 다음에 세야 별까지 세어져요."],
+    "check-ask": ["하나 물어볼게요. 방명록 뒤에 한 줄을 덧붙이려면 어떻게 열까요?"],
+    "check-right": ["맞아요. [\"a\"|따옴표 a]는 앞의 것을 두고 뒤에 덧붙여요."],
+    "check-teach-1": ["[\"w\"|따옴표 w]로 열면 앞에 있던 손님이 모두 지워져요."],
+    "check-teach-2": ["덧붙이려면 [\"a\"|따옴표 a]로 열어요."],
+    "follow-ok": ["좋아요. 월요일은 그대로 있고, 화요일이 덧붙었어요."],
+    "summary": ["정리해요. [\"w\"|따옴표 w]는 처음부터 새로 쓰기, [\"a\"|따옴표 a]는 뒤에 덧붙이기, 아무것도 안 쓰면 읽기예요."],
+
+    "q1-right": ["맞아요. [\"a\"|따옴표 a]로 두 번 열어서 나와 다가 차례로 붙었어요. 가는 그대로예요."],
+    "q1-last": ["[\"a\"|따옴표 a]는 지우지 않아요. 앞의 것이 모두 남아요."],
+    "q1-two": ["처음에 있던 가도 지워지지 않아요. [\"a\"|따옴표 a]는 뒤에 붙이기만 해요."],
+    "q1-explain": ["가, 나, 다 세 줄이 남아요."],
+    "q2-right": ["맞아요. [\"w\"|따옴표 w]로 열 때 처음의 [0|영]이 지워지고 [1|일]이 써져요. 그다음 [\"a\"|따옴표 a]로 [2|이]가 붙어요."],
+    "q2-keep": ["처음에 [\"w\"|따옴표 w]로 열었어요. 그때 [0|영]이 지워져요."],
+    "q2-last": ["두 번째는 [\"a\"|따옴표 a]라서 [1|일]을 지우지 않아요."],
+    "q2-explain": ["[\"w\"|따옴표 w]가 [0|영]을 지우고, [\"a\"|따옴표 a]가 [2|이]를 덧붙여요. [1|일]과 [2|이]가 남아요."],
+    "q3-right": ["맞아요. 다를 덧붙인 다음에 읽어서, 가, 나, 다 세 줄을 세요."],
+    "q3-before": ["세는 것은 덧붙인 다음이에요. 다도 세어져요."],
+    "q3-one": ["두 번째 [with|위드]는 파일을 읽어요. 파일 전체를 한 줄씩 세요."],
+    "q3-explain": ["덧붙인 뒤에 세니까 [3|삼]이에요."],
+
+    "task-how": ["다 쓰면 실행해서 이름을 넣어 봐요. 파일 칸과 출력 칸이 칠판과 같으면 '제출'을 눌러요."],
+    "praise-guest": ["[\"a\"|따옴표 a]로 방명록 뒤에 덧붙이고, 다시 읽어서 몇 번째 손님인지 셌어요. 방명록이 없을 때도 잘 됐어요."],
+    "guest-w": ["방명록에 새 손님만 남았어요. 앞의 손님이 지워졌어요. [\"w\"|따옴표 w]가 아니라 [\"a\"|따옴표 a]로 열어요."],
+    "guest-before": ["몇 번째인지가 하나 작아요. 덧붙이기 전에 셌어요. 덧붙인 다음에 다시 읽어서 세요."],
+    "guest-hint-1": ["먼저 이름을 물어요. 그다음 [\"방명록.txt\"|방명록 점 티 엑스 티]를 [\"a\"|따옴표 a]로 열어서 이름을 [print|프린트]해요. [file=파일|파일 등호 파일]을 잊지 말아요."],
+    "guest-hint-2": ["그다음 방명록을 이름만 써서 다시 열고, [for|포]로 줄 수를 세요. 마지막에 칠판의 모양대로 내보내요. 수를 글자 사이에 붙이려면 [str|에스티알]로 바꿔서 이어요."],
+    "guest-hint-3": ["칠판에 비슷한 예제를 적었어요. 이걸 보고 써 봐요."],
+    "praise-once": ["먼저 방명록을 읽어 와 이미 온 사람인지 보고, 처음 온 사람만 덧붙였어요."],
+    "once-strip": ["벌써 온 사람을 또 덧붙였어요. 방명록에서 꺼낸 줄 끝에는 줄바꿈이 붙어 있어서, 이름과 같지 않아요. [strip|스트립]을 해서 견줘요."],
+    "once-hint-1": ["먼저 방명록을 읽어서, [strip|스트립]한 이름들을 리스트에 모아요. 처음 쓰는 날은 방명록이 없으니, 파일이 없는 경우는 생각하지 않아도 돼요."],
+    "once-hint-2": ["물어본 이름이 리스트 [in|인]에 있으면 벌써 왔다고 내보내요. 없으면 [\"a\"|따옴표 a]로 열어 덧붙이고 반갑다고 내보내요."],
+
+    "done-1": ["오늘은 파일 뒤에 덧붙이는 법을 배웠어요."],
+    "done-2": ["다음 시간에는 쉼표로 나눠 적은 파일을 읽어요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "이어 쓰기", "items": ["open(\"방명록.txt\", \"a\")  뒤에 덧붙인다", "\"a\"  덧붙이기(append)", "파일이 없으면 새로 만든다"], "code": "with open(\"방명록.txt\", \"a\") as 파일:\n    print(\"바다\", file=파일)" } },
+      { "say": "append-intro" },
+      { "type": "with open(\"방명록.txt\", \"a\") as 파일:\n    print(\"바다\", file=파일)", "files": { "방명록.txt": "하늘\n" } },
+      { "trace": "with open(\"방명록.txt\", \"a\") as 파일:\n    print(\"바다\", file=파일)", "files": { "방명록.txt": "하늘\n" } },
+      { "say": "append-after" }
+    ],
+    [
+      { "say": "twice-intro" },
+      { "type": "with open(\"출석.txt\", \"a\") as 파일:\n    print(\"월요일\", file=파일)\nwith open(\"출석.txt\", \"a\") as 파일:\n    print(\"화요일\", file=파일)" },
+      { "trace": "with open(\"출석.txt\", \"a\") as 파일:\n    print(\"월요일\", file=파일)\nwith open(\"출석.txt\", \"a\") as 파일:\n    print(\"화요일\", file=파일)" },
+      { "say": "twice-after" },
+      { "say": "studio-note" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "count-intro" },
+      { "type": "with open(\"방명록.txt\", \"a\") as 파일:\n    print(\"별\", file=파일)\n수 = 0\nwith open(\"방명록.txt\") as 파일:\n    for 줄 in 파일:\n        수 += 1\nprint(\"모두\", 수, \"명\")", "files": { "방명록.txt": "하늘\n바다\n" } },
+      { "trace": "with open(\"방명록.txt\", \"a\") as 파일:\n    print(\"별\", file=파일)\n수 = 0\nwith open(\"방명록.txt\") as 파일:\n    for 줄 in 파일:\n        수 += 1\nprint(\"모두\", 수, \"명\")", "files": { "방명록.txt": "하늘\n바다\n" } },
+      { "say": "count-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "방명록 뒤에\n한 줄을 덧붙이려면?",
+          "ask": "check-ask",
+          "choices": ["open(\"방명록.txt\", \"w\")", "open(\"방명록.txt\", \"a\")"],
+          "answer": 1,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "with open(\"일기.txt\", \"a\") as 파일:\n    print(\"화요일 비\", file=파일)\nprint(\"덧붙였어요\")" } },
+      { "follow": { "code": "with open(\"일기.txt\", \"a\") as 파일:\n    print(\"화요일 비\", file=파일)\nprint(\"덧붙였어요\")", "files": { "일기.txt": "월요일 맑음\n" }, "expect": ["덧붙였어요"], "expectFiles": { "일기.txt": ["월요일 맑음", "화요일 비"] }, "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["\"w\"  처음부터 새로 쓰기", "\"a\"  뒤에 덧붙이기", "(안 쓰면)  읽기", "\"a\"로 연 파일이 없으면 새로 만든다"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "ask": "실행하고 나면 목록.txt에 무엇이 남을까요?",
+      "askSay": "predict-ask-file",
+      "code": "with open(\"목록.txt\", \"a\") as 파일:\n    print(\"나\", file=파일)\nwith open(\"목록.txt\", \"a\") as 파일:\n    print(\"다\", file=파일)",
+      "files": { "목록.txt": "가\n" },
+      "outcome": { "output": [], "files": { "목록.txt": ["가", "나", "다"] } },
+      "answer": 2,
+      "choices": [
+        { "text": "다 한 줄", "say": "q1-last" },
+        { "text": "나, 다 두 줄", "say": "q1-two" },
+        { "text": "가, 나, 다 세 줄", "say": "q1-right" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "ask": "실행하고 나면 수.txt에 무엇이 남을까요?",
+      "askSay": "predict-ask-file",
+      "code": "with open(\"수.txt\", \"w\") as 파일:\n    print(1, file=파일)\nwith open(\"수.txt\", \"a\") as 파일:\n    print(2, file=파일)",
+      "files": { "수.txt": "0\n" },
+      "outcome": { "output": [], "files": { "수.txt": ["1", "2"] } },
+      "answer": 1,
+      "choices": [
+        { "text": "0, 1, 2 세 줄", "say": "q2-keep" },
+        { "text": "1, 2 두 줄", "say": "q2-right" },
+        { "text": "2 한 줄", "say": "q2-last" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "with open(\"명단.txt\", \"a\") as 파일:\n    print(\"다\", file=파일)\n수 = 0\nwith open(\"명단.txt\") as 파일:\n    for 줄 in 파일:\n        수 += 1\nprint(수)",
+      "files": { "명단.txt": "가\n나\n" },
+      "answer": 1,
+      "choices": [
+        { "text": "2", "say": "q3-before" },
+        { "text": "3", "say": "q3-right" },
+        { "text": "1", "say": "q3-one" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "guest",
+      "title": "방명록",
+      "story": "이름을 물어서 '방명록.txt' 뒤에 덧붙이고, 그 사람이 몇 번째 손님인지 \"별 님은 3번째 손님이에요\"처럼 내보내요. 방명록이 아직 없을 때도 돼야 해요.",
+      "steps": ["input으로 이름을 물어요.", "\"방명록.txt\"를 \"a\"로 열어 이름을 덧붙여요.", "방명록을 다시 열어 줄 수를 세요.", "\"별 님은 3번째 손님이에요\"처럼 내보내요."],
+      "cases": [
+        { "inputs": ["별"], "files": { "방명록.txt": "하늘\n바다\n" }, "expect": ["별 님은 3번째 손님이에요"], "expectFiles": { "방명록.txt": ["하늘", "바다", "별"] } },
+        { "inputs": ["구름"], "files": {}, "expect": ["구름 님은 1번째 손님이에요"], "expectFiles": { "방명록.txt": ["구름"] } },
+        { "inputs": ["해"], "files": { "방명록.txt": "가람\n나래\n다솜\n라온\n" }, "expect": ["해 님은 5번째 손님이에요"], "expectFiles": { "방명록.txt": ["가람", "나래", "다솜", "라온", "해"] } }
+      ],
+      "expect": ["별 님은 3번째 손님이에요"],
+      "show": true,
+      "mistakes": [
+        { "file": "방명록.txt", "content": "^별$", "inputs": "^별$", "say": "guest-w" },
+        { "inputs": "^별$", "output": "^별 님은 2번째", "say": "guest-before" }
+      ],
+      "praise": "praise-guest",
+      "solution": "이름 = input(\"이름: \")\nwith open(\"방명록.txt\", \"a\") as 파일:\n    print(이름, file=파일)\n수 = 0\nwith open(\"방명록.txt\") as 파일:\n    for 줄 in 파일:\n        수 += 1\nprint(이름, \"님은\", str(수) + \"번째 손님이에요\")",
+      "hints": [
+        { "say": "guest-hint-1" },
+        { "say": "guest-hint-2" },
+        { "say": "guest-hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "with open(\"일기.txt\", \"a\") as 파일:\n    print(\"오늘 맑음\", file=파일)\n줄수 = 0\nwith open(\"일기.txt\") as 파일:\n    for 줄 in 파일:\n        줄수 += 1\nprint(\"일기는\", str(줄수) + \"줄\")" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "once",
+    "title": "심화: 한 번만 적기",
+    "story": "방명록에 같은 이름은 한 번만 적어요. 이름을 물어서, 방명록에 벌써 있으면 \"바다 님은 벌써 왔어요\"를 내보내고 덧붙이지 않아요. 없으면 덧붙이고 \"별 님 반가워요\"를 내보내요.",
+    "steps": ["방명록을 읽어서, 줄바꿈을 뗀 이름들을 리스트에 모아요.", "물어본 이름이 리스트에 있으면 벌써 왔다고 내보내요.", "없으면 \"a\"로 열어 덧붙이고 반갑다고 내보내요."],
+    "cases": [
+      { "inputs": ["바다"], "files": { "방명록.txt": "하늘\n바다\n" }, "expect": ["바다 님은 벌써 왔어요"], "expectFiles": { "방명록.txt": ["하늘", "바다"] } },
+      { "inputs": ["별"], "files": { "방명록.txt": "하늘\n바다\n" }, "expect": ["별 님 반가워요"], "expectFiles": { "방명록.txt": ["하늘", "바다", "별"] } },
+      { "inputs": ["하늘"], "files": { "방명록.txt": "하늘\n" }, "expect": ["하늘 님은 벌써 왔어요"], "expectFiles": { "방명록.txt": ["하늘"] } }
+    ],
+    "expect": ["바다 님은 벌써 왔어요"],
+    "show": true,
+    "mistakes": [{ "inputs": "^(바다|하늘)$", "output": "반가워요", "say": "once-strip" }],
+    "praise": "praise-once",
+    "solution": "이름 = input(\"이름: \")\n온사람 = []\nwith open(\"방명록.txt\") as 파일:\n    for 줄 in 파일:\n        온사람.append(줄.strip())\nif 이름 in 온사람:\n    print(이름, \"님은 벌써 왔어요\")\nelse:\n    with open(\"방명록.txt\", \"a\") as 파일:\n        print(이름, file=파일)\n    print(이름, \"님 반가워요\")",
+    "hints": [{ "say": "once-hint-1" }, { "say": "once-hint-2" }]
+  }
+}
