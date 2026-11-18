@@ -6,7 +6,8 @@
 //  board-pair   칠판에 엔트리 블록과 파이썬 문장을 나란히 { entry, python, note }
 //  board-card   칠판에 글 카드 { title, items, code }
 //  board-clear  칠판 지우기
-//  code-type    편집기에 코드를 한 글자씩 친다 { code, files }
+//  code-type    편집기에 코드를 한 글자씩 친다 { code, files, file(칠 탭, 없으면 main.py) }
+//  modules      편집기의 모듈 탭을 정한다 { modules: { "도구.py": 코드 }, locked: [고칠 수 없는 탭] }
 //  trace        편집기의 코드를 한 줄씩 실행해 보인다 { code, files }
 //  follow       아이가 따라 치고 실행한 뒤 "다 했어요"를 누를 때까지 기다린다 { code, expect, say, files, expectFiles }
 //  (files: 시작할 때 폴더에 있을 파일 { 이름: 내용 }. 파일 칸에 보여 주고 그 파일을 넣어 돌린다.
@@ -60,8 +61,12 @@ function toScene(script, spec, seed) {
   if (spec.pair) return { kind: 'board-pair', ...spec.pair };
   if (spec.card) return { kind: 'board-card', ...spec.card };
   if (spec.clearBoard) return { kind: 'board-clear' };
-  if (spec.type !== undefined) return { kind: 'code-type', code: spec.type, files: spec.files };
+  // file: 칠 탭(모듈 "도구.py"). 없으면 main.py
+  if (spec.type !== undefined) return { kind: 'code-type', code: spec.type, files: spec.files, file: spec.file };
+  // 편집기의 모듈 탭을 정한다 { "도구.py": 코드 }. locked: 고칠 수 없게 둘 탭 이름들. {}이면 탭을 모두 닫는다.
+  if (spec.modules !== undefined) return { kind: 'modules', modules: spec.modules, locked: spec.locked ?? [] };
   // limit: 끝나지 않는 반복을 시연할 때 보여 줄 줄 수. randoms: 무작위 수를 정해 둘 때.
+  // (모듈 탭이 있으면 그 탭들도 함께 넣어 돌린다)
   if (spec.trace !== undefined) return { kind: 'trace', code: spec.trace, inputs: spec.inputs ?? [], limit: spec.limit, randoms: spec.randoms, files: spec.files };
   // 선생님이 프로그램을 실제로 돌려 보인다(끝없이 도는 게임은 한 줄씩 볼 수 없다). keys: [[몇 ms 뒤, 키 이름], …], ms: 돌릴 시간.
   if (spec.play !== undefined) return { kind: 'play', code: spec.play, keys: spec.keys ?? [], ms: spec.ms ?? 4000 };

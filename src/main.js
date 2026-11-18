@@ -12,6 +12,7 @@ import { compareDrawing } from './core/drawing.js';
 import { explain } from './core/errors-ko.js';
 import { hasBatchim } from './core/korean.js';
 import { lectureParts, line, mergeScript, predictAskScenes, predictFeedback, predictRevealScenes, taskFeedback } from './core/lesson.js';
+import { errorAt, splitFiles, validModuleName, withModules } from './core/modules.js';
 import { createBoard } from './ui/board.js';
 import { createCanvas, usesTurtle } from './ui/canvas.js';
 import { createConsole } from './ui/console.js';
@@ -127,7 +128,8 @@ async function main() {
   let givenFiles = null;
   /** 수업 화면의 파일 칸. files가 비었으면 감춘다. before가 있으면 새로 생긴 것과 바뀐 것을 표시한다. */
   function showLessonFiles(files, before = null) {
-    const shown = lessonFilesView.show(files, before);
+    // 모듈(.py)은 파일 칸이 아니라 편집기의 탭으로 보인다
+    const shown = lessonFilesView.show(files && splitFiles(files).data, before && splitFiles(before).data);
     $('files-col').hidden = !shown;
   }
   const FILES_KEY = 'kidpy.files';
@@ -140,9 +142,12 @@ async function main() {
       store.set(FILES_KEY, files);
       log('file-delete', { name });
       showStudioFiles(files);
+      // 도구 파일을 지웠으면 그 탭도 닫는다
+      if (/\.py$/.test(name)) studioEditor.setModules(splitFiles(files).modules);
     },
   });
   function showStudioFiles(files, before = null) {
+    // 만들기에서는 도구 파일(.py)도 내 파일 칸에 보인다(지우기는 여기서 한다). 고치기는 편집기의 탭에서 한다.
     $('studio-files-col').hidden = !studioFilesView.show(files, before);
   }
   /** 만들기에서 돌린 프로그램이 남긴 파일을 "내 파일"로 저장한다. 너무 크면 앞부분만 남기고 알려 준다. */
@@ -241,17 +246,17 @@ async function main() {
     showCanvas(canvas, usesTurtle(code) || (canvas === lessonCanvas && Boolean(mission?.canvas)));
     out.clear();
     editor.markErrorLine(null);
-    const result = await runner.run(code, { files });
+    // 모듈 탭(도구.py)은 파일과 함께 폴더에 넣는다. 그래야 import 도구가 된다.
+    const result = await runner.run(code, { files: withModules(files, editor.getModules()) });
     out.flush();
     canvas.endRun();
     if (result.stopped) {
       canvas.stop();
       out.append('\n■ 멈췄어요\n', 'note');
     } else if (result.error) {
-      const at = result.error.line ? ` (${result.error.line}번 줄)` : '';
-      out.append(`\n${explain(result.error, knows())}${at}\n`, 'ko');
+      out.append(`\n${explain(result.error, knows())}${errorAt(result.error)}\n`, 'ko');
       out.append(result.error.text, 'err');
-      if (result.error.line) editor.markErrorLine(result.error.line);
+      if (result.error.line) editor.markErrorLine(result.error.line, result.error.file ?? undefined);
     }
     log('run', { ...where, code, ok: result.ok, error: result.error ? { type: result.error.type, line: result.error.line, message: result.error.message } : null, ms: result.ms });
     return { code, output: result.output, error: result.error, stopped: result.stopped, vars: result.vars, draw: result.draw, files: result.files };
@@ -556,8 +561,13 @@ async function main() {
   const editor = createEditor({
     parent: $('editor'),
     doc: '',
+    tabs: $('editor-tabs'),
     onChange(code) {
       if (draftSaving) store.set(draftSaving, code);
+    },
+    // 모듈 탭(도구.py)에 쓰던 것도 문제마다 남겨 둔다
+    onModuleChange() {
+      if (draftSaving) store.set(`${draftSaving}.modules`, editor.getModules());
     },
     onRun: () => runUser(),
   });
@@ -585,6 +595,7 @@ async function main() {
   // 처음 코드로: 시작 코드가 있는 문제(고치기 등)에서, 고치다가 엉킨 코드를 처음 것으로 되돌린다.
   // 쓰던 코드가 사라지므로 두 번 눌러야 된다(한 번 누르면 "정말 되돌려요?"로 바뀐다).
   let resetTo = null; // 지금 문제의 시작 코드. 없으면 null
+  let resetModules = null; // 지금 문제의 모듈 탭 시작 코드 { modules, locked }. 없으면 null
   let resetTimer = null;
   function calmReset() {
     clearTimeout(resetTimer);
@@ -604,6 +615,11 @@ async function main() {
     log('reset-code', { mission: mission.id, code: editor.getCode() });
     editor.setCode(resetTo);
     if (draftSaving) store.set(draftSaving, resetTo);
+    // 모듈 탭도 처음으로
+    if (resetModules) {
+      editor.setModules(resetModules.modules, resetModules.locked);
+      if (draftSaving) store.set(`${draftSaving}.modules`, resetModules.modules);
+    }
     editor.markErrorLine(null);
     lessonConsole.clear();
     lessonCanvas.reset();
@@ -667,6 +683,9 @@ async function main() {
   /** 따라 하기: 아이가 칠판의 코드를 치고 실행한 뒤 "다 했어요"를 누를 때까지 기다린다. */
   async function follow(scene) {
     lastRun = null;
+    // 모듈도 따라 치는 경우(scene.modules): 그 탭들을 빈 채로 연다. givenModules는 채워서 보기만 하게 준다.
+    const given = scene.givenModules ?? {};
+    editor.setModules({ ...Object.fromEntries(Object.keys(scene.modules ?? {}).map((name) => [name, ''])), ...given }, Object.keys(given));
     editor.setCode('');
     lessonConsole.clear();
     lessonCanvas.reset();
@@ -702,7 +721,8 @@ async function main() {
         if (tries >= 3) {
           // 막다른 길을 만들지 않는다. 세 번째에는 선생님이 다시 보여 주고 넘어간다.
           await say('follow-show');
-          await player.play([{ kind: 'code-type', code: scene.code, files: scene.files }, { kind: 'trace', code: scene.code, inputs: scene.inputs ?? [], limit: scene.limit, files: scene.files }]);
+          const typeModules = Object.entries(scene.modules ?? {}).map(([name, code]) => ({ kind: 'code-type', code, file: name }));
+          await player.play([...typeModules, { kind: 'code-type', code: scene.code, files: scene.files }, { kind: 'trace', code: scene.code, inputs: scene.inputs ?? [], limit: scene.limit, files: scene.files }]);
           return 'done';
         }
         if (!ran) await say('follow-not-run');
@@ -750,6 +770,7 @@ async function main() {
     skipping = false;
     allowRun(false);
     show('skip');
+    editor.setModules({}); // 강의에서 쓰는 모듈 탭은 대본의 modules 장면이 연다
     for (const part of lectureParts(mission, seed)) {
       const finished = await player.play(part);
       checkAbort();
@@ -771,6 +792,8 @@ async function main() {
     const total = mission.predict.length;
     for (const [index, question] of mission.predict.entries()) {
       show();
+      // 모듈을 쓰는 예측 문제: 그 탭들을 보기만 하게 연다
+      editor.setModules(question.modules ?? {}, Object.keys(question.modules ?? {}));
       editor.setCode(question.code);
       lessonConsole.clear();
       lessonCanvas.reset();
@@ -811,7 +834,7 @@ async function main() {
         // 그리기 문제: 다 그려지기를 기다렸다가, 모범 답의 그림과 견준다.
         await lessonCanvas.idle();
         diagnosis = ran.error ? { kind: 'error' } : diagnoseDrawing(task, ran.code, ran.draw, await wantDrawing(task.solution));
-      } else diagnosis = diagnoseTask(task, ran.code, ran);
+      } else diagnosis = diagnoseTask(task, ran.code, ran, editor.getModules());
       if (diagnosis.kind === 'error') diagnosis.text = explain(ran.error, knows());
       return { ran, diagnosis };
     }
@@ -824,11 +847,12 @@ async function main() {
     showCanvas(lessonCanvas, usesTurtle(code) || Boolean(mission.canvas));
     editor.markErrorLine(null);
     let diagnosis = { kind: 'correct' };
+    const modules = editor.getModules();
     for (const one of task.cases) {
       // randoms: 무작위 수를 쓰는 문제는 채점할 때 나올 수를 정해 둔다.
-      // files: 경우마다 처음 파일이 다를 수 있다(예: 파일이 있을 때와 없을 때).
+      // files: 경우마다 처음 파일이 다를 수 있다(예: 파일이 있을 때와 없을 때). 모듈 탭은 늘 함께 넣는다.
       const startFiles = one.files ?? task.files ?? null;
-      const result = await runner.run(code, { check: true, inputs: one.inputs ?? [], randoms: one.randoms, keys: one.keys, frames: one.frames, files: startFiles });
+      const result = await runner.run(code, { check: true, inputs: one.inputs ?? [], randoms: one.randoms, keys: one.keys, frames: one.frames, files: withModules(startFiles, modules) });
       if (result.stopped) return null;
       if (result.files || startFiles) showLessonFiles(result.files ?? startFiles, startFiles ?? {});
       // 게임 문제: 어떤 키를 눌러 봤는지 남긴다.
@@ -848,13 +872,12 @@ async function main() {
         diagnosis = { kind: 'endless' };
       } else if (result.error?.type === 'EOFError') {
         // 준 답을 다 쓰고도 또 물었다. 이 문제에서 흔한 실수(예: break를 빼먹음)로 짚을 수 있으면 그 말을 한다.
-        const guess = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs, expectFiles: one.expectFiles ?? task.expectFiles }, code, { error: null, output: result.output, files: result.files, again: true });
+        const guess = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs, expectFiles: one.expectFiles ?? task.expectFiles }, code, { error: null, output: result.output, files: result.files, again: true }, modules);
         diagnosis = guess.kind === 'mistake' ? guess : { kind: 'input-many', vars: { want: (one.inputs ?? []).length } };
       } else if (result.error) {
-        const at = result.error.line ? ` (${result.error.line}번 줄)` : '';
-        lessonConsole.append(`\n${explain(result.error, knows())}${at}\n`, 'ko');
+        lessonConsole.append(`\n${explain(result.error, knows())}${errorAt(result.error)}\n`, 'ko');
         lessonConsole.append(result.error.text, 'err');
-        if (result.error.line) editor.markErrorLine(result.error.line);
+        if (result.error.line) editor.markErrorLine(result.error.line, result.error.file ?? undefined);
         diagnosis = { kind: 'error', text: explain(result.error, knows()) };
       } else if (result.unused > 0) {
         diagnosis = { kind: 'input-few', vars: { want: (one.inputs ?? []).length, got: (one.inputs ?? []).length - result.unused } };
@@ -864,7 +887,7 @@ async function main() {
       } else if (task.draw) {
         diagnosis = diagnoseDrawing({ ...task, inputs: one.inputs }, code, result.draw, await wantDrawing(task.solution, one.inputs));
       } else {
-        diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs, expectFiles: one.expectFiles ?? task.expectFiles }, code, result);
+        diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs, expectFiles: one.expectFiles ?? task.expectFiles }, code, result, modules);
       }
       if (diagnosis.kind !== 'correct') {
         diagnosis.inputs = one.inputs ?? [];
@@ -880,6 +903,14 @@ async function main() {
       lessonConsole.append('\n');
     }
     return { ran: { code }, diagnosis };
+  }
+
+  /** 쓰기 문제의 모듈 탭: 쓰던 것(draft)이 있으면 그것, 없으면 문제의 시작 코드. 잠근 탭은 늘 문제의 것. */
+  function taskModules(task, draft) {
+    const start = task.modules ?? {};
+    const out = { ...start };
+    for (const name of Object.keys(start)) if (draft && name in draft && !(task.lockModules ?? []).includes(name)) out[name] = draft[name];
+    return out;
   }
 
   /** 쓰기 문제 하나. 통과하면 { attempts, hints, first, code }, 심화 문제를 그만두면 null을 돌려준다. */
@@ -925,6 +956,8 @@ async function main() {
     givenFiles = task.files ?? sample?.files ?? null;
     showLessonFiles(givenFiles);
     // 쓰던 것이 있으면 이어서, 없으면 문제에 딸린 시작 코드(고치기 문제)로 시작한다.
+    // 모듈 탭(도구.py)도 같다. 고칠 수 없게 준 탭(lockModules)은 늘 문제의 것을 쓴다.
+    editor.setModules(taskModules(task, store.get(`${key}.modules`, null)), task.lockModules ?? []);
     editor.setCode(store.get(key, '') || task.start || '');
     lessonConsole.clear();
     lessonCanvas.reset();
@@ -941,8 +974,9 @@ async function main() {
     const hints = task.hints ?? [];
     const buttons = ['submit'];
     if (hints.length) buttons.push('hint');
-    // 시작 코드가 있는 문제는 처음 코드로 되돌릴 수 있다.
-    resetTo = task.start ?? null;
+    // 시작 코드가 있는 문제는 처음 코드로 되돌릴 수 있다(모듈 탭이 있으면 그것도).
+    resetTo = task.start ?? (task.modules ? '' : null);
+    resetModules = task.modules ? { modules: task.modules, locked: task.lockModules ?? [] } : null;
     calmReset();
     if (resetTo != null) buttons.unshift('reset-code');
     if (optional) buttons.push('give-up');
@@ -973,11 +1007,13 @@ async function main() {
       }
       if (pressed === 'lecture-again') {
         const draft = editor.getCode();
+        const draftModules = editor.getModules();
         draftSaving = null;
         await lecture();
         showTask();
         givenFiles = task.files ?? sample?.files ?? null;
         showLessonFiles(givenFiles);
+        editor.setModules(draftModules, task.lockModules ?? []);
         editor.setCode(draft);
         lessonConsole.clear();
         draftSaving = key;
@@ -1102,6 +1138,7 @@ async function main() {
     if (hasLecture) about.push('강의는 언제든 건너뛸 수 있어요.');
     board.card({ title: `${mission.no}. ${mission.title}`, items: about });
     caption.textContent = '';
+    editor.setModules({});
     editor.setCode('');
     lessonConsole.clear();
     allowRun(false);
@@ -1247,7 +1284,9 @@ async function main() {
       }
       log('practice-done', { set: set.id, task: task.id, attempts: result.attempts, hints: result.hints, first: result.first });
       currentPhase = 'done';
-      board.card({ title: '풀었어요 · 선생님의 풀이', items: ['다르게 풀어도 맞은 거예요. 내 코드와 견줘 봐요.'], code: task.solution });
+      // 모듈 탭이 있는 문제는 파일마다 이름을 붙여 함께 보여 준다
+      const shownSolution = task.solutionModules ? [...Object.entries(task.solutionModules).map(([name, code]) => `# ${name}\n${code}`), `# main.py\n${task.solution}`].join('\n\n') : task.solution;
+      board.card({ title: '풀었어요 · 선생님의 풀이', items: ['다르게 풀어도 맞은 거예요. 내 코드와 견줘 봐요.'], code: shownSolution });
       flushLog();
       // 이 단원에서 아직 안 푼 문제가 있으면 이어서 풀 수 있다.
       // 버튼을 먼저 보여 주고, 선생님 말은 그동안 한다(말이 끝나기를 기다리게 하지 않는다).
@@ -1318,11 +1357,44 @@ async function main() {
   const studioEditor = createEditor({
     parent: $('studio-editor'),
     doc: '',
+    tabs: $('studio-editor-tabs'),
     onChange(code) {
       if (work && code !== work.code) touchWork({ code });
     },
+    // 도구 파일(.py)은 내 파일에 있다. 모든 작품이 함께 쓴다(한 작품에서 고치면 다른 작품에서도 바뀐다).
+    onModuleChange(name, code) {
+      const files = { ...store.get(FILES_KEY, {}) };
+      if (files[name] === code) return;
+      files[name] = code;
+      keepStudioFiles(files);
+    },
+    onAddModule: () => addStudioModule(),
     onRun: () => runStudio(),
   });
+
+  /** "＋ 도구 파일": 이름을 물어서 빈 .py를 내 파일에 만들고 그 탭을 연다. */
+  function addStudioModule() {
+    const files = store.get(FILES_KEY, {});
+    let suggestion = '도구.py';
+    for (let n = 2; suggestion in files; n++) suggestion = `도구${n}.py`;
+    const typed = prompt('도구 파일의 이름을 정해요. (글자로 시작하고, 빈칸 없이)', suggestion);
+    if (typed == null) return;
+    const name = /\.py$/.test(typed.trim()) ? typed.trim() : `${typed.trim()}.py`;
+    if (!validModuleName(name)) {
+      studioConsole.append(`\n"${typed}"는 도구 파일 이름으로 쓸 수 없어요. 글자로 시작하고, 빈칸이나 기호 없이 써요. 예: 도구.py\n`, 'ko');
+      return;
+    }
+    if (name in files) {
+      studioEditor.show(name);
+      return;
+    }
+    keepStudioFiles({ ...files, [name]: '' });
+    studioEditor.setModule(name, '');
+    studioEditor.show(name);
+    showStudioFiles(store.get(FILES_KEY, {}));
+    log('studio-add-module', { name });
+    studioEditor.focus();
+  }
 
   function refreshStudio() {
     if (!runner) return;
@@ -1341,6 +1413,10 @@ async function main() {
     if (ran?.files) {
       const { kept, cut } = keepStudioFiles(ran.files);
       showStudioFiles(kept, before);
+      // 프로그램이 .py 파일을 쓰거나 지웠으면 탭도 맞춘다
+      const shownModules = studioEditor.getModules();
+      const keptModules = splitFiles(kept).modules;
+      if (JSON.stringify(Object.keys(shownModules).sort()) !== JSON.stringify(Object.keys(keptModules).sort())) studioEditor.setModules(keptModules);
       if (cut) studioConsole.append('\n■ 파일이 너무 커서 앞부분만 남겼어요\n', 'note');
     }
     refreshStudio();
@@ -1353,6 +1429,7 @@ async function main() {
     const found = works.find((w) => w.id === id);
     const numbers = works.map((w) => Number(/^내 프로그램 (\d+)$/.exec(w.name)?.[1] ?? 0));
     work = found ? { ...found } : { id: `w-${Date.now().toString(36)}`, name: `내 프로그램 ${Math.max(0, ...numbers) + 1}`, code: '', updatedAt: new Date().toISOString() };
+    studioEditor.setModules(splitFiles(store.get(FILES_KEY, {})).modules);
     studioEditor.setCode(work.code);
     $('work-name').value = work.name;
     $('work-saved').textContent = found ? '저장됨' : '';

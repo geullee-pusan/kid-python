@@ -104,6 +104,12 @@ export function explain(error, knows = {}) {
     if (name === 'self') return 'self는 클래스 안의 함수에서만 써요. 그 함수의 괄호 안 맨 앞에 self가 있는지 봐요. 클래스 밖에서는 가.이름 처럼 객체의 이름표를 써요.';
     // 클래스 안의 함수에서 self. 을 빼먹은 경우(실행기가 hint로 알려 준다)
     if (error.hint) return `클래스 안에서 객체가 가진 값을 쓸 때는 앞에 self와 점을 붙여요. ${error.hint} 라고 써요.`;
+    // 모듈 안에 있는 이름을 앞에 모듈 이름 없이 썼다: import math 하고 sqrt(16)
+    if (name && error.module) {
+      const mod = error.module.split('.')[0];
+      return `${topic(name)} ${mod} 안에 있는 이름이에요. ${error.module} 처럼 앞에 ${mod}와 점을 붙여 쓰거나, from ${mod} import ${name} 으로 불러요.`;
+    }
+    if (name === 'math') return 'math를 쓰려면, 맨 윗줄에 import math 를 먼저 써요. from math import … 로 불렀다면 앞에 math와 점을 붙이지 않고 이름만 써요.';
     if (name === 'turtle') return 'turtle을 쓰려면, 맨 윗줄에 import turtle 을 먼저 써요.';
     // 그림판 명령을 turtle. 없이 부른 경우: forward(100)
     if (TURTLE_WORDS.has(name) && text.replace(/\s+\(/g, '(').includes(`${name}(`)) return `${name}는 앞에 turtle과 점을 붙여 써요. turtle.${name}( ) 처럼 써요. 맨 윗줄에 import turtle 도 있어야 해요.`;
@@ -199,6 +205,9 @@ export function explain(error, knows = {}) {
     if (turtleName && turtleName[1] !== turtleName[1].toLowerCase() && turtleName[1] !== 'Turtle') return '점(.) 뒤의 명령은 모두 작은 글자로 써요.';
     if (turtleName) return 'turtle 뒤의 이름을 파이썬이 몰라요. 철자를 확인해요. forward, backward, left, right, penup, pendown, color, goto 같은 이름을 써요.';
     if (/module 'random' has no attribute/.test(message)) return 'random 뒤의 이름이 달라요. random.randint 의 철자를 확인해요.';
+    if (/module 'math' has no attribute/.test(message)) return 'math 뒤의 이름이 달라요. sqrt, pi, floor, ceil 의 철자를 확인해요.';
+    const moduleAttr = /^module '(.+?)' has no attribute '(.+?)'/.exec(message);
+    if (moduleAttr) return `${moduleAttr[1]}.py 안에 ${called(moduleAttr[2])} 이름이 없어요. 철자를 확인하고, ${moduleAttr[1]}.py 탭에 def로 만들어 두었는지 봐요.`;
     if (/'str' object has no attribute '(append|add|push)'/.test(message)) return '글자에는 append( )를 쓸 수 없어요. 글자를 이으려면 더하기(+)를 써요.';
     if (/'str' object has no attribute '(remove|pop)'/.test(message)) return '글자에서는 한 글자를 지울 수 없어요. replace( )로 빈 글자("")로 바꾼 새 글자를 만들어요.';
     const strName = /'str' object has no attribute '(.+?)'/.exec(message);
@@ -223,7 +232,18 @@ export function explain(error, knows = {}) {
     if (objectAttr && !BUILTIN_TYPES.has(objectAttr[1])) return `이 객체에는 ${called(objectAttr[2])} 이름이 없어요. 철자를 확인해요. 값이라면 __init__ 안에서 self.${objectAttr[2]} 에 넣었는지, 할 일이라면 클래스 안에 def로 만들었는지 봐요.`;
     return '점(.) 뒤에 쓴 이름을 파이썬이 몰라요. 철자를 확인해요.';
   }
-  if (type === 'ModuleNotFoundError' || type === 'ImportError') return 'import 뒤의 이름을 파이썬이 몰라요. random 은 모두 작은 글자로 써요.';
+  // 모듈: 아이가 만든 .py(도구.py)와 파이썬에 들어 있는 모듈(math, random)
+  if (type === 'ModuleNameError') return `${topic(error.message)} 파이썬에 이미 있는 모듈의 이름이에요. 이 이름의 파일은 불러와지지 않아요. 도구.py 처럼 다른 이름을 붙여요.`;
+  if (type === 'ModuleNotFoundError' || type === 'ImportError') {
+    if (/No module named '[^']+\.py'/.test(message)) return 'import 뒤에는 파일 이름에서 .py를 빼고 써요. import 도구 처럼 써요.';
+    const cannot = /cannot import name '(.+?)' from '(.+?)'/.exec(message);
+    if (cannot) return `${cannot[2]}에는 ${called(cannot[1])} 이름이 없어요. 철자를 확인하고, ${cannot[2]}.py 안에 def로 만들어 두었는지 봐요.`;
+    const missing = /No module named '(.+?)'/.exec(message);
+    if (missing && missing[1] !== missing[1].toLowerCase() && /^[a-zA-Z]+$/.test(missing[1])) return 'import 뒤의 이름은 모두 작은 글자로 써요. import random, import math 처럼 써요.';
+    if (missing && HANGUL.test(missing[1])) return `${missing[1]}.py라는 파일이 없어요. 탭에 있는 파일 이름과 import 뒤의 이름이 같은지 봐요.`;
+    if (missing) return `${called(missing[1])} 모듈을 파이썬이 몰라요. 철자를 확인해요. 내가 만든 파일이라면 탭의 파일 이름과 같게 써요.`;
+    return 'import 뒤의 이름을 파이썬이 몰라요. random 은 모두 작은 글자로 써요.';
+  }
   if (type === 'ValueError') {
     const bad = /invalid literal for int\(\) with base 10: (.+)$/.exec(message);
     // 파일의 빈 줄을 숫자로 바꾸려던 경우: '' 또는 '\n'
@@ -239,6 +259,7 @@ export function explain(error, knows = {}) {
     }
     if (/I\/O operation on closed file/.test(message)) return '닫힌 파일이에요. with 아래에 들여쓴 줄에서만 파일을 읽고 쓸 수 있어요. 파일을 쓰는 줄을 with 안으로 들여써요.';
     if (/invalid mode|must have exactly one of create\/read\/write\/append mode/.test(message)) return 'open( )의 둘째 칸에는 "r"(읽기), "w"(쓰기), "a"(이어 쓰기) 가운데 하나를 써요.';
+    if (/math domain error|expected a nonnegative input/.test(message)) return '음수의 제곱근은 구할 수 없어요. math.sqrt( ) 안에는 0이나 양수를 넣어요.';
     if (/substring not found/.test(message)) return '찾는 글자가 없어요. 먼저 in으로 있는지 물어봐요. find( )는 없을 때 -1을 알려 줘요.';
     if (/empty separator/.test(message)) return 'split( ) 안에 빈 글자는 넣을 수 없어요. 빈칸에서 자르려면 괄호 안을 비워요.';
     if (/empty range/.test(message)) return 'randint( ) 안에는 작은 수를 먼저, 큰 수를 나중에 써요.';

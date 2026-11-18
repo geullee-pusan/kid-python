@@ -1320,6 +1320,48 @@ a.btn {
   align-self: flex-end;
 }
 
+/* 편집기의 파일 탭(단원 19): main.py 옆에 도구.py 같은 모듈 탭 */
+.file-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  align-self: flex-end;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.file-tab {
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.file-tab:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.file-tab:not(.active) {
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.file-tabs:has(.file-tab:nth-child(2)) .file-tab.active {
+  font-weight: 700;
+  box-shadow: inset 0 3px 0 var(--accent);
+}
+
+.file-tab.readonly::after {
+  content: ' 🔒';
+  font-size: 12px;
+}
+
+.file-add {
+  align-self: center;
+  min-height: 34px;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
 .lock-note {
   margin-right: auto;
   color: var(--muted);

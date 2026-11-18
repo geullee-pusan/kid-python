@@ -127,20 +127,29 @@ import random as __kidpy_random
 def __kidpy_error(e, name):
     line = None
     col = None
+    where = None
     message = str(e)
-    if isinstance(e, SyntaxError) and e.filename == name:
+    if isinstance(e, ModuleNameError):
+        return {"type": "ModuleNameError", "message": message, "line": None, "col": None, "text": "", "hint": None, "file": message}
+    if isinstance(e, SyntaxError) and _kidpy_user_file(e.filename):
         line, col, message = e.lineno, e.offset, e.msg
+        where = _kidpy_user_file(e.filename)
         text = "".join(traceback.format_exception_only(type(e), e))
     else:
         tb = e.__traceback__.tb_next if e.__traceback__ else None
-        mine = [frame for frame in traceback.extract_tb(tb) if frame.filename == name]
+        # 아이가 쓴 파일(main.py와 도구.py 같은 모듈)의 줄만 보여 준다(그림판 명령처럼 안쪽에서 난 오류의 속 줄은 감춘다).
+        # 오류의 자리는 그 가운데 맨 안쪽의 줄이다(도구.py 안에서 났으면 도구.py의 줄).
+        mine = [frame for frame in traceback.extract_tb(tb) if _kidpy_user_file(frame.filename)]
         for frame in mine:
             line = frame.lineno
+            where = _kidpy_user_file(frame.filename)
         if mine:
-            # 아이가 쓴 코드의 줄만 보여 준다(그림판 명령처럼 안쪽에서 난 오류의 속 줄은 감춘다).
             text = "Traceback (most recent call last):" + chr(10) + "".join(traceback.format_list(mine)) + "".join(traceback.format_exception_only(type(e), e))
         else:
             text = "".join(traceback.format_exception(type(e), e, tb))
+    text = text.replace(_KIDPY_HOME + "/", "")
+    if where == name:
+        where = None
     # 클래스 안의 함수에서 self. 을 빼먹고 이름만 쓴 경우를 알아본다(그 객체에 그 이름의 값이 있을 때): hint = "self.점수"
     hint = None
     if isinstance(e, NameError):
@@ -155,7 +164,21 @@ def __kidpy_error(e, name):
             me = last.f_locals.get("self")
             if me is not None and parts[1] in getattr(me, "__dict__", {}):
                 hint = "self." + parts[1]
-    return {"type": type(e).__name__, "message": message, "line": line, "col": col, "text": text, "hint": hint}
+    # module: NameError인데 그 이름이 불러온 모듈 안에 있다(import math 하고 sqrt(16)이라고 썼다): "math.sqrt"
+    module_hint = None
+    if isinstance(e, NameError) and hint is None:
+        parts = str(e).split("'")
+        source = "".join(linecache.cache.get(name, (0, None, [], name))[2])
+        if len(parts) > 1 and not parts[1].startswith("_"):
+            candidates = [(k, m) for k, m in list(sys.modules.items()) if _kidpy_user_file(getattr(m, "__file__", None) or "")]
+            for mod_name in ("math",):
+                if ("import " + mod_name) in source and sys.modules.get(mod_name) is not None:
+                    candidates.append((mod_name, sys.modules[mod_name]))
+            for key, module in candidates:
+                if hasattr(module, parts[1]):
+                    module_hint = key + "." + parts[1]
+                    break
+    return {"type": type(e).__name__, "message": message, "line": line, "col": col, "text": text, "hint": hint, "file": where, "module": module_hint}
 
 # 값을 아이가 치는 모양으로: 파이썬의 repr과 같되 글자는 큰따옴표로. 튜플 ("하늘", 90), 집합 {"감", "배"}.
 # 그렇게 쓸 수 없는 값(객체, 함수 같은 것)이 들어 있으면 None.
@@ -781,7 +804,38 @@ def _kidpy_open(file, mode="r", *args, **kwargs):
     _kidpy_file_state["open"].append(f)
     return wrapped
 
+# ---- 아이가 만든 모듈(폴더의 .py 파일) ----
+# 파이썬 하나를 계속 쓰므로, 한 번 import한 모듈은 sys.modules에 남는다. 그러면 도구.py를 고치거나 지워도
+# 다음 실행에서 옛것이 돈다. 실행마다 폴더에서 불러온 모듈을 지운다(turtle과 파이썬의 모듈은 건드리지 않는다).
+import importlib as _kidpy_importlib
+sys.dont_write_bytecode = True  # __pycache__를 쓰지 않는다(같은 초에 고친 파일을 옛 바이트코드로 돌리지 않게)
+
+class ModuleNameError(Exception):
+    # 아이의 .py 이름이 파이썬에 이미 있는 모듈과 같다(그 파일은 import되지 않고 조용히 무시된다).
+    pass
+
+def _kidpy_user_file(path):
+    # 아이의 파일이면 화면에 보일 이름(main.py, 도구.py), 아니면 None
+    if path == "main.py":
+        return path
+    if isinstance(path, str) and path.startswith(_KIDPY_HOME + "/") and path.endswith(".py") and "/" not in path[len(_KIDPY_HOME) + 1:]:
+        return path[len(_KIDPY_HOME) + 1:]
+    return None
+
+def _kidpy_modules_reset():
+    for key, module in list(sys.modules.items()):
+        if _kidpy_user_file(getattr(module, "__file__", None) or ""):
+            del sys.modules[key]
+    _kidpy_importlib.invalidate_caches()
+
+def _kidpy_modules_check(files):
+    taken = set(sys.builtin_module_names) | set(getattr(sys, "stdlib_module_names", ())) | {"turtle", "random", "math"}
+    for name in files:
+        if name.endswith(".py") and name[:-3] in taken:
+            raise ModuleNameError(name)
+
 def _kidpy_files_setup(files_json, scope):
+    _kidpy_modules_reset()
     _kidpy_os.makedirs(_KIDPY_HOME, exist_ok=True)
     _kidpy_os.chdir(_KIDPY_HOME)
     for name in _kidpy_os.listdir(_KIDPY_HOME):
@@ -801,6 +855,8 @@ def _kidpy_files_setup(files_json, scope):
     _kidpy_file_state["written"] = 0
     _kidpy_file_state["used"] = bool(files)
     scope["open"] = _kidpy_open
+    # (모듈 안의 open은 파이썬의 open 그대로다. 폴더가 같으므로 읽고 쓰기는 된다. 이름표 칸의 모양과 쓰는 양 한도만 없다.)
+    return files
 
 # 폴더의 파일들: {이름: 내용}. close=True면 닫지 않은 파일을 먼저 닫는다(파이썬도 끝날 때 닫으며 남은 것을 쓴다).
 def _kidpy_files_collect(close=True):
@@ -832,9 +888,10 @@ def __kidpy_run(code, files_json="null"):
     name = "main.py"
     linecache.cache[name] = (len(code), None, code.splitlines(True), name)
     scope = {"__name__": "__main__"}
-    _kidpy_files_setup(files_json, scope)
+    given = _kidpy_files_setup(files_json, scope)
     error = None
     try:
+        _kidpy_modules_check(given)
         exec(compile(code, name, "exec"), scope)
         _kidpy_after_run()
     except SystemExit:
@@ -864,7 +921,7 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]", key
     name = "main.py"
     linecache.cache[name] = (len(code), None, code.splitlines(True), name)
     scope = {"__name__": "__main__"}
-    _kidpy_files_setup(files_json, scope)
+    given = _kidpy_files_setup(files_json, scope)
     inputs = [str(x) for x in json.loads(inputs_json)]
     randoms = list(json.loads(randoms_json))
     asked = [0]
@@ -876,8 +933,9 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]", key
         value = randoms[picked[0] % len(randoms)]
         picked[0] += 1
         return value
+    # 아이가 쓴 파일(main.py와 폴더의 .py)의 줄만 센다. 파이썬 모듈의 안은 세지 않는다.
     def counter(frame, event, arg):
-        if frame.f_code.co_filename != name:
+        if not _kidpy_user_file(frame.f_code.co_filename):
             return None
         if event == "line":
             lines_run[0] += 1
@@ -896,15 +954,17 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]", key
         return value
     scope["input"] = scripted_input
     def tracer(frame, event, arg):
-        if frame.f_code.co_filename != name:
+        where = _kidpy_user_file(frame.f_code.co_filename)
+        if not where:
             return None
         if event == "line":
             if len(marks) >= limit:
                 raise __KidpyTraceLimit()
             # 함수 안을 실행하는 동안에는 함수 안의 이름(넘겨받은 값 포함)도 함께 보여 준다. 함수가 끝나면 사라진다.
+            # 모듈(도구.py)의 줄에서는 그 모듈의 이름들이 보인다(파일마다 이름표가 따로다).
             inside = frame.f_locals is not frame.f_globals
             seen = {**frame.f_globals, **frame.f_locals} if inside else frame.f_globals
-            marks.append((frame.f_lineno, len(buf.getvalue()), __kidpy_vars(seen, frame.f_locals if inside else None), len(_kidpy_draws), _kidpy_files_collect(False) if _kidpy_file_state["used"] else None))
+            marks.append((frame.f_lineno, len(buf.getvalue()), __kidpy_vars(seen, frame.f_locals if inside else None), len(_kidpy_draws), _kidpy_files_collect(False) if _kidpy_file_state["used"] else None, where))
         return tracer
     error = None
     old = sys.stdout
@@ -914,6 +974,7 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]", key
         __kidpy_random.randint = scripted_randint
     try:
         compiled = compile(code, name, "exec")
+        _kidpy_modules_check(given)
         sys.settrace(tracer if trace else counter)
         try:
             exec(compiled, scope)
@@ -935,11 +996,14 @@ def __kidpy_scripted(code, inputs_json, trace, limit=300, randoms_json="[]", key
     steps = []
     draws = list(_kidpy_draws)
     shown_files = None
-    for i, (line, pos, _, drawn, _files) in enumerate(marks):
+    for i, (line, pos, _, drawn, _files, where) in enumerate(marks):
         end = marks[i + 1][1] if i + 1 < len(marks) else len(total)
         # 이 줄을 실행한 뒤의 변수 값 = 다음 줄을 실행하기 직전의 값(마지막 줄이면 끝났을 때의 값)
         after = marks[i + 1][2] if i + 1 < len(marks) else final
         step = {"line": line, "out": total[pos:end], "vars": after}
+        # main.py가 아닌 파일(도구.py)의 줄이면 그 파일 이름을 적는다
+        if where != "main.py":
+            step["file"] = where
         # 이 줄이 그린 것(그림판을 쓰는 프로그램일 때만)
         drawn_end = marks[i + 1][3] if i + 1 < len(marks) else len(draws)
         if drawn_end > drawn:

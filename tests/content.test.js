@@ -17,6 +17,7 @@ import { diagnoseDrawing, diagnoseGame, diagnoseTask, fileProblem, outputLines }
 import { strokes } from '../src/core/drawing.js';
 import { explain } from '../src/core/errors-ko.js';
 import { allTasks } from '../src/core/lesson.js';
+import { withModules } from '../src/core/modules.js';
 import { SCRIPTS } from './missions.js';
 import { PRACTICE_WRONG } from './practice-wrong.js';
 
@@ -48,18 +49,18 @@ function typedRun(code, inputs, options) {
   return { ...ran, output: ran.output.replace(/\x01[^\x02]*\x02\n/g, '') };
 }
 
-/** 앱의 채점(src/main.js의 grade)과 같은 차례로 채점한다. */
-function grade(task, code) {
+/** 앱의 채점(src/main.js의 grade)과 같은 차례로 채점한다. modules: 모듈 탭들(없으면 문제의 시작 모듈) */
+function grade(task, code, modules = task.modules ?? {}) {
   // 그리기 문제: 모범 답이 그린 그림과 견준다.
   const want = (inputs) => scripted(task.solution, inputs ?? [], false).draw;
   if (!task.cases) {
-    const ran = scripted(code, [], false, { files: task.files });
+    const ran = scripted(code, [], false, { files: withModules(task.files, modules) });
     if (ran.error) return { kind: 'error', error: ran.error };
-    return task.draw ? diagnoseDrawing(task, code, ran.draw, want()) : diagnoseTask(task, code, ran);
+    return task.draw ? diagnoseDrawing(task, code, ran.draw, want()) : diagnoseTask(task, code, ran, modules);
   }
   let diagnosis = { kind: 'correct' };
   for (const one of task.cases) {
-    const ran = scripted(code, one.inputs, false, { randoms: one.randoms, keys: one.keys, frames: one.frames, files: one.files ?? task.files });
+    const ran = scripted(code, one.inputs, false, { randoms: one.randoms, keys: one.keys, frames: one.frames, files: withModules(one.files ?? task.files, modules) });
     const expectFiles = one.expectFiles ?? task.expectFiles;
     // 끝나지 않는 반복은 실행기가 줄 수를 세다가 멈춘다.
     if (ran.error?.type === 'TraceLimit') diagnosis = { kind: 'endless' };
@@ -72,7 +73,7 @@ function grade(task, code) {
     else if (ran.unused > 0) diagnosis = { kind: 'input-few' };
     else if (task.game) diagnosis = diagnoseGame(task, code, ran, scripted(task.solution, one.inputs, false, { randoms: one.randoms, keys: one.keys, frames: one.frames }));
     else if (task.draw) diagnosis = diagnoseDrawing({ ...task, inputs: one.inputs }, code, ran.draw, want(one.inputs));
-    else diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs, expectFiles }, code, ran);
+    else diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs, expectFiles }, code, ran, modules);
     if (diagnosis.kind !== 'correct') {
       diagnosis.inputs = one.inputs;
       break;
@@ -84,7 +85,7 @@ function grade(task, code) {
 for (const m of Object.values(SCRIPTS)) {
   test(`${m.id}: 예측 문제의 정답이 실제 출력과 같다`, () => {
     for (const q of m.predict ?? []) {
-      const ran = shown(q.code, q.inputs, { limit: q.limit, randoms: q.randoms, files: q.files });
+      const ran = shown(q.code, q.inputs, { limit: q.limit, randoms: q.randoms, files: withModules(q.files, q.modules) });
       if (q.outcome) {
         // 오류가 답인 문제: 보기 글은 설명이라서, 대본에 적어 둔 실제 결과(outcome)와 견준다.
         assert.equal(ran.error?.type ?? null, q.outcome.error ?? null, `${q.id}: 오류 종류`);
@@ -108,7 +109,7 @@ for (const m of Object.values(SCRIPTS)) {
 
   test(`${m.id}: 쓰기 문제의 모범 답이 채점을 통과한다`, () => {
     for (const task of allTasks(m)) {
-      assert.deepEqual(grade(task, task.solution), { kind: 'correct' }, `${task.id}: 모범 답 채점`);
+      assert.deepEqual(grade(task, task.solution, task.solutionModules ?? task.modules ?? {}), { kind: 'correct' }, `${task.id}: 모범 답 채점`);
       if (task.cases) assert.deepEqual(task.expect, task.cases[0].expect, `${task.id}: expect는 첫 입력의 기대 출력과 같아야 해요`);
     }
   });
@@ -132,10 +133,14 @@ for (const m of Object.values(SCRIPTS)) {
   });
 
   test(`${m.id}: 강의의 따라 하기와 시연 코드가 적어 둔 대로 돈다`, () => {
+    // 모듈 탭: 강의의 modules 장면과 탭에 치는 type이 바꾸고, 시연은 그 탭들을 함께 넣어 돌린다(앱과 같다).
+    let tabs = {};
     for (const part of m.lecture ?? []) {
       for (const spec of part) {
+        if (spec.modules !== undefined) tabs = { ...spec.modules };
+        if (spec.type !== undefined && spec.file) tabs = { ...tabs, [spec.file]: spec.type };
         if (spec.follow) {
-          const ran = typedRun(spec.follow.code, spec.follow.inputs, { randoms: spec.follow.randoms, keys: spec.follow.game?.keys, frames: spec.follow.game?.frames, limit: spec.follow.game ? 5000 : undefined, files: spec.follow.files });
+          const ran = typedRun(spec.follow.code, spec.follow.inputs, { randoms: spec.follow.randoms, keys: spec.follow.game?.keys, frames: spec.follow.game?.frames, limit: spec.follow.game ? 5000 : undefined, files: withModules(spec.follow.files, { ...spec.follow.givenModules, ...spec.follow.modules }) });
           // 게임 따라 하기: 정해 둔 키와 장면 수로 돌렸을 때 오류 없이 거북이가 나와야 한다.
           if (spec.follow.game) {
             assert.equal(ran.error, null, `게임 따라 하기에서 오류 (${ran.error?.message})`);
@@ -164,7 +169,7 @@ for (const m of Object.values(SCRIPTS)) {
           assert.equal(ran.error, null, `실행해 보이기에서 오류 (${ran.error?.message}): ${spec.play.replace(/\n/g, ' ⏎ ')}`);
         }
         if (spec.trace !== undefined) {
-          const ran = shown(spec.trace, spec.inputs, { limit: spec.limit, randoms: spec.randoms, files: spec.files });
+          const ran = shown(spec.trace, spec.inputs, { limit: spec.limit, randoms: spec.randoms, files: withModules(spec.files, tabs) });
           // 일부러 오류를 내는 시연은 대본에 expectError로 적어 둔다.
           assert.equal(ran.error?.type ?? null, spec.expectError ?? null, `시연: ${spec.trace.replace(/\n/g, ' ⏎ ')}`);
           assert.equal(ran.unused, 0, '시연에 쓰지 않은 입력이 남았어요');
@@ -919,10 +924,11 @@ const WRONG = [
 ];
 
 test('흔한 오답에 의도한 말이 나온다', () => {
-  for (const [missionId, taskId, code, kind, say] of [...WRONG, ...PRACTICE_WRONG]) {
+  // 여섯째 칸: 모듈 탭들(없으면 문제의 시작 모듈)
+  for (const [missionId, taskId, code, kind, say, modules] of [...WRONG, ...PRACTICE_WRONG]) {
     const task = allTasks(SCRIPTS[missionId]).find((t) => t.id === taskId);
     assert.ok(task, `${missionId}/${taskId}: 문제가 없어요`);
-    const result = grade(task, code);
+    const result = grade(task, code, modules ?? task.modules ?? {});
     assert.equal(result.kind, kind, `${missionId}/${taskId}: ${code.replace(/\n/g, ' ⏎ ')}`);
     if (say) assert.equal(result.say, say, `${missionId}/${taskId}: 대사`);
   }

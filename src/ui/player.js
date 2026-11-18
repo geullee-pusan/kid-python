@@ -4,6 +4,7 @@
 // - 선생님은 아이가 버튼을 누를 때까지 기다린다. 재촉하지 않는다.
 import { explain } from '../core/errors-ko.js';
 import { tracePace } from '../core/lesson.js';
+import { errorAt, withModules } from '../core/modules.js';
 import { speak as speakLine, stopSpeaking, wait } from './speech.js';
 
 /**
@@ -75,13 +76,14 @@ export function createPlayer(ctx) {
     ctx.ui.drawStart?.(code);
     // 파일을 쓰는 코드: 시작할 때 있는 파일을 먼저 보여 주고, 파일이 바뀐 줄마다 다시 보여 준다.
     ctx.ui.files?.(files ?? null, null);
-    const result = await ctx.runner.run(code, { trace: true, inputs, limit, randoms, files });
+    // 모듈 탭(도구.py)이 있으면 함께 넣어 돌린다. 그 파일의 줄을 실행할 때는 그 탭으로 넘어간다.
+    const result = await ctx.runner.run(code, { trace: true, inputs, limit, randoms, files: withModules(files, editor.getModules()) });
     const steps = result.steps ?? [];
     for (const [index, step] of steps.entries()) {
       if (stopped) break;
       // 긴 반복은 앞부분만 제 속도로, 나머지는 빠르게 보여 준다.
       const pace = tracePace(index, steps.length);
-      editor.markRunLine(step.line);
+      editor.markRunLine(step.line, step.file);
       await pause((650 * pace) / slow);
       // input()에 넣은 답은 표시가 붙어 온다. 아이가 친 것처럼 다른 색으로 보여 준다.
       for (const piece of step.out.split(/(\x01[^\x02]*\x02)/)) {
@@ -95,6 +97,7 @@ export function createPlayer(ctx) {
       await pause((550 * pace) / slow);
     }
     editor.markRunLine(null);
+    editor.show('main.py');
     // 끝나지 않는 반복을 시연한 경우: 정해 둔 줄 수만 보여 주고 멈춘다(오류가 아니다).
     if (result.error?.type === 'TraceLimit' && !stopped) {
       output.append('\n■ 끝나지 않아서 멈췄어요\n', 'note');
@@ -103,10 +106,9 @@ export function createPlayer(ctx) {
     }
     // 오류가 나는 코드도 그대로 보여 준다(오류 읽기 수업, 오류가 답인 예측 문제).
     if (result.error && !stopped) {
-      const at = result.error.line ? ` (${result.error.line}번 줄)` : '';
-      output.append(`\n${explain(result.error, ctx.knows?.())}${at}\n`, 'ko');
+      output.append(`\n${explain(result.error, ctx.knows?.())}${errorAt(result.error)}\n`, 'ko');
       output.append(result.error.text, 'err');
-      if (result.error.line) editor.markErrorLine(result.error.line);
+      if (result.error.line) editor.markErrorLine(result.error.line, result.error.file ?? undefined);
       await pause(900 / slow);
     }
     return result;
@@ -136,8 +138,11 @@ export function createPlayer(ctx) {
           ctx.ui.vars?.({}); // 새 코드를 치기 시작하면 앞 예제의 이름표는 지운다
           ctx.ui.files?.(scene.files ?? null, null);
           editor.setLocked(true);
-          await editor.typeCode(scene.code, 55 / slow / speed);
+          await editor.typeCode(scene.code, 55 / slow / speed, scene.file ?? 'main.py');
           teacher.pose('idle');
+          break;
+        case 'modules':
+          editor.setModules(scene.modules, scene.locked);
           break;
         case 'trace':
           teacher.pose('point');

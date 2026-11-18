@@ -16,6 +16,9 @@
 //            - again: true면, 준 답을 다 쓰고도 프로그램이 또 물었을 때만 본다(그때까지의 출력으로 견준다)
 //            - file, content: 프로그램이 끝난 뒤 그 파일의 내용(줄을 \n으로 이은 것)이 content 정규식에 맞을 때만 본다.
 //              content 없이 file만 적으면 그 파일이 없을 때를 가리킨다.
+//  in        checks와 mistakes에서: code 정규식을 볼 탭(단원 19, "도구.py"). 없으면 main.py
+//  modules      편집기의 모듈 탭과 시작 코드 { "도구.py": 코드 }(화면 쪽). lockModules: 고칠 수 없게 둘 탭
+//  solutionModules  모범 답의 모듈 탭들(테스트와 "풀이 보기"에서 쓴다)
 //  files        프로그램이 시작할 때 폴더에 있을 파일 { 이름: 내용 } (cases의 것이 있으면 그것을 쓴다. 화면 쪽에서 넣어 준다)
 //  expectFiles  프로그램이 끝난 뒤 있어야 하는 파일 { 이름: [줄 목록] } (cases의 것이 있으면 그것을 쓴다)
 //               출력과 파일이 모두 맞아야 통과한다. 적지 않은 파일은 보지 않는다.
@@ -48,11 +51,14 @@ const ORDINAL = ['첫째', '둘째', '셋째', '넷째', '다섯째', '여섯째
  * @returns {{kind: string, vars?: object, say?: string}}
  *   kind: correct, error, no-output, not-computed, quoted-calc, mistake(say에 대사 열쇠), order, count, spacing, line-diff
  */
-export function diagnoseTask(task, code, run) {
+export function diagnoseTask(task, code, run, modules = {}) {
   if (run.error) return { kind: 'error' };
   const got = outputLines(run.output);
   const want = task.expect;
-  const bare = stripStrings(code);
+  // in: checks와 mistakes의 code를 어느 탭의 코드에서 볼지(단원 19, 예: "도구.py"). 없으면 main.py
+  const mainBare = stripStrings(code);
+  const bareIn = (where) => (!where || where === 'main.py' ? mainBare : stripStrings(modules[where] ?? ''));
+  const bare = mainBare;
   const compute = task.compute ?? [];
   const files = run.files ?? {};
   const fileText = (name) => (name in files ? outputLines(files[name]).join('\n') : null);
@@ -64,7 +70,7 @@ export function diagnoseTask(task, code, run) {
     const missing = compute.find((item) => !new RegExp(item.pattern).test(bare));
     if (missing) return { kind: 'not-computed', vars: { calc: missing.literal } };
     // 출력은 맞지만 배운 방법을 쓰지 않은 경우(예: 이름표를 쓰지 않고 숫자를 바로 곱함)
-    const skipped = (task.checks ?? []).find((rule) => !new RegExp(rule.pattern).test(bare));
+    const skipped = (task.checks ?? []).find((rule) => !new RegExp(rule.pattern).test(bareIn(rule.in)));
     if (skipped) return { kind: 'mistake', say: skipped.say };
     return { kind: 'correct' };
   }
@@ -78,7 +84,7 @@ export function diagnoseTask(task, code, run) {
       (got.length > 0 || m.output !== undefined || m.file !== undefined) &&
       // again: 준 답을 다 쓰고도 또 물었을 때(run.again)만 보는 실수. 예: 기회가 끝났는데도 계속 묻는다.
       Boolean(m.again) === Boolean(run.again) &&
-      (!m.code || new RegExp(m.code).test(bare)) &&
+      (!m.code || new RegExp(m.code).test(bareIn(m.in))) &&
       (m.output === undefined || new RegExp(m.output).test(text)) &&
       (!m.want || new RegExp(m.want).test(wanted)) &&
       (!m.inputs || new RegExp(m.inputs).test(typed)) &&
@@ -86,7 +92,7 @@ export function diagnoseTask(task, code, run) {
   );
   if (mistake) return { kind: 'mistake', say: mistake.say };
   // f-string에서 f를 빼먹어 {이름}이 글자 그대로 나온 경우(출력이나 파일에)
-  const unfilled = missingF(code, [text, ...Object.values(files)].join('\n'), [wanted, ...Object.values(task.expectFiles ?? {}).map((lines) => lines.join('\n'))].join('\n'));
+  const unfilled = missingF([code, ...Object.values(modules)].join('\n'), [text, ...Object.values(files)].join('\n'), [wanted, ...Object.values(task.expectFiles ?? {}).map((lines) => lines.join('\n'))].join('\n'));
   if (unfilled) return { kind: 'missing-f', vars: { piece: unfilled } };
   // 출력은 맞고 파일이 틀린 경우, 또는 파일에 쓸 것을 출력 칸에 내보낸 경우
   if (fileWrong && (outputSame || fileWrong.kind === 'file-printed')) return fileWrong;
