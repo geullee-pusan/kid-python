@@ -157,12 +157,37 @@ def __kidpy_error(e, name):
                 hint = "self." + parts[1]
     return {"type": type(e).__name__, "message": message, "line": line, "col": col, "text": text, "hint": hint}
 
-# 변수 표에 보여 줄 값들. 글자는 따옴표를 붙여서(큰따옴표로) 숫자와 구분되게 한다.
-def __kidpy_plain(x):
-    return isinstance(x, (str, int, float)) and not isinstance(x, bool)
-
-def __kidpy_plain_list(value):
-    return isinstance(value, list) and all(__kidpy_plain(x) for x in value)
+# 값을 아이가 치는 모양으로: 파이썬의 repr과 같되 글자는 큰따옴표로. 튜플 ("하늘", 90), 집합 {"감", "배"}.
+# 그렇게 쓸 수 없는 값(객체, 함수 같은 것)이 들어 있으면 None.
+def __kidpy_typed(value, depth=0):
+    if depth > 6:
+        return None
+    if isinstance(value, str):
+        return json.dumps(value, ensure_ascii=False)
+    if value is None or isinstance(value, (bool, int, float)):
+        return repr(value)
+    kind = type(value)
+    if kind in (list, tuple, set, frozenset, dict):
+        if kind is dict:
+            parts = []
+            for k, v in value.items():
+                a, b = __kidpy_typed(k, depth + 1), __kidpy_typed(v, depth + 1)
+                if a is None or b is None:
+                    return None
+                parts.append(a + ": " + b)
+            return "{" + ", ".join(parts) + "}"
+        parts = [__kidpy_typed(x, depth + 1) for x in value]
+        if None in parts:
+            return None
+        inner = ", ".join(parts)
+        if kind is list:
+            return "[" + inner + "]"
+        if kind is tuple:
+            return "(" + inner + ("," if len(parts) == 1 else "") + ")"
+        if not parts:
+            return "set()" if kind is set else "frozenset()"
+        return "{" + inner + "}" if kind is set else "frozenset({" + inner + "})"
+    return None
 
 # 아이가 만든 클래스의 객체인가. 파이썬은 <__main__.공 object at 0x...>라고만 보여 줘서 안에 든 값을 알 수 없다.
 # (거북이처럼 보여 줄 모양을 스스로 정한 것은 그 모양대로 둔다.)
@@ -172,12 +197,12 @@ def __kidpy_is_object(value):
 
 # 객체 안에 든 값 하나를 짧게: 글자는 따옴표로, 다른 객체는 <이름>으로만.
 def __kidpy_brief(value):
-    if isinstance(value, str) or __kidpy_plain_list(value):
-        text = json.dumps(value, ensure_ascii=False)
-    elif __kidpy_is_object(value):
+    if __kidpy_is_object(value):
         text = "<" + type(value).__name__ + ">"
     else:
-        text = repr(value)
+        text = __kidpy_typed(value)
+        if text is None:
+            text = repr(value)
     return text if len(text) <= 24 else text[:21] + "..."
 
 # 객체는 공(x=0, dx=3)처럼, 클래스 이름과 그 안에 든 이름·값으로 보여 준다.
@@ -202,18 +227,11 @@ def __kidpy_vars(scope, local=None):
             elif isinstance(value, list) and value and all(__kidpy_is_object(x) for x in value):
                 limit = 80
                 text = "[" + ", ".join(__kidpy_object(x) for x in value) + "]"
-            elif isinstance(value, str):
-                text = json.dumps(value, ensure_ascii=False)
-            elif __kidpy_plain_list(value):
-                text = json.dumps(value, ensure_ascii=False)
-            # 리스트 안의 리스트(표)도 아이가 치는 모양으로
-            elif isinstance(value, list) and all(__kidpy_plain_list(x) for x in value):
-                text = json.dumps(value, ensure_ascii=False)
-            # 딕셔너리도 아이가 치는 모양으로(키가 글자이고 값이 글자·숫자·그런 것의 리스트일 때)
-            elif isinstance(value, dict) and all(isinstance(k, str) and (__kidpy_plain(v) or __kidpy_plain_list(v)) for k, v in value.items()):
-                text = json.dumps(value, ensure_ascii=False)
             else:
-                text = repr(value)
+                # 글자, 숫자, 리스트, 튜플, 집합, 딕셔너리(그리고 그것들이 겹친 것)는 아이가 치는 모양으로
+                text = __kidpy_typed(value)
+                if text is None:
+                    text = repr(value)
         except Exception:
             text = "?"
         if len(text) > limit:
@@ -944,7 +962,8 @@ async function init(message) {
   }
   if (message.flow) flow = new Int32Array(message.flow);
   if (message.keys) keyView = new Int32Array(message.keys);
-  pyodide = await loadPyodide({ indexURL: new URL('./pyodide/', self.location.href).href });
+  // PYTHONHASHSEED: 글자의 해시를 고정해서 집합의 차례가 실행마다 같게 한다(예측 문제와 채점이 흔들리지 않게).
+  pyodide = await loadPyodide({ indexURL: new URL('./pyodide/', self.location.href).href, env: { PYTHONHASHSEED: '0' } });
   pyodide.setStdout(makeWriter('out'));
   pyodide.setStderr(makeWriter('err'));
   pyodide.setStdin({ stdin: readLine, isatty: false });

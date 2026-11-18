@@ -15,7 +15,7 @@ let pyodide;
 let scripted;
 
 before(async () => {
-  pyodide = await loadPyodide();
+  pyodide = await loadPyodide({ env: { PYTHONHASHSEED: '0' } });
   const worker = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'py-worker.js'), 'utf8');
   const body = /const RUNNER_SOURCE = `([\s\S]*?)`;/.exec(worker)[1];
   pyodide.runPython(new Function(`return \`${body}\`;`)());

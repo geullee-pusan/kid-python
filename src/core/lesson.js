@@ -151,7 +151,7 @@ export function missingLines(script) {
     'task-intro', 'task-next', 'task-how', 'task-keys', 'task-case-files', 'task-case-nofile', 'play-intro', 'task-correct-first', 'task-correct', 'skip-ok', 'lecture-back', 'done-bye',
     'challenge-ask', 'challenge-intro', 'challenge-skip',
   ]);
-  for (const kind of ['not-computed', 'quoted-calc', 'order', 'count', 'spacing', 'line-diff', 'no-output', 'input-few', 'input-many', 'case', 'endless', 'draw-none', 'draw-mirror', 'draw-flip', 'draw-moved', 'draw-size', 'draw-missing', 'draw-extra', 'draw-diff', 'draw-color', 'draw-fill', 'game-none', 'game-count', 'game-pos', 'game-heading', 'game-look', 'game-text', 'game-output']) used.add(`task-${kind}`);
+  for (const kind of ['not-computed', 'quoted-calc', 'order', 'count', 'spacing', 'line-diff', 'no-output', 'input-few', 'input-many', 'case', 'endless', 'draw-none', 'draw-mirror', 'draw-flip', 'draw-moved', 'draw-size', 'draw-missing', 'draw-extra', 'draw-diff', 'draw-color', 'draw-fill', 'game-none', 'game-count', 'game-pos', 'game-heading', 'game-look', 'game-text', 'game-output', 'missing-f']) used.add(`task-${kind}`);
   const walk = (spec) => {
     if (spec.say) used.add(spec.say);
     for (const key of spec.follow?.say ?? []) used.add(key);

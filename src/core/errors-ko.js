@@ -47,6 +47,11 @@ export function explain(error, knows = {}) {
     if (/expected argument value expression/.test(message)) return '등호(=) 뒤에 값이 빠졌어요. end="" 처럼 따옴표를 써요.';
     if (/positional argument follows keyword argument/.test(message)) return 'end= 은 괄호 안의 맨 뒤에 써요. 내보낼 값을 먼저 쓰고, 그 뒤에 쉼표와 end= 을 써요.';
     if (/forgot a comma/.test(message) && /[^,(\s]\s+end\s*=/.test(bare)) return 'end 앞에 쉼표가 빠졌어요. 내보낼 값 뒤에 쉼표를 찍고 end= 을 써요.';
+    // f-string 안의 중괄호: f"{이름" , f"{}"
+    if (/^f-string: expecting '\}'/.test(message)) return 'f-string의 여는 중괄호 { 를 닫지 않았어요. 이름 뒤에 닫는 중괄호 } 를 써요.';
+    if (/^f-string: valid expression required/.test(message)) return 'f-string의 중괄호 { } 안이 비었어요. 안에 넣을 이름이나 식을 써요.';
+    if (/^f-string: single '\}' is not allowed/.test(message)) return 'f-string에 닫는 중괄호 } 만 있어요. 여는 중괄호 { 와 짝을 맞춰요.';
+    if (/^f-string/.test(message)) return 'f-string의 중괄호 { } 안을 파이썬이 읽을 수 없어요. 여는 것과 닫는 것의 짝, 안에 쓴 이름을 봐요.';
     if (/expected ':'/.test(message)) return '줄 끝에 콜론(:)이 빠졌어요.';
     if (/'\{' was never closed/.test(message)) return '여는 중괄호 { 를 닫지 않았어요. 닫는 중괄호 } 를 써요.';
     if (/unmatched '\}'/.test(message)) return '닫는 중괄호 } 가 하나 더 많아요.';
@@ -132,6 +137,15 @@ export function explain(error, knows = {}) {
     if (/Turtle\.\w+\(\) missing \d+ required positional argument/.test(message)) return '이 명령의 괄호 안에 값을 넣어야 해요. 얼마나 움직일지, 얼마나 돌지를 숫자로 넣어요.';
     if (/Turtle\.\w+\(\) takes \d+ positional arguments? but \d+ (was|were) given/.test(message)) return '이 명령의 괄호 안에 넣은 값의 개수가 맞지 않아요.';
     if (/cannot unpack non-iterable/.test(message) && /goto|setpos/.test(text)) return 'goto( ) 안에는 가로 위치와 세로 위치, 숫자 두 개를 쉼표로 넣어요.';
+    // 받는 이름표가 여럿인데 값이 하나: "가, 나 = 5", "for 가, 나 in [1, 2]:"
+    if (/cannot unpack non-iterable/.test(message)) {
+      if (/^\s*for\b/m.test(text)) return 'for에서 이름표 두 개로 받으려면, 한 번에 값이 두 개씩 나와야 해요. zip( )이나 enumerate( ), .items( )로 짝을 지어 돌아요.';
+      return '값 하나를 이름표 여러 개에 나눠 넣을 수 없어요. 등호 오른쪽에도 값을 이름표 수만큼 쉼표로 써요.';
+    }
+    if (/'tuple' object does not support item assignment/.test(message)) return '튜플은 바꿀 수 없는 리스트예요. 칸 하나만 바꿀 수 없어요. 바꿔야 하면 대괄호 [ ]로 리스트를 만들어요.';
+    if (/'set' object is not subscriptable/.test(message)) return '집합에는 차례가 없어서 번호로 꺼낼 수 없어요. in으로 있는지 묻거나, for로 돌거나, sorted( )로 리스트를 만들어 꺼내요.';
+    if (/as a set element/.test(message)) return '집합에는 리스트를 넣을 수 없어요. 글자나 숫자, 튜플을 넣어요.';
+    if (/doesn't define __round__/.test(message)) return 'round( ) 안에는 숫자를 넣어요. 글자라면 float( )나 int( )로 숫자로 바꿔요.';
     if (/as a dict key|unhashable type/.test(message)) return '리스트는 딕셔너리의 키로 쓸 수 없어요. 키는 글자나 숫자로 써요.';
     if (/'(str|int|float|bool|list)' object is not callable/.test(message)) return '둥근 괄호는 함수나 클래스 뒤에만 붙여요. 값을 꺼내 쓸 때는 괄호 없이 이름만 써요.';
     if (/'dict' object is not callable/.test(message)) return '딕셔너리에서 꺼낼 때는 둥근 괄호가 아니라 대괄호를 써요. 값["사과"] 처럼 써요.';
@@ -190,6 +204,9 @@ export function explain(error, knows = {}) {
     if (strName && strName[1] !== strName[1].toLowerCase()) return '점(.) 뒤의 명령은 모두 작은 글자로 써요.';
     if (strName) return '글자 뒤의 점(.) 다음 이름을 파이썬이 몰라요. replace, count, find, split 의 철자를 확인해요.';
     if (/'list' object has no attribute '(replace|find|split|join|upper|lower)'/.test(message)) return '글자에 쓰는 명령을 리스트에 썼어요. 리스트에서 글자를 하나 꺼내서 써요.';
+    if (/'tuple' object has no attribute '(append|remove|pop|insert|add|sort)'/.test(message)) return '튜플은 바꿀 수 없는 리스트라서 값을 넣거나 뺄 수 없어요. 바꿔야 하면 대괄호 [ ]로 리스트를 만들어요.';
+    if (/'set' object has no attribute '(append|push|insert)'/.test(message)) return '집합에 값을 넣을 때는 append가 아니라 add( )를 써요.';
+    if (/'set' object has no attribute/.test(message)) return '집합 뒤의 점(.) 다음 이름을 파이썬이 몰라요. add, remove 의 철자를 확인해요.';
     if (/'int' object has no attribute/.test(message)) return '숫자 뒤에는 점(.) 명령을 쓸 수 없어요. 글자로 다루려면 str( )로 바꿔요.';
     if (/'dict' object has no attribute '(append|add|push|insert)'/.test(message)) return '딕셔너리에는 append( )를 쓰지 않아요. 이름[키] = 값 으로 넣어요.';
     if (/'dict' object has no attribute '(remove|delete)'/.test(message)) return '딕셔너리에서 지울 때는 pop(키)를 써요.';
@@ -211,6 +228,14 @@ export function explain(error, knows = {}) {
     // 파일의 빈 줄을 숫자로 바꾸려던 경우: '' 또는 '\n'
     if (bad && /^'(\\n|\\r\\n|\s*)'$/.test(bad[1])) return '빈 줄은 숫자로 바꿀 수 없어요. 파일 끝에 빈 줄이 있는지 봐요. 빈 줄은 건너뛰게 해요.';
     if (bad) return `${bad[1]}은(는) 숫자로 바꿀 수 없어요. int( ) 안에는 숫자로 된 글자만 넣어요.`;
+    // 받는 이름표와 값의 개수가 다르다: "가, 나 = 1, 2, 3", "for 가, 나 in [(1, 2, 3)]:"
+    const unpack = /(too many|not enough) values to unpack \(expected (\d+)(?:, got (\d+))?\)/.exec(message);
+    if (unpack) {
+      const [, side, want, got] = unpack;
+      const values = got ? `값은 ${got}개예요` : side === 'too many' ? '값이 더 많아요' : '값이 모자라요';
+      if (/^\s*for\b/m.test(text)) return `for에서 받는 이름표는 ${want}개인데, 한 번에 나오는 ${values}. 이름표 수와 짝 안의 값 수를 맞춰요.`;
+      return `받는 이름표는 ${want}개인데 ${values}. 등호 왼쪽의 이름표 수와 오른쪽의 값 수를 맞춰요.`;
+    }
     if (/I\/O operation on closed file/.test(message)) return '닫힌 파일이에요. with 아래에 들여쓴 줄에서만 파일을 읽고 쓸 수 있어요. 파일을 쓰는 줄을 with 안으로 들여써요.';
     if (/invalid mode|must have exactly one of create\/read\/write\/append mode/.test(message)) return 'open( )의 둘째 칸에는 "r"(읽기), "w"(쓰기), "a"(이어 쓰기) 가운데 하나를 써요.';
     if (/substring not found/.test(message)) return '찾는 글자가 없어요. 먼저 in으로 있는지 물어봐요. find( )는 없을 때 -1을 알려 줘요.';

@@ -85,6 +85,9 @@ export function diagnoseTask(task, code, run) {
       (m.file === undefined || (m.content === undefined ? fileText(m.file) === null : fileText(m.file) !== null && new RegExp(m.content).test(fileText(m.file)))),
   );
   if (mistake) return { kind: 'mistake', say: mistake.say };
+  // f-string에서 f를 빼먹어 {이름}이 글자 그대로 나온 경우(출력이나 파일에)
+  const unfilled = missingF(code, [text, ...Object.values(files)].join('\n'), [wanted, ...Object.values(task.expectFiles ?? {}).map((lines) => lines.join('\n'))].join('\n'));
+  if (unfilled) return { kind: 'missing-f', vars: { piece: unfilled } };
   // 출력은 맞고 파일이 틀린 경우, 또는 파일에 쓸 것을 출력 칸에 내보낸 경우
   if (fileWrong && (outputSame || fileWrong.kind === 'file-printed')) return fileWrong;
   if (got.length === 0) return { kind: 'no-output' };
@@ -100,6 +103,19 @@ export function diagnoseTask(task, code, run) {
   const vars = { no: ORDINAL[at] ?? `${at + 1}번째`, want: want[at], got: got[at] };
   if (squeeze(got[at]) === squeeze(want[at])) return { kind: 'spacing', vars };
   return { kind: 'line-diff', vars };
+}
+
+/**
+ * f를 빼먹은 f-string을 찾는다: 나온 글자에 {이름} 같은 중괄호 덩어리가 그대로 있고(나와야 하는 것에는 없고),
+ * 코드에서 그 덩어리가 f가 붙지 않은 따옴표 안에 있다. 찾으면 그 덩어리("{이름}"), 없으면 null.
+ */
+export function missingF(code, got, wanted = '') {
+  const escape = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const [piece] of String(got).matchAll(/\{[^{}[\]|\n]+\}/g)) {
+    if (wanted.includes(piece)) continue;
+    if (new RegExp(`(?<![fF\\w])(["'])[^"'\\n]*${escape(piece)}`).test(code)) return piece;
+  }
+  return null;
 }
 
 /**

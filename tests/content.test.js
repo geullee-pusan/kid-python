@@ -23,7 +23,7 @@ import { PRACTICE_WRONG } from './practice-wrong.js';
 let scripted;
 
 before(async () => {
-  const pyodide = await loadPyodide();
+  const pyodide = await loadPyodide({ env: { PYTHONHASHSEED: '0' } });
   // 일꾼 파일에서 파이썬 소스를 꺼낸다(자바스크립트 글자 틀 안에 들어 있다).
   const worker = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'py-worker.js'), 'utf8');
   const body = /const RUNNER_SOURCE = `([\s\S]*?)`;/.exec(worker)[1];
