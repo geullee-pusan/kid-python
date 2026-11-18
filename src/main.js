@@ -1055,6 +1055,12 @@ async function main() {
         works.push({ id: `w-${Date.now().toString(36)}`, name: mission.saveAs, code: results[results.length - 1].code, updatedAt: new Date().toISOString() });
         store.set('kidpy.works', works);
       }
+      // saveFiles: 그 프로그램이 읽는 파일. "내 파일"에 같은 이름이 없을 때만 넣는다(아이가 고친 파일은 그대로 둔다).
+      if (mission.saveFiles) {
+        const files = store.get(FILES_KEY, {});
+        const missing = Object.entries(mission.saveFiles).filter(([name]) => !(name in files));
+        if (missing.length) keepStudioFiles({ ...files, ...Object.fromEntries(missing) });
+      }
     }
     log('mission-done', { mission: mission.id, ...summary });
     if (first) await teacher.jump(); // 크게 기뻐하는 건 한 번에 해낸 순간뿐이다

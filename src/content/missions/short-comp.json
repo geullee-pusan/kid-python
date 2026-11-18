@@ -1,0 +1,190 @@
+{
+  "_설명": "더 짧고 편하게 쓰기 단원 4번 수업. 새로 나오는 것은 리스트를 한 줄로 만들기([x * 2 for x in 수들]), 뒤에 붙는 if, [int(x) for x in input().split()]이다. 빈 리스트 + for + append 세 줄에서 출발한다. 이름(리스트 컴프리헨션)은 한 번만 말한다. 한 줄씩 보기에서는 그 줄이 여러 번 잡히고 이름표 칸의 x가 바뀌다가 끝나면 사라진다. 겨냥하는 오개념: 원래 리스트는 그대로다, if는 맨 뒤에 쓴다, 한 번 만든 리스트는 원래 리스트가 나중에 바뀌어도 따라 바뀌지 않는다, split한 것은 글자라서 int로 바꿔야 한다.",
+  "id": "short-comp",
+  "unit": "더 짧고 편하게 쓰기",
+  "no": 4,
+  "title": "리스트를 한 줄로",
+  "desc": "빈 리스트, for, append 세 줄을 한 줄로 써요. 고를 것은 if로 골라요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes", "tries"],
+  "showVars": true,
+  "learned": [
+    { "rule": "대괄호 안에 넣을 것을 먼저 쓰고, 그 뒤에 for를 써요. 원래 리스트는 그대로예요.", "code": "두배 = [x * 2 for x in 수들]" },
+    { "rule": "고를 조건은 맨 뒤에 if로 써요. 참인 것만 들어가요.", "code": "짝수 = [x for x in 수들 if x % 2 == 0]" },
+    { "rule": "한 줄에 띄어 친 수들은 split으로 자르고 하나씩 int로 바꿔요.", "code": "수들 = [int(x) for x in input().split()]" }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["리스트에서 몇 개를 골라 새 리스트를 만들 때, 빈 리스트를 만들고 [for|포]로 돌며 [append|어펜드]했어요. 세 줄이에요. 오늘은 그걸 한 줄로 써요."],
+    "comp-intro": ["대괄호 안에, 넣을 것을 먼저 쓰고 그 뒤에 [for|포]를 써요. 수들에서 하나씩 꺼낸 x마다 [x * 2|엑스 곱하기 이]를 넣는다는 뜻이에요. 어른들은 리스트 컴프리헨션이라고 불러요."],
+    "comp-after": ["둘째 줄이 세 번 잡혔어요. 그동안 이름표 칸의 x가 [1|일], [2|이], [3|삼]으로 바뀌고, 다 만들면 x는 사라져요. 원래 수들은 그대로예요."],
+    "if-intro": ["고르는 것도 한 줄에 써요. 조건은 맨 뒤에 [if|이프]로 써요."],
+    "if-after": ["짝수만 들어갔어요. 만든 리스트는 [sum|섬]에도 바로 넣을 수 있어요."],
+    "split-intro": ["이걸 쓰면 한 줄에 띄어 친 수들을 한 번에 받을 수 있어요. [split|스플릿]은 빈칸에서 잘라 글자의 리스트를 줘요. 그 글자를 하나씩 [int|인트]로 바꿔요."],
+    "split-after": ["[4 9 2|사 구 이]를 한 줄로 쳤더니 숫자 리스트가 됐어요. 그래서 바로 더할 수 있어요."],
+    "check-ask": ["하나 물어볼게요. 이 코드를 실행하면 무엇이 나올까요?"],
+    "check-right": ["맞아요. 새 리스트를 만들었을 뿐, 수들은 그대로예요."],
+    "check-teach-1": ["[x + 1|엑스 더하기 일]은 새 리스트에 들어가요. 수들을 바꾸지 않아요."],
+    "check-teach-2": ["그래서 수들을 내보내면 처음 그대로 [1, 2, 3|일 이 삼]이에요."],
+    "follow-ok": ["좋아요. 점수마다 [5|오]를 더한 새 리스트가 한 줄로 만들어졌어요."],
+    "summary": ["정리해요. 넣을 것, [for|포], 고를 조건 차례로 대괄호 안에 한 줄로 써요. 원래 리스트는 그대로예요."],
+
+    "q1-right": ["맞아요. 2보다 큰 [3|삼]과 [4|사]만 골라서, 제곱한 [9|구]와 [16|십육]이 들어가요."],
+    "q1-all": ["맨 뒤의 [if|이프]가 고르는 조건이에요. 2보다 큰 것만 들어가요."],
+    "q1-picked": ["고른 것을 그대로 넣지 않고 [x * x|엑스 곱하기 엑스]를 넣어요."],
+    "q1-explain": ["[9|구]와 [16|십육]이 든 리스트가 나와요."],
+    "q2-right": ["맞아요. [int|인트]로 숫자로 바꿨으니 [10|십]이 가장 커요."],
+    "q2-text": ["글자로 견주면 [\"7\"|칠]이 가장 크다고 봐요. 그런데 [int|인트]로 바꿔서 숫자로 견줘요."],
+    "q2-whole": ["[max|맥스]는 리스트에서 가장 큰 것 하나를 줘요."],
+    "q2-explain": ["숫자 [3, 10, 7|삼 십 칠] 가운데 [10|십]이에요."],
+    "q3-right": ["맞아요. 나는 만들 때의 가로 만들어졌어요. 그 뒤에 가에 [3|삼]을 넣어도 나는 그대로예요."],
+    "q3-follow": ["나는 한 번 만들어진 새 리스트예요. 가가 나중에 바뀌어도 따라 바뀌지 않아요."],
+    "q3-same": ["나에는 [x * 10|엑스 곱하기 십]이 들어 있어요."],
+    "q3-explain": ["[10|십]과 [20|이십]이 든 리스트가 나와요."],
+
+    "task-how": ["다 쓰면 실행해서 수들을 한 줄에 띄어 쳐 봐요. 칠판과 같으면 '제출'을 눌러요."],
+    "need-comp": ["답은 맞아요. 이번에는 대괄호 안에 [for|포]를 써서 한 줄로 만들어 봐요."],
+    "praise-evens": ["한 줄에 친 수들을 한 줄로 숫자 리스트로 바꾸고, 짝수만 한 줄로 골라서 합까지 구했어요."],
+    "evens-odd": ["홀수가 모였어요. 짝수는 [2|이]로 나눈 나머지가 [0|영]이에요."],
+    "evens-hint-1": ["먼저 [input().split()|인풋 스플릿]으로 자르고, 대괄호 안에서 하나씩 [int|인트]로 바꿔 수들을 만들어요."],
+    "evens-hint-2": ["그다음 대괄호 안에 x, [for x in 수들|포 엑스 인 수들], 맨 뒤에 짝수인지 묻는 [if|이프]를 써요. 만든 리스트를 내보내고, [sum|섬]으로 합을 내보내요."],
+    "evens-hint-3": ["칠판에 비슷한 예제를 적었어요. 이걸 보고 써 봐요."],
+    "praise-column": ["표에서 한 칸씩 한 줄로 뽑아 과목마다 리스트를 만들고, 평균을 소수 첫째 자리까지 구했어요."],
+    "column-swap": ["국어와 수학의 평균이 바뀌었어요. 줄마다 [0|영]번이 이름, [1|일]번이 국어, [2|이]번이 수학이에요."],
+    "column-round": ["소수점 아래가 길게 나왔어요. [round|라운드]로 소수 첫째 자리까지 줄여요."],
+    "column-hint-1": ["편집기의 표는 줄마다 이름, 국어, 수학이에요. 대괄호 안에 줄의 [1|일]번을 쓰고, 그 뒤에 [for 줄 in 표|포 줄 인 표]를 쓰면 국어만 뽑혀요."],
+    "column-hint-2": ["뽑은 리스트의 [sum|섬]을 [len|렌]으로 나누고 [round|라운드]로 줄여서 [f|에프]를 붙인 글자로 내보내요. 수학도 같아요."],
+
+    "done-1": ["오늘은 리스트를 한 줄로 만드는 법을 배웠어요."],
+    "done-2": ["다음 시간에는 겹치는 값을 없애는 집합을 배워요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "전에는 → 이제는", "items": ["전에는  두배 = []  /  for x in 수들:  /      두배.append(x * 2)", "이제는  두배 = [x * 2 for x in 수들]"], "code": "수들 = [1, 2, 3]\n두배 = [x * 2 for x in 수들]\nprint(두배)\nprint(수들)" } },
+      { "say": "comp-intro" },
+      { "type": "수들 = [1, 2, 3]\n두배 = [x * 2 for x in 수들]\nprint(두배)\nprint(수들)" },
+      { "trace": "수들 = [1, 2, 3]\n두배 = [x * 2 for x in 수들]\nprint(두배)\nprint(수들)" },
+      { "say": "comp-after" }
+    ],
+    [
+      { "say": "if-intro" },
+      { "type": "수들 = [3, 8, 5, 12, 7]\n짝수 = [x for x in 수들 if x % 2 == 0]\nprint(짝수)\nprint(sum(짝수))" },
+      { "trace": "수들 = [3, 8, 5, 12, 7]\n짝수 = [x for x in 수들 if x % 2 == 0]\nprint(짝수)\nprint(sum(짝수))" },
+      { "say": "if-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "한 줄에 친 수들", "items": ["input().split()  빈칸에서 잘라 글자의 리스트", "[int(x) for x in …]  하나씩 숫자로"], "code": "수들 = [int(x) for x in input(\"수들: \").split()]\nprint(수들, sum(수들))" } },
+      { "say": "split-intro" },
+      { "type": "수들 = [int(x) for x in input(\"수들: \").split()]\nprint(수들, sum(수들))" },
+      { "trace": "수들 = [int(x) for x in input(\"수들: \").split()]\nprint(수들, sum(수들))", "inputs": ["4 9 2"] },
+      { "say": "split-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "수들 = [1, 2, 3]\n새 = [x + 1 for x in 수들]\nprint(수들)",
+          "ask": "check-ask",
+          "choices": ["[2, 3, 4]", "[1, 2, 3]"],
+          "answer": 1,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "점수들 = [70, 85, 92]\n올린 = [점수 + 5 for 점수 in 점수들]\nprint(올린)" } },
+      { "follow": { "code": "점수들 = [70, 85, 92]\n올린 = [점수 + 5 for 점수 in 점수들]\nprint(올린)", "expect": ["[75, 90, 97]"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["[x * 2 for x in 수들]  넣을 것, 그다음 for", "[x for x in 수들 if x % 2 == 0]  조건은 맨 뒤", "[int(x) for x in input().split()]  한 줄에 친 수들", "원래 리스트는 그대로"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "수들 = [1, 2, 3, 4]\nprint([x * x for x in 수들 if x > 2])",
+      "answer": 0,
+      "choices": [
+        { "text": "[9, 16]", "say": "q1-right" },
+        { "text": "[1, 4, 9, 16]", "say": "q1-all" },
+        { "text": "[3, 4]", "say": "q1-picked" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "글 = \"3 10 7\"\n수들 = [int(x) for x in 글.split()]\nprint(max(수들))",
+      "answer": 1,
+      "choices": [
+        { "text": "7", "say": "q2-text" },
+        { "text": "10", "say": "q2-right" },
+        { "text": "3 10 7", "say": "q2-whole" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "가 = [1, 2]\n나 = [x * 10 for x in 가]\n가.append(3)\nprint(나)",
+      "answer": 1,
+      "choices": [
+        { "text": "[10, 20, 30]", "say": "q3-follow" },
+        { "text": "[10, 20]", "say": "q3-right" },
+        { "text": "[1, 2, 3]", "say": "q3-same" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "evens",
+      "title": "짝수만 골라 더하기",
+      "story": "수들을 한 줄에 빈칸으로 띄어 쳐서 받아요. 짝수만 한 줄로 골라 리스트를 내보내고, 그다음 줄에 \"합 20\"처럼 짝수의 합을 내보내요.",
+      "steps": ["[int(x) for x in input().split()]로 수들을 받아요.", "짝수만 한 줄로 골라 리스트를 만들어 내보내요.", "\"합 20\"처럼 합을 내보내요."],
+      "cases": [
+        { "inputs": ["3 8 5 12 7"], "expect": ["[8, 12]", "합 20"] },
+        { "inputs": ["2 4 6"], "expect": ["[2, 4, 6]", "합 12"] },
+        { "inputs": ["1 3"], "expect": ["[]", "합 0"] }
+      ],
+      "expect": ["[8, 12]", "합 20"],
+      "show": true,
+      "checks": [{ "pattern": "\\[[^\\n]*\\bfor\\b[^\\n]*\\]", "say": "need-comp" }],
+      "mistakes": [{ "inputs": "^3 8 5 12 7$", "output": "^\\[3, 5, 7\\]", "say": "evens-odd" }],
+      "praise": "praise-evens",
+      "solution": "수들 = [int(x) for x in input(\"수들: \").split()]\n짝수 = [x for x in 수들 if x % 2 == 0]\nprint(짝수)\nprint(f\"합 {sum(짝수)}\")",
+      "hints": [
+        { "say": "evens-hint-1" },
+        { "say": "evens-hint-2" },
+        { "say": "evens-hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "수들 = [4, 15, 9, 20]\n큰수 = [x for x in 수들 if x >= 10]\nprint(큰수)\nprint(f\"개수 {len(큰수)}\")" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "column",
+    "title": "심화: 과목마다 평균",
+    "story": "편집기에 세 사람의 \"이름 국어 수학\"을 물어서 표에 모으는 코드가 있어요. 표에서 국어만, 수학만 한 줄로 뽑아서 \"국어 평균 85.0\", \"수학 평균 76.7\"처럼 소수 첫째 자리까지 내보내요.",
+    "steps": ["[줄[1] for 줄 in 표]로 국어만, [줄[2] for 줄 in 표]로 수학만 뽑아요.", "sum을 len으로 나누고 round로 소수 첫째 자리까지 줄여요.", "\"국어 평균 85.0\", \"수학 평균 76.7\"을 내보내요."],
+    "start": "표 = []\nfor i in range(3):\n    칸 = input(\"이름 국어 수학: \").split()\n    표.append([칸[0], int(칸[1]), int(칸[2])])\n",
+    "cases": [
+      { "inputs": ["하늘 90 80", "바다 85 70", "별 80 80"], "expect": ["국어 평균 85.0", "수학 평균 76.7"] },
+      { "inputs": ["가람 100 95", "나래 61 72", "다솜 77 88"], "expect": ["국어 평균 79.3", "수학 평균 85.0"] }
+    ],
+    "expect": ["국어 평균 85.0", "수학 평균 76.7"],
+    "show": true,
+    "checks": [{ "pattern": "\\[[^\\n]*\\bfor\\b[^\\n]*\\]", "say": "need-comp" }],
+    "mistakes": [
+      { "inputs": "^하늘", "output": "^국어 평균 76\\.7", "say": "column-swap" },
+      { "output": "\\.\\d{3,}", "say": "column-round" }
+    ],
+    "praise": "praise-column",
+    "solution": "표 = []\nfor i in range(3):\n    칸 = input(\"이름 국어 수학: \").split()\n    표.append([칸[0], int(칸[1]), int(칸[2])])\n국어들 = [줄[1] for 줄 in 표]\n수학들 = [줄[2] for 줄 in 표]\nprint(f\"국어 평균 {round(sum(국어들) / len(국어들), 1)}\")\nprint(f\"수학 평균 {round(sum(수학들) / len(수학들), 1)}\")",
+    "hints": [{ "say": "column-hint-1" }, { "say": "column-hint-2" }]
+  }
+}

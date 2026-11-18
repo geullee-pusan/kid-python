@@ -174,6 +174,16 @@ for (const m of Object.values(SCRIPTS)) {
   });
 }
 
+// 단원 18의 시작 코드(오답 줄에서 함께 쓴다)
+const CARD_START = '이름들 = []\nfor i in range(3):\n    이름들.append(input("이름: "))\n점수들 = []\nfor i in range(3):\n    점수들.append(int(input("점수: ")))\n';
+const TABLE_START = '표 = []\nfor i in range(3):\n    칸 = input().split()\n    표.append([칸[0], int(칸[1]), int(칸[2])])\n';
+const POINTS = '점들 = []\nfor i in range(4):\n    가로 = int(input())\n    세로 = int(input())\n    점들.append((가로, 세로))\n';
+const FIVE = '수들 = []\nfor i in range(5):\n    수들.append(int(input()))\n';
+const REPORT_START = '표 = []\nwith open("성적.txt") as 파일:\n    for 줄 in 파일:\n        이름, 국어, 수학 = 줄.strip().split(",")\n        표.append((이름, int(국어), int(수학)))\n';
+const REPORT_FILE = 'with open("성적표.txt", "w") as 파일:\n    for 이름, 국어, 수학 in 표:\n        print(f"{이름} 국어 {국어} 수학 {수학} 평균 {round((국어 + 수학) / 2, 1)}", file=파일)\n';
+const REPORT_AVG = '국어들 = [줄[1] for 줄 in 표]\n수학들 = [줄[2] for 줄 in 표]\nprint(f"국어 평균 {round(sum(국어들) / len(국어들), 1)}")\nprint(f"수학 평균 {round(sum(수학들) / len(수학들), 1)}")\n';
+const BEST = 'def 일등(표):\n    가장 = ""\n    높은 = -1\n    for 이름, 국어, 수학 in 표:\n        평균 = (국어 + 수학) / 2\n        if 평균 > 높은:\n            가장, 높은 = 이름, 평균\n    return 가장, round(높은, 1)\n';
+
 // 흔한 오답을 넣었을 때 의도한 말이 나오는가. [수업, 문제, 코드, 기대하는 종류, 기대하는 대사 열쇠]
 const WRONG = [
   ['calc', 'shop', 'print(2400)\nprint(2600)\nprint(600)', 'mistake', 'shop-float'],
@@ -857,6 +867,55 @@ const WRONG = [
   ['unit17-review', 'best', 'import random\ntry:\n    with open("최고기록.txt") as 파일:\n        최고 = int(파일.read())\nexcept FileNotFoundError:\n    최고 = 1000\n답 = random.randint(1, 100)\n번 = 0\nwhile True:\n    수 = int(input("맞혀 봐요: "))\n    번 += 1\n    if 수 == 답:\n        print("정답!", 번, "번 만에 맞혔어요")\n        break\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")\nif 번 < 최고:\n    print("새 기록이에요!")\nelse:\n    print("최고 기록은", 최고, "번이에요")\nwith open("최고기록.txt", "w") as 파일:\n    print(번, file=파일)', 'mistake', 'best-always'],
   ['unit17-review', 'best', 'import random\nwith open("최고기록.txt") as 파일:\n    최고 = int(파일.read())\n답 = random.randint(1, 100)\n번 = 0\nwhile True:\n    수 = int(input("맞혀 봐요: "))\n    번 += 1\n    if 수 == 답:\n        print("정답!", 번, "번 만에 맞혔어요")\n        break\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")\nif 번 < 최고:\n    with open("최고기록.txt", "w") as 파일:\n        print(번, file=파일)\n    print("새 기록이에요!")\nelse:\n    print("최고 기록은", 최고, "번이에요")', 'error'],
   ['unit17-review', 'best', 'import random\n답 = random.randint(1, 100)\n번 = 0\nwhile True:\n    수 = int(input("맞혀 봐요: "))\n    번 += 1\n    if 수 == 답:\n        print("정답!", 번, "번 만에 맞혔어요")\n        break\n    elif 수 < 답:\n        print("더 큰 수예요")\n    else:\n        print("더 작은 수예요")\n최고 = 0\ntry:\n    with open("최고기록.txt") as 파일:\n        최고 = int(파일.read())\nexcept FileNotFoundError:\n    pass\nif 최고 == 0 or 번 < 최고:\n    with open("최고기록.txt", "w") as 파일:\n        print(번, file=파일)\n    print("새 기록이에요!")\nelse:\n    print("최고 기록은", 최고, "번이에요")', 'correct'],
+  // 단원 18
+  ['short-fstring', 'gugu', '단 = int(input())\nfor i in range(1, 10):\n    print("{단}x{i}={단 * i}")', 'missing-f'],
+  ['short-fstring', 'gugu', '단 = int(input())\nfor i in range(1, 10):\n    print(단, "x", i, "=", 단 * i)', 'mistake', 'gugu-comma'],
+  ['short-fstring', 'gugu', '단 = int(input())\nfor i in range(10):\n    print(f"{단}x{i}={단 * i}")', 'mistake', 'gugu-zero'],
+  ['short-fstring', 'gugu', '단 = input()\nfor i in range(1, 10):\n    print(f"{단}x{i}={단 * i}")', 'mistake', 'gugu-int'],
+  ['short-fstring', 'gugu', '단 = int(input())\nfor i in range(1, 10):\n    print(단, "x", i, "=", 단 * i, sep="")', 'mistake', 'need-f'],
+  ['short-fstring', 'gugu', '단 = int(input())\ni = 1\nwhile i < 10:\n    print(f"{단}x{i}={단 * i}")\n    i += 1', 'correct'],
+  ['short-fstring', 'avg', 'a = int(input())\nb = int(input())\nc = int(input())\nprint(f"평균은 {(a + b + c) / 3}점이에요")', 'mistake', 'avg-round'],
+  ['short-fstring', 'avg', 'a = int(input())\nb = int(input())\nc = int(input())\nprint(f"평균은 {round((a + b + c) // 3, 1)}점이에요")', 'mistake', 'avg-floor'],
+  ['short-fstring', 'avg', 'a = int(input())\nb = int(input())\nc = int(input())\nprint(f"평균은 {round((a + b + c) / 3)}점이에요")', 'mistake', 'avg-digit'],
+  ['short-fstring', 'avg', 'a = int(input())\nb = int(input())\nc = int(input())\nprint(f"평균은 {round(a + b + c / 3, 1)}점이에요")', 'line-diff'],
+  ['short-fstring', 'avg', '합 = 0\nfor i in range(3):\n    합 += int(input())\nprint("평균은 " + str(round(합 / 3, 1)) + "점이에요")', 'correct'],
+  ['short-tuple', 'minmax', `def 작은큰(수들):\n    return max(수들), min(수들)\n${FIVE}작은, 큰 = 작은큰(수들)\nprint(f"가장 작은 수 {작은}, 가장 큰 수 {큰}")`, 'mistake', 'minmax-swap'],
+  ['short-tuple', 'minmax', `def 작은큰(수들):\n    return min(수들)\n${FIVE}print(f"가장 작은 수 {작은큰(수들)}, 가장 큰 수 {max(수들)}")`, 'mistake', 'need-two-return'],
+  ['short-tuple', 'minmax', `${FIVE}print(f"가장 작은 수 {min(수들)}, 가장 큰 수 {max(수들)}")`, 'mistake', 'need-def'],
+  ['short-tuple', 'minmax', `def 작은큰(수들):\n    return min(수들), max(수들)\n${FIVE}작은, 큰, 합 = 작은큰(수들)\nprint(작은, 큰)`, 'error'],
+  ['short-tuple', 'minmax', 'def 작은큰(수들):\n    작은 = 수들[0]\n    큰 = 수들[0]\n    for 수 in 수들:\n        if 수 < 작은:\n            작은 = 수\n        if 수 > 큰:\n            큰 = 수\n    return 작은, 큰\n수들 = [int(input()) for i in range(5)]\n작은, 큰 = 작은큰(수들)\nprint("가장 작은 수 " + str(작은) + ", 가장 큰 수 " + str(큰))', 'correct'],
+  ['short-tuple', 'near', `${POINTS}가장 = 점들[0]\n작은 = 가장[0] + 가장[1]\nfor 점 in 점들:\n    if 점[0] + 점[1] < 작은:\n        가장 = 점\n        작은 = 점[0] + 점[1]\nprint(f"가장 가까운 점 {가장}")`, 'mistake', 'near-sum'],
+  ['short-tuple', 'near', `${POINTS}가장 = (0, 0)\n작은 = 0\nfor 점 in 점들:\n    가로, 세로 = 점\n    if 가로 * 가로 + 세로 * 세로 < 작은:\n        가장 = 점\n        작은 = 가로 * 가로 + 세로 * 세로\nprint(f"가장 가까운 점 {가장}")`, 'mistake', 'near-start'],
+  ['short-tuple', 'near', `${POINTS}가장 = 점들[0]\nfor 가로, 세로 in 점들:\n    if 가로 ** 2 + 세로 ** 2 < 가장[0] ** 2 + 가장[1] ** 2:\n        가장 = (가로, 세로)\nprint("가장 가까운 점", 가장)`, 'correct'],
+  ['short-zip', 'card', `${CARD_START}합 = 0\nfor 이름, 점수 in zip(이름들, 점수들):\n    print(f"{이름} {점수}점")\n    합 += 점수\n    print(f"합 {합}점")`, 'mistake', 'card-sum-each'],
+  ['short-zip', 'card', `${CARD_START}합 = 0\nfor i in range(len(이름들)):\n    print(f"{이름들[i]} {점수들[i]}점")\n    합 += 점수들[i]\nprint(f"합 {합}점")`, 'mistake', 'need-zip'],
+  ['short-zip', 'card', `${CARD_START}for 이름, 점수 in zip(이름들, 점수들):\n    print(이름, str(점수) + "점")\nprint("합", str(sum(점수들)) + "점")`, 'correct'],
+  ['short-zip', 'first', `${FIVE}찾음 = False\nfor 번호, 수 in enumerate(수들):\n    if 수 > 50:\n        print(f"처음으로 50보다 큰 수: {번호}번째, {수}")\n        찾음 = True\n        break\nif not 찾음:\n    print("50보다 큰 수가 없어요")`, 'mistake', 'first-zero'],
+  ['short-zip', 'first', `${FIVE}찾음 = False\nfor 번호, 수 in enumerate(수들, 1):\n    if 수 > 50:\n        print(f"처음으로 50보다 큰 수: {번호}번째, {수}")\n        찾음 = True\nif not 찾음:\n    print("50보다 큰 수가 없어요")`, 'mistake', 'first-all'],
+  ['short-zip', 'first', `${FIVE}찾음 = False\nfor i in range(5):\n    if 수들[i] > 50:\n        print(f"처음으로 50보다 큰 수: {i + 1}번째, {수들[i]}")\n        찾음 = True\n        break\nif not 찾음:\n    print("50보다 큰 수가 없어요")`, 'mistake', 'need-enum'],
+  ['short-zip', 'first', `${FIVE}for 번호, 수 in enumerate(수들, 1):\n    if 수 > 50:\n        print(f"처음으로 50보다 큰 수: {번호}번째, {수}")\n        break\nelse:\n    print("50보다 큰 수가 없어요")`, 'correct'],
+  ['short-comp', 'evens', '수들 = [int(x) for x in input().split()]\n홀 = [x for x in 수들 if x % 2 == 1]\nprint(홀)\nprint(f"합 {sum(홀)}")', 'mistake', 'evens-odd'],
+  ['short-comp', 'evens', '수들 = input().split()\n짝수 = [x for x in 수들 if x % 2 == 0]\nprint(짝수)\nprint(f"합 {sum(짝수)}")', 'error'],
+  ['short-comp', 'evens', '수들 = []\nfor x in input().split():\n    수들.append(int(x))\n짝수 = []\nfor x in 수들:\n    if x % 2 == 0:\n        짝수.append(x)\nprint(짝수)\nprint(f"합 {sum(짝수)}")', 'mistake', 'need-comp'],
+  ['short-comp', 'evens', '짝수 = [int(x) for x in input().split() if int(x) % 2 == 0]\nprint(짝수)\nprint("합", sum(짝수))', 'correct'],
+  ['short-comp', 'column', `${TABLE_START}국어들 = [줄[2] for 줄 in 표]\n수학들 = [줄[1] for 줄 in 표]\nprint(f"국어 평균 {round(sum(국어들) / len(국어들), 1)}")\nprint(f"수학 평균 {round(sum(수학들) / len(수학들), 1)}")`, 'mistake', 'column-swap'],
+  ['short-comp', 'column', `${TABLE_START}국어들 = [줄[1] for 줄 in 표]\n수학들 = [줄[2] for 줄 in 표]\nprint(f"국어 평균 {sum(국어들) / len(국어들)}")\nprint(f"수학 평균 {sum(수학들) / len(수학들)}")`, 'mistake', 'column-round'],
+  ['short-comp', 'column', `${TABLE_START}for 번 in [1, 2]:\n    과목 = ["국어", "수학"][번 - 1]\n    값들 = [줄[번] for 줄 in 표]\n    print(과목, "평균", round(sum(값들) / 3, 1))`, 'correct'],
+  ['short-set', 'words', '낱말들 = input().split()\nprint(f"서로 다른 낱말 {len(낱말들)}개")\nfor 낱말 in sorted(낱말들):\n    print(낱말)', 'mistake', 'words-dup'],
+  ['short-set', 'words', '낱말들 = input().split()\n본 = []\nfor 낱말 in 낱말들:\n    if 낱말 not in 본:\n        본.append(낱말)\nprint(f"서로 다른 낱말 {len(본)}개")\nfor 낱말 in sorted(본):\n    print(낱말)', 'mistake', 'need-set'],
+  ['short-set', 'words', '본 = set()\nfor 낱말 in input().split():\n    본.add(낱말)\nprint("서로 다른 낱말", str(len(본)) + "개")\nfor 낱말 in sorted(본):\n    print(낱말)', 'correct'],
+  ['short-set', 'fruit', '우리 = set(input().split())\n옆 = set(input().split())\nprint(f"둘 다: {\' \'.join(sorted(우리 | 옆))}")\nprint(f"우리 반만: {\' \'.join(sorted(우리 - 옆))}")\nprint(f"옆 반만: {\' \'.join(sorted(옆 - 우리))}")', 'mistake', 'fruit-or'],
+  ['short-set', 'fruit', '우리 = set(input().split())\n옆 = set(input().split())\nprint(f"둘 다: {\' \'.join(sorted(우리 & 옆))}")\nprint(f"우리 반만: {\' \'.join(sorted(우리 - 옆))}")\nprint(f"옆 반만: {\' \'.join(sorted(우리 - 옆))}")', 'mistake', 'fruit-minus'],
+  ['short-set', 'fruit', '우리 = set(input().split())\n옆 = set(input().split())\nfor 말, 모음 in [("둘 다", 우리 & 옆), ("우리 반만", 우리 - 옆), ("옆 반만", 옆 - 우리)]:\n    print(말 + ": " + " ".join(sorted(모음)))', 'correct'],
+  ['unit18-review', 'roll', '이름들 = set()\nwith open("출석.txt") as 파일:\n    for 줄 in 파일:\n        이름들.add(줄)\nwith open("명단.txt", "w") as 파일:\n    for 이름 in sorted(이름들):\n        print(이름, file=파일)\nprint(f"모두 {len(이름들)}명")', 'mistake', 'roll-blank'],
+  ['unit18-review', 'roll', '이름들 = set()\nwith open("출석.txt") as 파일:\n    for 줄 in 파일:\n        이름들.add(줄)\nwith open("명단.txt", "w") as 파일:\n    for 이름 in sorted(이름들):\n        print(이름.strip(), file=파일)\nprint(f"모두 {len(이름들)}명")', 'mistake', 'roll-strip'],
+  ['unit18-review', 'roll', 'with open("출석.txt") as 파일:\n    이름들 = sorted(set(파일.read().split()))\nwith open("명단.txt", "w") as 파일:\n    for 이름 in 이름들:\n        파일.write(이름 + "\\n")\nprint("모두", str(len(이름들)) + "명")', 'correct'],
+  ['unit18-review', 'report', `${REPORT_START}def 일등(표):\n    가장 = ""\n    높은 = -1\n    for 이름, 국어, 수학 in 표:\n        if 국어 > 높은:\n            가장, 높은 = 이름, 국어\n            평균 = (국어 + 수학) / 2\n    return 가장, round(평균, 1)\n${REPORT_FILE}${REPORT_AVG}이름, 평균 = 일등(표)\nprint(f"1등 {이름} 평균 {평균}")`, 'mistake', 'report-korean'],
+  ['unit18-review', 'report', `${REPORT_START}${BEST}${REPORT_FILE}국어들 = [줄[1] for 줄 in 표]\n수학들 = [줄[2] for 줄 in 표]\nprint(f"국어 평균 {sum(국어들) / len(국어들)}")\nprint(f"수학 평균 {sum(수학들) / len(수학들)}")\n이름, 평균 = 일등(표)\nprint(f"1등 {이름} 평균 {평균}")`, 'mistake', 'report-round'],
+  ['unit18-review', 'report', `${REPORT_START}${REPORT_FILE}${REPORT_AVG}가장 = max(표, key=lambda 줄: 줄[1] + 줄[2])\nprint(f"1등 {가장[0]} 평균 {round((가장[1] + 가장[2]) / 2, 1)}")`, 'mistake', 'need-best-def'],
+  ['unit18-review', 'report', `${REPORT_START}${BEST}with open("성적표.txt", "w") as 파일:\n    for 이름, 국어, 수학 in 표:\n        print("{이름} 국어 {국어} 수학 {수학} 평균 {round((국어 + 수학) / 2, 1)}", file=파일)\n${REPORT_AVG}이름, 평균 = 일등(표)\nprint(f"1등 {이름} 평균 {평균}")`, 'missing-f'],
+  ['unit18-review', 'report', `${REPORT_START}${REPORT_FILE}${REPORT_AVG}이름, 평균 = 일등(표)\nprint(f"1등 {이름} 평균 {평균}")`, 'error'],
+  ['unit18-review', 'report', `${REPORT_START}def 일등(표):\n    평균들 = [(국어 + 수학) / 2 for 이름, 국어, 수학 in 표]\n    높은 = max(평균들)\n    return 표[평균들.index(높은)][0], round(높은, 1)\n${REPORT_FILE}${REPORT_AVG}가장, 점수 = 일등(표)\nprint("1등", 가장, "평균", 점수)`, 'correct'],
 ];
 
 test('흔한 오답에 의도한 말이 나온다', () => {

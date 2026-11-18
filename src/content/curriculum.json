@@ -186,6 +186,17 @@
         "file-try",
         "unit17-review"
       ]
+    },
+    {
+      "title": "더 짧고 편하게 쓰기",
+      "lessons": [
+        "short-fstring",
+        "short-tuple",
+        "short-zip",
+        "short-comp",
+        "short-set",
+        "unit18-review"
+      ]
     }
   ]
 }

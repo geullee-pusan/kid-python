@@ -145,6 +145,7 @@ export function explain(error, knows = {}) {
     if (/'tuple' object does not support item assignment/.test(message)) return '튜플은 바꿀 수 없는 리스트예요. 칸 하나만 바꿀 수 없어요. 바꿔야 하면 대괄호 [ ]로 리스트를 만들어요.';
     if (/'set' object is not subscriptable/.test(message)) return '집합에는 차례가 없어서 번호로 꺼낼 수 없어요. in으로 있는지 묻거나, for로 돌거나, sorted( )로 리스트를 만들어 꺼내요.';
     if (/as a set element/.test(message)) return '집합에는 리스트를 넣을 수 없어요. 글자나 숫자, 튜플을 넣어요.';
+    if (/not all arguments converted during string formatting/.test(message)) return '글자로는 나머지(%)를 구할 수 없어요. input이나 split( )에서 받은 것이라면 int( )로 숫자로 바꿔요.';
     if (/doesn't define __round__/.test(message)) return 'round( ) 안에는 숫자를 넣어요. 글자라면 float( )나 int( )로 숫자로 바꿔요.';
     if (/as a dict key|unhashable type/.test(message)) return '리스트는 딕셔너리의 키로 쓸 수 없어요. 키는 글자나 숫자로 써요.';
     if (/'(str|int|float|bool|list)' object is not callable/.test(message)) return '둥근 괄호는 함수나 클래스 뒤에만 붙여요. 값을 꺼내 쓸 때는 괄호 없이 이름만 써요.';
