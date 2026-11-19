@@ -1,0 +1,987 @@
+{
+  "_설명": "큰 게임 만들기 단원 3번 수업. 세 번째 기능: 게 피하기와 목숨. 만드는 방법은 버그 찾기(무슨 일이 일어났나 → 어느 줄이 그랬나 → 고치고 다시 돌린다). 강의에서 닿아도 처음 자리로 보내지 않는 게임을 돌려, 한 번 닿았는데 목숨이 다 사라지는 버그를 보이고 print로 찾아 고친다. 설계에서는 쓰기를 고치기로 했지만, 앞 수업의 코드를 이어 받는 단원이라 고장 난 코드를 따로 줄 수 없어서, 쓰기 두 문제(게 걷기, 목숨)로 하고 같은 버그를 오답 안내로 짚는다. 섬설정.py에 목숨과 게빠르기를 더해 준다. 심화(위아래로 걷는 게)는 다음 수업이 이어 받지 않는다.",
+  "id": "proj-crab",
+  "unit": "큰 게임 만들기: 보물 섬",
+  "no": 3,
+  "title": "게 피하기",
+  "desc": "옆으로 걷는 게를 넣고, 닿으면 목숨이 줄게 해요. 버그 찾는 법을 배워요.",
+  "minutes": 25,
+  "knows": [
+    "variables",
+    "loops",
+    "functions",
+    "classes",
+    "tries"
+  ],
+  "canvas": true,
+  "project": "보물섬",
+  "saveAs": "보물 섬",
+  "learned": [
+    {
+      "rule": "버그를 찾을 때는 차례로: 무슨 일이 일어났나 → 어느 줄이 그랬나 → 고치고 다시 돌린다."
+    },
+    {
+      "rule": "닿아 있는 동안에는 장면마다 닿았다고 나와요. 닿으면 탐험가를 처음 자리로 보내서 한 번만 줄게 해요.",
+      "code": "목숨 -= 1\n나.몸.goto(0, 0)"
+    },
+    {
+      "rule": "게를 리스트에 넣으면 반복 하나로 모두 걷게 할 수 있어요.",
+      "code": "for 한마리 in 게들:\n    한마리.걷기()"
+    }
+  ],
+  "done": [
+    "done-1",
+    "done-2",
+    "done-bye"
+  ],
+  "lines": {
+    "today": [
+      "오늘은 세 번째 기능, 게 피하기예요. 게에 닿으면 목숨이 줄어요. 그리고 버그를 찾는 방법을 배워요. 버그는 프로그램이 내 생각과 다르게 움직이는 곳이에요."
+    ],
+    "setting-new": [
+      "[섬설정.py|섬설정 점 파이]에 오늘 쓸 값 두 개를 더해 뒀어요. 처음 목숨과 게의 빠르기예요."
+    ],
+    "crab-intro": [
+      "게 클래스는 클래스 단원의 튕기는 공과 닮았어요. 섬의 왼쪽 끝에서 시작해서 옆으로 걷다가, 끝에 닿으면 돌아서요. 만들 때 어느 줄을 걸을지 세로 자리를 받아요."
+    ],
+    "bug-play": [
+      "게에 닿으면 목숨이 하나 줄게 만들었어요. 돌려 볼게요. 탐험가를 게가 다니는 줄로 올려 볼게요."
+    ],
+    "bug-what": [
+      "어? 한 번 닿았는데 게임이 끝났어요. 버그예요. 버그를 찾을 때는 세 가지를 차례로 해요. 첫째, 무슨 일이 일어났는지 말로 해 봐요. 한 번 닿았는데 목숨이 다 없어졌어요."
+    ],
+    "bug-where": [
+      "둘째, 어느 줄이 그랬는지 찾아요. 목숨을 줄이는 줄 바로 아래에서 목숨을 찍어 볼게요."
+    ],
+    "bug-see": [
+      "출력 칸을 봐요. 목숨 [2|이], [1|일], [0|영]이 잇달아 나왔어요. 게와 탐험가가 겹쳐 있는 동안, 장면마다 목숨이 줄었어요."
+    ],
+    "bug-fix": [
+      "셋째, 고치고 다시 돌려요. 닿으면 탐험가를 처음 자리로 보내요. 그러면 다음 장면에는 더 이상 겹치지 않아요."
+    ],
+    "fixed-after": [
+      "이제 닿으면 목숨이 하나만 줄고, 탐험가가 처음 자리로 돌아와요."
+    ],
+    "check-ask": [
+      "하나 물어볼게요. 버그를 찾을 때 맨 먼저 할 일은 무엇일까요?"
+    ],
+    "check-right": [
+      "맞아요. 무슨 일인지 알아야 어느 줄을 볼지 정할 수 있어요."
+    ],
+    "check-teach-1": [
+      "다 지우면 잘 되던 기능까지 사라져요."
+    ],
+    "check-teach-2": [
+      "무슨 일인지 말하고, 어느 줄인지 찾고, 고치고 다시 돌려요."
+    ],
+    "follow-ok": [
+      "좋아요. 가까운 두 번만 목숨이 줄었어요."
+    ],
+    "summary": [
+      "정리해요. 버그를 만나면 무슨 일인지 말하고, 찍어 보며 어느 줄인지 찾고, 고치고 다시 돌려요."
+    ],
+    "q1-right": [
+      "맞아요. 거리가 [20|이십]보다 작은 장면이 세 번이라서 목숨이 세 번 줄어 [0|영]이에요. 계속 닿아 있으면 장면마다 줄어요."
+    ],
+    "q1-once": [
+      "닿아 있는 세 장면 모두 조건이 맞아요. 한 번만 줄지 않아요."
+    ],
+    "q1-edge": [
+      "[15|십오]도 [20|이십]보다 작아요. 세 장면이에요."
+    ],
+    "q1-explain": [
+      "[15|십오], [10|십], [15|십오]에서 줄어서 [0|영]이에요."
+    ],
+    "q2-right": [
+      "맞아요. 게들 안의 게는 세 번 걸어서 [12|십이]예요. 막내는 리스트에 넣지 않아서 걷지 않았어요."
+    ],
+    "q2-all": [
+      "막내는 게들 리스트에 없어요. 반복이 막내를 꺼내지 않아요."
+    ],
+    "q2-once": [
+      "걷기는 바깥 반복 안에서 세 번 불렸어요."
+    ],
+    "q2-explain": [
+      "첫째 게는 [12|십이], 막내는 그대로 [20|이십]이에요."
+    ],
+    "q3-right": [
+      "맞아요. [from 동물 import 소리|프롬 동물 임포트 소리]로 부르면 소리만 들어와요. 동물이라는 이름은 없어서 오류예요."
+    ],
+    "q3-call": [
+      "소리는 골라 불렀지만, 동물이라는 이름은 들어오지 않았어요."
+    ],
+    "q3-raw": [
+      "괄호를 붙였으니 부르는 거예요. 그런데 그 전에 동물을 찾지 못해요."
+    ],
+    "q3-explain": [
+      "동물이라는 이름이 없다는 오류가 나요."
+    ],
+    "task-how": [
+      "다 쓰면 실행해서 화살표 키로 움직여 보고, 멈춤 버튼으로 멈춰요. 잘 되면 '제출'을 눌러요."
+    ],
+    "task-intro": [
+      "이제 써 봐요. 두 문제예요. 먼저 게를 걷게 하고, 그다음 목숨을 넣어요."
+    ],
+    "praise-crab": [
+      "게 클래스를 만들어 리스트에 두 마리를 넣고, 장면마다 하나씩 꺼내 걷게 했어요."
+    ],
+    "crab-count": [
+      "게의 수가 달라요. 게들 리스트에 세로 [60|육십]과 [-80|빼기 팔십]의 게 두 마리를 넣어요."
+    ],
+    "crab-pos": [
+      "게의 자리가 달라요. 게는 [-설정.끝가로|빼기 설정 점 끝가로]에서 시작하고, 한 장면에 [설정.게빠르기|설정 점 게빠르기]만큼 걷고, 섬의 끝을 넘으면 dx를 뒤집어요. 장면마다 걷기를 한 번만 불러요."
+    ],
+    "crab-class": [
+      "게는 잘 걸어요. 이번에는 게를 [섬캐릭터.py|섬캐릭터 점 파이]의 클래스 게로 만들고, 메서드 걷기로 걷게 해 봐요."
+    ],
+    "crab-hint-1": [
+      "[섬캐릭터.py|섬캐릭터 점 파이] 맨 아래에 클래스 게를 만들어요. 칠판의 코드를 봐요. 만들 때 세로 자리 y를 받아요."
+    ],
+    "crab-hint-2": [
+      "[main.py|메인 점 파이]의 [import|임포트] 줄에 게를 더하고, 상자 아래에 게들 리스트를 만들어요. [while True|와일 트루] 안에서 [for 한마리 in 게들|포 한마리 인 게들]로 하나씩 걷기를 불러요."
+    ],
+    "task-next": [
+      "이번에는 목숨이에요. 게에 닿으면 목숨이 줄고, 목숨이 [0|영]이 되면 게임이 끝나요."
+    ],
+    "praise-life": [
+      "게에 닿으면 목숨을 하나 줄이고 탐험가를 처음 자리로 보냈어요. 그래서 한 번 닿으면 한 번만 줄어요. 목숨이 다하면 반복이 끝나고 끝이라고 써요."
+    ],
+    "life-drain": [
+      "한 번 닿았는데 목숨이 한꺼번에 사라졌어요. 오늘 강의의 버그예요. 목숨을 줄인 다음에 탐험가를 처음 자리 [0, 0|영 영]으로 보내요."
+    ],
+    "life-text": [
+      "점수판의 글자가 달라요. 목숨이 줄 때마다 판을 지우고 보물과 목숨을 써요. 반복이 끝나면 판을 지우고 끝과 보물 수를 써요. 글자 모양은 칠판 그대로예요."
+    ],
+    "life-pos": [
+      "자리가 선생님 것과 달라요. 탐험가와 게의 거리가 [20|이십]보다 작을 때 닿은 것으로 하고, 닿으면 [나.몸.goto(0, 0)|나 점 몸 점 고투 영 영]으로 보내요."
+    ],
+    "life-hint-1": [
+      "[import 섬설정 as 설정|임포트 섬설정 애즈 설정]을 더하고, 목숨은 [설정.목숨|설정 점 목숨]에서 시작해요. [while True|와일 트루]를 [while 목숨 > 0|와일 목숨이 영보다 큰 동안]으로 바꿔요."
+    ],
+    "life-hint-2": [
+      "게를 걷게 한 바로 아래에서, 나의 몸과 그 게의 몸 사이 거리가 [20|이십]보다 작은지 물어요. 맞으면 목숨을 줄이고, 처음 자리로 보내고, 판을 다시 써요. 반복이 끝나면 끝이라고 써요."
+    ],
+    "praise-side": [
+      "위아래로 걷는 세로게를 새 클래스로 만들었어요. 메서드 이름이 걷기로 같아서, 게들 리스트에 넣기만 하면 반복은 그대로예요."
+    ],
+    "side-pos": [
+      "세로게의 자리가 달라요. 세로게는 가로 [120|백이십], 세로 [-설정.끝세로|빼기 설정 점 끝세로]에서 시작해서 위아래로 [설정.게빠르기|설정 점 게빠르기]씩 걷고, 섬의 끝을 넘으면 dy를 뒤집어요."
+    ],
+    "side-hint-1": [
+      "게 클래스를 본떠서 클래스 세로게를 만들어요. 가로 자리를 받고, 세로로 걸어요. 메서드 이름은 걷기 그대로 써요. 그리고 게들 리스트에 세로게 괄호 [120|백이십]을 더해요."
+    ],
+    "done-1": [
+      "세 번째 기능을 넣었어요. 이제 게를 피해야 해요."
+    ],
+    "done-2": [
+      "버그를 만나면 오늘처럼 무슨 일인지, 어느 줄인지 차례로 찾아요. 다음 수업에서는 단계를 올려요."
+    ]
+  },
+  "lecture": [
+    [
+      {
+        "say": "greet"
+      },
+      {
+        "say": "today"
+      },
+      {
+        "modules": {
+          "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n목숨 = 3\n게빠르기 = 4\n",
+          "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n\nclass 게:\n    def __init__(self, y):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"red\")\n        self.몸.penup()\n        self.몸.goto(-설정.끝가로, y)\n        self.dx = 설정.게빠르기\n    def 걷기(self):\n        self.몸.setx(self.몸.xcor() + self.dx)\n        if self.몸.xcor() > 설정.끝가로 or self.몸.xcor() < -설정.끝가로:\n            self.dx = -self.dx\n"
+        },
+        "locked": [
+          "섬설정.py",
+          "섬캐릭터.py"
+        ]
+      },
+      {
+        "say": "setting-new"
+      },
+      {
+        "card": {
+          "title": "섬캐릭터.py에 더한 것",
+          "code": "class 게:\n    def __init__(self, y):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"red\")\n        self.몸.penup()\n        self.몸.goto(-설정.끝가로, y)\n        self.dx = 설정.게빠르기\n    def 걷기(self):\n        self.몸.setx(self.몸.xcor() + self.dx)\n        if self.몸.xcor() > 설정.끝가로 or self.몸.xcor() < -설정.끝가로:\n            self.dx = -self.dx"
+        }
+      },
+      {
+        "say": "crab-intro"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "card": {
+          "title": "버그 찾기",
+          "items": [
+            "1. 무슨 일이 일어났나?",
+            "2. 어느 줄이 그랬나? (찍어 본다)",
+            "3. 고치고 다시 돌린다"
+          ]
+        }
+      },
+      {
+        "say": "bug-play"
+      },
+      {
+        "play": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물, 게\n\nturtle.tracer(0)\n나 = 탐험가()\nimport 섬설정 as 설정\n상자 = 보물()\n게들 = [게(60), 게(-80)]\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n목숨 = 설정.목숨\n판.write(f\"보물 {점수} 목숨 {목숨}\")\nwhile 목숨 > 0:\n    if 나.몸.distance(상자.몸) < 15:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수} 목숨 {목숨}\")\n    for 한마리 in 게들:\n        한마리.걷기()\n        if 나.몸.distance(한마리.몸) < 20:\n            목숨 -= 1\n            판.clear()\n            판.write(f\"보물 {점수} 목숨 {목숨}\")\n    turtle.update()\n    time.sleep(0.02)\n판.clear()\n판.write(f\"끝! 보물 {점수}\")\nturtle.update()\n",
+        "keys": [
+          [
+            400,
+            "Up"
+          ],
+          [
+            600,
+            "Up"
+          ],
+          [
+            800,
+            "Up"
+          ]
+        ],
+        "ms": 4500
+      },
+      {
+        "say": "bug-what"
+      },
+      {
+        "say": "bug-where"
+      },
+      {
+        "play": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물, 게\n\nturtle.tracer(0)\n나 = 탐험가()\nimport 섬설정 as 설정\n상자 = 보물()\n게들 = [게(60), 게(-80)]\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n목숨 = 설정.목숨\n판.write(f\"보물 {점수} 목숨 {목숨}\")\nwhile 목숨 > 0:\n    if 나.몸.distance(상자.몸) < 15:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수} 목숨 {목숨}\")\n    for 한마리 in 게들:\n        한마리.걷기()\n        if 나.몸.distance(한마리.몸) < 20:\n            목숨 -= 1\n            print(\"목숨\", 목숨)\n            판.clear()\n            판.write(f\"보물 {점수} 목숨 {목숨}\")\n    turtle.update()\n    time.sleep(0.02)\n판.clear()\n판.write(f\"끝! 보물 {점수}\")\nturtle.update()\n",
+        "keys": [
+          [
+            400,
+            "Up"
+          ],
+          [
+            600,
+            "Up"
+          ],
+          [
+            800,
+            "Up"
+          ]
+        ],
+        "ms": 4500
+      },
+      {
+        "say": "bug-see"
+      },
+      {
+        "say": "bug-fix"
+      },
+      {
+        "play": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물, 게\n\nturtle.tracer(0)\n나 = 탐험가()\nimport 섬설정 as 설정\n상자 = 보물()\n게들 = [게(60), 게(-80)]\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n목숨 = 설정.목숨\n판.write(f\"보물 {점수} 목숨 {목숨}\")\nwhile 목숨 > 0:\n    if 나.몸.distance(상자.몸) < 15:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수} 목숨 {목숨}\")\n    for 한마리 in 게들:\n        한마리.걷기()\n        if 나.몸.distance(한마리.몸) < 20:\n            목숨 -= 1\n            나.몸.goto(0, 0)\n            판.clear()\n            판.write(f\"보물 {점수} 목숨 {목숨}\")\n    turtle.update()\n    time.sleep(0.02)\n판.clear()\n판.write(f\"끝! 보물 {점수}\")\nturtle.update()\n",
+        "keys": [
+          [
+            400,
+            "Up"
+          ],
+          [
+            600,
+            "Up"
+          ],
+          [
+            800,
+            "Up"
+          ]
+        ],
+        "ms": 4500
+      },
+      {
+        "say": "fixed-after"
+      },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "버그를 찾을 때 맨 먼저 할 일은?",
+          "ask": "check-ask",
+          "choices": [
+            "무슨 일이 일어났는지 말해 보기",
+            "코드를 모두 지우고 다시 쓰기"
+          ],
+          "answer": 0,
+          "right": [
+            {
+              "say": "check-right"
+            }
+          ],
+          "teach": [
+            {
+              "say": "check-teach-1"
+            },
+            {
+              "say": "check-teach-2"
+            }
+          ]
+        }
+      }
+    ],
+    [
+      {
+        "card": {
+          "title": "따라 쳐요",
+          "code": "목숨 = 3\n거리들 = [30, 10, 30, 10]\nfor 거리 in 거리들:\n    if 거리 < 20:\n        목숨 -= 1\n        print(\"닿았어요. 목숨\", 목숨)"
+        }
+      },
+      {
+        "follow": {
+          "code": "목숨 = 3\n거리들 = [30, 10, 30, 10]\nfor 거리 in 거리들:\n    if 거리 < 20:\n        목숨 -= 1\n        print(\"닿았어요. 목숨\", 목숨)",
+          "expect": [
+            "닿았어요. 목숨 2",
+            "닿았어요. 목숨 1"
+          ],
+          "say": [
+            "follow-intro",
+            "follow-done"
+          ]
+        }
+      },
+      {
+        "say": "follow-ok"
+      }
+    ],
+    [
+      {
+        "card": {
+          "title": "오늘 배운 것",
+          "items": [
+            "버그: 무슨 일 → 어느 줄 → 고치고 다시",
+            "닿으면 목숨을 줄이고 처음 자리로",
+            "for 한마리 in 게들:  한마리.걷기()"
+          ]
+        }
+      },
+      {
+        "say": "summary"
+      },
+      {
+        "say": "to-predict"
+      }
+    ]
+  ],
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "목숨 = 3\n거리들 = [50, 15, 10, 15, 50]\nfor 거리 in 거리들:\n    if 거리 < 20:\n        목숨 -= 1\nprint(목숨)",
+      "answer": 1,
+      "choices": [
+        {
+          "text": "2",
+          "say": "q1-once"
+        },
+        {
+          "text": "0",
+          "say": "q1-right"
+        },
+        {
+          "text": "1",
+          "say": "q1-edge"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "class 게:\n    def __init__(self, x):\n        self.x = x\n    def 걷기(self):\n        self.x += 4\n게들 = [게(0), 게(10)]\n막내 = 게(20)\nfor 장면 in range(3):\n    for 한마리 in 게들:\n        한마리.걷기()\nprint(게들[0].x, 막내.x)",
+      "answer": 0,
+      "choices": [
+        {
+          "text": "12 20",
+          "say": "q2-right"
+        },
+        {
+          "text": "12 32",
+          "say": "q2-all"
+        },
+        {
+          "text": "4 20",
+          "say": "q2-once"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "modules": {
+        "동물.py": "def 소리():\n    return \"집게\"\n"
+      },
+      "code": "from 동물 import 소리\nprint(동물.소리())",
+      "outcome": {
+        "error": "NameError",
+        "output": []
+      },
+      "answer": 2,
+      "choices": [
+        {
+          "text": "집게",
+          "say": "q3-call"
+        },
+        {
+          "text": "소리",
+          "say": "q3-raw"
+        },
+        {
+          "text": "오류가 나요",
+          "say": "q3-right"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "crab",
+      "title": "게 걷기",
+      "story": "빨간 게 두 마리가 섬을 옆으로 걸어요. 한 마리는 세로 60, 다른 한 마리는 세로 -80 줄을 걸어요. 섬의 끝에 닿으면 돌아서요. 아직 닿아도 아무 일이 없어요.",
+      "steps": [
+        "섬캐릭터.py 맨 아래에 클래스 게를 만들어요(아래 코드).",
+        "class 게:\n    def __init__(self, y):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"red\")\n        self.몸.penup()\n        self.몸.goto(-설정.끝가로, y)\n        self.dx = 설정.게빠르기\n    def 걷기(self):\n        self.몸.setx(self.몸.xcor() + self.dx)\n        if self.몸.xcor() > 설정.끝가로 or self.몸.xcor() < -설정.끝가로:\n            self.dx = -self.dx",
+        "main.py에서 게도 불러오고, 상자 아래에 게들 = [게(60), 게(-80)] 을 써요.",
+        "while True: 안에서 for 한마리 in 게들: 로 하나씩 걷기()를 불러요."
+      ],
+      "continues": [
+        "proj-treasure/pick"
+      ],
+      "start": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물\n\nturtle.tracer(0)\n나 = 탐험가()\n상자 = 보물()\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n판.write(f\"보물 {점수}\")\nwhile True:\n    if 나.몸.distance(상자.몸) < 15:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수}\")\n    turtle.update()\n    time.sleep(0.02)\n",
+      "modules": {
+        "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n목숨 = 3\n게빠르기 = 4\n",
+        "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n"
+      },
+      "lockModules": [
+        "섬설정.py"
+      ],
+      "cases": [
+        {
+          "keys": [],
+          "frames": 30,
+          "randoms": [
+            5,
+            -5
+          ],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [],
+          "frames": 120,
+          "randoms": [
+            5,
+            -5
+          ],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [],
+          "frames": 240,
+          "randoms": [
+            5,
+            -5
+          ],
+          "inputs": [],
+          "expect": []
+        }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "checks": [
+        {
+          "pattern": "class\\s+게",
+          "in": "섬캐릭터.py",
+          "say": "crab-class"
+        },
+        {
+          "pattern": "def\\s+걷기",
+          "in": "섬캐릭터.py",
+          "say": "crab-class"
+        }
+      ],
+      "mistakes": [
+        {
+          "game": "game-count",
+          "say": "crab-count"
+        },
+        {
+          "game": "game-pos",
+          "say": "crab-pos"
+        }
+      ],
+      "praise": "praise-crab",
+      "solution": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물, 게\n\nturtle.tracer(0)\n나 = 탐험가()\n상자 = 보물()\n게들 = [게(60), 게(-80)]\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n판.write(f\"보물 {점수}\")\nwhile True:\n    if 나.몸.distance(상자.몸) < 15:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수}\")\n    for 한마리 in 게들:\n        한마리.걷기()\n    turtle.update()\n    time.sleep(0.02)\n",
+      "solutionModules": {
+        "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n목숨 = 3\n게빠르기 = 4\n",
+        "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n\nclass 게:\n    def __init__(self, y):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"red\")\n        self.몸.penup()\n        self.몸.goto(-설정.끝가로, y)\n        self.dx = 설정.게빠르기\n    def 걷기(self):\n        self.몸.setx(self.몸.xcor() + self.dx)\n        if self.몸.xcor() > 설정.끝가로 or self.몸.xcor() < -설정.끝가로:\n            self.dx = -self.dx\n"
+      },
+      "hints": [
+        {
+          "say": "crab-hint-1"
+        },
+        {
+          "say": "crab-hint-2"
+        }
+      ]
+    },
+    {
+      "id": "life",
+      "title": "목숨",
+      "story": "목숨은 섬설정의 목숨(3)에서 시작해요. 게에 닿으면(거리가 20보다 작으면) 목숨이 1 줄고 탐험가는 처음 자리 (0, 0)으로 돌아가요. 목숨이 0이 되면 반복이 끝나고, 점수판에 \"끝! 보물 1\"처럼 써요.",
+      "steps": [
+        "main.py에 import 섬설정 as 설정 을 더하고, 목숨 = 설정.목숨 으로 시작해요.",
+        "점수판은 f\"보물 {점수} 목숨 {목숨}\" 모양으로 써요.",
+        "while True: 를 while 목숨 > 0: 으로 바꿔요.",
+        "게를 걷게 한 바로 아래에서, 나.몸과 그 게의 몸이 20보다 가까우면: 목숨을 1 줄이고, 나.몸.goto(0, 0), 판을 다시 써요.",
+        "반복이 끝나면 판을 지우고 f\"끝! 보물 {점수}\"를 쓰고 turtle.update()를 해요."
+      ],
+      "continues": [
+        "proj-crab/crab"
+      ],
+      "start": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물, 게\n\nturtle.tracer(0)\n나 = 탐험가()\n상자 = 보물()\n게들 = [게(60), 게(-80)]\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n판.write(f\"보물 {점수}\")\nwhile True:\n    if 나.몸.distance(상자.몸) < 15:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수}\")\n    for 한마리 in 게들:\n        한마리.걷기()\n    turtle.update()\n    time.sleep(0.02)\n",
+      "modules": {
+        "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n목숨 = 3\n게빠르기 = 4\n",
+        "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n\nclass 게:\n    def __init__(self, y):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"red\")\n        self.몸.penup()\n        self.몸.goto(-설정.끝가로, y)\n        self.dx = 설정.게빠르기\n    def 걷기(self):\n        self.몸.setx(self.몸.xcor() + self.dx)\n        if self.몸.xcor() > 설정.끝가로 or self.몸.xcor() < -설정.끝가로:\n            self.dx = -self.dx\n"
+      },
+      "lockModules": [
+        "섬설정.py"
+      ],
+      "cases": [
+        {
+          "keys": [
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up"
+          ],
+          "frames": 110,
+          "randoms": [
+            5,
+            -5
+          ],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up"
+          ],
+          "frames": 400,
+          "randoms": [
+            0,
+            2,
+            5,
+            -5
+          ],
+          "inputs": [],
+          "expect": []
+        }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "mistakes": [
+        {
+          "code": "^(?![\\s\\S]*(goto\\s*\\(\\s*0\\s*,\\s*0\\s*\\)|\\.home\\s*\\())",
+          "say": "life-drain"
+        },
+        {
+          "game": "game-text",
+          "say": "life-text"
+        },
+        {
+          "game": "game-pos",
+          "say": "life-pos"
+        }
+      ],
+      "praise": "praise-life",
+      "solution": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물, 게\n\nturtle.tracer(0)\n나 = 탐험가()\nimport 섬설정 as 설정\n상자 = 보물()\n게들 = [게(60), 게(-80)]\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n목숨 = 설정.목숨\n판.write(f\"보물 {점수} 목숨 {목숨}\")\nwhile 목숨 > 0:\n    if 나.몸.distance(상자.몸) < 15:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수} 목숨 {목숨}\")\n    for 한마리 in 게들:\n        한마리.걷기()\n        if 나.몸.distance(한마리.몸) < 20:\n            목숨 -= 1\n            나.몸.goto(0, 0)\n            판.clear()\n            판.write(f\"보물 {점수} 목숨 {목숨}\")\n    turtle.update()\n    time.sleep(0.02)\n판.clear()\n판.write(f\"끝! 보물 {점수}\")\nturtle.update()\n",
+      "solutionModules": {
+        "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n목숨 = 3\n게빠르기 = 4\n",
+        "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n\nclass 게:\n    def __init__(self, y):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"red\")\n        self.몸.penup()\n        self.몸.goto(-설정.끝가로, y)\n        self.dx = 설정.게빠르기\n    def 걷기(self):\n        self.몸.setx(self.몸.xcor() + self.dx)\n        if self.몸.xcor() > 설정.끝가로 or self.몸.xcor() < -설정.끝가로:\n            self.dx = -self.dx\n"
+      },
+      "hints": [
+        {
+          "say": "life-hint-1"
+        },
+        {
+          "say": "life-hint-2"
+        }
+      ]
+    }
+  ],
+  "challenge": {
+    "id": "side",
+    "title": "심화: 위아래로 걷는 게",
+    "story": "가로 120 줄을 위아래로 걷는 게를 하나 더 넣어요. 새 클래스 세로게로 만들어요. 아래 끝(-140)에서 시작해서 위로 걷고, 섬의 끝에 닿으면 돌아서요.",
+    "steps": [
+      "섬캐릭터.py에 클래스 세로게를 만들어요. 만들 때 가로 자리 x를 받고, (x, -설정.끝세로)에서 시작해요. 빠르기는 self.dy = 설정.게빠르기",
+      "메서드 이름은 걷기로 해요. 세로 자리에 self.dy를 더하고, 섬의 끝을 넘으면 dy를 뒤집어요.",
+      "main.py에서 세로게도 불러오고, 게들에 세로게(120)을 더해요."
+    ],
+    "continues": [
+      "proj-crab/life"
+    ],
+    "start": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물, 게\n\nturtle.tracer(0)\n나 = 탐험가()\nimport 섬설정 as 설정\n상자 = 보물()\n게들 = [게(60), 게(-80)]\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n목숨 = 설정.목숨\n판.write(f\"보물 {점수} 목숨 {목숨}\")\nwhile 목숨 > 0:\n    if 나.몸.distance(상자.몸) < 15:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수} 목숨 {목숨}\")\n    for 한마리 in 게들:\n        한마리.걷기()\n        if 나.몸.distance(한마리.몸) < 20:\n            목숨 -= 1\n            나.몸.goto(0, 0)\n            판.clear()\n            판.write(f\"보물 {점수} 목숨 {목숨}\")\n    turtle.update()\n    time.sleep(0.02)\n판.clear()\n판.write(f\"끝! 보물 {점수}\")\nturtle.update()\n",
+    "modules": {
+      "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n목숨 = 3\n게빠르기 = 4\n",
+      "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n\nclass 게:\n    def __init__(self, y):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"red\")\n        self.몸.penup()\n        self.몸.goto(-설정.끝가로, y)\n        self.dx = 설정.게빠르기\n    def 걷기(self):\n        self.몸.setx(self.몸.xcor() + self.dx)\n        if self.몸.xcor() > 설정.끝가로 or self.몸.xcor() < -설정.끝가로:\n            self.dx = -self.dx\n"
+    },
+    "lockModules": [
+      "섬설정.py"
+    ],
+    "cases": [
+      {
+        "keys": [],
+        "frames": 30,
+        "randoms": [
+          5,
+          -5
+        ],
+        "inputs": [],
+        "expect": []
+      },
+      {
+        "keys": [],
+        "frames": 160,
+        "randoms": [
+          5,
+          -5
+        ],
+        "inputs": [],
+        "expect": []
+      }
+    ],
+    "expect": [],
+    "game": true,
+    "showCases": 2,
+    "mistakes": [
+      {
+        "game": "game-count",
+        "say": "side-pos"
+      },
+      {
+        "game": "game-pos",
+        "say": "side-pos"
+      }
+    ],
+    "praise": "praise-side",
+    "solution": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물, 게, 세로게\n\nturtle.tracer(0)\n나 = 탐험가()\nimport 섬설정 as 설정\n상자 = 보물()\n게들 = [게(60), 게(-80), 세로게(120)]\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n목숨 = 설정.목숨\n판.write(f\"보물 {점수} 목숨 {목숨}\")\nwhile 목숨 > 0:\n    if 나.몸.distance(상자.몸) < 15:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수} 목숨 {목숨}\")\n    for 한마리 in 게들:\n        한마리.걷기()\n        if 나.몸.distance(한마리.몸) < 20:\n            목숨 -= 1\n            나.몸.goto(0, 0)\n            판.clear()\n            판.write(f\"보물 {점수} 목숨 {목숨}\")\n    turtle.update()\n    time.sleep(0.02)\n판.clear()\n판.write(f\"끝! 보물 {점수}\")\nturtle.update()\n",
+    "solutionModules": {
+      "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n목숨 = 3\n게빠르기 = 4\n",
+      "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n\nclass 게:\n    def __init__(self, y):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"red\")\n        self.몸.penup()\n        self.몸.goto(-설정.끝가로, y)\n        self.dx = 설정.게빠르기\n    def 걷기(self):\n        self.몸.setx(self.몸.xcor() + self.dx)\n        if self.몸.xcor() > 설정.끝가로 or self.몸.xcor() < -설정.끝가로:\n            self.dx = -self.dx\n\nclass 세로게:\n    def __init__(self, x):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"red\")\n        self.몸.penup()\n        self.몸.goto(x, -설정.끝세로)\n        self.dy = 설정.게빠르기\n    def 걷기(self):\n        self.몸.sety(self.몸.ycor() + self.dy)\n        if self.몸.ycor() > 설정.끝세로 or self.몸.ycor() < -설정.끝세로:\n            self.dy = -self.dy\n"
+    },
+    "hints": [
+      {
+        "say": "side-hint-1"
+      }
+    ]
+  }
+}

@@ -61,7 +61,8 @@ for (const m of Object.values(MISSIONS)) {
     for (const task of allTasks(m)) {
       // 파일에 쓰는 문제는 출력이 없어도 된다(expectFiles로 채점한다).
       const fileTask = Boolean(task.expectFiles || task.cases?.some((one) => one.expectFiles));
-      assert.ok(task.id && task.title && task.steps.length && (task.expect.length || task.draw || task.game || fileTask) && task.solution, `${task.id}: 빠진 것`);
+      // free: 채점하지 않는 쓰기(단원 20)는 나와야 하는 출력이 없다.
+      assert.ok(task.id && task.title && task.steps.length && (task.expect.length || task.draw || task.game || task.free || fileTask) && task.solution, `${task.id}: 빠진 것`);
       if (fileTask) {
         for (const kind of ['file-none', 'file-printed', 'file-empty']) assert.ok(taskFeedback(m, task, { kind, vars: { name: '점수.txt' } })[0].text);
         assert.ok(taskFeedback(m, task, { kind: 'file-missing', vars: { name: '점수.txt', got: '점수.text' } })[0].text);

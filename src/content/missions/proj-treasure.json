@@ -1,0 +1,731 @@
+{
+  "_설명": "큰 게임 만들기 단원 2번 수업. 두 번째 기능: 보물 줍기. 만드는 방법은 값을 찍어 보며 확인하기(print로 거리를 출력 칸에 찍어 보고, 다 되면 지운다). 강의의 시연은 무작위 자리를 정할 수 없어서 보물을 (40, 0)에 옮겨 두고 돌린다. 쓰기는 두 문제: 보물 놓기(보물 클래스, 앞 수업의 코드에서 이어서), 보물 줍기(점수와 새 자리, 점수판). 새자리의 두 줄은 칠판에 그대로 적어 준다(채점에서 무작위 수를 정해 두므로 다르게 쓰면 자리가 달라진다). 심화(보물 두 개)는 다음 수업이 이어 받지 않는다.",
+  "id": "proj-treasure",
+  "unit": "큰 게임 만들기: 보물 섬",
+  "no": 2,
+  "title": "보물 줍기",
+  "desc": "보물을 놓고, 주우면 점수가 오르게 해요. 값을 찍어 보며 확인하는 법을 배워요.",
+  "minutes": 25,
+  "knows": [
+    "variables",
+    "loops",
+    "functions",
+    "classes",
+    "tries"
+  ],
+  "canvas": true,
+  "project": "보물섬",
+  "saveAs": "보물 섬",
+  "learned": [
+    {
+      "rule": "생각대로 안 될 때는 값을 print로 찍어 봐요. 출력 칸에 장면마다 값이 나와요. 다 확인하면 그 줄은 지워요.",
+      "code": "print(나.몸.distance(상자.몸))"
+    },
+    {
+      "rule": "보물을 주우면 새자리로 옮겨요. 옮기지 않으면 장면마다 또 주워요."
+    },
+    {
+      "rule": "점수판은 지우고(clear) 다시 써요(write).",
+      "code": "판.clear()\n판.write(f\"보물 {점수}\")"
+    }
+  ],
+  "done": [
+    "done-1",
+    "done-2",
+    "done-bye"
+  ],
+  "lines": {
+    "today": [
+      "지난번에는 탐험가가 움직였어요. 오늘은 두 번째 기능, 보물 줍기를 넣어요. 그리고 값을 찍어 보며 확인하는 방법을 배워요."
+    ],
+    "treasure-intro": [
+      "[섬캐릭터.py|섬캐릭터 점 파이]에 보물 클래스를 더해요. 금색 동그라미예요. 만들 때 새자리를 불러서 아무 칸에나 놓여요. 맨 위에는 [import random|임포트 랜덤]을 더해요."
+    ],
+    "treasure-random": [
+      "새자리는 가로 칸을 [-9|빼기 구]부터 [9|구]까지, 세로 칸을 [-6|빼기 육]부터 [6|육]까지에서 골라 [20|이십]을 곱해요. 탐험가도 [20|이십]씩 걸으니까, 언젠가 딱 같은 칸에 설 수 있어요."
+    ],
+    "bug-intro": [
+      "주우면 점수가 오르게 해 볼게요. 잘 보이게 보물을 탐험가 바로 오른쪽 두 칸에 옮겨 뒀어요. 오른쪽으로 두 번 가 볼게요."
+    ],
+    "bug-after": [
+      "보물 위에 섰는데 점수가 그대로 [0|영]이에요. 어디가 틀렸을까요?"
+    ],
+    "debug-intro": [
+      "이럴 때는 값을 찍어 봐요. 거리를 [print|프린트]로 내보내면, 장면마다 거리가 출력 칸에 나와요. 다시 돌려 볼게요."
+    ],
+    "debug-after": [
+      "출력 칸을 봐요. [40.0|사십 점 영], [20.0|이십 점 영], 그리고 [0.0|영 점 영]이 나와요. 보물 위에 서면 거리가 [0|영]이에요. 그런데 조건은 거리가 [0|영]보다 작을 때예요. [0|영]보다 작은 거리는 없어서 한 번도 맞지 않았어요."
+    ],
+    "debug-fix": [
+      "[0|영]을 [15|십오]로 고치고, 찍어 보던 [print|프린트]는 지워요. 다 확인했으면 지우는 거예요."
+    ],
+    "fixed-after": [
+      "이제 보물을 주우면 점수가 오르고 보물이 새 자리로 가요."
+    ],
+    "check-ask": [
+      "하나 물어볼게요. 찍어 본 [print|프린트]는 어디에 나올까요?"
+    ],
+    "check-right": [
+      "맞아요. [print|프린트]는 게임 화면이 아니라 출력 칸에 나와요. 그래서 게임을 하면서 값을 볼 수 있어요."
+    ],
+    "check-teach-1": [
+      "그림판에 글자를 쓰는 건 판 거북이의 [write|라이트]예요. [print|프린트]는 늘 출력 칸에 나와요."
+    ],
+    "follow-ok": [
+      "좋아요. 세 번째에 거리가 [0.0|영 점 영]이 됐어요. 그때 보물과 같은 칸에 서 있어요."
+    ],
+    "summary": [
+      "정리해요. 생각대로 안 될 때는 값을 [print|프린트]로 찍어 봐요. 무엇이 틀렸는지 보이면 고치고, 찍던 줄은 지워요."
+    ],
+    "q1-right": [
+      "맞아요. 한 걸음 가서 [20|이십], 두 걸음에 보물 위라서 [0|영], 지나치면 다시 [20|이십], [40|사십]이에요."
+    ],
+    "q1-minus": [
+      "거리는 빼기가 되지 않아요. 지나쳐도 떨어진 만큼이에요."
+    ],
+    "q1-start": [
+      "찍는 줄은 걸은 다음에 있어요. 처음 찍을 때는 이미 한 걸음 간 뒤예요."
+    ],
+    "q1-explain": [
+      "[20.0|이십 점 영], [0.0|영 점 영], [20.0|이십 점 영], [40.0|사십 점 영]이 나와요."
+    ],
+    "q2-right": [
+      "맞아요. 보물을 옮기지 않으면 거리는 계속 [0|영]이라서 장면마다 점수가 올라요. 네 장면이면 [4|사]예요."
+    ],
+    "q2-once": [
+      "한 번 주웠다고 멈추지 않아요. 다음 장면에도 거리가 [0|영]이라서 또 올라요."
+    ],
+    "q2-zero": [
+      "거리가 [0|영]이면 [15|십오]보다 작아요. 조건이 맞아요."
+    ],
+    "q2-explain": [
+      "장면마다 조건이 맞아서 [4|사]가 나와요."
+    ],
+    "q3-right": [
+      "맞아요. [f|에프]를 붙인 글자라서 중괄호 안에 점수의 값이 들어가요."
+    ],
+    "q3-raw": [
+      "따옴표 앞에 [f|에프]가 있어요. 중괄호가 값으로 바뀌어요."
+    ],
+    "q3-space": [
+      "중괄호 바로 뒤에 개가 붙어 있어서 빈칸 없이 이어져요."
+    ],
+    "q3-explain": [
+      "보물 [3|삼]개가 나와요."
+    ],
+    "task-how": [
+      "다 쓰면 실행해서 화살표 키로 움직여 보고, 멈춤 버튼으로 멈춰요. 잘 되면 '제출'을 눌러요."
+    ],
+    "task-intro": [
+      "이제 써 봐요. 두 문제예요. 먼저 보물을 놓고, 그다음 줍게 해요."
+    ],
+    "praise-place": [
+      "보물 클래스를 섬캐릭터에 만들고, [main.py|메인 점 파이]에서 보물을 하나 만들었어요. 만들 때 새자리를 불러서 칸에 놓였어요."
+    ],
+    "place-none": [
+      "보물이 보이지 않아요. [main.py|메인 점 파이]에서 탐험가를 만든 줄 아래에 상자 같다 보물 괄호를 써서 보물을 하나 만들어요. 위의 [import|임포트] 줄에 보물도 더해요."
+    ],
+    "place-pos": [
+      "보물의 자리가 달라요. 새자리의 두 줄을 칠판에 적힌 그대로 써요. 가로는 [-9|빼기 구]부터 [9|구], 세로는 [-6|빼기 육]부터 [6|육]이고, [20|이십]을 곱해요. 가로를 먼저 골라요."
+    ],
+    "place-class": [
+      "보물은 보여요. 이번에는 보물을 [섬캐릭터.py|섬캐릭터 점 파이]의 클래스 보물로 만들고, 새자리 메서드로 놓아 봐요."
+    ],
+    "place-hint-1": [
+      "[섬캐릭터.py|섬캐릭터 점 파이] 맨 위에 [import random|임포트 랜덤]을 더하고, 맨 아래에 클래스 보물을 만들어요. 칠판의 코드를 그대로 써도 돼요."
+    ],
+    "place-hint-2": [
+      "[main.py|메인 점 파이]에서 [from 섬캐릭터 import 탐험가, 보물|프롬 섬캐릭터 임포트 탐험가 보물]로 고치고, 나 아래에 상자 같다 보물 괄호를 써요."
+    ],
+    "task-next": [
+      "이번에는 보물을 주워요. 주우면 점수를 올리고, 보물을 새 자리로 옮기고, 점수판에 써요."
+    ],
+    "praise-pick": [
+      "장면마다 거리를 물어서, 주우면 점수를 올리고 보물을 새자리로 옮기고 점수판을 다시 썼어요."
+    ],
+    "pick-stay": [
+      "보물을 주운 뒤에 점수가 계속 올라요. 보물을 옮기지 않아서 장면마다 또 주웠어요. 점수를 올린 다음에 [상자.새자리()|상자 점 새자리 괄호]를 불러요."
+    ],
+    "pick-text": [
+      "점수판의 글자가 달라요. 처음에 보물 [0|영]을 쓰고, 주울 때마다 판을 지운 뒤 보물과 점수를 써요. 글자 모양은 칠판 그대로예요."
+    ],
+    "pick-pos": [
+      "보물이나 탐험가의 자리가 달라요. 거리가 [15|십오]보다 작을 때 주운 것으로 하고, 주우면 새자리를 한 번 불러요."
+    ],
+    "pick-hint-1": [
+      "판 거북이를 만들어요. 숨기고, 펜을 들고, 왼쪽 위 [-220, 150|빼기 이백이십 백오십]으로 보내요. 점수는 [0|영]에서 시작하고, 판에 처음 한 번 써 둬요."
+    ],
+    "pick-hint-2": [
+      "[while True|와일 트루] 안의 맨 위에서, 나의 몸과 상자의 몸 사이 거리가 [15|십오]보다 작은지 물어요. 맞으면 점수를 올리고, 새자리를 부르고, 판을 지우고 다시 써요."
+    ],
+    "praise-two": [
+      "보물을 리스트에 넣고, 장면마다 보물을 하나씩 꺼내 거리를 물었어요. 보물이 몇 개든 같은 줄로 돼요."
+    ],
+    "two-pos": [
+      "보물의 자리나 점수가 달라요. 상자들 리스트를 돌면서 보물마다 거리를 묻고, 주운 보물만 새자리로 옮겨요."
+    ],
+    "two-hint-1": [
+      "상자 같다 보물 괄호 대신, 상자들 리스트에 보물 두 개를 넣어요. 반복 안에서는 [for 상자 in 상자들|포 상자 인 상자들]로 하나씩 꺼내요."
+    ],
+    "done-1": [
+      "두 번째 기능을 넣었어요. 이제 보물을 주울 수 있어요."
+    ],
+    "done-2": [
+      "만들기의 보물 섬도 오늘 것으로 바뀌었어요. 다음 수업에서는 게를 넣어요."
+    ]
+  },
+  "lecture": [
+    [
+      {
+        "say": "greet"
+      },
+      {
+        "say": "today"
+      },
+      {
+        "modules": {
+          "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n",
+          "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n"
+        },
+        "locked": [
+          "섬설정.py",
+          "섬캐릭터.py"
+        ]
+      },
+      {
+        "card": {
+          "title": "섬캐릭터.py에 더한 것",
+          "code": "class 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)"
+        }
+      },
+      {
+        "say": "treasure-intro"
+      },
+      {
+        "say": "treasure-random"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "card": {
+          "title": "주우면 점수 (틀린 곳이 있어요)",
+          "code": "if 나.몸.distance(상자.몸) < 0:\n    점수 += 1\n    상자.새자리()"
+        }
+      },
+      {
+        "say": "bug-intro"
+      },
+      {
+        "play": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물\n\nturtle.tracer(0)\n나 = 탐험가()\n상자 = 보물()\n상자.몸.goto(40, 0)\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n판.write(f\"보물 {점수}\")\nwhile True:\n    if 나.몸.distance(상자.몸) < 0:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수}\")\n    turtle.update()\n    time.sleep(0.02)\n",
+        "keys": [
+          [
+            900,
+            "Right"
+          ],
+          [
+            1500,
+            "Right"
+          ]
+        ],
+        "ms": 3000
+      },
+      {
+        "say": "bug-after"
+      },
+      {
+        "say": "debug-intro"
+      },
+      {
+        "play": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물\n\nturtle.tracer(0)\n나 = 탐험가()\n상자 = 보물()\n상자.몸.goto(40, 0)\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n판.write(f\"보물 {점수}\")\nwhile True:\n    print(나.몸.distance(상자.몸))\n    if 나.몸.distance(상자.몸) < 0:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수}\")\n    turtle.update()\n    time.sleep(0.02)\n",
+        "keys": [
+          [
+            900,
+            "Right"
+          ],
+          [
+            1500,
+            "Right"
+          ]
+        ],
+        "ms": 2600
+      },
+      {
+        "say": "debug-after"
+      },
+      {
+        "say": "debug-fix"
+      },
+      {
+        "play": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물\n\nturtle.tracer(0)\n나 = 탐험가()\n상자 = 보물()\n상자.몸.goto(40, 0)\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n판.write(f\"보물 {점수}\")\nwhile True:\n    if 나.몸.distance(상자.몸) < 15:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수}\")\n    turtle.update()\n    time.sleep(0.02)\n",
+        "keys": [
+          [
+            900,
+            "Right"
+          ],
+          [
+            1500,
+            "Right"
+          ]
+        ],
+        "ms": 3000
+      },
+      {
+        "say": "fixed-after"
+      },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "찍어 본 print는 어디에 나올까요?",
+          "ask": "check-ask",
+          "choices": [
+            "출력 칸",
+            "그림판"
+          ],
+          "answer": 0,
+          "right": [
+            {
+              "say": "check-right"
+            }
+          ],
+          "teach": [
+            {
+              "say": "check-teach-1"
+            }
+          ]
+        }
+      }
+    ],
+    [
+      {
+        "card": {
+          "title": "따라 쳐요",
+          "code": "import turtle\n나 = turtle.Turtle()\n나.penup()\n상자 = turtle.Turtle()\n상자.penup()\n상자.goto(60, 0)\nfor i in range(4):\n    나.forward(20)\n    print(나.distance(상자))"
+        }
+      },
+      {
+        "follow": {
+          "code": "import turtle\n나 = turtle.Turtle()\n나.penup()\n상자 = turtle.Turtle()\n상자.penup()\n상자.goto(60, 0)\nfor i in range(4):\n    나.forward(20)\n    print(나.distance(상자))",
+          "expect": [
+            "40.0",
+            "20.0",
+            "0.0",
+            "20.0"
+          ],
+          "say": [
+            "follow-intro",
+            "follow-done"
+          ]
+        }
+      },
+      {
+        "say": "follow-ok"
+      }
+    ],
+    [
+      {
+        "card": {
+          "title": "오늘 배운 것",
+          "items": [
+            "print로 값을 찍어 본다 → 출력 칸",
+            "다 확인하면 찍던 줄은 지운다",
+            "주우면 점수를 올리고 새자리로 옮긴다"
+          ]
+        }
+      },
+      {
+        "say": "summary"
+      },
+      {
+        "say": "to-predict"
+      }
+    ]
+  ],
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "import turtle\n나 = turtle.Turtle()\n나.penup()\n상자 = turtle.Turtle()\n상자.penup()\n상자.goto(40, 0)\nfor i in range(4):\n    나.forward(20)\n    print(나.distance(상자))",
+      "answer": 0,
+      "choices": [
+        {
+          "text": "20.0\n0.0\n20.0\n40.0",
+          "say": "q1-right"
+        },
+        {
+          "text": "20.0\n0.0\n-20.0\n-40.0",
+          "say": "q1-minus"
+        },
+        {
+          "text": "40.0\n20.0\n0.0\n20.0",
+          "say": "q1-start"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "점수 = 0\n거리 = 0\nfor 장면 in range(4):\n    if 거리 < 15:\n        점수 += 1\nprint(점수)",
+      "answer": 2,
+      "choices": [
+        {
+          "text": "1",
+          "say": "q2-once"
+        },
+        {
+          "text": "0",
+          "say": "q2-zero"
+        },
+        {
+          "text": "4",
+          "say": "q2-right"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "점수 = 3\nprint(f\"보물 {점수}개\")",
+      "answer": 1,
+      "choices": [
+        {
+          "text": "보물 {점수}개",
+          "say": "q3-raw"
+        },
+        {
+          "text": "보물 3개",
+          "say": "q3-right"
+        },
+        {
+          "text": "보물 3 개",
+          "say": "q3-space"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "place",
+      "title": "보물 놓기",
+      "story": "섬에 금색 보물을 하나 놓아요. 보물은 섬캐릭터.py의 클래스 보물로 만들어요. 만들 때 새자리를 불러서, 아무 칸에나 놓여요.",
+      "steps": [
+        "섬캐릭터.py 맨 위에 import random을 더해요.",
+        "섬캐릭터.py 맨 아래에 클래스 보물을 만들어요(아래 코드). 새자리의 두 줄은 그대로 써요.",
+        "class 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)",
+        "main.py에서 보물도 불러오고, 나 아래에 상자 = 보물() 을 써요."
+      ],
+      "continues": [
+        "proj-start/walk"
+      ],
+      "start": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가\n\nturtle.tracer(0)\n나 = 탐험가()\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+      "modules": {
+        "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n",
+        "섬캐릭터.py": "import turtle\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n"
+      },
+      "lockModules": [
+        "섬설정.py"
+      ],
+      "cases": [
+        {
+          "keys": [],
+          "frames": 3,
+          "randoms": [
+            3,
+            2
+          ],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [],
+          "frames": 3,
+          "randoms": [
+            -5,
+            4
+          ],
+          "inputs": [],
+          "expect": []
+        }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 1,
+      "checks": [
+        {
+          "pattern": "class\\s+보물",
+          "in": "섬캐릭터.py",
+          "say": "place-class"
+        },
+        {
+          "pattern": "def\\s+새자리",
+          "in": "섬캐릭터.py",
+          "say": "place-class"
+        }
+      ],
+      "mistakes": [
+        {
+          "game": "game-count",
+          "say": "place-none"
+        },
+        {
+          "game": "game-pos",
+          "say": "place-pos"
+        }
+      ],
+      "praise": "praise-place",
+      "solution": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물\n\nturtle.tracer(0)\n나 = 탐험가()\n상자 = 보물()\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+      "solutionModules": {
+        "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n",
+        "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n"
+      },
+      "hints": [
+        {
+          "say": "place-hint-1"
+        },
+        {
+          "say": "place-hint-2"
+        }
+      ]
+    },
+    {
+      "id": "pick",
+      "title": "보물 줍기",
+      "story": "탐험가가 보물과 같은 칸에 서면 보물을 주워요. 주우면 점수가 1 오르고, 보물은 새 자리로 가요. 왼쪽 위의 점수판에는 \"보물 0\"처럼 점수를 써요.",
+      "steps": [
+        "판 거북이를 만들어요: 숨기고(hideturtle), 펜을 들고, (-220, 150)으로 보내요.",
+        "점수 = 0 을 두고, 판에 f\"보물 {점수}\"를 한 번 써요.",
+        "while True: 안의 맨 위에서, 나.몸과 상자.몸의 거리가 15보다 작은지 물어요.",
+        "맞으면 점수를 1 올리고, 상자.새자리()를 부르고, 판을 지우고(clear) 다시 써요."
+      ],
+      "continues": [
+        "proj-treasure/place"
+      ],
+      "start": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물\n\nturtle.tracer(0)\n나 = 탐험가()\n상자 = 보물()\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+      "modules": {
+        "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n",
+        "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n"
+      },
+      "lockModules": [
+        "섬설정.py"
+      ],
+      "cases": [
+        {
+          "keys": [],
+          "frames": 5,
+          "randoms": [
+            1,
+            1,
+            -2,
+            0,
+            4,
+            -3
+          ],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            "Right",
+            null,
+            "Up",
+            null
+          ],
+          "frames": 8,
+          "randoms": [
+            1,
+            1,
+            -2,
+            0,
+            4,
+            -3
+          ],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            "Right",
+            null,
+            "Up",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null
+          ],
+          "frames": 16,
+          "randoms": [
+            1,
+            1,
+            -2,
+            0,
+            4,
+            -3
+          ],
+          "inputs": [],
+          "expect": []
+        }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "mistakes": [
+        {
+          "game": "game-text",
+          "code": "^(?![\\s\\S]*새자리\\s*\\()",
+          "say": "pick-stay"
+        },
+        {
+          "game": "game-pos",
+          "code": "^(?![\\s\\S]*새자리\\s*\\()",
+          "say": "pick-stay"
+        },
+        {
+          "game": "game-text",
+          "say": "pick-text"
+        },
+        {
+          "game": "game-pos",
+          "say": "pick-pos"
+        }
+      ],
+      "praise": "praise-pick",
+      "solution": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물\n\nturtle.tracer(0)\n나 = 탐험가()\n상자 = 보물()\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n판.write(f\"보물 {점수}\")\nwhile True:\n    if 나.몸.distance(상자.몸) < 15:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수}\")\n    turtle.update()\n    time.sleep(0.02)\n",
+      "solutionModules": {
+        "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n",
+        "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n"
+      },
+      "hints": [
+        {
+          "say": "pick-hint-1"
+        },
+        {
+          "say": "pick-hint-2"
+        }
+      ]
+    }
+  ],
+  "challenge": {
+    "id": "two",
+    "title": "심화: 보물 두 개",
+    "story": "보물을 두 개 놓아요. 어느 것을 주워도 점수가 1 오르고, 주운 보물만 새 자리로 가요.",
+    "steps": [
+      "상자 = 보물() 대신 상자들 = [보물(), 보물()]",
+      "while True: 안에서 for 상자 in 상자들: 로 보물마다 거리를 물어요.",
+      "주운 보물만 새자리로 옮기고, 점수판을 다시 써요."
+    ],
+    "continues": [
+      "proj-treasure/pick"
+    ],
+    "start": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물\n\nturtle.tracer(0)\n나 = 탐험가()\n상자 = 보물()\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n판.write(f\"보물 {점수}\")\nwhile True:\n    if 나.몸.distance(상자.몸) < 15:\n        점수 += 1\n        상자.새자리()\n        판.clear()\n        판.write(f\"보물 {점수}\")\n    turtle.update()\n    time.sleep(0.02)\n",
+    "modules": {
+      "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n",
+      "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n"
+    },
+    "lockModules": [
+      "섬설정.py"
+    ],
+    "cases": [
+      {
+        "keys": [],
+        "frames": 5,
+        "randoms": [
+          1,
+          1,
+          -2,
+          0,
+          4,
+          -3,
+          5,
+          5
+        ],
+        "inputs": [],
+        "expect": []
+      },
+      {
+        "keys": [
+          "Right",
+          null,
+          "Up",
+          null
+        ],
+        "frames": 8,
+        "randoms": [
+          1,
+          1,
+          -2,
+          0,
+          4,
+          -3,
+          5,
+          5
+        ],
+        "inputs": [],
+        "expect": []
+      },
+      {
+        "keys": [
+          "Right",
+          null,
+          "Up",
+          null,
+          "Down",
+          null,
+          "Left",
+          null,
+          "Left",
+          null,
+          "Left",
+          null
+        ],
+        "frames": 16,
+        "randoms": [
+          1,
+          1,
+          -2,
+          0,
+          4,
+          -3,
+          5,
+          5
+        ],
+        "inputs": [],
+        "expect": []
+      }
+    ],
+    "expect": [],
+    "game": true,
+    "showCases": 2,
+    "mistakes": [
+      {
+        "game": "game-count",
+        "say": "two-pos"
+      },
+      {
+        "game": "game-pos",
+        "say": "two-pos"
+      },
+      {
+        "game": "game-text",
+        "say": "two-pos"
+      }
+    ],
+    "praise": "praise-two",
+    "solution": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물\n\nturtle.tracer(0)\n나 = 탐험가()\n상자들 = [보물(), 보물()]\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n판.write(f\"보물 {점수}\")\nwhile True:\n    for 상자 in 상자들:\n        if 나.몸.distance(상자.몸) < 15:\n            점수 += 1\n            상자.새자리()\n            판.clear()\n            판.write(f\"보물 {점수}\")\n    turtle.update()\n    time.sleep(0.02)\n",
+    "solutionModules": {
+      "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n",
+      "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n"
+    },
+    "hints": [
+      {
+        "say": "two-hint-1"
+      }
+    ]
+  }
+}

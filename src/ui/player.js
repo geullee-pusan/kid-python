@@ -160,7 +160,8 @@ export function createPlayer(ctx) {
           ctx.ui.drawStart?.(scene.code);
           ctx.ui.files?.(null, null);
           let ended = false;
-          const running = ctx.runner.run(scene.code).finally(() => {
+          // 열린 모듈 탭(단원 20의 섬캐릭터.py 등)도 함께 넣어 돌린다.
+          const running = ctx.runner.run(scene.code, { files: withModules(null, editor.getModules()) }).finally(() => {
             ended = true;
           });
           const timers = [];

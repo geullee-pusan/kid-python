@@ -10,6 +10,9 @@ import { loadPyodide } from 'pyodide';
 
 import { diagnoseGame } from '../src/core/diagnose.js';
 import { describeAdded, pickInherited, withInherited } from '../src/core/project.js';
+import { SCRIPTS } from './missions.js';
+
+const SCRIPT_LIST = Object.values(SCRIPTS);
 
 let scripted;
 
@@ -19,6 +22,26 @@ before(async () => {
   pyodide.runPython(new Function(`return \`${/const RUNNER_SOURCE = `([\s\S]*?)`;/.exec(worker)[1]}\`;`)());
   const call = pyodide.globals.get('__kidpy_scripted');
   scripted = (code, { keys = [], frames = 0, files = null } = {}) => JSON.parse(call(code, '[]', false, 300, '[]', JSON.stringify(keys), frames, JSON.stringify(files)));
+});
+
+test('큰 만들기 단원: 이어 받는 문제의 선생님 코드는 앞 문제의 모범 답이다', () => {
+  const all = SCRIPT_LIST.flatMap((m) => [...(m.tasks ?? []), ...(m.challenge ? [m.challenge] : [])].map((t) => [`${m.id}/${t.id}`, { mission: m, task: t }]));
+  const byId = new Map(all);
+  let count = 0;
+  for (const [id, { mission, task }] of all) {
+    if (!task.continues) continue;
+    count += 1;
+    assert.ok(mission.project, `${id}: continues가 있으면 수업에 project가 있어야 해요`);
+    for (const from of task.continues) assert.ok(byId.has(from), `${id}: 없는 문제를 이어 받아요 (${from})`);
+    // 선생님 코드(이어 받을 것이 없을 때)는 첫째로 적은 문제의 모범 답과 같아야 한다. 고칠 수 없게 준 탭은 수업마다 다를 수 있다.
+    const prev = byId.get(task.continues[0]).task;
+    assert.equal(task.start, prev.solution, `${id}: start가 ${task.continues[0]}의 모범 답과 달라요`);
+    for (const [name, code] of Object.entries(prev.solutionModules ?? {})) {
+      if ((task.lockModules ?? []).includes(name)) continue;
+      assert.equal(task.modules?.[name], code, `${id}: ${name}이 ${task.continues[0]}의 모범 답과 달라요`);
+    }
+  }
+  assert.ok(count >= 10, '단원 20의 이어 받는 문제');
 });
 
 test('이어 받기: continues에 적은 앞 문제 가운데 가장 나중에 통과한 코드', () => {

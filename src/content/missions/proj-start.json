@@ -1,0 +1,660 @@
+{
+  "_설명": "큰 게임 만들기 단원의 첫 수업. 게임 하나(보물 섬)를 여섯 수업에 걸쳐 키운다. 수업마다 새 문법 대신 만드는 방법 하나를 배운다. 오늘은 기능 목록으로 나누고 하나씩 넣어 돌려 보기. 파일은 셋: 섬설정.py(선생님이 준다, 고칠 수 없게), 섬캐릭터.py(클래스), main.py. 키에는 탐험가의 메서드를 괄호 없이 붙인다(14단원의 함수 이름 붙이기와 같다). 대본의 project로 통과한 코드가 남고, 다음 수업의 쓰기 문제는 continues로 그 코드에서 시작한다. 심화(섬 끝에서 멈추기)는 다음 수업이 이어 받지 않는다(채점 장면이 달라지지 않게).",
+  "id": "proj-start",
+  "unit": "큰 게임 만들기: 보물 섬",
+  "no": 1,
+  "title": "계획 세우고 첫 걸음",
+  "desc": "게임 보물 섬을 기능으로 나누고, 첫 기능으로 탐험가를 화살표로 움직여요.",
+  "minutes": 20,
+  "knows": [
+    "variables",
+    "loops",
+    "functions",
+    "classes",
+    "tries"
+  ],
+  "canvas": true,
+  "project": "보물섬",
+  "saveAs": "보물 섬",
+  "learned": [
+    {
+      "rule": "만들 것을 작은 기능으로 나누고, 하나 넣을 때마다 돌려 봐요."
+    },
+    {
+      "rule": "바꾸지 않는 값은 섬설정.py에 모아요. 값 하나를 바꾸면 쓰는 곳이 모두 바뀌어요.",
+      "code": "import 섬설정 as 설정\n설정.걸음"
+    },
+    {
+      "rule": "키에는 탐험가의 메서드를 괄호 없이 붙여요.",
+      "code": "turtle.onkeypress(나.위, \"Up\")"
+    }
+  ],
+  "done": [
+    "done-1",
+    "done-2",
+    "done-bye"
+  ],
+  "lines": {
+    "today": [
+      "오늘부터 여섯 번에 걸쳐 게임 하나를 만들어요. 이름은 보물 섬이에요. 먼저 다 만들면 어떻게 되는지 볼게요."
+    ],
+    "preview-after": [
+      "탐험가가 보물을 줍고, 게를 피하고, 단계가 오르고, 끝나면 최고 기록이 남아요. 이걸 한 번에 다 쓰면 어디가 틀렸는지 찾기 어려워요."
+    ],
+    "plan": [
+      "그래서 만들 것을 작은 기능으로 나눠요. 기능은 게임이 할 줄 아는 일 하나예요. 하나 넣고, 돌려 보고, 되면 다음 것을 넣어요."
+    ],
+    "files": [
+      "파일도 셋으로 나눠요. [섬설정.py|섬설정 점 파이]에는 바꾸지 않는 값을, [섬캐릭터.py|섬캐릭터 점 파이]에는 클래스를, [main.py|메인 점 파이]에는 게임을 돌리는 줄을 둬요."
+    ],
+    "setting-intro": [
+      "[섬설정.py|섬설정 점 파이]는 선생님이 만들어 뒀어요. 섬의 끝과 한 걸음의 길이가 들어 있어요. 이 파일은 지금은 고칠 수 없어요."
+    ],
+    "char-intro": [
+      "[섬캐릭터.py|섬캐릭터 점 파이]에 탐험가 클래스를 만들어요. [import 섬설정 as 설정|임포트 섬설정 애즈 설정]으로 불러서, 한 걸음은 [설정.걸음|설정 점 걸음]으로 써요."
+    ],
+    "main-intro": [
+      "[main.py|메인 점 파이]에서 탐험가를 하나 만들고, 키에 탐험가의 메서드를 붙여요. [나.왼쪽|나 점 왼쪽] 뒤에 괄호가 없어요. 키를 누를 때 부르라고 메서드를 넘겨주는 거예요."
+    ],
+    "play-try": [
+      "돌려 볼게요. 오른쪽과 왼쪽 키를 눌러 볼게요."
+    ],
+    "play-after": [
+      "첫 기능이 됐어요. 탐험가가 옆으로 움직여요. 위아래는 아직 안 돼요. 그건 직접 넣어요."
+    ],
+    "check-ask": [
+      "하나 물어볼게요. 위 화살표 키에 탐험가의 위 메서드를 붙이려면 어떻게 쓸까요?"
+    ],
+    "check-right": [
+      "맞아요. 괄호 없이 [나.위|나 점 위]를 넘겨줘요."
+    ],
+    "check-teach-1": [
+      "괄호를 붙이면 그 자리에서 바로 한 번 불러 버려요. 그러면 키에는 메서드가 아니라 돌려준 값이 붙어요."
+    ],
+    "check-teach-2": [
+      "키에는 늘 괄호 없이, 이름만 넘겨줘요."
+    ],
+    "follow-ok": [
+      "좋아요. 오른쪽 키를 두 번 눌러서 탐험가가 [40|사십]까지 갔어요."
+    ],
+    "summary": [
+      "정리해요. 만들 것을 기능으로 나누고, 하나씩 넣고, 넣을 때마다 돌려 봐요. 값은 섬설정에 모아요."
+    ],
+    "q1-right": [
+      "맞아요. 걸음이 [30|삼십]이라서 세 번 더하면 [90|구십]이에요. 섬설정의 값 하나만 바꾸면 그 값을 쓰는 곳이 모두 바뀌어요."
+    ],
+    "q1-twenty": [
+      "이번 섬설정에는 걸음이 [30|삼십]으로 적혀 있어요. 칠판의 위쪽을 봐요."
+    ],
+    "q1-once": [
+      "더하는 줄은 반복 안에 있어서 세 번 돌아요."
+    ],
+    "q1-explain": [
+      "[30|삼십]을 세 번 더해서 [90|구십]이 나와요."
+    ],
+    "q2-right": [
+      "맞아요. 누를때에는 오른쪽 메서드가 들어 있어요. 괄호를 붙여 두 번 불러서 [40|사십]이에요."
+    ],
+    "q2-once": [
+      "누를때에 넣을 때는 괄호가 없어서 부르지 않았어요. 아래 두 줄에서 두 번 불러요."
+    ],
+    "q2-zero": [
+      "괄호를 붙인 누를때는 나의 오른쪽 메서드를 부르는 거예요. 나의 x가 바뀌어요."
+    ],
+    "q2-explain": [
+      "누를때는 나의 오른쪽 메서드예요. 두 번 불러서 [20|이십]씩 두 번, [40|사십]이에요."
+    ],
+    "q3-right": [
+      "맞아요. [import 섬설정|임포트 섬설정]으로 불렀으면 [섬설정.걸음|섬설정 점 걸음]처럼 앞에 붙여야 해요."
+    ],
+    "q3-value": [
+      "걸음은 섬설정 안에 있어요. 앞에 섬설정과 점을 붙이지 않으면 못 찾아요."
+    ],
+    "q3-text": [
+      "따옴표가 없어서 글자가 아니라 이름표 걸음을 찾아요. 그런데 [main.py|메인 점 파이]에는 걸음이 없어요."
+    ],
+    "q3-explain": [
+      "걸음이라는 이름이 없다는 오류가 나요."
+    ],
+    "task-how": [
+      "다 쓰면 실행해서 화살표 키로 움직여 보고, 멈춤 버튼으로 멈춰요. 잘 되면 '제출'을 눌러요."
+    ],
+    "praise-walk": [
+      "위와 아래를 탐험가 클래스 안에 메서드로 넣고, 키 네 개에 괄호 없이 붙였어요. 걸음은 섬설정에서 가져왔어요."
+    ],
+    "walk-nokey": [
+      "탐험가가 위아래로 움직이지 않아요. [main.py|메인 점 파이]에서 위 화살표와 아래 화살표 키에도 메서드를 붙였는지 봐요. 키 이름은 [Up|업]과 [Down|다운]이에요."
+    ],
+    "walk-pos": [
+      "탐험가의 자리가 선생님 것과 달라요. 위는 세로 자리에 [설정.걸음|설정 점 걸음]을 더하고, 아래는 빼요. 가로가 아니라 세로예요."
+    ],
+    "walk-in-class": [
+      "움직이기는 잘 돼요. 이번에는 위와 아래를 [섬캐릭터.py|섬캐릭터 점 파이]의 탐험가 클래스 안에 메서드로 넣어 봐요. 왼쪽, 오른쪽과 같은 모양이에요."
+    ],
+    "walk-hint-1": [
+      "[섬캐릭터.py|섬캐릭터 점 파이] 탭을 열어요. 오른쪽 메서드 아래에 같은 깊이로 위와 아래를 만들어요. 세로 자리는 [sety|셋 와이]와 [ycor|와이 코어]로 바꿔요."
+    ],
+    "walk-hint-2": [
+      "[main.py|메인 점 파이]의 키 붙이는 줄 아래에, 위 화살표 키에는 [나.위|나 점 위]를, 아래 화살표 키에는 [나.아래|나 점 아래]를 붙여요."
+    ],
+    "praise-wall": [
+      "메서드마다 가기 전에 섬의 끝인지 물었어요. 끝의 값은 섬설정에서 가져와서, 섬이 커져도 그대로 쓸 수 있어요."
+    ],
+    "wall-pos": [
+      "탐험가가 섬 밖으로 나갔거나, 끝보다 먼저 멈췄어요. 오른쪽은 가로 자리가 [설정.끝가로|설정 점 끝가로]보다 작을 때만, 위는 세로 자리가 [설정.끝세로|설정 점 끝세로]보다 작을 때만 가요."
+    ],
+    "wall-hint-1": [
+      "오른쪽 메서드 안에서, 옮기는 줄 위에 [if|이프]를 써요. 가로 자리가 [설정.끝가로|설정 점 끝가로]보다 작을 때만 옮겨요."
+    ],
+    "wall-hint-2": [
+      "왼쪽은 가로 자리가 빼기 끝가로보다 클 때만, 위와 아래는 세로 자리와 끝세로로 같은 모양이에요."
+    ],
+    "done-1": [
+      "첫 기능을 넣었어요. 탐험가가 섬을 돌아다녀요."
+    ],
+    "done-2": [
+      "만든 게임은 만들기에 보물 섬으로 들어갔어요. 다음 수업에서는 여기에 보물을 넣어요. 오늘 쓴 코드에서 이어 가요."
+    ]
+  },
+  "lecture": [
+    [
+      {
+        "say": "greet"
+      },
+      {
+        "say": "today"
+      },
+      {
+        "modules": {
+          "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n목숨 = 3\n게빠르기 = 4\n단계보물 = 3\n",
+          "섬캐릭터.py": "import turtle\nimport random\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n\nclass 보물:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.새자리()\n    def 새자리(self):\n        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20\n        self.몸.goto(x, y)\n\nclass 게:\n    def __init__(self, y):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"red\")\n        self.몸.penup()\n        self.몸.goto(-설정.끝가로, y)\n        self.dx = 설정.게빠르기\n    def 걷기(self):\n        self.몸.setx(self.몸.xcor() + self.dx)\n        if self.몸.xcor() > 설정.끝가로 or self.몸.xcor() < -설정.끝가로:\n            self.dx = -self.dx\n"
+        },
+        "locked": [
+          "섬설정.py",
+          "섬캐릭터.py"
+        ]
+      },
+      {
+        "play": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가, 보물, 게\n\nturtle.tracer(0)\n나 = 탐험가()\nimport 섬설정 as 설정\n상자 = 보물()\n게들 = [게(60), 게(-80)]\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-220, 150)\n점수 = 0\n목숨 = 설정.목숨\n단계 = 1\ndef 판쓰기():\n    판.clear()\n    판.write(f\"보물 {점수} 목숨 {목숨} 단계 {단계}\")\n판쓰기()\nwhile 목숨 > 0:\n    if 나.몸.distance(상자.몸) < 15:\n        점수 += 1\n        상자.새자리()\n        if 점수 % 설정.단계보물 == 0:\n            단계 += 1\n            게들.append(게(-140))\n        판쓰기()\n    for 한마리 in 게들:\n        한마리.걷기()\n        if 나.몸.distance(한마리.몸) < 20:\n            목숨 -= 1\n            나.몸.goto(0, 0)\n            판쓰기()\n    turtle.update()\n    time.sleep(0.02)\n판.clear()\n판.write(f\"끝! 보물 {점수}\")\nturtle.update()\n",
+        "keys": [
+          [
+            700,
+            "Up"
+          ],
+          [
+            1000,
+            "Up"
+          ],
+          [
+            1300,
+            "Right"
+          ],
+          [
+            1600,
+            "Right"
+          ],
+          [
+            2600,
+            "Down"
+          ],
+          [
+            2900,
+            "Down"
+          ],
+          [
+            3200,
+            "Down"
+          ]
+        ],
+        "ms": 6000
+      },
+      {
+        "say": "preview-after"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "card": {
+          "title": "만들 기능 (한 번에 하나씩)",
+          "items": [
+            "1. 탐험가가 화살표로 움직인다  ← 오늘",
+            "2. 보물을 줍고 점수를 센다",
+            "3. 게를 피한다, 목숨",
+            "4. 단계가 오른다",
+            "5. 최고 기록이 남는다",
+            "6. 내 생각 더하기"
+          ]
+        }
+      },
+      {
+        "say": "plan"
+      },
+      {
+        "card": {
+          "title": "파일 셋",
+          "items": [
+            "섬설정.py  바꾸지 않는 값",
+            "섬캐릭터.py  클래스(탐험가, 보물, 게)",
+            "main.py  게임을 돌리는 줄"
+          ]
+        }
+      },
+      {
+        "say": "files"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "modules": {
+          "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n",
+          "섬캐릭터.py": ""
+        },
+        "locked": [
+          "섬설정.py"
+        ]
+      },
+      {
+        "card": {
+          "title": "섬설정.py",
+          "code": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20"
+        }
+      },
+      {
+        "say": "setting-intro"
+      },
+      {
+        "say": "char-intro"
+      },
+      {
+        "type": "import turtle\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n",
+        "file": "섬캐릭터.py"
+      },
+      {
+        "say": "main-intro"
+      },
+      {
+        "type": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가\n\nturtle.tracer(0)\n나 = 탐험가()\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.listen()\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n"
+      },
+      {
+        "say": "play-try"
+      },
+      {
+        "play": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가\n\nturtle.tracer(0)\n나 = 탐험가()\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.listen()\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+        "keys": [
+          [
+            800,
+            "Right"
+          ],
+          [
+            1100,
+            "Right"
+          ],
+          [
+            1400,
+            "Right"
+          ],
+          [
+            2300,
+            "Left"
+          ]
+        ],
+        "ms": 3500
+      },
+      {
+        "say": "play-after"
+      },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "위 화살표 키에 탐험가의 위 메서드를 붙이려면?",
+          "ask": "check-ask",
+          "choices": [
+            "turtle.onkeypress(나.위, \"Up\")",
+            "turtle.onkeypress(나.위(), \"Up\")"
+          ],
+          "answer": 0,
+          "right": [
+            {
+              "say": "check-right"
+            }
+          ],
+          "teach": [
+            {
+              "say": "check-teach-1"
+            },
+            {
+              "say": "check-teach-2"
+            }
+          ]
+        }
+      }
+    ],
+    [
+      {
+        "card": {
+          "title": "따라 쳐요 (main.py)",
+          "code": "import turtle\nfrom 섬캐릭터 import 탐험가\n나 = 탐험가()\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.listen()\nturtle.done()"
+        }
+      },
+      {
+        "follow": {
+          "code": "import turtle\nfrom 섬캐릭터 import 탐험가\n나 = 탐험가()\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.listen()\nturtle.done()",
+          "givenModules": {
+            "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n",
+            "섬캐릭터.py": "import turtle\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n"
+          },
+          "game": {
+            "keys": [
+              "Right",
+              null,
+              "Right"
+            ],
+            "frames": 6
+          },
+          "say": [
+            "follow-intro",
+            "follow-done"
+          ]
+        }
+      },
+      {
+        "say": "follow-ok"
+      }
+    ],
+    [
+      {
+        "card": {
+          "title": "오늘 배운 것",
+          "items": [
+            "기능으로 나누고, 하나씩 넣고, 그때마다 돌려 본다",
+            "import 섬설정 as 설정  /  설정.걸음",
+            "turtle.onkeypress(나.오른쪽, \"Right\")  괄호 없이"
+          ]
+        }
+      },
+      {
+        "say": "summary"
+      },
+      {
+        "say": "to-predict"
+      }
+    ]
+  ],
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "modules": {
+        "섬설정.py": "걸음 = 30\n"
+      },
+      "code": "import 섬설정 as 설정\nx = 0\nfor i in range(3):\n    x = x + 설정.걸음\nprint(x)",
+      "answer": 0,
+      "choices": [
+        {
+          "text": "90",
+          "say": "q1-right"
+        },
+        {
+          "text": "60",
+          "say": "q1-twenty"
+        },
+        {
+          "text": "30",
+          "say": "q1-once"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "class 탐험가:\n    def __init__(self):\n        self.x = 0\n    def 오른쪽(self):\n        self.x += 20\n나 = 탐험가()\n누를때 = 나.오른쪽\n누를때()\n누를때()\nprint(나.x)",
+      "answer": 1,
+      "choices": [
+        {
+          "text": "20",
+          "say": "q2-once"
+        },
+        {
+          "text": "40",
+          "say": "q2-right"
+        },
+        {
+          "text": "0",
+          "say": "q2-zero"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "modules": {
+        "섬설정.py": "걸음 = 20\n"
+      },
+      "code": "import 섬설정\nprint(걸음)",
+      "outcome": {
+        "error": "NameError",
+        "output": []
+      },
+      "answer": 2,
+      "choices": [
+        {
+          "text": "20",
+          "say": "q3-value"
+        },
+        {
+          "text": "걸음",
+          "say": "q3-text"
+        },
+        {
+          "text": "오류가 나요",
+          "say": "q3-right"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "walk",
+      "title": "위아래로도 걷기",
+      "story": "탐험가가 지금은 옆으로만 걸어요. 위 화살표를 누르면 위로, 아래 화살표를 누르면 아래로 한 걸음 가게 해요. 한 걸음은 설정.걸음이에요.",
+      "steps": [
+        "섬캐릭터.py의 탐험가 클래스에 메서드 위와 아래를 만들어요. 세로 자리를 설정.걸음만큼 더하고 빼요.",
+        "main.py에서 위 화살표(\"Up\")와 아래 화살표(\"Down\") 키에 나.위와 나.아래를 붙여요.",
+        "실행해서 네 방향 키로 움직여 봐요."
+      ],
+      "start": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가\n\nturtle.tracer(0)\n나 = 탐험가()\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.listen()\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+      "modules": {
+        "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n",
+        "섬캐릭터.py": "import turtle\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n"
+      },
+      "lockModules": [
+        "섬설정.py"
+      ],
+      "cases": [
+        {
+          "keys": [
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left"
+          ],
+          "frames": 8,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right"
+          ],
+          "frames": 8,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "checks": [
+        {
+          "pattern": "def\\s+위\\s*\\(",
+          "in": "섬캐릭터.py",
+          "say": "walk-in-class"
+        },
+        {
+          "pattern": "def\\s+아래\\s*\\(",
+          "in": "섬캐릭터.py",
+          "say": "walk-in-class"
+        }
+      ],
+      "mistakes": [
+        {
+          "game": "game-pos",
+          "code": "^(?![\\s\\S]*onkeypress[\\s\\S]*onkeypress[\\s\\S]*onkeypress)",
+          "say": "walk-nokey"
+        },
+        {
+          "game": "game-pos",
+          "say": "walk-pos"
+        }
+      ],
+      "praise": "praise-walk",
+      "solution": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가\n\nturtle.tracer(0)\n나 = 탐험가()\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+      "solutionModules": {
+        "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n",
+        "섬캐릭터.py": "import turtle\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n"
+      },
+      "hints": [
+        {
+          "say": "walk-hint-1"
+        },
+        {
+          "say": "walk-hint-2"
+        }
+      ]
+    }
+  ],
+  "challenge": {
+    "id": "wall",
+    "title": "심화: 섬 끝에서 멈추기",
+    "story": "탐험가가 섬 밖으로 걸어 나갈 수 있어요. 섬의 끝(가로 200, 세로 140)에서는 더 가지 않게 해요. 끝의 값은 섬설정.py에 끝가로, 끝세로로 들어 있어요.",
+    "steps": [
+      "오른쪽 메서드: 가로 자리가 설정.끝가로보다 작을 때만 옮겨요.",
+      "왼쪽: 가로 자리가 -설정.끝가로보다 클 때만, 위: 세로 자리가 설정.끝세로보다 작을 때만, 아래: -설정.끝세로보다 클 때만."
+    ],
+    "continues": [
+      "proj-start/walk"
+    ],
+    "start": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가\n\nturtle.tracer(0)\n나 = 탐험가()\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+    "modules": {
+      "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n",
+      "섬캐릭터.py": "import turtle\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        self.몸.sety(self.몸.ycor() - 설정.걸음)\n"
+    },
+    "lockModules": [
+      "섬설정.py"
+    ],
+    "cases": [
+      {
+        "keys": [
+          "Right",
+          "Right",
+          "Right",
+          "Right",
+          "Right",
+          "Right",
+          "Right",
+          "Right",
+          "Right",
+          "Right",
+          "Right",
+          "Right"
+        ],
+        "frames": 14,
+        "randoms": [],
+        "inputs": [],
+        "expect": []
+      },
+      {
+        "keys": [
+          "Up",
+          "Up",
+          "Up",
+          "Up",
+          "Up",
+          "Up",
+          "Up",
+          "Up",
+          "Up"
+        ],
+        "frames": 11,
+        "randoms": [],
+        "inputs": [],
+        "expect": []
+      },
+      {
+        "keys": [
+          "Down",
+          "Down",
+          "Down",
+          "Down",
+          "Down",
+          "Down",
+          "Down",
+          "Down",
+          "Down",
+          "Left",
+          "Left",
+          "Left",
+          "Left",
+          "Left",
+          "Left",
+          "Left",
+          "Left",
+          "Left",
+          "Left",
+          "Left",
+          "Left"
+        ],
+        "frames": 23,
+        "randoms": [],
+        "inputs": [],
+        "expect": []
+      }
+    ],
+    "expect": [],
+    "game": true,
+    "showCases": 2,
+    "mistakes": [
+      {
+        "game": "game-pos",
+        "say": "wall-pos"
+      }
+    ],
+    "praise": "praise-wall",
+    "solution": "import turtle\nimport time\nfrom 섬캐릭터 import 탐험가\n\nturtle.tracer(0)\n나 = 탐험가()\nturtle.onkeypress(나.왼쪽, \"Left\")\nturtle.onkeypress(나.오른쪽, \"Right\")\nturtle.onkeypress(나.위, \"Up\")\nturtle.onkeypress(나.아래, \"Down\")\nturtle.listen()\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+    "solutionModules": {
+      "섬설정.py": "# 보물 섬의 값. 여기를 바꾸면 게임 전체가 바뀌어요.\n끝가로 = 200\n끝세로 = 140\n걸음 = 20\n",
+      "섬캐릭터.py": "import turtle\nimport 섬설정 as 설정\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"green\")\n        self.몸.penup()\n    def 왼쪽(self):\n        if self.몸.xcor() > -설정.끝가로:\n            self.몸.setx(self.몸.xcor() - 설정.걸음)\n    def 오른쪽(self):\n        if self.몸.xcor() < 설정.끝가로:\n            self.몸.setx(self.몸.xcor() + 설정.걸음)\n    def 위(self):\n        if self.몸.ycor() < 설정.끝세로:\n            self.몸.sety(self.몸.ycor() + 설정.걸음)\n    def 아래(self):\n        if self.몸.ycor() > -설정.끝세로:\n            self.몸.sety(self.몸.ycor() - 설정.걸음)\n"
+    },
+    "hints": [
+      {
+        "say": "wall-hint-1"
+      },
+      {
+        "say": "wall-hint-2"
+      }
+    ]
+  }
+}

@@ -208,6 +208,17 @@
         "mod-data",
         "unit19-review"
       ]
+    },
+    {
+      "title": "큰 게임 만들기: 보물 섬",
+      "lessons": [
+        "proj-start",
+        "proj-treasure",
+        "proj-crab",
+        "proj-level",
+        "proj-record",
+        "unit20-review"
+      ]
     }
   ]
 }

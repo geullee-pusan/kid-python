@@ -51,6 +51,12 @@ function typedRun(code, inputs, options) {
 
 /** 앱의 채점(src/main.js의 grade)과 같은 차례로 채점한다. modules: 모듈 탭들(없으면 문제의 시작 모듈) */
 function grade(task, code, modules = task.modules ?? {}) {
+  // 채점하지 않는 쓰기(free, 단원 20): 앱의 gradeFree처럼 정해 둔 장면 수만큼 돌려 오류만 본다.
+  if (task.free) {
+    const ran = scripted(code, [], false, { keys: task.keys ?? [], frames: task.frames ?? 300, files: withModules(task.files, modules) });
+    if (ran.error?.type === 'TraceLimit') return { kind: 'endless' };
+    return ran.error ? { kind: 'error', error: ran.error } : { kind: 'correct' };
+  }
   // 그리기 문제: 모범 답이 그린 그림과 견준다.
   const want = (inputs) => scripted(task.solution, inputs ?? [], false).draw;
   if (!task.cases) {
@@ -115,7 +121,7 @@ for (const m of Object.values(SCRIPTS)) {
   });
 
   test(`${m.id}: 고치기 문제의 시작 코드는 통과하지 못한다`, () => {
-    for (const task of allTasks(m).filter((t) => t.start)) {
+    for (const task of allTasks(m).filter((t) => t.start && !t.free)) {
       assert.notEqual(grade(task, task.start).kind, 'correct', `${task.id}: 시작 코드가 이미 정답이에요`);
     }
   });
@@ -165,7 +171,7 @@ for (const m of Object.values(SCRIPTS)) {
         }
         if (spec.play !== undefined) {
           // 선생님이 실행해 보이는 프로그램: 적어 둔 키를 차례로 눌러 가며 얼마쯤 돌려도 오류가 없어야 한다.
-          const ran = scripted(spec.play, [], false, { keys: (spec.keys ?? []).map(([, name]) => name), frames: 80 });
+          const ran = scripted(spec.play, [], false, { keys: (spec.keys ?? []).map(([, name]) => name), frames: 80, files: withModules(null, tabs) });
           assert.equal(ran.error, null, `실행해 보이기에서 오류 (${ran.error?.message}): ${spec.play.replace(/\n/g, ' ⏎ ')}`);
         }
         if (spec.trace !== undefined) {
@@ -967,9 +973,60 @@ const WRONG = [
   ['unit19-review', 'dice', DICE_MAIN, 'correct', null, { '내도구.py': DICE_TOOL.replace('from random import randint', 'import random').replace('randint(1, 6)', 'random.randint(1, 6)') }],
 ];
 
+// 단원 20(보물 섬): 오답은 모범 답을 조금 고쳐서 만든다(코드가 길어서 글자로 다시 적지 않는다).
+const sol = (missionId, taskId) => allTasks(SCRIPTS[missionId]).find((t) => t.id === taskId);
+const main = (missionId, taskId) => sol(missionId, taskId).solution;
+const tabs = (missionId, taskId, char) => ({ ...sol(missionId, taskId).solutionModules, ...(char === undefined ? {} : { '섬캐릭터.py': char }) });
+const swap = (text, from, to) => {
+  assert.ok(text.includes(from), `바꿀 곳이 없어요: ${from}`);
+  return text.replace(from, to);
+};
+const WRONG20 = () => {
+  const char1 = tabs('proj-start', 'walk')['섬캐릭터.py'];
+  const char2 = tabs('proj-treasure', 'pick')['섬캐릭터.py'];
+  const main4 = main('proj-level', 'level');
+  const main5 = main('proj-record', 'record');
+  const main6 = main('unit20-review', 'pause');
+  return [
+    ['proj-start', 'walk', sol('proj-start', 'walk').start, 'mistake', 'walk-nokey', tabs('proj-start', 'walk')],
+    ['proj-start', 'walk', main('proj-start', 'walk'), 'mistake', 'walk-pos', tabs('proj-start', 'walk', swap(char1, '    def 위(self):\n        self.몸.sety(self.몸.ycor() +', '    def 위(self):\n        self.몸.sety(self.몸.ycor() -'))],
+    ['proj-start', 'walk', swap(main('proj-start', 'walk'), 'turtle.onkeypress(나.위, "Up")\nturtle.onkeypress(나.아래, "Down")', 'def 위():\n    나.몸.sety(나.몸.ycor() + 20)\ndef 아래():\n    나.몸.sety(나.몸.ycor() - 20)\nturtle.onkeypress(위, "Up")\nturtle.onkeypress(아래, "Down")'), 'mistake', 'walk-in-class', tabs('proj-start', 'walk', sol('proj-start', 'walk').modules['섬캐릭터.py'])],
+    ['proj-start', 'walk', swap(main('proj-start', 'walk'), '나.위,', '나.위(),'), 'error', null, tabs('proj-start', 'walk')],
+    ['proj-start', 'walk', main('proj-start', 'walk'), 'correct', null, tabs('proj-start', 'walk', swap(char1, 'self.몸.sety(self.몸.ycor() + 설정.걸음)', 'self.몸.goto(self.몸.xcor(), self.몸.ycor() + 설정.걸음)'))],
+    ['proj-start', 'wall', main('proj-start', 'wall'), 'mistake', 'wall-pos', tabs('proj-start', 'walk')],
+    ['proj-treasure', 'place', main('proj-start', 'walk').replace('from 섬캐릭터 import 탐험가', 'from 섬캐릭터 import 탐험가, 보물'), 'mistake', 'place-none', tabs('proj-treasure', 'place')],
+    ['proj-treasure', 'place', main('proj-treasure', 'place'), 'mistake', 'place-pos', tabs('proj-treasure', 'place', swap(char2, '        x = random.randint(-9, 9) * 20\n        y = random.randint(-6, 6) * 20', '        y = random.randint(-6, 6) * 20\n        x = random.randint(-9, 9) * 20'))],
+    ['proj-treasure', 'pick', swap(main('proj-treasure', 'pick'), '        상자.새자리()\n', ''), 'mistake', 'pick-stay', tabs('proj-treasure', 'pick')],
+    ['proj-treasure', 'pick', swap(main('proj-treasure', 'pick'), '판.write(f"보물 {점수}")\nwhile', 'while'), 'mistake', 'pick-text', tabs('proj-treasure', 'pick')],
+    ['proj-treasure', 'pick', swap(main('proj-treasure', 'pick'), '< 15', '< 0'), 'mistake', 'pick-pos', tabs('proj-treasure', 'pick')],
+    ['proj-treasure', 'two', main('proj-treasure', 'pick'), 'mistake', 'two-pos', tabs('proj-treasure', 'pick')],
+    ['proj-crab', 'crab', swap(main('proj-crab', 'crab'), '[게(60), 게(-80)]', '[게(60)]'), 'mistake', 'crab-count', tabs('proj-crab', 'crab')],
+    ['proj-crab', 'crab', swap(main('proj-crab', 'crab'), '        한마리.걷기()\n', '        한마리.걷기()\n        한마리.걷기()\n'), 'mistake', 'crab-pos', tabs('proj-crab', 'crab')],
+    ['proj-crab', 'crab', main('proj-crab', 'crab'), 'mistake', 'crab-pos', tabs('proj-crab', 'crab', swap(tabs('proj-crab', 'crab')['섬캐릭터.py'], '            self.dx = -self.dx', '            self.dx = self.dx'))],
+    ['proj-crab', 'life', swap(main('proj-crab', 'life'), '            나.몸.goto(0, 0)\n', ''), 'mistake', 'life-drain', tabs('proj-crab', 'life')],
+    ['proj-crab', 'life', swap(main('proj-crab', 'life'), '판.write(f"끝! 보물 {점수}")\n', ''), 'mistake', 'life-text', tabs('proj-crab', 'life')],
+    ['proj-crab', 'life', swap(main('proj-crab', 'life'), '나.몸.goto(0, 0)', '나.몸.home()'), 'correct', null, tabs('proj-crab', 'life')],
+    ['proj-crab', 'side', main('proj-crab', 'life'), 'mistake', 'side-pos', tabs('proj-crab', 'life')],
+    ['proj-level', 'tidy', swap(main('proj-crab', 'life'), '판.write(f"보물 {점수} 목숨 {목숨}")\nwhile', 'def 판쓰기():\n    판.clear()\n    판.write(f"보물 {점수} 목숨 {목숨}")\n판쓰기()\nwhile'), 'mistake', 'tidy-left', tabs('proj-level', 'tidy')],
+    ['proj-level', 'level', swap(swap(main4, '        if 점수 % 설정.단계보물 == 0:\n            단계 += 1\n            게들.append(게(-140))\n', ''), 'while 목숨 > 0:\n', 'while 목숨 > 0:\n    if 점수 % 설정.단계보물 == 0:\n        단계 += 1\n        게들.append(게(-140))\n'), 'mistake', 'level-count', tabs('proj-level', 'level')],
+    ['proj-level', 'level', swap(main4, ' 단계 {단계}")', '")'), 'mistake', 'level-text', tabs('proj-level', 'level')],
+    ['proj-level', 'level', swap(main4, '게(-140)', '게(140)'), 'mistake', 'level-pos', tabs('proj-level', 'level')],
+    ['proj-level', 'bonus', main4, 'mistake', 'bonus-text', tabs('proj-level', 'level')],
+    ['proj-record', 'record', swap(main5, 'if 점수 > 최고:\n    최고 = 점수\n    with open("기록.txt", "w") as 파일:\n        print(점수, file=파일)', 'if 점수 > 최고:\n    최고 = 점수\nwith open("기록.txt", "w") as 파일:\n    print(점수, file=파일)'), 'mistake', 'record-always', tabs('proj-record', 'record')],
+    ['proj-record', 'record', swap(main5, 'try:\n    with open("기록.txt") as 파일:\n        최고 = int(파일.read())\nexcept FileNotFoundError:\n    최고 = 0', 'with open("기록.txt") as 파일:\n    최고 = int(파일.read())'), 'error', null, tabs('proj-record', 'record')],
+    ['proj-record', 'record', swap(main5, '        print(점수, file=파일)', '        print(점수)'), 'mistake', 'record-nofile', tabs('proj-record', 'record')],
+    ['proj-record', 'record', swap(main5, '판.write(f"끝! 보물 {점수} 최고 {최고}")', '판.write(f"끝! 보물 {점수}")'), 'mistake', 'record-text', tabs('proj-record', 'record')],
+    ['proj-record', 'newrec', main5, 'mistake', 'newrec-text', tabs('proj-record', 'record')],
+    ['unit20-review', 'pause', swap(main6, 'turtle.onkeypress(나.멈추기, "p")\n', ''), 'mistake', 'pause-pos', tabs('unit20-review', 'pause')],
+    ['unit20-review', 'pause', swap(main6, '    turtle.update()\n    time.sleep(0.02)\n최고', '        turtle.update()\n        time.sleep(0.02)\n최고'), 'endless', null, tabs('unit20-review', 'pause')],
+    ['unit20-review', 'mine', swap(main6, '상자 = 보물()', '상자 = 보물(3)'), 'error', null, tabs('unit20-review', 'pause')],
+    ['unit20-review', 'mine', `${main6}\n`, 'correct', null, tabs('unit20-review', 'pause', `${tabs('unit20-review', 'pause')['섬캐릭터.py']}\nclass 상어:\n    pass\n`)],
+  ];
+};
+
 test('흔한 오답에 의도한 말이 나온다', () => {
   // 여섯째 칸: 모듈 탭들(없으면 문제의 시작 모듈)
-  for (const [missionId, taskId, code, kind, say, modules] of [...WRONG, ...PRACTICE_WRONG]) {
+  for (const [missionId, taskId, code, kind, say, modules] of [...WRONG, ...WRONG20(), ...PRACTICE_WRONG]) {
     const task = allTasks(SCRIPTS[missionId]).find((t) => t.id === taskId);
     assert.ok(task, `${missionId}/${taskId}: 문제가 없어요`);
     const result = grade(task, code, modules ?? task.modules ?? {});

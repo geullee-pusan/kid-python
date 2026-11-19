@@ -115,7 +115,11 @@ export function createBoard(root) {
     /** 쓰기 문제: 할 일 목록 */
     task({ title, story, steps, want, wantNote, wants, pictures, fileWants }) {
       const list = el('ol', 'board-steps');
-      for (const step of steps) list.append(el('li', '', step));
+      for (const step of steps) {
+        // 여러 줄인 단계는 코드다(단원 20의 보물·게 클래스): 번호를 따로 매기지 않고 앞 단계 아래에 코드 상자로 붙인다.
+        if (step.includes('\n') && list.lastChild) list.lastChild.append(codeBlock(step));
+        else list.append(el('li', '', step));
+      }
       const children = [el('h3', 'board-title', title)];
       if (story) children.push(el('p', 'board-story', story));
       children.push(list);
