@@ -1,5 +1,5 @@
 {
-  "_설명": "처음 화면의 수업 목록. 순서와 내용은 docs/커리큘럼.md를 따른다(단원 순서는 임시). lessons에는 src/content/missions/의 id를 적는다. lessons가 없는 단원은 이름만 '앞으로 배울 것'에 나온다. more가 true면 그 단원에 수업이 더 생길 예정이라는 뜻이다.",
+  "_설명": "처음 화면의 수업 목록. 순서와 내용은 docs/커리큘럼.md를 따른다(단원 순서는 임시). lessons에는 src/content/missions/의 id를 적는다. lessons가 없는 단원은 이름만 '앞으로 배울 것'에 나온다. more가 true면 그 단원에 수업이 더 생길 예정이라는 뜻이다. 흥미를 위해 그림·게임 단원(거북이, 움직이는 그림과 게임)을 함수 단원 바로 뒤로, 클래스를 반복 안의 반복 뒤로 옮겼다(2026-11-20). 화면 없는 단원이 둘보다 길게 이어지지 않게 한 순서다.",
   "units": [
     {
       "title": "출력과 순서",
@@ -90,50 +90,6 @@
       ]
     },
     {
-      "title": "글자 다루기",
-      "lessons": [
-        "str-index",
-        "str-for",
-        "str-slice",
-        "str-method",
-        "str-split",
-        "unit9-review"
-      ]
-    },
-    {
-      "title": "반복 안의 반복",
-      "lessons": [
-        "nest-basic",
-        "nest-end",
-        "nest-depend",
-        "nest-table",
-        "nest-search",
-        "unit10-review"
-      ]
-    },
-    {
-      "title": "딕셔너리",
-      "lessons": [
-        "dict-basic",
-        "dict-change",
-        "dict-for",
-        "dict-count",
-        "dict-table",
-        "unit11-review"
-      ]
-    },
-    {
-      "title": "표 모양 리스트",
-      "lessons": [
-        "grid-basic",
-        "grid-for",
-        "grid-sum",
-        "grid-change",
-        "grid-find",
-        "unit12-review"
-      ]
-    },
-    {
       "title": "거북이로 그리기",
       "lessons": [
         "turtle-move",
@@ -156,6 +112,28 @@
       ]
     },
     {
+      "title": "글자 다루기",
+      "lessons": [
+        "str-index",
+        "str-for",
+        "str-slice",
+        "str-method",
+        "str-split",
+        "unit9-review"
+      ]
+    },
+    {
+      "title": "반복 안의 반복",
+      "lessons": [
+        "nest-basic",
+        "nest-end",
+        "nest-depend",
+        "nest-table",
+        "nest-search",
+        "unit10-review"
+      ]
+    },
+    {
       "title": "클래스",
       "lessons": [
         "class-basic",
@@ -164,6 +142,28 @@
         "class-list",
         "class-move",
         "unit15-review"
+      ]
+    },
+    {
+      "title": "딕셔너리",
+      "lessons": [
+        "dict-basic",
+        "dict-change",
+        "dict-for",
+        "dict-count",
+        "dict-table",
+        "unit11-review"
+      ]
+    },
+    {
+      "title": "표 모양 리스트",
+      "lessons": [
+        "grid-basic",
+        "grid-for",
+        "grid-sum",
+        "grid-change",
+        "grid-find",
+        "unit12-review"
       ]
     },
     {
