@@ -197,6 +197,17 @@
         "short-set",
         "unit18-review"
       ]
+    },
+    {
+      "title": "파일 나눠 쓰기와 import",
+      "lessons": [
+        "mod-math",
+        "mod-file",
+        "mod-from",
+        "mod-main",
+        "mod-data",
+        "unit19-review"
+      ]
     }
   ]
 }

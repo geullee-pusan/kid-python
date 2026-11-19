@@ -1,0 +1,211 @@
+{
+  "_설명": "파일 나눠 쓰기와 import 단원 4번 수업. import하면 그 파일이 위에서 아래로 한 번 다 실행된다는 것을, 도구.py에 남긴 시험 print가 main.py를 돌릴 때 섞여 나오는 데서 보인다. if __name__ == \"__main__\": 아래에 시험 줄을 두면 불러올 때는 돌지 않는다. 앱의 실행 버튼은 늘 main.py를 돌리므로, '직접 돌린 파일'은 도구.py의 코드를 main.py에 옮겨 돌려서 보인다. 겨냥하는 오개념: import는 정의만 가져오는 것이 아니라 파일 전체를 실행한다, 두 번 import해도 한 번만 실행된다(확인 문제). 쓰기는 고치기 하나(시험 줄이 섞이는 도구.py), 심화는 시험 줄까지 갖춘 도구.py를 처음부터 쓰기.",
+  "id": "mod-main",
+  "unit": "파일 나눠 쓰기와 import",
+  "no": 4,
+  "title": "불러올 때 실행되는 줄",
+  "desc": "import하면 도구 파일이 한 번 실행되는 것을 알고, 시험 줄은 if __name__ 아래에 둬요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes", "tries"],
+  "showVars": true,
+  "learned": [
+    { "rule": "import하면 그 파일을 위에서 아래로 한 번 다 실행해요. def는 함수를 만들어 두고, print는 그때 바로 내보내요." },
+    { "rule": "같은 모듈을 두 번 import해도 한 번만 실행해요." },
+    { "rule": "__name__은 직접 돌린 파일이면 \"__main__\", 불려 온 파일이면 모듈 이름이에요." },
+    { "rule": "시험 줄은 이 if 아래에 두면, 불러올 때는 돌지 않아요.", "code": "if __name__ == \"__main__\":" }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["도구 파일을 만들다 보면, 함수가 맞는지 도구 파일 안에서 시험해 보고 싶어요. 그런데 그 시험 줄이 [main.py|메인 점 파이]를 돌릴 때도 나와요. 오늘은 그 까닭과 고치는 법을 배워요."],
+    "test-intro": ["[도구.py|도구 점 파이]에 함수를 쓰고, 아래에 시험하는 [print|프린트]를 하나 넣을게요."],
+    "run-all": ["시험 줄도 나왔어요. 한 줄씩 볼 때 [도구.py|도구 점 파이]를 처음부터 끝까지 지나갔지요. [import|임포트]하면 그 파일을 위에서 아래로 한 번 다 실행해요. [def|데프]는 함수를 만들어 두고, [print|프린트]는 그때 바로 내보내요."],
+    "name-intro": ["파이썬은 파일마다 [__name__|네임]이라는 이름표를 붙여 줘요. 밑줄 두 개, [name|네임], 밑줄 두 개예요. 클래스에서 본 [__init__|이닛]처럼 밑줄이 앞뒤로 둘씩이에요. 두 파일에서 내보내 볼게요."],
+    "name-after": ["직접 돌린 [main.py|메인 점 파이]는 [__main__|메인], 불려 온 [도구.py|도구 점 파이]는 도구예요. 실행 버튼은 늘 [main.py|메인 점 파이]를 돌려요."],
+    "guard-intro": ["그래서 시험 줄을 [if __name__ == \"__main__\":|이프 네임 같다 메인] 아래에 넣으면, 그 파일을 직접 돌릴 때만 시험해요. 불려 올 때는 [__name__|네임]이 도구라서 건너뛰어요."],
+    "guard-after": ["이제 시험 줄이 나오지 않아요. [main.py|메인 점 파이]의 답만 나왔어요."],
+    "direct-intro": ["도구 파일을 직접 돌리면 어떻게 될까요? 이 앱의 실행 버튼은 [main.py|메인 점 파이]만 돌리니까, 도구의 코드를 [main.py|메인 점 파이]에 그대로 옮겨서 돌려 볼게요."],
+    "direct-after": ["직접 돌린 파일이라 [__name__|네임]이 [__main__|메인]이고, 시험 줄이 나왔어요. 같은 파일이 불려 갈 때는 조용하고, 직접 돌릴 때는 시험해요."],
+    "check-ask": ["하나 물어볼게요. 이 코드를 실행하면 불러옴이 몇 번 나올까요?"],
+    "check-right": ["맞아요. 한 번 불러온 모듈은 파이썬이 기억해 둬서, 다시 [import|임포트]해도 또 실행하지 않아요."],
+    "check-teach-1": ["첫 [import|임포트]에서 [도구.py|도구 점 파이]를 실행해서 불러옴이 나와요."],
+    "check-teach-2": ["둘째 [import|임포트]에서는 이미 불러온 것을 그대로 써요. 다시 실행하지 않아서 한 번만 나와요."],
+    "follow-tabs": ["이제 직접 쳐 봐요. [도구.py|도구 점 파이] 탭에 함수와 시험 줄을, [main.py|메인 점 파이] 탭에 불러 쓰는 줄을 쳐요. 시험 줄은 [if|이프] 아래로 들여써요."],
+    "follow-ok": ["좋아요. 시험 줄은 숨고 [30|삼십]만 나왔어요."],
+    "summary": ["정리해요. [import|임포트]하면 도구 파일을 한 번 다 실행해요. 시험 줄은 [if __name__ == \"__main__\":|이프 네임 같다 메인] 아래에 두면 불러올 때는 돌지 않아요."],
+
+    "q1-right": ["맞아요. 불러올 때 [도구.py|도구 점 파이]의 하나가 먼저 나오고, 셋, 그리고 인사를 부를 때 둘이 나와요."],
+    "q1-skip": ["[import|임포트]할 때 [도구.py|도구 점 파이]의 첫 줄 [print|프린트]도 실행돼요."],
+    "q1-order": ["둘은 함수 안에 있어서, 불러올 때가 아니라 [도구.인사()|도구 점 인사]를 부를 때 나와요."],
+    "q1-explain": ["하나, 셋, 둘이 나와요."],
+    "q2-right": ["맞아요. 불려 온 [도구.py|도구 점 파이]의 [__name__|네임]은 도구라서, 시험 줄은 건너뛰어요. [2|이]만 나와요."],
+    "q2-both": ["[if|이프] 아래 시험 줄은 [도구.py|도구 점 파이]를 직접 돌릴 때만 돌아요. 지금은 불려 왔어요."],
+    "q2-test": ["[main.py|메인 점 파이]의 [print|프린트]는 그대로 돌아요. [2|이]가 나와요."],
+    "q2-explain": ["[2|이]만 나와요."],
+    "q3-right": ["맞아요. 불러올 때 [도구.py|도구 점 파이]가 먼저 도구를 내보내고, 직접 돌린 [main.py|메인 점 파이]는 [__main__|메인]을 내보내요."],
+    "q3-main": ["불려 온 파일의 [__name__|네임]은 [__main__|메인]이 아니라 모듈 이름이에요."],
+    "q3-file": ["[__name__|네임]에는 [.py|점 파이]가 붙지 않아요. 직접 돌린 파일은 [__main__|메인]이에요."],
+    "q3-explain": ["도구와 [__main__|메인]이 나와요."],
+
+    "task-how": ["먼저 실행해서 무엇이 섞여 나오는지 봐요. 고친 뒤 실행해서 칠판과 같으면 '제출'을 눌러요."],
+    "need-guard": ["답은 맞아요. 그런데 시험 줄은 지우지 말고, [if __name__ == \"__main__\":|이프 네임 같다 메인] 아래로 옮겨 봐요. 나중에 도구를 고칠 때 또 시험할 수 있어요."],
+    "praise-guard": ["시험 줄을 지우지 않고 [if __name__|이프 네임] 아래로 들여써서, 불러올 때는 조용하게 만들었어요."],
+    "still-test": ["아직 시험 줄이 나와요. [도구.py|도구 점 파이] 탭에서 시험 줄 두 개를 [if|이프] 아래로 들여써요."],
+    "guard-hint-1": ["[도구.py|도구 점 파이] 탭을 눌러요. 맨 아래 시험 줄 두 개가 [import|임포트]할 때 실행돼요."],
+    "guard-hint-2": ["시험 줄 위에 [if __name__ == \"__main__\":|이프 네임 같다 메인]을 쓰고, 시험 줄 두 개를 들여써요."],
+    "need-guard2": ["답은 맞아요. [도구.py|도구 점 파이] 아래에 [if __name__ == \"__main__\":|이프 네임 같다 메인]과 시험 줄도 넣어 봐요."],
+    "need-tool-def": ["답은 맞아요. 이번에는 홀짝 함수를 [도구.py|도구 점 파이] 탭에 [def|데프]로 써 봐요."],
+    "praise-odd": ["홀짝 함수와 시험 줄을 갖춘 도구 파일을 만들고, [main.py|메인 점 파이]에서 불러 썼어요."],
+    "odd-test": ["시험 줄이 섞여 나왔어요. 시험 줄은 [if __name__ == \"__main__\":|이프 네임 같다 메인] 아래로 들여써요."],
+    "odd-swap": ["홀과 짝이 바뀌었어요. [2|이]로 나눈 나머지가 [0|영]이면 짝이에요."],
+    "odd-hint-1": ["[도구.py|도구 점 파이]에 [def 홀짝(수):|데프 홀짝 수]를 만들어요. 나머지가 [0|영]이면 짝, 아니면 홀을 [return|리턴]해요. 그 아래에 [if __name__|이프 네임]과 시험 줄을 써요."],
+    "odd-hint-2": ["[main.py|메인 점 파이]에서는 [for|포]로 세 번, 수를 숫자로 받아서 수와 홀짝의 답을 함께 내보내요."],
+
+    "done-1": ["오늘은 [import|임포트]할 때 도구 파일이 한 번 실행되는 것을 봤어요."],
+    "done-2": ["다음 시간에는 함수뿐 아니라 리스트와 클래스도 다른 파일에 나눠 둬요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "say": "test-intro" },
+      { "modules": { "도구.py": "" } },
+      { "type": "def 두배(x):\n    return x * 2\n\nprint(\"시험:\", 두배(5))\n", "file": "도구.py" },
+      { "type": "import 도구\nprint(도구.두배(100))" },
+      { "say": "watch-run" },
+      { "trace": "import 도구\nprint(도구.두배(100))" },
+      { "say": "run-all" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "# 도구.py\nprint(\"불러옴\")\n\n# main.py\nimport 도구\nimport 도구",
+          "ask": "check-ask",
+          "choices": ["한 번", "두 번"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "__name__  파일마다 붙는 이름표", "items": ["직접 돌린 파일:  \"__main__\"", "불려 온 파일:  모듈 이름 \"도구\"", "밑줄이 앞뒤로 두 개씩 (__init__과 같아요)"] } },
+      { "say": "name-intro" },
+      { "modules": { "도구.py": "" } },
+      { "type": "print(\"도구의 이름표:\", __name__)\n", "file": "도구.py" },
+      { "type": "import 도구\nprint(\"main의 이름표:\", __name__)" },
+      { "trace": "import 도구\nprint(\"main의 이름표:\", __name__)" },
+      { "say": "name-after" }
+    ],
+    [
+      { "card": { "title": "시험 줄 숨기기", "code": "def 두배(x):\n    return x * 2\n\nif __name__ == \"__main__\":\n    print(\"시험:\", 두배(5))" } },
+      { "say": "guard-intro" },
+      { "modules": { "도구.py": "" } },
+      { "type": "def 두배(x):\n    return x * 2\n\nif __name__ == \"__main__\":\n    print(\"시험:\", 두배(5))\n", "file": "도구.py" },
+      { "type": "import 도구\nprint(도구.두배(100))" },
+      { "trace": "import 도구\nprint(도구.두배(100))" },
+      { "say": "guard-after" },
+      { "say": "direct-intro" },
+      { "type": "def 두배(x):\n    return x * 2\n\nif __name__ == \"__main__\":\n    print(\"시험:\", 두배(5))" },
+      { "trace": "def 두배(x):\n    return x * 2\n\nif __name__ == \"__main__\":\n    print(\"시험:\", 두배(5))" },
+      { "say": "direct-after" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요 (탭 두 개)", "code": "# 도구.py\ndef 세배(x):\n    return x * 3\n\nif __name__ == \"__main__\":\n    print(\"시험:\", 세배(2))\n\n# main.py\nimport 도구\nprint(도구.세배(10))" } },
+      { "follow": { "code": "import 도구\nprint(도구.세배(10))", "modules": { "도구.py": "def 세배(x):\n    return x * 3\n\nif __name__ == \"__main__\":\n    print(\"시험:\", 세배(2))\n" }, "expect": ["30"], "say": ["follow-tabs", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "modules": {} },
+      { "card": { "title": "오늘 배운 것", "items": ["import하면 도구 파일을 한 번 다 실행한다", "두 번 import해도 한 번만", "__name__  직접 돌리면 \"__main__\", 불려 오면 모듈 이름", "if __name__ == \"__main__\":  아래에 시험 줄"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "modules": { "도구.py": "print(\"하나\")\n\ndef 인사():\n    print(\"둘\")\n" },
+      "code": "import 도구\nprint(\"셋\")\n도구.인사()",
+      "answer": 1,
+      "choices": [
+        { "text": "셋\n둘", "say": "q1-skip" },
+        { "text": "하나\n셋\n둘", "say": "q1-right" },
+        { "text": "하나\n둘\n셋", "say": "q1-order" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "modules": { "도구.py": "def 두배(x):\n    return x * 2\n\nif __name__ == \"__main__\":\n    print(두배(5))\n" },
+      "code": "import 도구\nprint(도구.두배(1))",
+      "answer": 1,
+      "choices": [
+        { "text": "10\n2", "say": "q2-both" },
+        { "text": "2", "say": "q2-right" },
+        { "text": "10", "say": "q2-test" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "modules": { "도구.py": "print(__name__)\n" },
+      "code": "import 도구\nprint(__name__)",
+      "answer": 1,
+      "choices": [
+        { "text": "__main__\n__main__", "say": "q3-main" },
+        { "text": "도구\n__main__", "say": "q3-right" },
+        { "text": "도구.py\nmain.py", "say": "q3-file" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "guard",
+      "title": "고치기: 섞여 나오는 시험 줄",
+      "story": "main.py는 두 수를 물어서 \"큰 수 9\"처럼 내보내요. 그런데 실행하면 도구.py의 시험 줄이 섞여 나와요. 시험 줄은 지우지 말고, 도구.py를 직접 돌릴 때만 나오게 도구.py를 고쳐요.",
+      "steps": ["실행해서 출력 칸을 봐요.", "도구.py 탭에서 시험 줄 위에 if __name__ == \"__main__\": 을 써요.", "시험 줄 두 개를 들여써요."],
+      "start": "import 도구\n가 = int(input(\"첫째: \"))\n나 = int(input(\"둘째: \"))\nprint(f\"큰 수 {도구.큰수(가, 나)}\")\n",
+      "modules": { "도구.py": "def 큰수(a, b):\n    if a > b:\n        return a\n    return b\n\nprint(\"시험\", 큰수(3, 9))\nprint(\"시험\", 큰수(8, 2))\n" },
+      "cases": [
+        { "inputs": ["3", "9"], "expect": ["큰 수 9"] },
+        { "inputs": ["8", "2"], "expect": ["큰 수 8"] }
+      ],
+      "expect": ["큰 수 9"],
+      "show": true,
+      "checks": [{ "in": "도구.py", "pattern": "__name__", "say": "need-guard" }],
+      "mistakes": [{ "output": "시험", "say": "still-test" }],
+      "praise": "praise-guard",
+      "solution": "import 도구\n가 = int(input(\"첫째: \"))\n나 = int(input(\"둘째: \"))\nprint(f\"큰 수 {도구.큰수(가, 나)}\")",
+      "solutionModules": { "도구.py": "def 큰수(a, b):\n    if a > b:\n        return a\n    return b\n\nif __name__ == \"__main__\":\n    print(\"시험\", 큰수(3, 9))\n    print(\"시험\", 큰수(8, 2))\n" },
+      "hints": [{ "say": "guard-hint-1" }, { "say": "guard-hint-2" }]
+    }
+  ],
+
+  "challenge": {
+    "id": "odd",
+    "title": "심화: 시험까지 갖춘 도구",
+    "story": "도구.py에 수를 받아 짝수면 \"짝\", 홀수면 \"홀\"을 돌려주는 함수 홀짝(수)를 쓰고, 그 아래 if __name__ == \"__main__\": 안에 시험 줄(예: print(홀짝(3)))을 넣어요. main.py에서는 수 세 개를 하나씩 물어서 \"7 홀\"처럼 내보내요. 시험 줄은 나오지 않아야 해요.",
+    "steps": ["도구.py에 def 홀짝(수): 를 쓰고, 나머지가 0이면 \"짝\", 아니면 \"홀\"을 돌려줘요.", "도구.py 아래에 if __name__ == \"__main__\": 과 시험 줄을 써요.", "main.py에서 수 세 개를 하나씩 물어서 \"7 홀\"처럼 내보내요."],
+    "modules": { "도구.py": "" },
+    "cases": [
+      { "inputs": ["7", "10", "1"], "expect": ["7 홀", "10 짝", "1 홀"] },
+      { "inputs": ["2", "4", "0"], "expect": ["2 짝", "4 짝", "0 짝"] }
+    ],
+    "expect": ["7 홀", "10 짝", "1 홀"],
+    "show": true,
+    "checks": [
+      { "in": "도구.py", "pattern": "def\\s+홀짝", "say": "need-tool-def" },
+      { "in": "도구.py", "pattern": "__name__", "say": "need-guard2" }
+    ],
+    "mistakes": [
+      { "inputs": "^7,", "output": "^7 짝\\n10 홀", "say": "odd-swap" },
+      { "want": "^7 홀", "output": "^(?!7 )", "say": "odd-test" }
+    ],
+    "praise": "praise-odd",
+    "solution": "import 도구\nfor i in range(3):\n    수 = int(input(\"수: \"))\n    print(수, 도구.홀짝(수))",
+    "solutionModules": { "도구.py": "def 홀짝(수):\n    if 수 % 2 == 0:\n        return \"짝\"\n    return \"홀\"\n\nif __name__ == \"__main__\":\n    print(홀짝(3))\n    print(홀짝(4))\n" },
+    "hints": [{ "say": "odd-hint-1" }, { "say": "odd-hint-2" }]
+  }
+}

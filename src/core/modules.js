@@ -19,6 +19,11 @@ export function splitFiles(files) {
   return { data, modules };
 }
 
+/** 칠판에 보일 코드: 모듈마다 "# 도구.py"를 붙이고 맨 뒤에 "# main.py"와 main 코드 */
+export function withFileNames(modules, main) {
+  return [...Object.entries(modules).map(([name, code]) => `# ${name}\n${code.trimEnd()}`), `# main.py\n${main.trimEnd()}`].join('\n\n');
+}
+
 /** 오류 자리를 말로: " (3번 줄)", 모듈에서 났으면 " (도구.py 2번 줄)" */
 export function errorAt(error) {
   if (!error?.line) return '';

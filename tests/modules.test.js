@@ -114,13 +114,23 @@ test('모듈 오류를 우리말로 알려 준다', () => {
   assert.match(say('import math\nprint(math.squrt(4))'), /math 뒤의 이름이 달라요/);
   assert.match(say('import math\nprint(math.sqrt(-1))'), /음수의 제곱근/);
   assert.match(say('import Math'), /모두 작은 글자/);
+  // 불러온 함수를 같은 이름의 이름표로 가렸을 때
+  assert.match(say('from 도구 import 두배\n두배 = 0\nprint(두배(3))', TOOL), /가려졌는지/);
   // import하지 않은 프로그램의 이름 e는 math.e로 짐작하지 않는다
   assert.doesNotMatch(say('print(e)'), /math/);
 });
 
 // ---- 순수 함수: 모듈과 파일 가르기, 탭마다 보는 채점 ----
-import { diagnoseTask } from '../src/core/diagnose.js';
-import { errorAt, splitFiles, validModuleName, withModules } from '../src/core/modules.js';
+import { diagnoseTask, stripStrings } from '../src/core/diagnose.js';
+import { errorAt, splitFiles, validModuleName, withFileNames, withModules } from '../src/core/modules.js';
+
+test('따옴표 안을 지우되 f-string의 중괄호 안(코드)은 남긴다', () => {
+  assert.equal(stripStrings('print("도구.두배")'), 'print("")');
+  assert.equal(stripStrings('print(f"값 {도구.두배(3)} 끝 {x[\'a\']}")'), 'print(f"" (도구.두배(3)) (x[""]))');
+  assert.equal(stripStrings('print(f"{{글자}}")'), 'print(f"")');
+  assert.equal(stripStrings("print(F'{a}', rf\"{b}\", r\"{c}\")"), 'print(F"" (a), rf"" (b), r"")');
+  assert.equal(stripStrings('x = 1  # math.pi'), 'x = 1  ');
+});
 
 test('모듈과 파일을 합치고 가른다', () => {
   assert.equal(withModules(null, {}), null);
@@ -131,6 +141,7 @@ test('모듈과 파일을 합치고 가른다', () => {
   assert.equal(errorAt({ line: 2, file: '도구.py' }), ' (도구.py 2번 줄)');
   assert.equal(errorAt({ line: 3, file: null }), ' (3번 줄)');
   assert.equal(errorAt({ line: null }), '');
+  assert.equal(withFileNames({ '도구.py': 'x = 1\n' }, 'import 도구'), '# 도구.py\nx = 1\n\n# main.py\nimport 도구');
   for (const ok of ['도구.py', 'my_tools.py', '도구2.py']) assert.ok(validModuleName(ok), ok);
   for (const bad of ['2도구.py', '내 도구.py', '도구', '도-구.py', '.py']) assert.ok(!validModuleName(bad), bad);
 });

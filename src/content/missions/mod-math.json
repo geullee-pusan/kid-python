@@ -1,0 +1,201 @@
+{
+  "_설명": "파일 나눠 쓰기와 import 단원 1번 수업. 6단원부터 뜻 모르고 써 온 import random에서 출발해, 모듈이 '남이 만들어 둔 함수 모음'이라는 것을 풀어 준다. 새로 나오는 것은 import math, math.sqrt·math.pi·math.floor·math.ceil, from random import randint다. 겨냥하는 오개념: import math만 하고 sqrt(16)이라 쓰면 NameError, from으로 부른 이름은 앞에 모듈 이름을 붙이지 않는다(붙이면 오류), math.sqrt의 결과는 소수(4.0)다. 쓰기는 원의 둘레와 넓이(공식은 문제에서 알려 준다), 심화는 math.ceil로 상자 수 세기.",
+  "id": "mod-math",
+  "unit": "파일 나눠 쓰기와 import",
+  "no": 1,
+  "title": "파이썬에 들어 있는 모듈",
+  "desc": "import가 무엇인지 알고, math 모듈의 함수를 불러 써요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes", "tries"],
+  "showVars": true,
+  "learned": [
+    { "rule": "모듈은 남이 만들어 둔 함수 모음이에요. import로 불러와요.", "code": "import math" },
+    { "rule": "모듈 이름, 점, 함수 이름 차례로 써요. 앞의 math를 빼면 오류가 나요.", "code": "math.sqrt(16)" },
+    { "rule": "math.floor는 내림, math.ceil은 올림이에요.", "code": "math.ceil(23 / 5)" },
+    { "rule": "from으로 이름을 골라 불러오면 앞에 모듈 이름을 붙이지 않아요.", "code": "from random import randint" }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["주사위를 만들 때 맨 위에 [import random|임포트 랜덤]을 썼어요. 거북이를 그릴 때는 [import turtle|임포트 터틀]을 썼고요. 그때는 그냥 이렇게 쓰는 거라고만 했어요. 오늘은 [import|임포트]가 무엇인지 알아봐요."],
+    "module-intro": ["파이썬에는 다른 사람이 미리 만들어 둔 함수 모음이 많아요. 이런 모음을 모듈이라고 해요. [import|임포트]는 모듈을 불러오는 말이에요. 오늘은 수학 모듈 [math|매스]를 불러와요."],
+    "sqrt-after": ["[sqrt|스퀘어 루트]는 같은 수를 두 번 곱해서 그 수가 되는 수를 찾아요. [4|사] 곱하기 [4|사]가 [16|십육]이라서 [4.0|사 점 영]이에요. [sqrt|스퀘어 루트]의 답은 늘 소수로 나와요. [pi|파이]는 원주율이라는 수예요. [3.14|삼 점 일 사]로 시작해서 길게 이어져요."],
+    "round-intro": ["이번에는 내림과 올림이에요. [floor|플로어]는 소수점 아래를 버리고, [ceil|실]은 소수점 아래가 조금이라도 있으면 하나 올려요."],
+    "ceil-after": ["사과 [23|스물세] 개를 다섯 개씩 담으면 [4.6|사 점 육] 상자예요. 남은 사과 세 개도 담아야 하니까, 올림해서 [5|다섯] 상자가 있어야 해요."],
+    "dot-intro": ["그런데 앞에 [math|매스]와 점을 빼고 쓰면 어떻게 될까요?"],
+    "dot-after": ["오류가 났어요. [sqrt|스퀘어 루트]는 [math|매스] 모듈 안에 있어요. 그래서 [math.sqrt|매스 점 스퀘어 루트]처럼 모듈 이름과 점을 붙여야 찾을 수 있어요."],
+    "from-intro": ["앞에 모듈 이름을 붙이기 싫으면, 쓸 이름을 골라서 불러올 수도 있어요. [from|프롬] 뒤에 모듈 이름, [import|임포트] 뒤에 쓸 이름을 써요."],
+    "from-after": ["[randint|랜드 인트]를 골라 불러와서, 앞에 [random|랜덤]을 붙이지 않고 바로 불렀어요."],
+    "check-ask": ["하나 물어볼게요. 이 코드를 실행하면 어떻게 될까요?"],
+    "check-right": ["맞아요. [from|프롬]으로 [sqrt|스퀘어 루트]를 골라 불러와서, 앞에 [math|매스]를 붙이지 않아도 돼요."],
+    "check-teach-1": ["[from math import sqrt|프롬 매스 임포트 스퀘어 루트]는 [sqrt|스퀘어 루트]라는 이름을 골라 불러와요."],
+    "check-teach-2": ["골라 불러온 이름은 앞에 [math|매스]를 붙이지 않고 바로 써요. 그래서 [3.0|삼 점 영]이 나와요."],
+    "follow-ok": ["좋아요. 사과 [17|열일곱] 개를 네 개씩 담으려면 다섯 상자가 있어야 해요."],
+    "summary": ["정리해요. 모듈은 남이 만들어 둔 함수 모음이고, [import|임포트]로 불러와요. 쓸 때는 모듈 이름과 점을 붙여요. [from|프롬]으로 골라 불러온 이름은 바로 써요."],
+
+    "q1-right": ["맞아요. [5|오] 곱하기 [5|오]가 [25|이십오]예요. [sqrt|스퀘어 루트]의 답은 소수라서 [5.0|오 점 영]이에요."],
+    "q1-int": ["답은 [5|오]가 맞는데, [sqrt|스퀘어 루트]의 답은 늘 소수로 나와요."],
+    "q1-same": ["[sqrt|스퀘어 루트]는 같은 수를 두 번 곱해서 [25|이십오]가 되는 수를 찾아요."],
+    "q1-explain": ["[5.0|오 점 영]이 나와요."],
+    "q2-right": ["맞아요. [floor|플로어]는 내림이라 [9|구], [ceil|실]은 올림이라 [10|십]이에요."],
+    "q2-round": ["반올림이 아니에요. [floor|플로어]는 늘 내리고, [ceil|실]은 늘 올려요."],
+    "q2-swap": ["[ceil|실]은 소수점 아래가 조금이라도 있으면 올려요. [9.1|구 점 일]은 [10|십]이 돼요."],
+    "q2-explain": ["[9 10|구 십]이 나와요."],
+    "q3-right": ["맞아요. [from|프롬]으로는 [sqrt|스퀘어 루트]라는 이름만 불러왔어요. [math|매스]라는 이름은 없어서 오류가 나요."],
+    "q3-ok": ["[from|프롬]으로는 [sqrt|스퀘어 루트]만 불러왔어요. [math|매스]라는 이름은 불러오지 않았어요."],
+    "q3-explain": ["[NameError|네임 에러]가 나요. [sqrt(4)|스퀘어 루트 사]처럼 앞에 아무것도 붙이지 않고 써야 해요."],
+
+    "task-how": ["다 쓰면 실행해서 지름을 넣어 봐요. 칠판과 같으면 '제출'을 눌러요."],
+    "need-pi": ["답은 맞아요. 이번에는 [3.14|삼 점 일 사]를 직접 쓰지 말고 [math.pi|매스 점 파이]를 써 봐요."],
+    "praise-circle": ["[math|매스]를 불러와서 원주율로 둘레와 넓이를 계산하고, [round|라운드]로 소수 첫째 자리까지 줄였어요."],
+    "circle-round": ["소수점 아래가 길게 나왔어요. [round|라운드]로 소수 첫째 자리까지 줄여요."],
+    "circle-radius": ["넓이가 너무 커요. 넓이는 지름이 아니라 반지름을 두 번 곱해요. 반지름은 지름 나누기 [2|이]예요."],
+    "circle-hint-1": ["맨 위에 [import math|임포트 매스]를 쓰고, 지름을 [int|인트]로 받아요. 반지름은 지름 나누기 [2|이]예요."],
+    "circle-hint-2": ["둘레는 지름 곱하기 [math.pi|매스 점 파이], 넓이는 반지름 곱하기 반지름 곱하기 [math.pi|매스 점 파이]예요. 둘 다 [round|라운드]로 소수 첫째 자리까지 줄여서 내보내요."],
+    "need-ceil": ["답은 맞아요. 이번에는 [math.ceil|매스 점 실]로 올림해 봐요."],
+    "praise-box": ["나눈 값을 [math.ceil|매스 점 실]로 올림해서, 남는 사과까지 담을 상자 수를 구했어요."],
+    "box-floor": ["상자가 하나 모자라요. 몫만 구하면 남은 사과를 담을 상자가 빠져요. 나눈 값을 [math.ceil|매스 점 실]로 올려요."],
+    "box-round": ["반올림을 하면 [4.2|사 점 이] 상자가 [4|사] 상자가 돼서 사과가 남아요. 조금이라도 남으면 올려야 해요."],
+    "box-hint-1": ["[import math|임포트 매스]를 쓰고, 사과 수와 한 상자에 담는 수를 [int|인트]로 받아요."],
+    "box-hint-2": ["사과 수를 한 상자에 담는 수로 나눈 다음, [math.ceil|매스 점 실]로 올림해서 상자 수를 구해요."],
+
+    "done-1": ["오늘은 모듈을 불러와서 남이 만들어 둔 함수를 썼어요."],
+    "done-2": ["다음 시간에는 내가 만든 함수를 다른 파일에 두고 불러 써요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "모듈: 불러 쓰는 함수 모음", "items": ["import math  수학 모듈을 불러와요", "math.sqrt(16)  모듈 이름, 점, 함수 이름", "math.pi  모듈 안에는 값도 있어요"], "code": "import math\nprint(math.sqrt(16))\nprint(math.pi)" } },
+      { "say": "module-intro" },
+      { "type": "import math\nprint(math.sqrt(16))\nprint(math.pi)" },
+      { "trace": "import math\nprint(math.sqrt(16))\nprint(math.pi)" },
+      { "say": "sqrt-after" }
+    ],
+    [
+      { "card": { "title": "내림과 올림", "items": ["math.floor(3.7)  →  3  내림", "math.ceil(3.2)  →  4  올림", "math.ceil(23 / 5)  →  5  남은 것까지 담을 상자"] } },
+      { "say": "round-intro" },
+      { "type": "import math\nprint(math.floor(3.7))\nprint(math.ceil(3.2))\nprint(math.ceil(23 / 5))" },
+      { "trace": "import math\nprint(math.floor(3.7))\nprint(math.ceil(3.2))\nprint(math.ceil(23 / 5))" },
+      { "say": "ceil-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "dot-intro" },
+      { "type": "import math\nprint(sqrt(16))" },
+      { "trace": "import math\nprint(sqrt(16))", "expectError": "NameError" },
+      { "say": "dot-after" }
+    ],
+    [
+      { "card": { "title": "전에는 → 이제는", "items": ["전에는  import random  /  random.randint(1, 6)", "이제는  from random import randint  /  randint(1, 6)"], "code": "from random import randint\n주사위 = randint(1, 6)\nprint(주사위)" } },
+      { "say": "from-intro" },
+      { "type": "from random import randint\n주사위 = randint(1, 6)\nprint(주사위)" },
+      { "trace": "from random import randint\n주사위 = randint(1, 6)\nprint(주사위)", "randoms": [3] },
+      { "say": "from-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "from math import sqrt\nprint(sqrt(9))",
+          "ask": "check-ask",
+          "choices": ["3.0", "오류가 나요"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "import math\n상자 = math.ceil(17 / 4)\nprint(f\"상자 {상자}개\")" } },
+      { "follow": { "code": "import math\n상자 = math.ceil(17 / 4)\nprint(f\"상자 {상자}개\")", "expect": ["상자 5개"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["import math  모듈 불러오기", "math.sqrt(16)  모듈 이름과 점", "math.floor 내림,  math.ceil 올림,  math.pi 원주율", "from random import randint  골라 불러오면 randint(1, 6)"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "import math\nprint(math.sqrt(25))",
+      "answer": 1,
+      "choices": [
+        { "text": "5", "say": "q1-int" },
+        { "text": "5.0", "say": "q1-right" },
+        { "text": "25", "say": "q1-same" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "import math\nprint(math.floor(9.9), math.ceil(9.1))",
+      "answer": 1,
+      "choices": [
+        { "text": "10 9", "say": "q2-round" },
+        { "text": "9 10", "say": "q2-right" },
+        { "text": "9 9", "say": "q2-swap" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "from math import sqrt\nprint(math.sqrt(4))",
+      "outcome": { "error": "NameError", "output": [] },
+      "answer": 1,
+      "choices": [
+        { "text": "2.0", "say": "q3-ok" },
+        { "text": "오류가 나요", "say": "q3-right" },
+        { "text": "4", "say": "q3-ok" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "circle",
+      "title": "원의 둘레와 넓이",
+      "story": "원의 지름을 물어서 둘레와 넓이를 내보내요. 둘레는 지름 × math.pi, 넓이는 반지름 × 반지름 × math.pi예요(반지름은 지름의 반). 둘 다 round로 소수 첫째 자리까지 줄여서 \"둘레 31.4\", \"넓이 78.5\"처럼 내보내요.",
+      "steps": ["import math를 쓰고, 지름을 숫자로 받아요.", "둘레는 지름 * math.pi, 넓이는 반지름 * 반지름 * math.pi로 계산해요.", "round(값, 1)로 줄여서 \"둘레 31.4\", \"넓이 78.5\"처럼 내보내요."],
+      "cases": [
+        { "inputs": ["10"], "expect": ["둘레 31.4", "넓이 78.5"] },
+        { "inputs": ["7"], "expect": ["둘레 22.0", "넓이 38.5"] },
+        { "inputs": ["1"], "expect": ["둘레 3.1", "넓이 0.8"] }
+      ],
+      "expect": ["둘레 31.4", "넓이 78.5"],
+      "show": true,
+      "checks": [{ "pattern": "\\bpi\\b", "say": "need-pi" }],
+      "mistakes": [
+        { "inputs": "^10$", "output": "넓이 314\\.2", "say": "circle-radius" },
+        { "output": "\\.\\d{3,}", "say": "circle-round" }
+      ],
+      "praise": "praise-circle",
+      "solution": "import math\n지름 = int(input(\"지름: \"))\n반지름 = 지름 / 2\nprint(f\"둘레 {round(지름 * math.pi, 1)}\")\nprint(f\"넓이 {round(반지름 * 반지름 * math.pi, 1)}\")",
+      "hints": [{ "say": "circle-hint-1" }, { "say": "circle-hint-2" }]
+    }
+  ],
+
+  "challenge": {
+    "id": "box",
+    "title": "심화: 상자 몇 개",
+    "story": "사과 수와 한 상자에 담는 사과 수를 물어서, 사과를 모두 담으려면 상자가 몇 개 있어야 하는지 \"상자 5개\"처럼 내보내요. 남는 사과도 상자 하나에 담아요. math.ceil을 써요.",
+    "steps": ["import math를 쓰고, 사과 수와 한 상자에 담는 수를 숫자로 받아요.", "나눈 값을 math.ceil로 올림해요.", "\"상자 5개\"처럼 내보내요."],
+    "cases": [
+      { "inputs": ["21", "5"], "expect": ["상자 5개"] },
+      { "inputs": ["23", "5"], "expect": ["상자 5개"] },
+      { "inputs": ["20", "5"], "expect": ["상자 4개"] },
+      { "inputs": ["1", "6"], "expect": ["상자 1개"] }
+    ],
+    "expect": ["상자 5개"],
+    "show": true,
+    "checks": [{ "pattern": "\\bceil\\b", "say": "need-ceil" }],
+    "mistakes": [
+      { "code": "\\bround\\b", "output": "^상자 4개$", "say": "box-round" },
+      { "output": "^상자 4개$", "want": "^상자 5개$", "say": "box-floor" }
+    ],
+    "praise": "praise-box",
+    "solution": "import math\n사과 = int(input(\"사과: \"))\n한상자 = int(input(\"한 상자에: \"))\nprint(f\"상자 {math.ceil(사과 / 한상자)}개\")",
+    "hints": [{ "say": "box-hint-1" }, { "say": "box-hint-2" }]
+  }
+}

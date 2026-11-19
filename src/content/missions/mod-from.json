@@ -1,0 +1,198 @@
+{
+  "_설명": "파일 나눠 쓰기와 import 단원 3번 수업. 도구.을 계속 붙이기가 길다는 데서 출발해 from 도구 import 두배, 세배와 import 도구 as 도를 배운다. 겨냥하는 오개념: from으로 부르면 앞에 붙이지 않는다(붙이면 도구라는 이름이 없어 오류), 고르지 않은 이름은 쓸 수 없다, main.py에 같은 이름을 다시 만들면 불러온 것이 가려진다. 쓰기는 고칠 수 없게 준 도구.py(평균, 등급)에서 골라 불러 성적 내기, 심화는 같은 이름 바꾸기가 든 두 모듈(길이.py, 무게.py)을 as로 가르기.",
+  "id": "mod-from",
+  "unit": "파일 나눠 쓰기와 import",
+  "no": 3,
+  "title": "이름을 골라 불러오기",
+  "desc": "from으로 쓸 함수만 골라 불러오고, as로 짧은 별명을 붙여요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes", "tries"],
+  "showVars": true,
+  "learned": [
+    { "rule": "from 뒤에 모듈, import 뒤에 쓸 이름을 골라 써요. 고른 이름은 앞에 붙이지 않고 바로 불러요.", "code": "from 도구 import 두배, 세배" },
+    { "rule": "고르지 않은 이름은 쓸 수 없어요. 도구라는 이름도 불러오지 않아서 도구.두배도 오류예요." },
+    { "rule": "as 뒤에 별명을 붙여 불러올 수 있어요.", "code": "import 도구 as 도" },
+    { "rule": "main.py에 같은 이름을 또 만들면 불러온 것이 가려져요. 이름이 겹치지 않게 지어요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["지난 시간에는 [도구.두배|도구 점 두배]처럼 앞에 도구와 점을 늘 붙였어요. 여러 번 쓰면 길어요. 오늘은 쓸 이름을 골라 불러와서 짧게 써요. 첫 시간에 본 [from random import randint|프롬 랜덤 임포트 랜드 인트]와 같은 모양이에요."],
+    "tool-ready": ["[도구.py|도구 점 파이]에 함수 두 개를 써 두었어요. 탭을 눌러 보면 두배와 세배가 있어요."],
+    "from-after": ["[from|프롬] 뒤에 파일 이름, [import|임포트] 뒤에 쓸 이름을 쉼표로 골라 썼어요. 고른 이름은 앞에 도구를 붙이지 않고 바로 불러요."],
+    "pick-intro": ["그런데 두배만 고르고 세배를 쓰면 어떻게 될까요?"],
+    "pick-after": ["세배는 고르지 않아서 쓸 수 없어요. 쓸 이름은 쉼표로 이어서 다 골라요."],
+    "as-intro": ["이름을 고르지 않고 모듈 이름만 짧게 바꿀 수도 있어요. [as|애즈] 뒤에 별명을 써요."],
+    "as-after": ["이제 도구 대신 도와 점을 붙여요. 모듈 이름이 길 때 이렇게 써요."],
+    "shadow-intro": ["하나 조심할 것이 있어요. 불러온 두배가 있는데 [main.py|메인 점 파이]에 두배를 또 만들면 어느 것이 불릴까요?"],
+    "shadow-after": ["[9|구]가 나왔어요. 새로 만든 두배가 불려서 세 번 더했어요. 같은 이름을 다시 만들면 불러온 것이 가려져요. 이름이 겹치지 않게 지어요."],
+    "check-ask": ["하나 물어볼게요. [도구.py|도구 점 파이]는 지금 탭에 있는 것과 같아요. 이 코드를 실행하면 어떻게 될까요?"],
+    "check-right": ["맞아요. [from|프롬]으로 불러온 이름은 세배뿐이에요. 도구라는 이름은 불러오지 않았어요."],
+    "check-teach-1": ["[from 도구 import 세배|프롬 도구 임포트 세배]는 세배라는 이름만 불러와요."],
+    "check-teach-2": ["그래서 [도구.세배|도구 점 세배]라고 쓰면 도구를 찾지 못해 오류가 나요. 세배라고만 써야 해요."],
+    "follow-ok": ["좋아요. 골라 불러온 세배를 바로 불렀어요."],
+    "summary": ["정리해요. [from|프롬]으로 이름을 골라 불러오면 앞에 붙이지 않고, [as|애즈]로 별명을 붙이면 별명과 점을 붙여요. 같은 이름을 또 만들지 않게 조심해요."],
+
+    "q1-right": ["맞아요. 세배 [2|이]는 [6|육], 그걸 두배 하면 [12|십이]예요. 안쪽 괄호부터 해요."],
+    "q1-add": ["두배와 세배를 더한 것이 아니에요. 세배의 답을 두배에 넘겼어요."],
+    "q1-one": ["두배도 불렀어요. 세배의 답 [6|육]을 두배 해요."],
+    "q1-explain": ["[12|십이]가 나와요."],
+    "q2-right": ["맞아요. 도는 도구의 별명이라서 [도.세배|도 점 세배]는 [도구.세배|도구 점 세배]와 같아요."],
+    "q2-error": ["[import 도구 as 도|임포트 도구 애즈 도]로 별명을 붙였어요. 그래서 [도.세배|도 점 세배]로 부를 수 있어요."],
+    "q2-same": ["세배를 불렀어요. [5|오]의 세 배예요."],
+    "q2-explain": ["[15|십오]가 나와요."],
+    "q3-right": ["맞아요. 불러온 인사를 [main.py|메인 점 파이]의 인사가 가렸어요. 나중에 만든 것이 불려요."],
+    "q3-tool": ["[main.py|메인 점 파이]에서 같은 이름을 또 만들어서, 불러온 인사가 가려졌어요."],
+    "q3-error": ["같은 이름을 또 만들어도 오류는 나지 않아요. 나중에 만든 것이 남아요."],
+    "q3-explain": ["[main.py|메인 점 파이]의 인사가 나와요."],
+
+    "task-how": ["[도구.py|도구 점 파이]는 보기만 하는 탭이에요. [main.py|메인 점 파이]에 써요. 다 쓰면 실행해서 점수를 넣어 보고, 칠판과 같으면 '제출'을 눌러요."],
+    "need-from": ["답은 맞아요. 이번에는 [from 도구 import|프롬 도구 임포트]로 평균과 등급을 골라 불러와 봐요."],
+    "praise-grade": ["도구에서 평균과 등급을 골라 불러와서, 앞에 붙이지 않고 바로 불렀어요."],
+    "grade-round": ["소수점 아래가 길게 나왔어요. 평균을 직접 계산한 것 같아요. [도구.py|도구 점 파이]의 평균 함수가 [round|라운드]까지 해 줘요. 불러서 써요."],
+    "grade-hint-1": ["맨 위에 [from 도구 import 평균, 등급|프롬 도구 임포트 평균 쉼표 등급]을 써요. 그다음 점수 세 개를 숫자로 받아 리스트에 넣어요."],
+    "grade-hint-2": ["평균(점수들)로 평균을 받고, 그 값을 등급에 넘겨요. 받은 평균을 이름표에 넣을 때는 평균이 아닌 다른 이름을 써요. 같은 이름이면 함수가 가려져요."],
+    "need-as": ["답은 맞아요. 이번에는 [as|애즈]로 두 모듈에 별명을 붙여 불러와 봐요."],
+    "praise-two": ["이름이 같은 두 함수를 모듈에 별명을 붙여 갈라 불렀어요."],
+    "two-from": ["길이를 바꿨는데 무게의 바꾸기가 불렸어요. 같은 이름을 두 번 골라 불러오면 뒤의 것이 앞의 것을 가려요. [import 길이 as 길|임포트 길이 애즈 길]처럼 별명을 붙여 갈라요."],
+    "two-hint-1": ["[import 길이 as 길|임포트 길이 애즈 길], [import 무게 as 무|임포트 무게 애즈 무]처럼 두 줄로 불러와요."],
+    "two-hint-2": ["[길.바꾸기(미터)|길 점 바꾸기 미터]와 [무.바꾸기(킬로)|무 점 바꾸기 킬로]처럼 별명과 점을 붙여서 불러요."],
+
+    "done-1": ["오늘은 이름을 골라 불러오고, 별명을 붙여 불러왔어요."],
+    "done-2": ["다음 시간에는 [import|임포트]할 때 도구 파일에서 무슨 일이 일어나는지 자세히 봐요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "modules": { "도구.py": "def 두배(x):\n    return x * 2\n\ndef 세배(x):\n    return x * 3\n" } },
+      { "say": "tool-ready" },
+      { "card": { "title": "전에는 → 이제는", "items": ["전에는  import 도구  /  도구.두배(3)", "이제는  from 도구 import 두배, 세배  /  두배(3)"], "code": "from 도구 import 두배, 세배\nprint(두배(3))\nprint(세배(3))" } },
+      { "type": "from 도구 import 두배, 세배\nprint(두배(3))\nprint(세배(3))" },
+      { "trace": "from 도구 import 두배, 세배\nprint(두배(3))\nprint(세배(3))" },
+      { "say": "from-after" }
+    ],
+    [
+      { "say": "pick-intro" },
+      { "type": "from 도구 import 두배\nprint(세배(3))" },
+      { "trace": "from 도구 import 두배\nprint(세배(3))", "expectError": "NameError" },
+      { "say": "pick-after" }
+    ],
+    [
+      { "card": { "title": "별명 붙이기", "items": ["import 도구 as 도", "도.두배(5)  별명과 점"] } },
+      { "say": "as-intro" },
+      { "type": "import 도구 as 도\nprint(도.두배(5))" },
+      { "trace": "import 도구 as 도\nprint(도.두배(5))" },
+      { "say": "as-after" }
+    ],
+    [
+      { "card": { "title": "같은 이름을 또 만들면", "items": ["불러온 두배가 가려진다", "나중에 만든 것이 불린다", "이름이 겹치지 않게 짓기"] } },
+      { "say": "shadow-intro" },
+      { "type": "from 도구 import 두배\ndef 두배(x):\n    return x + x + x\nprint(두배(3))" },
+      { "trace": "from 도구 import 두배\ndef 두배(x):\n    return x + x + x\nprint(두배(3))" },
+      { "say": "shadow-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "from 도구 import 세배\nprint(도구.세배(2))",
+          "ask": "check-ask",
+          "choices": ["6", "오류가 나요"],
+          "answer": 1,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "from 도구 import 세배\nprint(세배(7))" } },
+      { "follow": { "code": "from 도구 import 세배\nprint(세배(7))", "givenModules": { "도구.py": "def 두배(x):\n    return x * 2\n\ndef 세배(x):\n    return x * 3\n" }, "expect": ["21"], "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["from 도구 import 두배, 세배  →  두배(3)", "고르지 않은 이름은 못 쓴다", "import 도구 as 도  →  도.두배(3)", "같은 이름을 또 만들면 가려진다"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "modules": { "도구.py": "def 두배(x):\n    return x * 2\n\ndef 세배(x):\n    return x * 3\n" },
+      "code": "from 도구 import 두배, 세배\nprint(두배(세배(2)))",
+      "answer": 0,
+      "choices": [
+        { "text": "12", "say": "q1-right" },
+        { "text": "10", "say": "q1-add" },
+        { "text": "6", "say": "q1-one" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "modules": { "도구.py": "def 두배(x):\n    return x * 2\n\ndef 세배(x):\n    return x * 3\n" },
+      "code": "import 도구 as 도\nprint(도.세배(5))",
+      "answer": 0,
+      "choices": [
+        { "text": "15", "say": "q2-right" },
+        { "text": "오류가 나요", "say": "q2-error" },
+        { "text": "10", "say": "q2-same" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "modules": { "도구.py": "def 인사():\n    return \"도구의 인사\"\n" },
+      "code": "from 도구 import 인사\ndef 인사():\n    return \"main의 인사\"\nprint(인사())",
+      "answer": 1,
+      "choices": [
+        { "text": "도구의 인사", "say": "q3-tool" },
+        { "text": "main의 인사", "say": "q3-right" },
+        { "text": "오류가 나요", "say": "q3-error" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "grade",
+      "title": "도구로 성적 내기",
+      "story": "도구.py에는 점수 리스트의 평균을 소수 첫째 자리까지 돌려주는 평균(점수들)과, 평균을 받아 \"A\", \"B\", \"C\"를 돌려주는 등급(값)이 있어요(보기만 하는 탭이에요). main.py에서 평균과 등급을 골라 불러오고, 점수 세 개를 물어서 \"평균 90.0 등급 A\"처럼 내보내요.",
+      "steps": ["from 도구 import 평균, 등급 으로 불러와요.", "점수 세 개를 숫자로 받아 리스트에 넣어요.", "평균(점수들)을 이름표에 받고, 등급에 넘겨서 \"평균 90.0 등급 A\"처럼 내보내요."],
+      "modules": { "도구.py": "def 평균(점수들):\n    return round(sum(점수들) / len(점수들), 1)\n\ndef 등급(값):\n    if 값 >= 90:\n        return \"A\"\n    elif 값 >= 80:\n        return \"B\"\n    return \"C\"\n" },
+      "lockModules": ["도구.py"],
+      "cases": [
+        { "inputs": ["90", "80", "100"], "expect": ["평균 90.0 등급 A"] },
+        { "inputs": ["70", "80", "75"], "expect": ["평균 75.0 등급 C"] },
+        { "inputs": ["90", "85", "81"], "expect": ["평균 85.3 등급 B"] }
+      ],
+      "expect": ["평균 90.0 등급 A"],
+      "show": true,
+      "checks": [{ "pattern": "from\\s+도구\\s+import", "say": "need-from" }],
+      "mistakes": [{ "output": "\\.\\d{2,}", "say": "grade-round" }],
+      "praise": "praise-grade",
+      "solution": "from 도구 import 평균, 등급\n점수들 = []\nfor i in range(3):\n    점수들.append(int(input(\"점수: \")))\n값 = 평균(점수들)\nprint(f\"평균 {값} 등급 {등급(값)}\")",
+      "hints": [{ "say": "grade-hint-1" }, { "say": "grade-hint-2" }]
+    }
+  ],
+
+  "challenge": {
+    "id": "two",
+    "title": "심화: 이름이 같은 두 함수",
+    "story": "길이.py에는 m를 cm로 바꾸는 바꾸기(미터)가, 무게.py에는 kg을 g으로 바꾸는 바꾸기(킬로)가 있어요. 이름이 같아요. as로 두 모듈에 별명을 붙여 불러오고, m와 kg을 차례로 물어서 \"3m = 300cm\", \"2kg = 2000g\"처럼 내보내요.",
+    "steps": ["import 길이 as 길, import 무게 as 무 처럼 별명을 붙여 불러와요.", "m와 kg을 숫자로 받아요.", "길.바꾸기(미터), 무.바꾸기(킬로)로 \"3m = 300cm\", \"2kg = 2000g\"처럼 내보내요."],
+    "modules": { "길이.py": "def 바꾸기(미터):\n    return 미터 * 100\n", "무게.py": "def 바꾸기(킬로):\n    return 킬로 * 1000\n" },
+    "lockModules": ["길이.py", "무게.py"],
+    "cases": [
+      { "inputs": ["3", "2"], "expect": ["3m = 300cm", "2kg = 2000g"] },
+      { "inputs": ["1", "5"], "expect": ["1m = 100cm", "5kg = 5000g"] }
+    ],
+    "expect": ["3m = 300cm", "2kg = 2000g"],
+    "show": true,
+    "checks": [{ "pattern": "import\\s+길이\\s+as[\\s\\S]*import\\s+무게\\s+as|import\\s+무게\\s+as[\\s\\S]*import\\s+길이\\s+as", "say": "need-as" }],
+    "mistakes": [{ "inputs": "^3,2$", "output": "^3m = 3000cm", "say": "two-from" }],
+    "praise": "praise-two",
+    "solution": "import 길이 as 길\nimport 무게 as 무\n미터 = int(input(\"m: \"))\n킬로 = int(input(\"kg: \"))\nprint(f\"{미터}m = {길.바꾸기(미터)}cm\")\nprint(f\"{킬로}kg = {무.바꾸기(킬로)}g\")",
+    "hints": [{ "say": "two-hint-1" }, { "say": "two-hint-2" }]
+  }
+}

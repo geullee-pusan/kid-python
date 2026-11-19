@@ -1,0 +1,182 @@
+{
+  "_설명": "단원 19 '파일 나눠 쓰기와 import'의 연습 문제. math 모듈, import 도구와 도구.이름, 고칠 수 없게 준 자료.py의 딕셔너리, 내가 쓰는 도구.py를 섞는다. 고치기 두 문제는 import 도구.py와 도구. 빠뜨리기, 불러온 함수를 같은 이름의 이름표로 가린 것이다. 도전 문제는 도구.py 안에서 math를 불러 모둠 수를 올림으로 구하고, 이름들을 모둠으로 나눈다.",
+  "id": "practice-19",
+  "unit": "파일 나눠 쓰기와 import",
+  "title": "연습 문제",
+  "knows": ["variables", "loops", "functions", "classes", "tries"],
+  "showVars": true,
+  "lines": {
+    "need-sqrt": ["답은 맞아요. 이번에는 [math.sqrt|매스 점 스퀘어 루트]로 구해 봐요."],
+    "side-praise": ["[math|매스]를 불러와서 [sqrt|스퀘어 루트]로 한 변을 구하고, [round|라운드]로 줄였어요."],
+    "side-round": ["소수점 아래가 길게 나왔어요. [round|라운드]로 소수 첫째 자리까지 줄여요."],
+    "side-hint-1": ["맨 위에 [import math|임포트 매스]를 쓰고, 넓이를 [int|인트]로 받아요."],
+    "side-hint-2": ["[math.sqrt(넓이)|매스 점 스퀘어 루트 넓이]를 [round|라운드]로 소수 첫째 자리까지 줄여서 내보내요."],
+    "fiximp-praise": ["[import|임포트] 뒤의 [.py|점 파이]를 빼고, 함수 앞에 도구와 점을 붙였어요."],
+    "fiximp-hint-1": ["실행하면 오류가 나요. [import|임포트] 뒤에는 파일 이름에서 [.py|점 파이]를 빼고 써요."],
+    "fiximp-hint-2": ["그다음 오류는 인사를 찾지 못하는 거예요. 인사는 [도구.py|도구 점 파이] 안에 있어요. 앞에 도구와 점을 붙여요."],
+    "need-tool-def": ["답은 맞아요. 이번에는 거꾸로 함수를 [도구.py|도구 점 파이] 탭에 [def|데프]로 써 봐요."],
+    "need-dot": ["답은 맞아요. [main.py|메인 점 파이]에서는 [import 도구|임포트 도구]로 불러서 도구의 함수를 써 봐요."],
+    "word-praise": ["거꾸로 함수를 [도구.py|도구 점 파이]에 두고, 낱말과 거꾸로 한 낱말을 견줘서 앞뒤가 같은지 알아냈어요."],
+    "word-same": ["거꾸로 한 낱말이 처음 낱말과 같아요. 글자를 뒤집지 않은 것 같아요. 글자를 하나씩 꺼내 새 글의 앞에 붙여요."],
+    "word-hint-1": ["[도구.py|도구 점 파이]에 [def 거꾸로(글):|데프 거꾸로 글]을 만들어요. 빈 글자에서 시작해서, 글자를 하나씩 꺼내 새 글의 앞에 붙이고 [return|리턴]해요."],
+    "word-hint-2": ["[main.py|메인 점 파이]에서 낱말을 받아 [도구.거꾸로(낱말)|도구 점 거꾸로 낱말]을 내보내요. 그 값이 낱말과 같으면 앞뒤가 같아요, 아니면 달라요를 내보내요."],
+    "hidden-praise": ["불러온 합계 함수를 가리던 이름표의 이름을 바꿔서, 함수를 다시 부를 수 있게 했어요."],
+    "hidden-hint-1": ["실행하면 오류가 나요. 합계는 도구에서 불러온 함수인데, 둘째 줄에서 합계에 [0|영]을 넣었어요. 그러면 함수가 가려져요."],
+    "hidden-hint-2": ["둘째 줄은 필요 없어요. 지우거나, 이름표의 이름을 바꿔요."],
+    "need-data": ["답은 맞아요. 이번에는 값을 [main.py|메인 점 파이]에 다시 쓰지 말고, [자료.가격|자료 점 가격]에서 꺼내 써요."],
+    "shop-praise": ["[자료.py|자료 점 파이]의 가격표에서 물건마다 값을 꺼내 더했어요."],
+    "shop-count": ["같은 물건을 두 번 사면 두 번 더해요. 받은 물건 리스트를 그대로 돌며 더해요."],
+    "shop-hint-1": ["[import 자료|임포트 자료]를 쓰고, 물건들을 한 줄로 받아 [split|스플릿]으로 나눠요."],
+    "shop-hint-2": ["합을 [0|영]으로 시작해서, 물건마다 [자료.가격|자료 점 가격]에서 그 물건의 값을 대괄호로 꺼내 더해요. 끝나면 칠판의 모양대로 내보내요."],
+    "need-math-tool": ["답은 맞아요. 이번에는 모둠수 함수를 [도구.py|도구 점 파이]에 두고, 그 안에서 [math.ceil|매스 점 실]로 올림해 봐요."],
+    "team-praise": ["[도구.py|도구 점 파이] 안에서 [math|매스]를 불러 모둠 수를 올림으로 구하고, 이름들을 모둠마다 잘라 나눴어요."],
+    "team-ceil": ["모둠이 하나 모자라요. 남는 사람도 모둠을 하나 만들어야 해요. 나눈 값을 [math.ceil|매스 점 실]로 올려요."],
+    "team-hint-1": ["[도구.py|도구 점 파이] 맨 위에 [import math|임포트 매스]를 쓰고, [def 모둠수(사람, 인원):|데프 모둠수 사람 쉼표 인원]은 사람 나누기 인원을 올림해서 돌려줘요."],
+    "team-hint-2": ["[main.py|메인 점 파이]에서 모둠 번호 [i|아이]마다, 이름들의 [i|아이] 곱하기 인원부터 [i|아이] 더하기 [1|일] 곱하기 인원 앞까지를 잘라 내요. 자른 리스트는 [join|조인]으로 빈칸을 넣어 이어요."]
+  },
+  "tasks": [
+    {
+      "id": "p19-side",
+      "level": "기본",
+      "kind": "쓰기",
+      "title": "정사각형의 한 변",
+      "summary": "넓이를 물어서 math.sqrt로 정사각형 한 변의 길이를 구해요.",
+      "story": "정사각형의 넓이를 물어서 한 변의 길이를 \"한 변 5.0\"처럼 내보내요. 한 변은 math.sqrt(넓이)이고, round로 소수 첫째 자리까지 줄여요.",
+      "steps": ["import math를 쓰고, 넓이를 숫자로 받아요.", "math.sqrt(넓이)를 round(…, 1)로 줄여서 \"한 변 5.0\"처럼 내보내요."],
+      "start": "",
+      "cases": [
+        { "inputs": ["25"], "expect": ["한 변 5.0"] },
+        { "inputs": ["49"], "expect": ["한 변 7.0"] },
+        { "inputs": ["2"], "expect": ["한 변 1.4"] }
+      ],
+      "expect": ["한 변 5.0"],
+      "show": true,
+      "checks": [{ "pattern": "\\bsqrt\\b", "say": "need-sqrt" }],
+      "mistakes": [{ "output": "\\.\\d{3,}", "say": "side-round" }],
+      "praise": "side-praise",
+      "solution": "import math\n넓이 = int(input(\"넓이: \"))\nprint(f\"한 변 {round(math.sqrt(넓이), 1)}\")",
+      "hints": [{ "say": "side-hint-1" }, { "say": "side-hint-2" }]
+    },
+    {
+      "id": "p19-fix-import",
+      "level": "기본",
+      "kind": "고치기",
+      "title": "고치기: 불러오지 못한 인사",
+      "summary": "도구.py의 인사 함수를 불러 쓰는 두 줄을 고쳐요.",
+      "story": "이름을 물어서 도구.py의 인사 함수로 \"하늘님, 반가워요\"를 내보내는 프로그램이에요(도구.py는 보기만 하는 탭이에요). 그런데 오류가 나요. main.py를 고쳐요.",
+      "steps": ["실행해서 오류를 읽어요.", "import 줄을 고쳐요.", "인사를 부르는 줄을 고쳐요."],
+      "start": "import 도구.py\n이름 = input(\"이름: \")\nprint(인사(이름))\n",
+      "modules": { "도구.py": "def 인사(이름):\n    return 이름 + \"님, 반가워요\"\n" },
+      "lockModules": ["도구.py"],
+      "cases": [
+        { "inputs": ["하늘"], "expect": ["하늘님, 반가워요"] },
+        { "inputs": ["바다"], "expect": ["바다님, 반가워요"] }
+      ],
+      "expect": ["하늘님, 반가워요"],
+      "show": true,
+      "praise": "fiximp-praise",
+      "solution": "import 도구\n이름 = input(\"이름: \")\nprint(도구.인사(이름))",
+      "hints": [{ "say": "fiximp-hint-1" }, { "say": "fiximp-hint-2" }]
+    },
+    {
+      "id": "p19-word",
+      "level": "응용",
+      "kind": "쓰기",
+      "title": "거꾸로 도구",
+      "summary": "도구.py에 낱말을 거꾸로 돌려주는 함수를 쓰고, 앞뒤가 같은 낱말인지 알아봐요.",
+      "story": "도구.py에 글자를 받아 거꾸로 뒤집어 돌려주는 함수 거꾸로(글)을 써요. main.py에서 낱말을 물어서 \"거꾸로 과사\"처럼 내보내고, 거꾸로 해도 같으면 \"앞뒤가 같아요\", 아니면 \"앞뒤가 달라요\"를 내보내요.",
+      "steps": ["도구.py에 def 거꾸로(글): 을 쓰고, 글자를 하나씩 꺼내 새 글의 앞에 붙여 돌려줘요.", "main.py에서 import 도구 를 쓰고 낱말을 받아요.", "\"거꾸로 과사\"를 내보내고, 낱말과 같은지에 따라 \"앞뒤가 같아요\"나 \"앞뒤가 달라요\"를 내보내요."],
+      "start": "",
+      "modules": { "도구.py": "" },
+      "cases": [
+        { "inputs": ["사과"], "expect": ["거꾸로 과사", "앞뒤가 달라요"] },
+        { "inputs": ["기러기"], "expect": ["거꾸로 기러기", "앞뒤가 같아요"] },
+        { "inputs": ["토마토"], "expect": ["거꾸로 토마토", "앞뒤가 같아요"] },
+        { "inputs": ["파이썬"], "expect": ["거꾸로 썬이파", "앞뒤가 달라요"] }
+      ],
+      "expect": ["거꾸로 과사", "앞뒤가 달라요"],
+      "show": true,
+      "checks": [
+        { "in": "도구.py", "pattern": "def\\s+거꾸로", "say": "need-tool-def" },
+        { "pattern": "도구\\.|from\\s+도구", "say": "need-dot" }
+      ],
+      "mistakes": [{ "inputs": "^사과$", "output": "^거꾸로 사과", "say": "word-same" }],
+      "praise": "word-praise",
+      "solution": "import 도구\n낱말 = input(\"낱말: \")\n뒤집은 = 도구.거꾸로(낱말)\nprint(f\"거꾸로 {뒤집은}\")\nif 뒤집은 == 낱말:\n    print(\"앞뒤가 같아요\")\nelse:\n    print(\"앞뒤가 달라요\")",
+      "solutionModules": { "도구.py": "def 거꾸로(글):\n    새글 = \"\"\n    for 글자 in 글:\n        새글 = 글자 + 새글\n    return 새글\n" },
+      "hints": [{ "say": "word-hint-1" }, { "say": "word-hint-2" }]
+    },
+    {
+      "id": "p19-fix-hidden",
+      "level": "응용",
+      "kind": "고치기",
+      "title": "고치기: 가려진 함수",
+      "summary": "불러온 함수를 가린 이름표를 찾아 고쳐요.",
+      "story": "수들을 한 줄로 받아 도구.py의 합계 함수로 \"합 15\"를 내보내는 프로그램이에요(도구.py는 보기만 하는 탭이에요). 그런데 오류가 나요. main.py를 고쳐요.",
+      "steps": ["실행해서 오류를 읽어요.", "합계라는 이름이 어디에 또 쓰였는지 찾아요.", "함수가 가려지지 않게 고쳐요."],
+      "start": "from 도구 import 합계\n합계 = 0\n수들 = [int(x) for x in input(\"수들: \").split()]\nprint(f\"합 {합계(수들)}\")\n",
+      "modules": { "도구.py": "def 합계(수들):\n    합 = 0\n    for 수 in 수들:\n        합 += 수\n    return 합\n" },
+      "lockModules": ["도구.py"],
+      "cases": [
+        { "inputs": ["1 2 3 4 5"], "expect": ["합 15"] },
+        { "inputs": ["10 20"], "expect": ["합 30"] }
+      ],
+      "expect": ["합 15"],
+      "show": true,
+      "praise": "hidden-praise",
+      "solution": "from 도구 import 합계\n수들 = [int(x) for x in input(\"수들: \").split()]\nprint(f\"합 {합계(수들)}\")",
+      "hints": [{ "say": "hidden-hint-1" }, { "say": "hidden-hint-2" }]
+    },
+    {
+      "id": "p19-shop",
+      "level": "응용",
+      "kind": "쓰기",
+      "title": "자료의 가격표로 계산",
+      "summary": "자료.py의 가격표에서 값을 꺼내 산 물건의 값을 모두 더해요.",
+      "story": "자료.py에 가격표 딕셔너리 가격이 있어요(보기만 하는 탭이에요). 산 물건들을 한 줄로 받아서(물건 사이는 빈칸) 값을 모두 더해 \"모두 2500원\"처럼 내보내요. 같은 물건을 두 번 사면 두 번 더해요.",
+      "steps": ["import 자료 를 쓰고, 물건들을 한 줄로 받아 split으로 나눠요.", "물건마다 자료.가격[물건]을 더해요.", "\"모두 2500원\"처럼 내보내요."],
+      "start": "",
+      "modules": { "자료.py": "가격 = {\"사과\": 1000, \"배\": 2000, \"귤\": 500, \"감\": 800}\n" },
+      "lockModules": ["자료.py"],
+      "cases": [
+        { "inputs": ["사과 귤 사과"], "expect": ["모두 2500원"] },
+        { "inputs": ["배"], "expect": ["모두 2000원"] },
+        { "inputs": ["감 감 귤 배"], "expect": ["모두 4100원"] }
+      ],
+      "expect": ["모두 2500원"],
+      "show": true,
+      "checks": [{ "pattern": "자료\\.|from\\s+자료", "say": "need-data" }],
+      "mistakes": [{ "inputs": "^사과 귤 사과$", "output": "^모두 1500원$", "say": "shop-count" }],
+      "praise": "shop-praise",
+      "solution": "import 자료\n합 = 0\nfor 물건 in input(\"물건들: \").split():\n    합 += 자료.가격[물건]\nprint(f\"모두 {합}원\")",
+      "hints": [{ "say": "shop-hint-1" }, { "say": "shop-hint-2" }]
+    },
+    {
+      "id": "p19-team",
+      "level": "도전",
+      "kind": "쓰기",
+      "title": "모둠 나누기",
+      "summary": "도구.py에서 math를 불러 모둠 수를 구하고, 이름들을 모둠으로 나눠요.",
+      "story": "이름들을 한 줄로 받고(이름 사이는 빈칸), 한 모둠의 인원을 물어요. 앞에서부터 차례로 인원만큼 끊어 모둠을 만들어요. 마지막 모둠은 인원이 모자라도 돼요. 먼저 \"모둠 3개\"를 내보내고, 모둠마다 \"1모둠: 하늘 바다\"처럼 내보내요. 모둠 수는 도구.py의 함수 모둠수(사람, 인원)이 math.ceil로 구해서 돌려줘요.",
+      "steps": ["도구.py에 import math와 def 모둠수(사람, 인원): 을 쓰고, 올림한 모둠 수를 돌려줘요.", "main.py에서 이름들과 인원을 받아 도구.모둠수로 모둠 수를 구해 \"모둠 3개\"처럼 내보내요.", "모둠마다 이름들을 잘라서 \"1모둠: 하늘 바다\"처럼 내보내요."],
+      "start": "",
+      "modules": { "도구.py": "" },
+      "cases": [
+        { "inputs": ["하늘 바다 별 달 해", "2"], "expect": ["모둠 3개", "1모둠: 하늘 바다", "2모둠: 별 달", "3모둠: 해"] },
+        { "inputs": ["가 나 다 라", "4"], "expect": ["모둠 1개", "1모둠: 가 나 다 라"] },
+        { "inputs": ["솔 빛 결 꽃 들 봄 강", "3"], "expect": ["모둠 3개", "1모둠: 솔 빛 결", "2모둠: 꽃 들 봄", "3모둠: 강"] }
+      ],
+      "expect": ["모둠 3개", "1모둠: 하늘 바다", "2모둠: 별 달", "3모둠: 해"],
+      "show": true,
+      "checks": [
+        { "in": "도구.py", "pattern": "def\\s+모둠수[\\s\\S]*\\bceil\\b", "say": "need-math-tool" },
+        { "pattern": "도구\\.|from\\s+도구", "say": "need-dot" }
+      ],
+      "mistakes": [{ "inputs": "^하늘 바다 별 달 해,2$", "output": "^모둠 2개", "say": "team-ceil" }],
+      "praise": "team-praise",
+      "solution": "import 도구\n이름들 = input(\"이름들: \").split()\n인원 = int(input(\"한 모둠: \"))\n모둠 = 도구.모둠수(len(이름들), 인원)\nprint(f\"모둠 {모둠}개\")\nfor i in range(모둠):\n    print(f\"{i + 1}모둠: {' '.join(이름들[i * 인원:(i + 1) * 인원])}\")",
+      "solutionModules": { "도구.py": "import math\n\ndef 모둠수(사람, 인원):\n    return math.ceil(사람 / 인원)\n" },
+      "hints": [{ "say": "team-hint-1" }, { "say": "team-hint-2" }]
+    }
+  ]
+}

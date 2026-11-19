@@ -12,7 +12,7 @@ import { compareDrawing } from './core/drawing.js';
 import { explain } from './core/errors-ko.js';
 import { hasBatchim } from './core/korean.js';
 import { lectureParts, line, mergeScript, predictAskScenes, predictFeedback, predictRevealScenes, taskFeedback } from './core/lesson.js';
-import { errorAt, splitFiles, validModuleName, withModules } from './core/modules.js';
+import { errorAt, splitFiles, validModuleName, withFileNames, withModules } from './core/modules.js';
 import { createBoard } from './ui/board.js';
 import { createCanvas, usesTurtle } from './ui/canvas.js';
 import { createConsole } from './ui/console.js';
@@ -79,6 +79,8 @@ function asAnswer(inputs) {
 
 /** 무작위 수를 쓰는 문제는 채점할 때 고를 수를 정해 둔다. 그 수를 말로: { randoms: [62] } → "고른 수가 62일 때, " */
 function picked(one) {
+  // pickedSay: 여러 번 고르는 문제(주사위를 여러 번 굴린다)는 대본에 말을 적어 둔다. 예: "주사위가 차례로 3, 5, 6, 2, 2, 1"
+  if (one.pickedSay) return `${one.pickedSay}일 때, `;
   return one.randoms?.length ? `고른 수가 ${one.randoms[0]}일 때, ` : '';
 }
 
@@ -803,7 +805,9 @@ async function main() {
       let pick;
       const picked = new Promise((resolve) => (pick = resolve));
       showVars({});
-      const marks = board.predict({ no: index + 1, total, code: question.code, choices: question.choices, ask: question.ask, onPick: pick });
+      // 모듈이 있으면 칠판에 파일마다 이름을 붙여 함께 보인다(탭을 눌러 보지 않아도 되게)
+      const boardCode = question.modules ? withFileNames(question.modules, question.code) : question.code;
+      const marks = board.predict({ no: index + 1, total, code: boardCode, choices: question.choices, ask: question.ask, onPick: pick });
       // 묻는 말이 끝나기를 기다리지 않고 바로 고를 수 있다.
       background(predictAskScenes(mission, question, seed));
       const choice = await orAbort(picked);
@@ -1030,7 +1034,7 @@ async function main() {
       if (!graded) continue;
       const { ran, diagnosis } = graded;
       if (diagnosis.kind === 'correct') diagnosis.first = attempts === 1 && hintLevel === 0;
-      log('submit', { mission: mission.id, task: task.id, attempt: attempts, hints: hintLevel, kind: diagnosis.kind, say: diagnosis.say, code: ran.code });
+      log('submit', { mission: mission.id, task: task.id, attempt: attempts, hints: hintLevel, kind: diagnosis.kind, say: diagnosis.say, code: ran.code, ...(task.modules ? { modules: editor.getModules() } : {}) });
       allowRun(false);
       show();
       await player.play(taskFeedback(mission, task, diagnosis, seed));
@@ -1038,7 +1042,9 @@ async function main() {
       if (diagnosis.kind === 'correct') {
         draftSaving = null;
         store.set(key, '');
-        return { attempts, hints: hintLevel, first: diagnosis.first, code: ran.code };
+        // 모듈 탭의 쓰던 것도 지운다(다시 풀 때 고치기 문제가 고친 채로 열리지 않게)
+        if (task.modules) store.set(`${key}.modules`, null);
+        return { attempts, hints: hintLevel, first: diagnosis.first, code: ran.code, modules: editor.getModules() };
       }
       allowRun(true);
     }
@@ -1091,10 +1097,12 @@ async function main() {
         works.push({ id: `w-${Date.now().toString(36)}`, name: mission.saveAs, code: results[results.length - 1].code, updatedAt: new Date().toISOString() });
         store.set('kidpy.works', works);
       }
-      // saveFiles: 그 프로그램이 읽는 파일. "내 파일"에 같은 이름이 없을 때만 넣는다(아이가 고친 파일은 그대로 둔다).
-      if (mission.saveFiles) {
+      // saveFiles: 그 프로그램이 읽는 파일. 아이가 쓴 모듈 탭(내도구.py)도 함께 넣는다.
+      // "내 파일"에 같은 이름이 없을 때만 넣는다(아이가 고친 파일은 그대로 둔다).
+      const keep = { ...(mission.saveFiles ?? {}), ...(results[results.length - 1].modules ?? {}) };
+      if (Object.keys(keep).length) {
         const files = store.get(FILES_KEY, {});
-        const missing = Object.entries(mission.saveFiles).filter(([name]) => !(name in files));
+        const missing = Object.entries(keep).filter(([name]) => !(name in files));
         if (missing.length) keepStudioFiles({ ...files, ...Object.fromEntries(missing) });
       }
     }
@@ -1285,7 +1293,7 @@ async function main() {
       log('practice-done', { set: set.id, task: task.id, attempts: result.attempts, hints: result.hints, first: result.first });
       currentPhase = 'done';
       // 모듈 탭이 있는 문제는 파일마다 이름을 붙여 함께 보여 준다
-      const shownSolution = task.solutionModules ? [...Object.entries(task.solutionModules).map(([name, code]) => `# ${name}\n${code}`), `# main.py\n${task.solution}`].join('\n\n') : task.solution;
+      const shownSolution = task.solutionModules ? withFileNames(task.solutionModules, task.solution) : task.solution;
       board.card({ title: '풀었어요 · 선생님의 풀이', items: ['다르게 풀어도 맞은 거예요. 내 코드와 견줘 봐요.'], code: shownSolution });
       flushLog();
       // 이 단원에서 아직 안 푼 문제가 있으면 이어서 풀 수 있다.

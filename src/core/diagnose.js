@@ -33,11 +33,20 @@ export function outputLines(output) {
   return lines;
 }
 
-/** 코드에서 따옴표 안의 글자와 주석을 지운다(따옴표 밖에 무엇을 썼는지 보려고). */
+/**
+ * 코드에서 따옴표 안의 글자와 주석을 지운다(따옴표 밖에 무엇을 썼는지 보려고).
+ * f-string의 중괄호 안은 코드라서 남긴다: f"둘레 {도구.둘레(3)}" → f"" (도구.둘레(3))
+ */
 export function stripStrings(code) {
+  const plain = /"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'/g;
   return String(code)
     .replace(/("""[\s\S]*?"""|'''[\s\S]*?''')/g, '""')
-    .replace(/"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'/g, '""')
+    .replace(new RegExp(`(?:(?<![\\w])([fF][rR]?|[rR][fF]))?(${plain.source})`, 'g'), (_, prefix, quoted) => {
+      if (!prefix || !/f/i.test(prefix)) return `${prefix ?? ''}""`;
+      const inside = quoted.slice(1, -1).replace(/\{\{|\}\}/g, '');
+      const parts = [...inside.matchAll(/\{([^{}]*)\}/g)].map(([, expr]) => ` (${expr.replace(plain, '""')})`);
+      return `${prefix}""${parts.join('')}`;
+    })
     .replace(/#.*$/gm, '');
 }
 

@@ -187,6 +187,14 @@ const FIVE = '수들 = []\nfor i in range(5):\n    수들.append(int(input()))\n
 const REPORT_START = '표 = []\nwith open("성적.txt") as 파일:\n    for 줄 in 파일:\n        이름, 국어, 수학 = 줄.strip().split(",")\n        표.append((이름, int(국어), int(수학)))\n';
 const REPORT_FILE = 'with open("성적표.txt", "w") as 파일:\n    for 이름, 국어, 수학 in 표:\n        print(f"{이름} 국어 {국어} 수학 {수학} 평균 {round((국어 + 수학) / 2, 1)}", file=파일)\n';
 const REPORT_AVG = '국어들 = [줄[1] for 줄 in 표]\n수학들 = [줄[2] for 줄 in 표]\nprint(f"국어 평균 {round(sum(국어들) / len(국어들), 1)}")\nprint(f"수학 평균 {round(sum(수학들) / len(수학들), 1)}")\n';
+// 단원 19의 모듈 탭과 시작 코드(오답 줄에서 함께 쓴다)
+const RECT_TOOL = 'def 넓이(가로, 세로):\n    return 가로 * 세로\n\ndef 둘레(가로, 세로):\n    return (가로 + 세로) * 2\n';
+const RECT_MAIN = 'import 도구\n가 = int(input())\n나 = int(input())\nprint(f"넓이 {도구.넓이(가, 나)}")\nprint(f"둘레 {도구.둘레(가, 나)}")';
+const GUARD_MAIN = 'import 도구\n가 = int(input("첫째: "))\n나 = int(input("둘째: "))\nprint(f"큰 수 {도구.큰수(가, 나)}")\n';
+const ODD_TOOL = 'def 홀짝(수):\n    if 수 % 2 == 0:\n        return "짝"\n    return "홀"\n\n';
+const ODD_MAIN = 'import 도구\nfor i in range(3):\n    수 = int(input())\n    print(수, 도구.홀짝(수))';
+const DICE_MAIN = 'import 내도구\n\n이름들 = [input("첫째 이름: "), input("둘째 이름: ")]\n점수들 = []\nfor 이름 in 이름들:\n    합 = 0\n    for i in range(3):\n        합 += 내도구.주사위()\n    점수들.append(합)\n내도구.점수판(이름들, 점수들)\n결과 = 내도구.이긴사람(이름들, 점수들)\nif 결과 == "비김":\n    print("비겼어요")\nelse:\n    print(f"이긴 사람 {결과}")\n';
+const DICE_TOOL = 'from random import randint\n\ndef 주사위():\n    return randint(1, 6)\n\ndef 점수판(이름들, 점수들):\n    for 이름, 점수 in zip(이름들, 점수들):\n        print(이름, "■" * 점수, 점수)\n\ndef 이긴사람(이름들, 점수들):\n    높은 = max(점수들)\n    if 점수들.count(높은) > 1:\n        return "비김"\n    return 이름들[점수들.index(높은)]\n';
 const BEST = 'def 일등(표):\n    가장 = ""\n    높은 = -1\n    for 이름, 국어, 수학 in 표:\n        평균 = (국어 + 수학) / 2\n        if 평균 > 높은:\n            가장, 높은 = 이름, 평균\n    return 가장, round(높은, 1)\n';
 
 // 흔한 오답을 넣었을 때 의도한 말이 나오는가. [수업, 문제, 코드, 기대하는 종류, 기대하는 대사 열쇠]
@@ -921,6 +929,42 @@ const WRONG = [
   ['unit18-review', 'report', `${REPORT_START}${BEST}with open("성적표.txt", "w") as 파일:\n    for 이름, 국어, 수학 in 표:\n        print("{이름} 국어 {국어} 수학 {수학} 평균 {round((국어 + 수학) / 2, 1)}", file=파일)\n${REPORT_AVG}이름, 평균 = 일등(표)\nprint(f"1등 {이름} 평균 {평균}")`, 'missing-f'],
   ['unit18-review', 'report', `${REPORT_START}${REPORT_FILE}${REPORT_AVG}이름, 평균 = 일등(표)\nprint(f"1등 {이름} 평균 {평균}")`, 'error'],
   ['unit18-review', 'report', `${REPORT_START}def 일등(표):\n    평균들 = [(국어 + 수학) / 2 for 이름, 국어, 수학 in 표]\n    높은 = max(평균들)\n    return 표[평균들.index(높은)][0], round(높은, 1)\n${REPORT_FILE}${REPORT_AVG}가장, 점수 = 일등(표)\nprint("1등", 가장, "평균", 점수)`, 'correct'],
+  // 단원 19: 여섯째 칸은 모듈 탭들(없으면 문제의 시작 모듈)
+  ['mod-math', 'circle', 'import math\n지름 = int(input())\nprint(f"둘레 {round(지름 * math.pi, 1)}")\nprint(f"넓이 {round(지름 * 지름 * math.pi, 1)}")', 'mistake', 'circle-radius'],
+  ['mod-math', 'circle', 'import math\n지름 = int(input())\nprint("둘레", 지름 * math.pi)\nprint("넓이", 지름 / 2 * 지름 / 2 * math.pi)', 'mistake', 'circle-round'],
+  ['mod-math', 'circle', 'from math import pi\nd = int(input())\nprint("둘레", round(d * pi, 1))\nprint("넓이", round((d / 2) ** 2 * pi, 1))', 'correct'],
+  ['mod-math', 'box', 'import math\na = int(input())\nb = int(input())\nprint(f"상자 {a // b}개")', 'mistake', 'box-floor'],
+  ['mod-math', 'box', 'a = int(input())\nb = int(input())\nprint(f"상자 {round(a / b)}개")', 'mistake', 'box-round'],
+  ['mod-math', 'box', 'a = int(input())\nb = int(input())\nprint(f"상자 {(a + b - 1) // b}개")', 'mistake', 'need-ceil'],
+  ['mod-math', 'box', 'import math\na = int(input())\nb = int(input())\nprint(f"상자 {math.ceil(a / b)}개")', 'correct'],
+  ['mod-file', 'rect', 'def 넓이(a, b):\n    return a * b\ndef 둘레(a, b):\n    return (a + b) * 2\n가 = int(input())\n나 = int(input())\nprint("넓이", 넓이(가, 나))\nprint("둘레", 둘레(가, 나))', 'mistake', 'need-tool-def'],
+  ['mod-file', 'rect', 'def 넓이(a, b):\n    return a * b\ndef 둘레(a, b):\n    return (a + b) * 2\n가 = int(input())\n나 = int(input())\nprint("넓이", 넓이(가, 나))\nprint("둘레", 둘레(가, 나))', 'mistake', 'need-dot', { '도구.py': RECT_TOOL }],
+  ['mod-file', 'rect', RECT_MAIN, 'mistake', 'rect-paren', { '도구.py': RECT_TOOL.replace('(가로 + 세로) * 2', '가로 + 세로 * 2') }],
+  ['mod-file', 'rect', RECT_MAIN, 'mistake', 'tool-none', { '도구.py': RECT_TOOL.replace('return 가로 * 세로', 'print(가로 * 세로)') }],
+  ['mod-file', 'rect', RECT_MAIN, 'correct', null, { '도구.py': RECT_TOOL }],
+  ['mod-file', 'units', 'import 도구\n분 = int(input())\n길이 = int(input())\n시, 남은분 = 도구.시간(분)\nprint(f"{시}시간 {남은분}분")\n미, 센티 = 도구.미터(길이)\nprint(f"{미}m {센티}cm")', 'mistake', 'unit-swap', { '도구.py': 'def 시간(분):\n    return 분 % 60, 분 // 60\n\ndef 미터(cm):\n    return cm // 100, cm % 100\n' }],
+  ['mod-from', 'grade', 'import 도구\n점수들 = [int(input()) for i in range(3)]\n값 = 도구.평균(점수들)\nprint(f"평균 {값} 등급 {도구.등급(값)}")', 'mistake', 'need-from'],
+  ['mod-from', 'grade', 'from 도구 import 등급\n점수들 = [int(input()) for i in range(3)]\n값 = sum(점수들) / len(점수들)\nprint(f"평균 {값} 등급 {등급(값)}")', 'mistake', 'grade-round'],
+  ['mod-from', 'grade', 'from 도구 import 평균, 등급\n점수들 = [int(input()) for i in range(3)]\n평균 = 평균(점수들)\nprint(f"평균 {평균} 등급 {등급(평균)}")', 'correct'],
+  ['mod-from', 'two', 'from 길이 import 바꾸기\nfrom 무게 import 바꾸기\n미터 = int(input())\n킬로 = int(input())\nprint(f"{미터}m = {바꾸기(미터)}cm")\nprint(f"{킬로}kg = {바꾸기(킬로)}g")', 'mistake', 'two-from'],
+  ['mod-from', 'two', 'import 길이\nimport 무게\n미터 = int(input())\n킬로 = int(input())\nprint(f"{미터}m = {길이.바꾸기(미터)}cm")\nprint(f"{킬로}kg = {무게.바꾸기(킬로)}g")', 'mistake', 'need-as'],
+  ['mod-main', 'guard', GUARD_MAIN, 'mistake', 'still-test'],
+  ['mod-main', 'guard', GUARD_MAIN, 'mistake', 'need-guard', { '도구.py': 'def 큰수(a, b):\n    if a > b:\n        return a\n    return b\n' }],
+  ['mod-main', 'odd', ODD_MAIN, 'mistake', 'odd-test', { '도구.py': `${ODD_TOOL}print(홀짝(3))\n` }],
+  ['mod-main', 'odd', ODD_MAIN, 'mistake', 'odd-swap', { '도구.py': ODD_TOOL.replace('"짝"', '"?"').replace('"홀"', '"짝"').replace('"?"', '"홀"') }],
+  ['mod-main', 'odd', ODD_MAIN, 'mistake', 'need-guard2', { '도구.py': ODD_TOOL }],
+  ['mod-main', 'odd', ODD_MAIN, 'correct', null, { '도구.py': `${ODD_TOOL}if __name__ == "__main__":\n    print(홀짝(10))\n` }],
+  ['mod-data', 'quiz', '낱말들 = ["사과", "바다", "하늘", "나무"]\n뜻들 = ["apple", "sea", "sky", "tree"]\n맞음 = 0\nfor 낱말, 뜻 in zip(낱말들, 뜻들):\n    if input() == 뜻:\n        맞음 += 1\nprint(f"4개 중 {맞음}개 맞았어요")', 'mistake', 'need-data'],
+  ['mod-data', 'quiz', 'import 자료\n맞음 = 0\nfor 낱말, 뜻 in zip(자료.낱말들, 자료.뜻들):\n    답 = input()\n    if 답 == 뜻:\n        맞음 + 1\nprint(f"4개 중 {맞음}개 맞았어요")', 'mistake', 'quiz-count'],
+  ['mod-data', 'quiz', 'from 자료 import 낱말들, 뜻들\n맞음 = 0\nfor i in range(len(낱말들)):\n    if input(낱말들[i]) == 뜻들[i]:\n        맞음 += 1\nprint(len(낱말들), "개 중 ", 맞음, "개 맞았어요", sep="")', 'correct'],
+  ['mod-data', 'monster', 'from 캐릭터 import 몬스터\n몬스터들 = []\nfor i in range(3):\n    이름, 힘 = input().split()\n    몬스터들.append(몬스터(이름, 힘))\n가장 = 몬스터들[0]\nfor 하나 in 몬스터들:\n    print(하나.소개())\n    if 하나.힘 > 가장.힘:\n        가장 = 하나\nprint(f"가장 센 몬스터 {가장.이름}")', 'mistake', 'monster-text'],
+  ['unit19-review', 'fix', 'import 도구\n점수들 = [int(x) for x in input().split()]\nprint(f"평균 {도구.평균(점수들)}")', 'mistake', 'fix-test'],
+  ['unit19-review', 'fix', 'from 도구 import 평균\n점수들 = [int(x) for x in input().split()]\nprint(f"평균 {평균(점수들)}")', 'correct', null, { '도구.py': 'def 평균(수들):\n    return round(sum(수들) / len(수들), 1)\n' }],
+  ['unit19-review', 'fix', 'import 도구\n점수들 = [int(x) for x in input().split()]\nprint(f"평균 {평균(점수들)}")', 'error'],
+  ['unit19-review', 'dice', DICE_MAIN, 'mistake', 'dice-tie', { '내도구.py': DICE_TOOL.replace('    if 점수들.count(높은) > 1:\n        return "비김"\n', '') }],
+  ['unit19-review', 'dice', DICE_MAIN, 'mistake', 'dice-board', { '내도구.py': DICE_TOOL.replace('        print(이름, "■" * 점수, 점수)', '        return 이름') }],
+  ['unit19-review', 'dice', DICE_MAIN, 'mistake', 'tool-none', { '내도구.py': DICE_TOOL.replace('return 이름들[점수들.index(높은)]', 'print(이름들[점수들.index(높은)])') }],
+  ['unit19-review', 'dice', DICE_MAIN, 'correct', null, { '내도구.py': DICE_TOOL.replace('from random import randint', 'import random').replace('randint(1, 6)', 'random.randint(1, 6)') }],
 ];
 
 test('흔한 오답에 의도한 말이 나온다', () => {

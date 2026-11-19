@@ -308,4 +308,16 @@ export const PRACTICE_WRONG = [
   ['practice-18', 'p18-cards', '가 = [int(x) for x in input().split()]\n나 = [int(x) for x in input().split()]\n둘 = sorted(set([x for x in 가 if x in 나]))\nprint("둘 다", 둘)\nprint("모두", str(len(set(가 + 나))) + "가지")', 'correct'],
   ['practice-18', 'p18-wordcount', '낱말들 = input().split()\nfor 낱말 in 낱말들:\n    print(f"{낱말} {낱말들.count(낱말)}")', 'mistake', 'count-dup'],
   ['practice-18', 'p18-wordcount', '셈 = {}\nfor 낱말 in input().split():\n    if 낱말 in 셈:\n        셈[낱말] += 1\n    else:\n        셈[낱말] = 1\nfor 낱말 in sorted(셈):\n    print(낱말, 셈[낱말])', 'correct'],
+  // 단원 19 (여섯째 칸: 모듈 탭들)
+  ['practice-19', 'p19-side', 'import math\n넓이 = int(input())\nprint("한 변", math.sqrt(넓이))', 'mistake', 'side-round'],
+  ['practice-19', 'p19-side', '넓이 = int(input())\nprint(f"한 변 {round(넓이 ** 0.5, 1)}")', 'mistake', 'need-sqrt'],
+  ['practice-19', 'p19-fix-import', 'import 도구\n이름 = input()\nprint(인사(이름))', 'error'],
+  ['practice-19', 'p19-fix-import', 'from 도구 import 인사\n이름 = input()\nprint(인사(이름))', 'correct'],
+  ['practice-19', 'p19-word', 'import 도구\n낱말 = input()\n뒤집은 = 도구.거꾸로(낱말)\nprint(f"거꾸로 {뒤집은}")\nif 뒤집은 == 낱말:\n    print("앞뒤가 같아요")\nelse:\n    print("앞뒤가 달라요")', 'mistake', 'word-same', { '도구.py': 'def 거꾸로(글):\n    새글 = ""\n    for 글자 in 글:\n        새글 = 새글 + 글자\n    return 새글\n' }],
+  ['practice-19', 'p19-word', 'def 거꾸로(글):\n    새글 = ""\n    for 글자 in 글:\n        새글 = 글자 + 새글\n    return 새글\n낱말 = input()\nprint("거꾸로", 거꾸로(낱말))\nprint("앞뒤가 같아요" if 거꾸로(낱말) == 낱말 else "앞뒤가 달라요")', 'mistake', 'need-tool-def'],
+  ['practice-19', 'p19-fix-hidden', 'from 도구 import 합계\n합 = 0\n수들 = [int(x) for x in input().split()]\nprint(f"합 {합계(수들)}")', 'correct'],
+  ['practice-19', 'p19-shop', 'import 자료\n합 = 0\nfor 물건 in set(input().split()):\n    합 += 자료.가격[물건]\nprint(f"모두 {합}원")', 'mistake', 'shop-count'],
+  ['practice-19', 'p19-shop', '가격 = {"사과": 1000, "배": 2000, "귤": 500, "감": 800}\n합 = 0\nfor 물건 in input().split():\n    합 += 가격[물건]\nprint(f"모두 {합}원")', 'mistake', 'need-data'],
+  ['practice-19', 'p19-team', 'import 도구\n이름들 = input().split()\n인원 = int(input())\n모둠 = 도구.모둠수(len(이름들), 인원)\nprint(f"모둠 {모둠}개")\nfor i in range(모둠):\n    print(f"{i + 1}모둠:", " ".join(이름들[i * 인원:(i + 1) * 인원]))', 'mistake', 'team-ceil', { '도구.py': 'def 모둠수(사람, 인원):\n    return 사람 // 인원\n' }],
+  ['practice-19', 'p19-team', 'import math\nimport 도구\n이름들 = input().split()\n인원 = int(input())\n모둠 = math.ceil(len(이름들) / 인원)\nprint(f"모둠 {모둠}개")\nfor i in range(모둠):\n    print(f"{i + 1}모둠:", " ".join(이름들[i * 인원:(i + 1) * 인원]))', 'mistake', 'need-math-tool', { '도구.py': 'def 모둠수(사람, 인원):\n    return 0\n' }],
 ];

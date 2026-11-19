@@ -1,0 +1,199 @@
+{
+  "_설명": "파일 나눠 쓰기와 import 단원 2번 수업. 편집기에 main.py 옆 도구.py 탭이 처음 열린다. 도구.py에 def를 쓰고 main.py에서 import 도구, 도구.두배(3)으로 불러 쓴다. 한 줄씩 보기에서 도구의 함수를 부르면 도구.py 탭으로 넘어갔다 돌아오는 것을 보인다. 겨냥하는 오개념: 파일 이름이 곧 모듈 이름(.py는 빼고 쓴다), 앞에 도구.을 빼면 NameError, import는 함수를 만들어 둘 뿐 부르지는 않는다(예측 3). 쓰기는 도구.py에 넓이와 둘레 함수를 쓰고 main.py에서 불러 쓰기(두 파일 다 아이가 쓴다), 심화는 분을 시간과 분으로, cm를 m와 cm로 바꾸는 함수(튜플로 두 값 돌려주기).",
+  "id": "mod-file",
+  "unit": "파일 나눠 쓰기와 import",
+  "no": 2,
+  "title": "내 함수를 다른 파일에",
+  "desc": "도구.py에 함수를 써 두고, main.py에서 import로 불러 써요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes", "tries"],
+  "showVars": true,
+  "learned": [
+    { "rule": "함수를 도구.py에 써 두고, main.py에서 import로 불러와요. .py는 빼고 써요.", "code": "import 도구" },
+    { "rule": "부를 때는 모듈 이름, 점, 함수 이름 차례로 써요.", "code": "도구.두배(3)" },
+    { "rule": "한 줄씩 보면, 도구의 함수를 부를 때 도구.py 탭으로 갔다가 돌아와요." },
+    { "rule": "import는 함수를 만들어 둘 뿐이에요. 부를 때 비로소 함수 안이 돌아요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["함수 단원에서 함수를 많이 만들었어요. 그런데 다른 프로그램에서 같은 함수를 또 쓰려면 다시 쳐야 했어요. 오늘은 함수를 다른 파일에 써 두고 불러 써요. 지난 시간의 [math|매스]처럼, 내가 만든 모듈이에요."],
+    "tab-intro": ["편집기 위를 봐요. [main.py|메인 점 파이] 옆에 [도구.py|도구 점 파이] 탭을 열게요. 이 파일에 함수를 써 둘 거예요."],
+    "main-intro": ["이제 [main.py|메인 점 파이]로 돌아가서 불러 써요. [import|임포트] 뒤에 파일 이름을 쓰는데, [.py|점 파이]는 빼고 써요."],
+    "trace-after": ["[도구.두배|도구 점 두배]를 부르니까 [도구.py|도구 점 파이] 탭으로 넘어가서 함수를 하고, 값을 돌려주며 [main.py|메인 점 파이]로 돌아왔어요. 불러온 함수는 몇 번이든 부를 수 있어요."],
+    "dot-intro": ["앞에 도구와 점을 빼고 [두배(3)|두배 삼]이라고만 쓰면 어떻게 될까요?"],
+    "dot-after": ["오류가 났어요. 두배는 [도구.py|도구 점 파이] 안에 있어서, [도구.두배|도구 점 두배]처럼 모듈 이름과 점을 붙여야 찾아요. [math.sqrt|매스 점 스퀘어 루트]와 같아요."],
+    "check-ask": ["하나 물어볼게요. [도구.py|도구 점 파이]를 불러오는 줄은 어느 것일까요?"],
+    "check-right": ["맞아요. 파일 이름은 [도구.py|도구 점 파이]지만, [import|임포트] 뒤에는 [.py|점 파이]를 빼고 써요."],
+    "check-teach-1": ["파일 이름 끝의 [.py|점 파이]는 파이썬 파일이라는 표시예요."],
+    "check-teach-2": ["[import|임포트] 뒤에는 모듈 이름만 써요. 그래서 [import 도구|임포트 도구]예요."],
+    "follow-tabs": ["이제 직접 쳐 봐요. [도구.py|도구 점 파이] 탭을 눌러서 함수를 치고, [main.py|메인 점 파이] 탭을 눌러서 불러 쓰는 줄을 쳐요. 그다음 실행해요."],
+    "follow-ok": ["좋아요. 함수는 [도구.py|도구 점 파이]에, 부르는 줄은 [main.py|메인 점 파이]에 있어요."],
+    "summary": ["정리해요. 함수를 다른 파일에 써 두고 [import|임포트]로 불러와요. [.py|점 파이]는 빼고 쓰고, 부를 때는 모듈 이름과 점을 붙여요."],
+
+    "q1-right": ["맞아요. [도구.더하기(2, 3)|도구 점 더하기 이 삼]이 [5|오]를 돌려주고, 곱하기 [10|십]이라서 [50|오십]이에요."],
+    "q1-before": ["[도구.더하기|도구 점 더하기]가 돌려준 [5|오]에 [10|십]을 곱해요."],
+    "q1-text": ["[return a + b|리턴 에이 더하기 비]는 숫자를 더해요. 글자를 잇는 것이 아니에요."],
+    "q1-explain": ["[50|오십]이 나와요."],
+    "q2-right": ["맞아요. 두배는 [도구.py|도구 점 파이] 안에 있어서, 앞에 도구와 점이 없으면 찾지 못해요."],
+    "q2-ok": ["[import 도구|임포트 도구]를 했어도 두배는 [도구.두배|도구 점 두배]로 불러야 해요."],
+    "q2-explain": ["[NameError|네임 에러]가 나요. [도구.두배(4)|도구 점 두배 사]라고 써야 해요."],
+    "q3-right": ["맞아요. [import|임포트]는 함수를 만들어 둘 뿐이에요. 시작이 먼저 나오고, 부를 때마다 안녕이 나와요."],
+    "q3-import": ["[import|임포트]할 때 함수 안의 [print|프린트]가 도는 것은 아니에요. 부를 때 돌아요."],
+    "q3-once": ["[도구.인사()|도구 점 인사]를 두 번 불렀어요. 부를 때마다 안녕이 나와요."],
+    "q3-explain": ["시작, 안녕, 안녕이 나와요."],
+
+    "task-how": ["두 탭을 다 써요. 다 쓰면 실행해서 가로와 세로를 넣어 보고, 칠판과 같으면 '제출'을 눌러요."],
+    "need-tool-def": ["답은 맞아요. 이번에는 넓이와 둘레 함수를 [도구.py|도구 점 파이] 탭에 [def|데프]로 써 봐요."],
+    "need-dot": ["답은 맞아요. [main.py|메인 점 파이]에서는 [import 도구|임포트 도구]로 불러서, [도구.넓이|도구 점 넓이]처럼 써 봐요."],
+    "praise-rect": ["넓이와 둘레를 구하는 함수를 [도구.py|도구 점 파이]에 두고, [main.py|메인 점 파이]에서는 묻고 불러서 내보내기만 했어요."],
+    "rect-paren": ["둘레가 달라요. 가로 더하기 세로를 먼저 하고 [2|이]를 곱해야 해요. 괄호로 묶어요."],
+    "tool-none": ["[None|논]이 나왔어요. [도구.py|도구 점 파이]의 함수가 값을 [print|프린트]만 하고 [return|리턴]으로 돌려주지 않았어요."],
+    "rect-hint-1": ["[도구.py|도구 점 파이] 탭에 [def 넓이(가로, 세로):|데프 넓이 가로 쉼표 세로]를 쓰고, 곱한 값을 [return|리턴]해요. 둘레 함수도 같은 모양으로 하나 더 써요."],
+    "rect-hint-2": ["[main.py|메인 점 파이]에는 맨 위에 [import 도구|임포트 도구]를 쓰고, 가로와 세로를 숫자로 받아서 [도구.넓이(가로, 세로)|도구 점 넓이 가로 쉼표 세로]처럼 불러요."],
+    "need-tool-def2": ["답은 맞아요. 이번에는 시간과 미터 함수를 [도구.py|도구 점 파이] 탭에 [def|데프]로 써 봐요."],
+    "praise-unit": ["몫과 나머지를 함께 돌려주는 함수 둘을 [도구.py|도구 점 파이]에 두고, [main.py|메인 점 파이]에서 이름표 두 개로 받아 썼어요."],
+    "unit-swap": ["시간과 분이 바뀌었어요. 나누기 [60|육십]의 몫이 시간, 나머지가 분이에요. 돌려주는 차례와 받는 차례를 맞춰요."],
+    "unit-hint-1": ["[도구.py|도구 점 파이]에 [def 시간(분):|데프 시간 분]을 만들고, 몫과 나머지를 쉼표로 함께 [return|리턴]해요. 미터 함수는 [100|백]으로 나눠요."],
+    "unit-hint-2": ["[main.py|메인 점 파이]에서 [시, 남은분 = 도구.시간(분)|시 쉼표 남은분 등호 도구 점 시간 분]처럼 이름표 두 개로 받아요."],
+
+    "done-1": ["오늘은 내가 만든 함수를 다른 파일에 두고 불러 썼어요."],
+    "done-2": ["다음 시간에는 도구를 붙이지 않고 짧게 불러오는 법을 배워요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "파일 두 개", "items": ["도구.py  함수를 써 두는 파일", "main.py  import 도구 로 불러 써요", "파일 이름이 곧 모듈 이름 (.py는 빼고)"] } },
+      { "say": "tab-intro" },
+      { "modules": { "도구.py": "" } },
+      { "type": "def 두배(x):\n    return x * 2\n", "file": "도구.py" },
+      { "say": "main-intro" },
+      { "type": "import 도구\nprint(도구.두배(3))\nprint(도구.두배(10))" },
+      { "say": "watch-run" },
+      { "trace": "import 도구\nprint(도구.두배(3))\nprint(도구.두배(10))" },
+      { "say": "trace-after" }
+    ],
+    [
+      { "card": { "title": "앞에 도구와 점", "items": ["도구.두배(3)  된다", "두배(3)  오류: 어느 파일의 두배인지 모른다"] } },
+      { "say": "dot-intro" },
+      { "type": "import 도구\nprint(두배(3))" },
+      { "trace": "import 도구\nprint(두배(3))", "expectError": "NameError" },
+      { "say": "dot-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "도구.py를 불러오는 줄은?",
+          "ask": "check-ask",
+          "choices": ["import 도구.py", "import 도구"],
+          "answer": 1,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "card": { "title": "따라 쳐요 (탭 두 개)", "code": "# 도구.py\ndef 인사(이름):\n    return \"안녕, \" + 이름\n\n# main.py\nimport 도구\nprint(도구.인사(\"하늘\"))" } },
+      { "follow": { "code": "import 도구\nprint(도구.인사(\"하늘\"))", "modules": { "도구.py": "def 인사(이름):\n    return \"안녕, \" + 이름\n" }, "expect": ["안녕, 하늘"], "say": ["follow-tabs", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "modules": {} },
+      { "card": { "title": "오늘 배운 것", "items": ["도구.py에 def로 함수를 써 둔다", "import 도구  (.py는 빼고)", "도구.두배(3)  모듈 이름, 점, 함수 이름", "한 줄씩 보면 도구.py로 갔다가 돌아온다"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "modules": { "도구.py": "def 더하기(a, b):\n    return a + b\n" },
+      "code": "import 도구\n합 = 도구.더하기(2, 3)\nprint(합 * 10)",
+      "answer": 1,
+      "choices": [
+        { "text": "5", "say": "q1-before" },
+        { "text": "50", "say": "q1-right" },
+        { "text": "2310", "say": "q1-text" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "modules": { "도구.py": "def 두배(x):\n    return x * 2\n" },
+      "code": "import 도구\nprint(두배(4))",
+      "outcome": { "error": "NameError", "output": [] },
+      "answer": 1,
+      "choices": [
+        { "text": "8", "say": "q2-ok" },
+        { "text": "오류가 나요", "say": "q2-right" },
+        { "text": "4", "say": "q2-ok" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "modules": { "도구.py": "def 인사():\n    print(\"안녕\")\n" },
+      "code": "import 도구\nprint(\"시작\")\n도구.인사()\n도구.인사()",
+      "answer": 1,
+      "choices": [
+        { "text": "안녕\n시작\n안녕\n안녕", "say": "q3-import" },
+        { "text": "시작\n안녕\n안녕", "say": "q3-right" },
+        { "text": "시작\n안녕", "say": "q3-once" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "rect",
+      "title": "넓이와 둘레 도구",
+      "story": "도구.py에 직사각형의 넓이를 돌려주는 함수 넓이(가로, 세로)와 둘레를 돌려주는 함수 둘레(가로, 세로)를 써요. main.py에서는 가로와 세로를 물어서, 도구의 두 함수를 불러 \"넓이 12\", \"둘레 14\"처럼 내보내요.",
+      "steps": ["도구.py 탭에 def 넓이(가로, 세로): 와 def 둘레(가로, 세로): 를 써요. 둘 다 return으로 돌려줘요.", "main.py 탭에 import 도구 를 쓰고, 가로와 세로를 숫자로 받아요.", "도구.넓이(가로, 세로)처럼 불러서 \"넓이 12\", \"둘레 14\"처럼 내보내요."],
+      "modules": { "도구.py": "" },
+      "cases": [
+        { "inputs": ["3", "4"], "expect": ["넓이 12", "둘레 14"] },
+        { "inputs": ["5", "5"], "expect": ["넓이 25", "둘레 20"] },
+        { "inputs": ["10", "2"], "expect": ["넓이 20", "둘레 24"] }
+      ],
+      "expect": ["넓이 12", "둘레 14"],
+      "show": true,
+      "checks": [
+        { "in": "도구.py", "pattern": "def\\s+넓이[\\s\\S]*def\\s+둘레|def\\s+둘레[\\s\\S]*def\\s+넓이", "say": "need-tool-def" },
+        { "pattern": "도구\\.|from\\s+도구", "say": "need-dot" }
+      ],
+      "mistakes": [
+        { "output": "None", "say": "tool-none" },
+        { "inputs": "^3,4$", "output": "^넓이 12\\n둘레 11$", "say": "rect-paren" }
+      ],
+      "praise": "praise-rect",
+      "solution": "import 도구\n가로 = int(input(\"가로: \"))\n세로 = int(input(\"세로: \"))\nprint(f\"넓이 {도구.넓이(가로, 세로)}\")\nprint(f\"둘레 {도구.둘레(가로, 세로)}\")",
+      "solutionModules": { "도구.py": "def 넓이(가로, 세로):\n    return 가로 * 세로\n\ndef 둘레(가로, 세로):\n    return (가로 + 세로) * 2\n" },
+      "hints": [{ "say": "rect-hint-1" }, { "say": "rect-hint-2" }]
+    }
+  ],
+
+  "challenge": {
+    "id": "units",
+    "title": "심화: 단위 바꾸기 도구",
+    "story": "도구.py에 분을 받아 (시간, 분)을 돌려주는 함수 시간(분)과, cm를 받아 (m, cm)를 돌려주는 함수 미터(cm)를 써요. main.py에서는 분과 cm를 차례로 물어서 \"2시간 15분\", \"2m 50cm\"처럼 내보내요.",
+    "steps": ["도구.py에 def 시간(분): 은 분 // 60, 분 % 60 을 함께 돌려줘요. def 미터(cm): 는 100으로 나눠요.", "main.py에서 분과 cm를 숫자로 받아요.", "이름표 두 개로 받아서 \"2시간 15분\", \"2m 50cm\"처럼 내보내요."],
+    "modules": { "도구.py": "" },
+    "cases": [
+      { "inputs": ["135", "250"], "expect": ["2시간 15분", "2m 50cm"] },
+      { "inputs": ["60", "99"], "expect": ["1시간 0분", "0m 99cm"] },
+      { "inputs": ["5", "300"], "expect": ["0시간 5분", "3m 0cm"] }
+    ],
+    "expect": ["2시간 15분", "2m 50cm"],
+    "show": true,
+    "checks": [
+      { "in": "도구.py", "pattern": "def\\s+시간[\\s\\S]*def\\s+미터|def\\s+미터[\\s\\S]*def\\s+시간", "say": "need-tool-def2" },
+      { "pattern": "도구\\.|from\\s+도구", "say": "need-dot" }
+    ],
+    "mistakes": [{ "inputs": "^135,", "output": "^15시간 2분", "say": "unit-swap" }, { "output": "None", "say": "tool-none" }],
+    "praise": "praise-unit",
+    "solution": "import 도구\n분 = int(input(\"분: \"))\n길이 = int(input(\"cm: \"))\n시, 남은분 = 도구.시간(분)\nprint(f\"{시}시간 {남은분}분\")\n미, 센티 = 도구.미터(길이)\nprint(f\"{미}m {센티}cm\")",
+    "solutionModules": { "도구.py": "def 시간(분):\n    return 분 // 60, 분 % 60\n\ndef 미터(cm):\n    return cm // 100, cm % 100\n" },
+    "hints": [{ "say": "unit-hint-1" }, { "say": "unit-hint-2" }]
+  }
+}
