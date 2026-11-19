@@ -1,0 +1,1652 @@
+{
+  "_설명": "큰 게임 만들기(미로 탈출) 단원 4번 수업. 넷째 기능: 판이 셋. 만드는 방법은 자료와 코드 나누기: 판은 자료(지도들 리스트)이고 새 판을 더할 때 코드는 고치지 않는다. 지도 셋을 아이가 손으로 치기는 어려워서 선생님이 미로지도.py(고칠 수 없게)에 담아 주고 from 미로지도 import 지도들 한 줄로 불러온다(파일 나눠 쓰기 단원보다 앞이라서 \"불러오는 한 줄\"로만 풀어 준다). 글자 → 색은 딕셔너리, 시작 칸은 표에서 S를 찾는 메서드 처음으로. 판을 바꿀 때는 판번호를 올리고, 마지막 판 다음은 \"다 깼어요!\"(아니면 지도들에 없는 번호라서 오류). 3판은 보석이 넷이라서 처음수를 다시 세지 않으면 판의 글자가 틀린다. 쓰기 둘: 자료로 나누기(겉모습은 그대로, 코드 점검), 다음 판. 심화(판 번호 쓰기)는 다음 수업이 이어 받지 않는다.",
+  "id": "maze-level",
+  "unit": "큰 게임 만들기: 미로 탈출",
+  "no": 4,
+  "title": "여러 판",
+  "desc": "지도를 자료로 나눠 판을 셋으로 늘리고, 출구에 가면 다음 판으로 넘어가요.",
+  "minutes": 25,
+  "knows": [
+    "variables",
+    "loops",
+    "functions",
+    "classes"
+  ],
+  "canvas": true,
+  "project": "미로",
+  "saveAs": "미로 탈출",
+  "learned": [
+    {
+      "rule": "판은 자료예요. 지도들 리스트에 지도를 더하면 판이 늘고, 코드는 그대로예요.",
+      "code": "지도 = 지도들[판번호]"
+    },
+    {
+      "rule": "글자마다 색은 딕셔너리로 정해요. 새 글자를 더할 때 if를 늘리지 않아도 돼요.",
+      "code": "색들 = {\"#\": \"brown\", \"E\": \"green\"}"
+    },
+    {
+      "rule": "판 번호가 지도들의 길이와 같아지면 다 깬 거예요. 그 번호의 지도는 없어요."
+    }
+  ],
+  "done": [
+    "done-1",
+    "done-2",
+    "done-bye"
+  ],
+  "lines": {
+    "today": [
+      "오늘은 넷째 기능, 판을 셋으로 늘려요. 출구로 나가면 다음 판이 나와요."
+    ],
+    "data-intro": [
+      "오늘의 방법은 자료와 코드 나누기예요. 판은 자료예요. 지도를 더하면 판이 늘고, 게임을 돌리는 코드는 고치지 않아요."
+    ],
+    "file-intro": [
+      "지도 셋을 다 치기는 힘들어서, 선생님이 [미로지도.py|미로지도 점 파이] 파일에 담아 뒀어요. 탭을 눌러 보면 지도들 리스트 안에 지도가 셋 있어요. 이 파일은 지금은 고칠 수 없어요."
+    ],
+    "import-intro": [
+      "[main.py|메인 점 파이] 맨 위에서 [from 미로지도 import 지도들|프롬 미로지도 임포트 지도들] 한 줄로 불러와요. [import turtle|임포트 터틀]처럼, 이번에는 선생님이 만든 파일에서 가져오는 거예요. 파일을 나눠 쓰는 것은 나중 단원에서 자세히 배워요."
+    ],
+    "level-intro": [
+      "판번호는 [0|영]에서 시작해요. 지금 판의 지도는 지도들에서 판번호째 지도예요. 전에 쓰던 지도라는 이름을 그대로 써서, 다른 코드는 고칠 게 없어요."
+    ],
+    "dict-intro": [
+      "글자마다 색은 딕셔너리로 정해요. 칸의 글자가 색들에 있으면 그 색으로 칠해요. 새 글자에 색을 주고 싶으면 딕셔너리에 하나만 더하면 돼요. 판을 다시 그릴 때는 붓으로 그린 것을 먼저 지워요."
+    ],
+    "start-intro": [
+      "판마다 시작 자리가 달라요. 그래서 탐험가는 표에서 [S|에스]를 찾아 그 칸에 서요. 표 단원에서 하던 찾기예요. 메서드 이름은 처음으로예요."
+    ],
+    "next-intro": [
+      "출구로 나가면 판번호를 하나 올려요. 판번호가 지도들의 길이와 같으면 마지막 판까지 깬 거예요. 아니면 그 판의 지도로 바꾸고, 다시 그리고, 보석 수를 다시 세고, 탐험가를 처음으로 보내요."
+    ],
+    "next-try": [
+      "첫 판을 깨 볼게요."
+    ],
+    "next-after": [
+      "둘째 판이 나왔어요. 지도도, 보석도, 시작 자리도 바뀌었어요. 코드는 하나도 고치지 않았어요."
+    ],
+    "check-ask": [
+      "하나 물어볼게요. 판이 셋인데 판번호가 [3|삼]이 되었을 때, 지도들에서 판번호째 지도를 꺼내면 어떻게 될까요?"
+    ],
+    "check-right": [
+      "맞아요. 번호는 [0|영], [1|일], [2|이]까지예요. 그래서 꺼내기 전에 다 깼는지 먼저 물어요."
+    ],
+    "check-teach-1": [
+      "리스트의 번호는 [0|영]부터예요. 셋이면 [2|이]가 마지막이에요. [3|삼]째는 없어서 오류예요."
+    ],
+    "follow-ok": [
+      "좋아요. 점은 색들에 없어서 건너뛰고, 샵과 [E|이]만 색이 나왔어요."
+    ],
+    "summary": [
+      "정리해요. 판은 자료로 나누고, 글자의 색은 딕셔너리로 정해요. 판번호가 지도들의 길이와 같으면 다 깬 거예요."
+    ],
+    "q1-right": [
+      "맞아요. 판번호가 두 번 올라 [2|이]가 됐고, [2|이]째는 셋째인 다예요."
+    ],
+    "q1-one": [
+      "판번호는 [0|영]에서 두 번 올라 [2|이]예요. [2|이]째는 셋째 것이에요."
+    ],
+    "q1-error": [
+      "[2|이]째는 있어요. 셋이니까 [0|영], [1|일], [2|이]까지 있어요."
+    ],
+    "q1-explain": [
+      "다가 나와요."
+    ],
+    "q2-right": [
+      "맞아요. 점은 색들에 없어서 [else|엘스]로 가요. 차례대로 [brown|브라운], 없음, [green|그린]이에요."
+    ],
+    "q2-skip": [
+      "[else|엘스]가 있어서 점일 때도 한 줄이 나와요."
+    ],
+    "q2-error": [
+      "먼저 색들에 있는지 물어서, 없는 글자로 꺼내지 않아요. 오류가 나지 않아요."
+    ],
+    "q2-explain": [
+      "[brown|브라운], 없음, [green|그린]이 나와요."
+    ],
+    "q3-right": [
+      "맞아요. 셋이니까 번호는 [2|이]까지예요. [3|삼]째는 없어서 오류가 나요."
+    ],
+    "q3-last": [
+      "[3|삼]째는 넷째예요. 셋밖에 없어요."
+    ],
+    "q3-wrap": [
+      "리스트는 끝에서 처음으로 돌아가지 않아요."
+    ],
+    "q3-explain": [
+      "번호가 리스트 밖이라는 오류가 나요."
+    ],
+    "task-intro": [
+      "이제 써 봐요. 두 문제예요. 먼저 지도와 색을 자료로 나누고, 그다음 다음 판으로 넘어가게 해요."
+    ],
+    "task-how": [
+      "다 쓰면 실행해서 화살표 키로 해 보고, 멈춤 버튼으로 멈춰요. 잘 되면 '제출'을 눌러요."
+    ],
+    "praise-data": [
+      "지도는 미로지도에서 불러오고, 색은 딕셔너리로, 시작 칸은 표에서 찾았어요. 겉모습은 그대로인데 판을 더할 준비가 됐어요."
+    ],
+    "data-import": [
+      "[main.py|메인 점 파이] 맨 위에서 [from 미로지도 import 지도들|프롬 미로지도 임포트 지도들]로 불러오고, 내가 친 지도 리스트는 지워요. 지도는 지도들에서 판번호째로 꺼내요."
+    ],
+    "data-dict": [
+      "이번에는 글자마다 색을 색들 딕셔너리로 정하고, 지도그리기에서 글자가 색들에 있으면 그 색으로 칠해 봐요."
+    ],
+    "data-start": [
+      "이번에는 탐험가가 표에서 [S|에스]를 찾아 서게 해 봐요. 메서드 처음으로를 만들고, [__init__|이닛]에서 불러요."
+    ],
+    "data-pos": [
+      "탐험가나 보석의 자리가 달라요. 처음으로는 지도에서 글자가 [S|에스]인 칸을 찾아 줄과 칸에 넣고, 보이기를 불러요. 나는 [탐험가()|탐험가 괄호]로 만들어요."
+    ],
+    "data-hint-1": [
+      "맨 위: [from 미로지도 import 지도들|프롬 미로지도 임포트 지도들], [판번호 = 0|판번호 같다 영], 지도 같다 지도들의 판번호째. 내가 친 지도 리스트는 지워요. 칠판의 색들과 지도그리기로 바꿔요."
+    ],
+    "data-hint-2": [
+      "탐험가의 [__init__|이닛]은 [self|셀프]만 받고 마지막에 처음으로를 불러요. 칠판의 처음으로 메서드를 더하고, [나 = 탐험가()|나 같다 탐험가 괄호]로 만들어요."
+    ],
+    "task-next": [
+      "이번에는 다음 판이에요. 출구로 나가면 다음 판이 나오고, 셋째 판까지 깨면 다 깼어요라고 써요."
+    ],
+    "praise-next": [
+      "출구로 나가면 판번호를 올리고, 마지막 판인지 먼저 물었어요. 다음 판의 지도로 바꾸고, 다시 그리고, 보석을 다시 세고, 탐험가를 처음으로 보냈어요."
+    ],
+    "next-count": [
+      "판의 보석 수가 달라요. 셋째 판에는 보석이 넷이에요. 새 판을 그린 다음 [처음수 = len(보석들)|처음수 같다 렌 보석들]로 다시 세고 판쓰기를 불러요."
+    ],
+    "next-start": [
+      "다음 판에서 탐험가의 자리가 달라요. 새 판을 그린 다음 [나.처음으로()|나 점 처음으로 괄호]로 그 판의 [S|에스]에 보내요."
+    ],
+    "next-gems": [
+      "보이는 보석의 수가 달라요. 새 판의 지도로 바꾼 다음에 지도그리기를 불러야, 그 판의 보석이 만들어져요."
+    ],
+    "next-text": [
+      "판의 글자가 달라요. 마지막 판까지 깨면 판을 지우고 다 깼어요와 느낌표를 쓰고 반복을 끝내요."
+    ],
+    "next-hint-1": [
+      "탈출을 묻던 [if|이프] 안을 바꿔요. 판번호를 하나 올리고, 판번호가 [len(지도들)|렌 지도들]과 같으면 다 깼어요를 쓰고 [break|브레이크]."
+    ],
+    "next-hint-2": [
+      "아니면 지도 같다 지도들의 판번호째, 지도그리기, 처음수 다시 세기, 판쓰기, [나.처음으로()|나 점 처음으로]."
+    ],
+    "praise-no": [
+      "판 번호는 [0|영]부터인데 사람은 [1|일]판부터 세니까, 쓸 때만 하나 더했어요."
+    ],
+    "no-text": [
+      "판의 글자가 달라요. 맨 앞에 판번호 더하기 [1|일]과 판을 쓰고, 빈칸 둘 다음에 보석을 써요. 첫 판이 [1|일]판이에요."
+    ],
+    "no-hint-1": [
+      "판쓰기에서 [str(판번호 + 1) + \"판  보석 \"|에스티알 판번호 더하기 일, 더하기 판 빈칸 둘 보석]으로 시작해요."
+    ],
+    "done-1": [
+      "넷째 기능을 넣었어요. 이제 판이 셋이에요."
+    ],
+    "done-2": [
+      "판을 더하고 싶으면 지도만 더하면 돼요. 단원 마무리에서는 내 미로를 더해요. 다음 수업에서는 유령이 나와요."
+    ]
+  },
+  "lecture": [
+    [
+      {
+        "say": "greet"
+      },
+      {
+        "say": "today"
+      },
+      {
+        "say": "data-intro"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "modules": {
+          "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#.......#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#...#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#.....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#.....#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+        },
+        "locked": [
+          "미로지도.py"
+        ]
+      },
+      {
+        "say": "file-intro"
+      },
+      {
+        "card": {
+          "title": "main.py 맨 위",
+          "code": "from 미로지도 import 지도들\n판번호 = 0\n지도 = 지도들[판번호]"
+        }
+      },
+      {
+        "say": "import-intro"
+      },
+      {
+        "say": "level-intro"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "card": {
+          "title": "글자 → 색",
+          "code": "색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\ndef 지도그리기():\n    붓.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))"
+        }
+      },
+      {
+        "say": "dict-intro"
+      },
+      {
+        "card": {
+          "title": "탐험가: 시작 칸 찾기",
+          "code": "    def __init__(self):\n        ...\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()"
+        }
+      },
+      {
+        "say": "start-intro"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "card": {
+          "title": "다음 판 (놀이의 반복 안)",
+          "code": "if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n    판번호 = 판번호 + 1\n    if 판번호 == len(지도들):\n        판.clear()\n        판.write(\"다 깼어요!\")\n        break\n    지도 = 지도들[판번호]\n    지도그리기()\n    처음수 = len(보석들)\n    판쓰기()\n    나.처음으로()"
+        }
+      },
+      {
+        "say": "next-intro"
+      },
+      {
+        "say": "next-try"
+      },
+      {
+        "play": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판번호 = 판번호 + 1\n        if 판번호 == len(지도들):\n            판.clear()\n            판.write(\"다 깼어요!\")\n            break\n        지도 = 지도들[판번호]\n        지도그리기()\n        처음수 = len(보석들)\n        판쓰기()\n        나.처음으로()\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+        "keys": [
+          [
+            600,
+            "Down"
+          ],
+          [
+            760,
+            "Down"
+          ],
+          [
+            920,
+            "Down"
+          ],
+          [
+            1080,
+            "Down"
+          ],
+          [
+            1240,
+            "Right"
+          ],
+          [
+            1400,
+            "Right"
+          ],
+          [
+            1560,
+            "Up"
+          ],
+          [
+            1720,
+            "Up"
+          ],
+          [
+            1880,
+            "Down"
+          ],
+          [
+            2040,
+            "Down"
+          ],
+          [
+            2200,
+            "Down"
+          ],
+          [
+            2360,
+            "Down"
+          ],
+          [
+            2520,
+            "Left"
+          ],
+          [
+            2680,
+            "Left"
+          ],
+          [
+            2840,
+            "Down"
+          ],
+          [
+            3000,
+            "Down"
+          ],
+          [
+            3160,
+            "Right"
+          ],
+          [
+            3320,
+            "Right"
+          ],
+          [
+            3480,
+            "Right"
+          ],
+          [
+            3640,
+            "Right"
+          ],
+          [
+            3800,
+            "Right"
+          ],
+          [
+            3960,
+            "Right"
+          ],
+          [
+            4120,
+            "Up"
+          ],
+          [
+            4280,
+            "Up"
+          ],
+          [
+            4440,
+            "Left"
+          ],
+          [
+            4600,
+            "Left"
+          ],
+          [
+            4760,
+            "Up"
+          ],
+          [
+            4920,
+            "Up"
+          ],
+          [
+            5080,
+            "Right"
+          ],
+          [
+            5240,
+            "Right"
+          ],
+          [
+            5400,
+            "Right"
+          ],
+          [
+            5560,
+            "Right"
+          ],
+          [
+            5720,
+            "Down"
+          ],
+          [
+            5880,
+            "Down"
+          ],
+          [
+            6040,
+            "Right"
+          ],
+          [
+            6200,
+            "Right"
+          ],
+          [
+            6360,
+            "Down"
+          ],
+          [
+            6520,
+            "Down"
+          ],
+          [
+            6680,
+            "Right"
+          ],
+          [
+            6840,
+            "Right"
+          ]
+        ],
+        "ms": 8500
+      },
+      {
+        "say": "next-after"
+      },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "판이 셋인데 판번호가 3이 되면, 지도들[판번호]는?",
+          "ask": "check-ask",
+          "choices": [
+            "없는 번호라서 오류",
+            "첫 판으로 돌아가요"
+          ],
+          "answer": 0,
+          "right": [
+            {
+              "say": "check-right"
+            }
+          ],
+          "teach": [
+            {
+              "say": "check-teach-1"
+            }
+          ]
+        }
+      }
+    ],
+    [
+      {
+        "card": {
+          "title": "따라 쳐요",
+          "code": "색들 = {\"#\": \"brown\", \"E\": \"green\"}\nfor 글자 in \"#.E\":\n    if 글자 in 색들:\n        print(글자, 색들[글자])"
+        }
+      },
+      {
+        "follow": {
+          "code": "색들 = {\"#\": \"brown\", \"E\": \"green\"}\nfor 글자 in \"#.E\":\n    if 글자 in 색들:\n        print(글자, 색들[글자])",
+          "expect": [
+            "# brown",
+            "E green"
+          ],
+          "say": [
+            "follow-intro",
+            "follow-done"
+          ]
+        }
+      },
+      {
+        "say": "follow-ok"
+      }
+    ],
+    [
+      {
+        "card": {
+          "title": "오늘 배운 것",
+          "items": [
+            "판은 자료: 지도들[판번호]",
+            "글자 → 색은 딕셔너리",
+            "판번호 == len(지도들) 이면 다 깼다"
+          ]
+        }
+      },
+      {
+        "say": "summary"
+      },
+      {
+        "say": "to-predict"
+      }
+    ]
+  ],
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "지도들 = [\"가\", \"나\", \"다\"]\n판번호 = 0\nfor i in range(2):\n    판번호 = 판번호 + 1\nprint(지도들[판번호])",
+      "answer": 0,
+      "choices": [
+        {
+          "text": "다",
+          "say": "q1-right"
+        },
+        {
+          "text": "나",
+          "say": "q1-one"
+        },
+        {
+          "text": "오류가 나요",
+          "say": "q1-error"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "색들 = {\"#\": \"brown\", \"E\": \"green\"}\nfor 글자 in \"#.E\":\n    if 글자 in 색들:\n        print(색들[글자])\n    else:\n        print(\"없음\")",
+      "answer": 1,
+      "choices": [
+        {
+          "text": "brown\ngreen",
+          "say": "q2-skip"
+        },
+        {
+          "text": "brown\n없음\ngreen",
+          "say": "q2-right"
+        },
+        {
+          "text": "오류가 나요",
+          "say": "q2-error"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "지도들 = [\"가\", \"나\", \"다\"]\n판번호 = 3\nprint(지도들[판번호])",
+      "outcome": {
+        "error": "IndexError",
+        "output": []
+      },
+      "answer": 2,
+      "choices": [
+        {
+          "text": "다",
+          "say": "q3-last"
+        },
+        {
+          "text": "가",
+          "say": "q3-wrap"
+        },
+        {
+          "text": "오류가 나요",
+          "say": "q3-right"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "data",
+      "title": "자료로 나누기",
+      "story": "지도는 미로지도.py에서 불러오고, 글자마다 색은 딕셔너리로 정하고, 탐험가는 지도에서 S를 찾아 서요. 겉모습은 전과 같아요.",
+      "steps": [
+        "내가 친 지도 = [...] 를 지우고, 맨 위에 from 미로지도 import 지도들, 판번호 = 0, 지도 = 지도들[판번호]",
+        "색들 = {\"#\": \"brown\", \"E\": \"green\"} 을 만들고, 지도그리기를 아래처럼 바꿔요.",
+        "색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\ndef 지도그리기():\n    붓.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))",
+        "탐험가: __init__(self)로 바꾸고 줄과 칸을 받지 않아요. 마지막 줄은 self.처음으로()",
+        "메서드 처음으로: 지도에서 \"S\"인 칸을 찾아 self.줄과 self.칸에 넣고 self.보이기()",
+        "나 = 탐험가()"
+      ],
+      "continues": [
+        "maze-gem/exit"
+      ],
+      "start": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n            elif 지도[줄][칸] == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판.clear()\n        판.write(\"탈출!\")\n        break\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+      "modules": {
+        "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#.......#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#...#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#.....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#.....#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+      },
+      "lockModules": [
+        "미로지도.py"
+      ],
+      "cases": [
+        {
+          "keys": [],
+          "frames": 3,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            null,
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null
+          ],
+          "frames": 88,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 1,
+      "checks": [
+        {
+          "pattern": "from\\s+미로지도\\s+import\\s+지도들",
+          "say": "data-import"
+        },
+        {
+          "pattern": "색들\\s*=\\s*\\{",
+          "say": "data-dict"
+        },
+        {
+          "pattern": "def\\s+처음으로",
+          "say": "data-start"
+        }
+      ],
+      "mistakes": [
+        {
+          "game": "game-pos",
+          "say": "data-pos"
+        },
+        {
+          "game": "game-count",
+          "say": "data-pos"
+        }
+      ],
+      "praise": "praise-data",
+      "solution": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판.clear()\n        판.write(\"탈출!\")\n        break\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+      "solutionModules": {
+        "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#.......#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#...#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#.....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#.....#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+      },
+      "hints": [
+        {
+          "say": "data-hint-1"
+        },
+        {
+          "say": "data-hint-2"
+        }
+      ]
+    },
+    {
+      "id": "next",
+      "title": "다음 판",
+      "story": "보석을 다 줍고 출구에 서면 다음 판으로 넘어가요. 새 판을 그리고, 보석을 다시 세고, 탐험가는 그 판의 S에 서요. 셋째 판까지 깨면 판에 \"다 깼어요!\"라고 쓰고 끝나요.",
+      "steps": [
+        "탈출을 묻던 if 안을 바꿔요(아래 코드).",
+        "if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n    판번호 = 판번호 + 1\n    if 판번호 == len(지도들):\n        판.clear()\n        판.write(\"다 깼어요!\")\n        break\n    지도 = 지도들[판번호]\n    지도그리기()\n    처음수 = len(보석들)\n    판쓰기()\n    나.처음으로()"
+      ],
+      "continues": [
+        "maze-level/data"
+      ],
+      "start": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판.clear()\n        판.write(\"탈출!\")\n        break\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+      "modules": {
+        "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#.......#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#...#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#.....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#.....#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+      },
+      "lockModules": [
+        "미로지도.py"
+      ],
+      "cases": [
+        {
+          "keys": [
+            null,
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null
+          ],
+          "frames": 88,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            null,
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null
+          ],
+          "frames": 248,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            null,
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null
+          ],
+          "frames": 384,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "mistakes": [
+        {
+          "game": "game-text",
+          "code": "^(?![\\s\\S]*판쓰기\\(\\)[\\s\\S]*판쓰기\\(\\)[\\s\\S]*판쓰기\\(\\)[\\s\\S]*판쓰기\\(\\))",
+          "say": "next-count"
+        },
+        {
+          "game": "game-text",
+          "code": "^(?![\\s\\S]*처음수\\s*=\\s*len[\\s\\S]*처음수\\s*=\\s*len)",
+          "say": "next-count"
+        },
+        {
+          "game": "game-count",
+          "say": "next-gems"
+        },
+        {
+          "game": "game-pos",
+          "say": "next-start"
+        },
+        {
+          "game": "game-text",
+          "say": "next-text"
+        }
+      ],
+      "praise": "praise-next",
+      "solution": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판번호 = 판번호 + 1\n        if 판번호 == len(지도들):\n            판.clear()\n            판.write(\"다 깼어요!\")\n            break\n        지도 = 지도들[판번호]\n        지도그리기()\n        처음수 = len(보석들)\n        판쓰기()\n        나.처음으로()\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+      "solutionModules": {
+        "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#.......#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#...#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#.....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#.....#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+      },
+      "hints": [
+        {
+          "say": "next-hint-1"
+        },
+        {
+          "say": "next-hint-2"
+        }
+      ]
+    }
+  ],
+  "challenge": {
+    "id": "no",
+    "title": "심화: 판 번호도 쓰기",
+    "story": "판에 몇째 판인지도 써요. \"1판  보석 0 / 3\"처럼요(판 다음에 빈칸 둘). 판번호는 0부터지만 사람은 1판부터 세요.",
+    "steps": [
+      "판쓰기에서 str(판번호 + 1) + \"판  보석 \" 으로 시작해요."
+    ],
+    "continues": [
+      "maze-level/next"
+    ],
+    "start": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판번호 = 판번호 + 1\n        if 판번호 == len(지도들):\n            판.clear()\n            판.write(\"다 깼어요!\")\n            break\n        지도 = 지도들[판번호]\n        지도그리기()\n        처음수 = len(보석들)\n        판쓰기()\n        나.처음으로()\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+    "modules": {
+      "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#.......#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#...#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#.....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#.....#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+    },
+    "lockModules": [
+      "미로지도.py"
+    ],
+    "cases": [
+      {
+        "keys": [],
+        "frames": 3,
+        "randoms": [],
+        "inputs": [],
+        "expect": []
+      },
+      {
+        "keys": [
+          null,
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Up",
+          null,
+          "Up",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Left",
+          null,
+          "Left",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Up",
+          null,
+          "Up",
+          null,
+          "Left",
+          null,
+          "Left",
+          null,
+          "Up",
+          null,
+          "Up",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Right",
+          null,
+          "Right",
+          null
+        ],
+        "frames": 88,
+        "randoms": [],
+        "inputs": [],
+        "expect": []
+      }
+    ],
+    "expect": [],
+    "game": true,
+    "showCases": 2,
+    "mistakes": [
+      {
+        "game": "game-text",
+        "say": "no-text"
+      }
+    ],
+    "praise": "praise-no",
+    "solution": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(str(판번호 + 1) + \"판  보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판번호 = 판번호 + 1\n        if 판번호 == len(지도들):\n            판.clear()\n            판.write(\"다 깼어요!\")\n            break\n        지도 = 지도들[판번호]\n        지도그리기()\n        처음수 = len(보석들)\n        판쓰기()\n        나.처음으로()\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+    "solutionModules": {
+      "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#.......#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#...#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#.....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#.....#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+    },
+    "hints": [
+      {
+        "say": "no-hint-1"
+      }
+    ]
+  }
+}

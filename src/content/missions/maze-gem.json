@@ -1,0 +1,1151 @@
+{
+  "_설명": "큰 게임 만들기(미로 탈출) 단원 3번 수업. 셋째 기능: 보석을 줍고 출구로 나간다. 만드는 방법은 다 끝났는지 묻기: 남은 보석이 없고(and) 출구에 섰을 때만 탈출. 지도는 바꾸지 않고, 지도그리기가 표를 읽으며 별(*)마다 보석 객체를 만들어 리스트에 넣는다. 밟으면 숨기고 리스트에서 빼고(remove), 하나 찾으면 break(도는 중에 빼면 다음 것을 건너뛴다는 것은 예측 문제로). 점수판 글자는 str()로 잇는다(f-string 전). 쓰기 둘: 보석 놓기, 줍기와 탈출. 심화(다 모으면 \"출구로 가요!\")는 다음 수업이 이어 받지 않는다.",
+  "id": "maze-gem",
+  "unit": "큰 게임 만들기: 미로 탈출",
+  "no": 3,
+  "title": "보석과 출구",
+  "desc": "지도의 별마다 보석을 놓고, 다 주우면 출구로 나가게 해요.",
+  "minutes": 25,
+  "knows": [
+    "variables",
+    "loops",
+    "functions",
+    "classes"
+  ],
+  "canvas": true,
+  "project": "미로",
+  "saveAs": "미로 탈출",
+  "learned": [
+    {
+      "rule": "지도는 그대로 두고, 바뀌는 것(보석)은 객체의 리스트에 넣어요. 주우면 리스트에서 빼요.",
+      "code": "보석들.remove(돌)"
+    },
+    {
+      "rule": "리스트를 도는 중에 하나를 빼면 그다음 것을 건너뛰어요. 하나 찾아 뺐으면 break로 멈춰요."
+    },
+    {
+      "rule": "다 끝났는지는 두 가지를 함께 물어요.",
+      "code": "if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":"
+    }
+  ],
+  "done": [
+    "done-1",
+    "done-2",
+    "done-bye"
+  ],
+  "lines": {
+    "today": [
+      "오늘은 셋째 기능이에요. 미로에 보석을 놓고, 보석을 다 주우면 출구로 나가요."
+    ],
+    "gem-intro": [
+      "보석 클래스예요. 탐험가처럼 줄과 칸을 기억하고, 금색 동그라미 거북이로 보여요. 보석은 움직이지 않아서 처음에 한 번만 그 칸으로 가요."
+    ],
+    "gem-make": [
+      "보석은 어디에 놓을까요? 지도에 별이 있는 칸이에요. 지도그리기가 표를 한 칸씩 읽으니까, 별을 만나면 보석을 만들어 보석들 리스트에 넣어요. 벽도 칠하고 보석도 만드는 거예요."
+    ],
+    "pick-intro": [
+      "줍기는 놀이의 반복 안에서 해요. 보석을 하나씩 꺼내서, 탐험가와 줄과 칸이 둘 다 같으면 주운 거예요. 거북이를 숨기고, 리스트에서 빼고, 판을 다시 써요."
+    ],
+    "pick-break": [
+      "하나 줍고 나면 [break|브레이크]로 반복을 멈춰요. 리스트를 도는 중에 하나를 빼면, 뒤의 것들이 한 칸씩 당겨져서 바로 다음 것을 건너뛰어요. 같은 칸에 보석은 하나뿐이라서 멈춰도 돼요."
+    ],
+    "board-intro": [
+      "판에는 주운 수와 처음 수를 써요. 주운 수는 처음 수에서 남은 수를 빼면 돼요. 숫자를 글자와 이으려면 [str|에스티알]로 글자로 바꿔요."
+    ],
+    "escape-intro": [
+      "언제 탈출일까요? 보석을 다 줍고, 그리고 출구에 섰을 때예요. 두 가지를 [and|앤드]로 함께 물어요. 맞으면 탈출이라고 쓰고 반복을 끝내요."
+    ],
+    "closed-try": [
+      "보석을 두 개만 줍고 출구로 가 볼게요."
+    ],
+    "closed-after": [
+      "출구에 섰는데 탈출이 아니에요. 보석이 하나 남았어요. 판에 보석 [2|이] 나누기 [3|삼]이에요."
+    ],
+    "escape-try": [
+      "이번에는 셋을 다 줍고 가 볼게요."
+    ],
+    "escape-after": [
+      "탈출이에요. 다 끝났는지를 두 가지로 물었기 때문이에요."
+    ],
+    "check-ask": [
+      "하나 물어볼게요. 출구가 열리는 때는 언제일까요?"
+    ],
+    "check-right": [
+      "맞아요. 보석이 남지 않았고, 그리고 출구에 섰을 때예요."
+    ],
+    "check-teach-1": [
+      "출구에 서기만 하면 보석을 안 주워도 끝나요. 그래서 남은 보석도 함께 물어요."
+    ],
+    "follow-ok": [
+      "좋아요. 파랑만 빠지고 빨강과 노랑이 남았어요."
+    ],
+    "summary": [
+      "정리해요. 보석은 객체의 리스트에 두고, 주우면 빼요. 다 끝났는지는 [and|앤드]로 함께 물어요."
+    ],
+    "q1-right": [
+      "맞아요. 둘째 파랑을 빼자 셋째 파랑이 둘째 자리로 당겨졌어요. 반복은 셋째 자리로 넘어가서 그 파랑을 건너뛰었어요."
+    ],
+    "q1-both": [
+      "그렇게 될 것 같지만, 빼는 순간 뒤의 것이 당겨져서 하나를 건너뛰어요."
+    ],
+    "q1-all": [
+      "빨강과 노랑은 파랑이 아니라서 빼지 않아요."
+    ],
+    "q1-explain": [
+      "파랑 하나가 남아요. 그래서 도는 중에 빼면 [break|브레이크]로 멈춰요."
+    ],
+    "q2-right": [
+      "맞아요. 출구에는 섰지만 남은 보석이 [1|일]이라서 [and|앤드]의 한쪽이 거짓이에요."
+    ],
+    "q2-exit": [
+      "[and|앤드]는 둘 다 참일 때만 참이에요. 남은 보석이 [0|영]이 아니에요."
+    ],
+    "q2-explain": [
+      "아직이 나와요."
+    ],
+    "q3-right": [
+      "맞아요. 남은 보석이 하나라서 [3|삼] 빼기 [1|일]은 [2|이]예요. 글자를 이어서 보석 [2|이] 나누기 [3|삼]이에요."
+    ],
+    "q3-left": [
+      "판에 쓰는 것은 남은 수가 아니라 주운 수예요. 처음 수에서 남은 수를 빼요."
+    ],
+    "q3-space": [
+      "빈칸도 글자예요. 따옴표 안에 빈칸을 넣은 대로 나와요."
+    ],
+    "q3-explain": [
+      "보석 [2|이] 나누기 [3|삼]이 나와요."
+    ],
+    "task-intro": [
+      "이제 써 봐요. 두 문제예요. 먼저 보석을 놓고, 그다음 줍고 탈출해요."
+    ],
+    "task-how": [
+      "다 쓰면 실행해서 화살표 키로 걸어 보고, 멈춤 버튼으로 멈춰요. 잘 되면 '제출'을 눌러요."
+    ],
+    "praise-gems": [
+      "보석 클래스를 만들고, 지도그리기가 별을 만날 때마다 보석을 만들어 리스트에 넣었어요. 지도의 글자가 곧 보석의 자리예요."
+    ],
+    "gems-count": [
+      "보석의 수가 달라요. 지도그리기 안에서 별을 만나면 보석을 만들어 [보석들.append|보석들 점 어펜드]로 넣어요. 보석들 같다 빈 리스트는 지도그리기를 부르기 전에 있어야 해요."
+    ],
+    "gems-pos": [
+      "보석의 자리가 달라요. 보석은 [가로(칸)|가로 칸], [세로(줄)|세로 줄]로 가요. 줄과 칸을 바꿔 넘기지 않았는지 봐요."
+    ],
+    "gems-class": [
+      "보석은 보여요. 이번에는 칠판처럼 클래스 보석으로 만들어서, 줄과 칸을 기억하게 해 봐요."
+    ],
+    "gems-hint-1": [
+      "칸칠하기 함수 아래에 칠판의 클래스 보석과 보석들 같다 빈 리스트를 써요."
+    ],
+    "gems-hint-2": [
+      "지도그리기의 [elif|엘리프] 아래에 하나 더: 그 칸의 글자가 별이면 [보석들.append(보석(줄, 칸))|보석들 점 어펜드 보석 줄 칸]."
+    ],
+    "task-next": [
+      "이번에는 줍기와 탈출이에요. 판에 주운 수를 쓰고, 다 주워서 출구에 서면 탈출이에요."
+    ],
+    "praise-exit": [
+      "줄과 칸이 둘 다 같은 보석을 찾아 숨기고 빼고 멈췄어요. 탈출은 남은 보석과 출구를 [and|앤드]로 함께 물었어요."
+    ],
+    "exit-hide": [
+      "주운 보석이 화면에 남아 있어요. 주우면 [돌.몸.hideturtle()|돌 점 몸 점 하이드터틀]로 숨기고, 리스트에서도 빼요."
+    ],
+    "exit-text": [
+      "판의 글자가 달라요. 처음에 보석 [0|영] 나누기 [3|삼]을 쓰고, 주울 때마다 다시 써요. 다 줍고 출구에 서면 판을 지우고 탈출과 느낌표를 써요. 보석이 남았으면 출구에서도 탈출이 아니에요."
+    ],
+    "exit-pos": [
+      "자리가 달라요. 탈출하면 [break|브레이크]로 반복을 끝내서 탐험가가 더 움직이지 않아요."
+    ],
+    "exit-hint-1": [
+      "지도그리기를 부른 다음에 [처음수 = len(보석들)|처음수 같다 렌 보석들]. 판 거북이를 만들어 숨기고, 펜을 들고 [-210, 155|빼기 이백십 백오십오]로 보내요. 칠판의 판쓰기를 만들고 한 번 불러요."
+    ],
+    "exit-hint-2": [
+      "[while True|와일 트루] 안의 맨 위에 칠판의 줍기를 쓰고, 그 아래에 탈출을 물어요. 반복이 끝나면 [turtle.update()|터틀 점 업데이트]."
+    ],
+    "praise-open": [
+      "보석이 남지 않았을 때와 아닐 때를 나눠서 판에 썼어요. 판쓰기 하나만 고쳤더니 쓰는 곳이 모두 바뀌었어요."
+    ],
+    "open-text": [
+      "판의 글자가 달라요. 남은 보석이 없으면 출구로 가요와 느낌표, 아니면 전처럼 보석 몇 나누기 몇이에요. 판쓰기 안에서 [if|이프]로 나눠요."
+    ],
+    "open-hint-1": [
+      "판쓰기 안에서 판을 지운 다음, 보석들의 길이가 [0|영]이면 출구로 가요를, 아니면 전의 글자를 써요."
+    ],
+    "done-1": [
+      "셋째 기능을 넣었어요. 이제 보석을 모아 탈출할 수 있어요."
+    ],
+    "done-2": [
+      "한 판짜리 게임이 됐어요. 다음 수업에서는 판을 셋으로 늘려요."
+    ]
+  },
+  "lecture": [
+    [
+      {
+        "say": "greet"
+      },
+      {
+        "say": "today"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "card": {
+          "title": "보석",
+          "code": "class 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []"
+        }
+      },
+      {
+        "say": "gem-intro"
+      },
+      {
+        "card": {
+          "title": "지도그리기에 더하기",
+          "code": "            elif 지도[줄][칸] == \"*\":\n                보석들.append(보석(줄, 칸))"
+        }
+      },
+      {
+        "say": "gem-make"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "card": {
+          "title": "줍기 (놀이의 반복 안)",
+          "code": "for 돌 in 보석들:\n    if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n        돌.몸.hideturtle()\n        보석들.remove(돌)\n        판쓰기()\n        break"
+        }
+      },
+      {
+        "say": "pick-intro"
+      },
+      {
+        "say": "pick-break"
+      },
+      {
+        "card": {
+          "title": "판",
+          "code": "처음수 = len(보석들)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))"
+        }
+      },
+      {
+        "say": "board-intro"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "card": {
+          "title": "탈출 (놀이의 반복 안)",
+          "code": "if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n    판.clear()\n    판.write(\"탈출!\")\n    break"
+        }
+      },
+      {
+        "say": "escape-intro"
+      },
+      {
+        "say": "closed-try"
+      },
+      {
+        "play": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n            elif 지도[줄][칸] == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판.clear()\n        판.write(\"탈출!\")\n        break\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+        "keys": [
+          [
+            600,
+            "Down"
+          ],
+          [
+            760,
+            "Down"
+          ],
+          [
+            920,
+            "Down"
+          ],
+          [
+            1080,
+            "Down"
+          ],
+          [
+            1240,
+            "Right"
+          ],
+          [
+            1400,
+            "Right"
+          ],
+          [
+            1560,
+            "Down"
+          ],
+          [
+            1720,
+            "Down"
+          ],
+          [
+            1880,
+            "Left"
+          ],
+          [
+            2040,
+            "Left"
+          ],
+          [
+            2200,
+            "Down"
+          ],
+          [
+            2360,
+            "Down"
+          ],
+          [
+            2520,
+            "Right"
+          ],
+          [
+            2680,
+            "Right"
+          ],
+          [
+            2840,
+            "Right"
+          ],
+          [
+            3000,
+            "Right"
+          ],
+          [
+            3160,
+            "Right"
+          ],
+          [
+            3320,
+            "Right"
+          ],
+          [
+            3480,
+            "Up"
+          ],
+          [
+            3640,
+            "Up"
+          ],
+          [
+            3800,
+            "Left"
+          ],
+          [
+            3960,
+            "Left"
+          ],
+          [
+            4120,
+            "Up"
+          ],
+          [
+            4280,
+            "Up"
+          ],
+          [
+            4440,
+            "Right"
+          ],
+          [
+            4600,
+            "Right"
+          ],
+          [
+            4760,
+            "Right"
+          ],
+          [
+            4920,
+            "Right"
+          ],
+          [
+            5080,
+            "Down"
+          ],
+          [
+            5240,
+            "Down"
+          ],
+          [
+            5400,
+            "Right"
+          ],
+          [
+            5560,
+            "Right"
+          ],
+          [
+            5720,
+            "Down"
+          ],
+          [
+            5880,
+            "Down"
+          ],
+          [
+            6040,
+            "Right"
+          ],
+          [
+            6200,
+            "Right"
+          ]
+        ],
+        "ms": 7560
+      },
+      {
+        "say": "closed-after"
+      },
+      {
+        "say": "escape-try"
+      },
+      {
+        "play": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n            elif 지도[줄][칸] == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판.clear()\n        판.write(\"탈출!\")\n        break\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+        "keys": [
+          [
+            600,
+            "Down"
+          ],
+          [
+            760,
+            "Down"
+          ],
+          [
+            920,
+            "Down"
+          ],
+          [
+            1080,
+            "Down"
+          ],
+          [
+            1240,
+            "Right"
+          ],
+          [
+            1400,
+            "Right"
+          ],
+          [
+            1560,
+            "Up"
+          ],
+          [
+            1720,
+            "Up"
+          ],
+          [
+            1880,
+            "Down"
+          ],
+          [
+            2040,
+            "Down"
+          ],
+          [
+            2200,
+            "Down"
+          ],
+          [
+            2360,
+            "Down"
+          ],
+          [
+            2520,
+            "Left"
+          ],
+          [
+            2680,
+            "Left"
+          ],
+          [
+            2840,
+            "Down"
+          ],
+          [
+            3000,
+            "Down"
+          ],
+          [
+            3160,
+            "Right"
+          ],
+          [
+            3320,
+            "Right"
+          ],
+          [
+            3480,
+            "Right"
+          ],
+          [
+            3640,
+            "Right"
+          ],
+          [
+            3800,
+            "Right"
+          ],
+          [
+            3960,
+            "Right"
+          ],
+          [
+            4120,
+            "Up"
+          ],
+          [
+            4280,
+            "Up"
+          ],
+          [
+            4440,
+            "Left"
+          ],
+          [
+            4600,
+            "Left"
+          ],
+          [
+            4760,
+            "Up"
+          ],
+          [
+            4920,
+            "Up"
+          ],
+          [
+            5080,
+            "Right"
+          ],
+          [
+            5240,
+            "Right"
+          ],
+          [
+            5400,
+            "Right"
+          ],
+          [
+            5560,
+            "Right"
+          ],
+          [
+            5720,
+            "Down"
+          ],
+          [
+            5880,
+            "Down"
+          ],
+          [
+            6040,
+            "Right"
+          ],
+          [
+            6200,
+            "Right"
+          ],
+          [
+            6360,
+            "Down"
+          ],
+          [
+            6520,
+            "Down"
+          ],
+          [
+            6680,
+            "Right"
+          ],
+          [
+            6840,
+            "Right"
+          ]
+        ],
+        "ms": 8200
+      },
+      {
+        "say": "escape-after"
+      },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "출구가 열리는 때는?",
+          "ask": "check-ask",
+          "choices": [
+            "보석을 다 줍고 출구에 섰을 때",
+            "출구에 섰을 때"
+          ],
+          "answer": 0,
+          "right": [
+            {
+              "say": "check-right"
+            }
+          ],
+          "teach": [
+            {
+              "say": "check-teach-1"
+            }
+          ]
+        }
+      }
+    ],
+    [
+      {
+        "card": {
+          "title": "따라 쳐요",
+          "code": "보석들 = [\"빨강\", \"파랑\", \"노랑\"]\nfor 돌 in 보석들:\n    if 돌 == \"파랑\":\n        보석들.remove(돌)\n        break\nprint(보석들)"
+        }
+      },
+      {
+        "follow": {
+          "code": "보석들 = [\"빨강\", \"파랑\", \"노랑\"]\nfor 돌 in 보석들:\n    if 돌 == \"파랑\":\n        보석들.remove(돌)\n        break\nprint(보석들)",
+          "expect": [
+            "['빨강', '노랑']"
+          ],
+          "say": [
+            "follow-intro",
+            "follow-done"
+          ]
+        }
+      },
+      {
+        "say": "follow-ok"
+      }
+    ],
+    [
+      {
+        "card": {
+          "title": "오늘 배운 것",
+          "items": [
+            "바뀌는 것은 객체의 리스트에, 주우면 remove",
+            "도는 중에 뺐으면 break",
+            "다 끝났는지: 남은 보석 and 출구"
+          ]
+        }
+      },
+      {
+        "say": "summary"
+      },
+      {
+        "say": "to-predict"
+      }
+    ]
+  ],
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "돌들 = [\"빨강\", \"파랑\", \"파랑\", \"노랑\"]\nfor 돌 in 돌들:\n    if 돌 == \"파랑\":\n        돌들.remove(돌)\nprint(돌들)",
+      "answer": 1,
+      "choices": [
+        {
+          "text": "['빨강', '노랑']",
+          "say": "q1-both"
+        },
+        {
+          "text": "['빨강', '파랑', '노랑']",
+          "say": "q1-right"
+        },
+        {
+          "text": "[]",
+          "say": "q1-all"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "남은수 = 1\n출구 = True\nif 남은수 == 0 and 출구:\n    print(\"탈출!\")\nelse:\n    print(\"아직\")",
+      "answer": 1,
+      "choices": [
+        {
+          "text": "탈출!",
+          "say": "q2-exit"
+        },
+        {
+          "text": "아직",
+          "say": "q2-right"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "처음수 = 3\n보석들 = [\"돌\"]\nprint(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))",
+      "answer": 0,
+      "choices": [
+        {
+          "text": "보석 2 / 3",
+          "say": "q3-right"
+        },
+        {
+          "text": "보석 1 / 3",
+          "say": "q3-left"
+        },
+        {
+          "text": "보석2/3",
+          "say": "q3-space"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "gems",
+      "title": "보석 놓기",
+      "story": "지도에 별(*)이 있는 칸마다 금색 보석을 놓아요. 보석은 클래스 보석으로 만들고, 보석들 리스트에 넣어요.",
+      "steps": [
+        "칸칠하기 함수 아래에 클래스 보석과 보석들 = [] 을 써요(아래 코드).",
+        "class 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []",
+        "지도그리기 안에 하나 더: elif 지도[줄][칸] == \"*\": 이면 보석들.append(보석(줄, 칸))"
+      ],
+      "continues": [
+        "maze-walk/wall"
+      ],
+      "start": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n\n지도그리기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+      "cases": [
+        {
+          "keys": [],
+          "frames": 3,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            null,
+            null,
+            "Down",
+            null,
+            "Down",
+            null
+          ],
+          "frames": 8,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 1,
+      "checks": [
+        {
+          "pattern": "class\\s+보석",
+          "say": "gems-class"
+        }
+      ],
+      "mistakes": [
+        {
+          "game": "game-count",
+          "say": "gems-count"
+        },
+        {
+          "game": "game-pos",
+          "say": "gems-pos"
+        }
+      ],
+      "praise": "praise-gems",
+      "solution": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n            elif 지도[줄][칸] == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+      "hints": [
+        {
+          "say": "gems-hint-1"
+        },
+        {
+          "say": "gems-hint-2"
+        }
+      ]
+    },
+    {
+      "id": "exit",
+      "title": "줍고 탈출하기",
+      "story": "탐험가가 보석과 같은 칸에 서면 보석을 주워요(숨기고 리스트에서 빼요). 왼쪽 위 판에는 \"보석 1 / 3\"처럼 주운 수와 처음 수를 써요. 보석을 다 줍고 출구(E)에 서면 판에 \"탈출!\"이라고 쓰고 게임이 끝나요.",
+      "steps": [
+        "지도그리기() 아래에 처음수 = len(보석들), 판 거북이(숨기고, 펜 들고, (-210, 155)), 그리고 함수 판쓰기(아래 코드). 판쓰기()를 한 번 불러요.",
+        "처음수 = len(보석들)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))",
+        "while True: 안의 맨 위에 줍기를 써요.",
+        "for 돌 in 보석들:\n    if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n        돌.몸.hideturtle()\n        보석들.remove(돌)\n        판쓰기()\n        break",
+        "그 아래에 탈출을 물어요.",
+        "if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n    판.clear()\n    판.write(\"탈출!\")\n    break",
+        "반복이 끝나면 turtle.update()"
+      ],
+      "continues": [
+        "maze-gem/gems"
+      ],
+      "start": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n            elif 지도[줄][칸] == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+      "cases": [
+        {
+          "keys": [],
+          "frames": 3,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            null,
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null
+          ],
+          "frames": 20,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            null,
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null
+          ],
+          "frames": 80,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            null,
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null
+          ],
+          "frames": 88,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "mistakes": [
+        {
+          "game": "game-count",
+          "say": "exit-hide"
+        },
+        {
+          "game": "game-text",
+          "say": "exit-text"
+        },
+        {
+          "game": "game-pos",
+          "say": "exit-pos"
+        }
+      ],
+      "praise": "praise-exit",
+      "solution": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n            elif 지도[줄][칸] == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판.clear()\n        판.write(\"탈출!\")\n        break\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+      "hints": [
+        {
+          "say": "exit-hint-1"
+        },
+        {
+          "say": "exit-hint-2"
+        }
+      ]
+    }
+  ],
+  "challenge": {
+    "id": "open",
+    "title": "심화: 출구로 가요!",
+    "story": "보석을 다 모으면 판에 \"보석 3 / 3\" 대신 \"출구로 가요!\"라고 써요.",
+    "steps": [
+      "판쓰기 안에서: 보석들이 비었으면(len(보석들) == 0) \"출구로 가요!\", 아니면 전의 글자"
+    ],
+    "continues": [
+      "maze-gem/exit"
+    ],
+    "start": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n            elif 지도[줄][칸] == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판.clear()\n        판.write(\"탈출!\")\n        break\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+    "cases": [
+      {
+        "keys": [
+          null,
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Up",
+          null,
+          "Up",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Left",
+          null,
+          "Left",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Up",
+          null,
+          "Up",
+          null,
+          "Left",
+          null,
+          "Left",
+          null,
+          "Up",
+          null,
+          "Up",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null
+        ],
+        "frames": 72,
+        "randoms": [],
+        "inputs": [],
+        "expect": []
+      },
+      {
+        "keys": [
+          null,
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Down",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Up",
+          null,
+          "Up",
+          null
+        ],
+        "frames": 20,
+        "randoms": [],
+        "inputs": [],
+        "expect": []
+      }
+    ],
+    "expect": [],
+    "game": true,
+    "showCases": 1,
+    "mistakes": [
+      {
+        "game": "game-text",
+        "say": "open-text"
+      }
+    ],
+    "praise": "praise-open",
+    "solution": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n            elif 지도[줄][칸] == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    if len(보석들) == 0:\n        판.write(\"출구로 가요!\")\n    else:\n        판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판.clear()\n        판.write(\"탈출!\")\n        break\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+    "hints": [
+      {
+        "say": "open-hint-1"
+      }
+    ]
+  }
+}

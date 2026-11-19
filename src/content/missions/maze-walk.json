@@ -1,0 +1,765 @@
+{
+  "_설명": "큰 게임 만들기(미로 탈출) 단원 2번 수업. 둘째 기능: 탐험가가 칸으로 걷고 벽에 막힌다. 만드는 방법은 기억하는 것과 보이는 것 나누기: 탐험가는 줄·칸을 기억하고, 거북이(self.몸)는 그 자리를 보여 줄 뿐이다. 키에는 14단원처럼 함수를 붙이고 그 함수가 나.가기를 부른다(키에 메서드를 바로 붙이는 것은 보물 섬에서). 강의에서 벽을 뚫고 가는 것, 가고 나서 묻는 것(속으로는 벽 안에 들어갔다가 다음 걸음에 벽 너머로 나온다)을 돌려 보이고, 가기 전에 묻는다. 쓰기 둘: 걷기(클래스와 키, 앞 수업의 코드에서 이어서), 벽에 막히기. 심화(걸음 수)는 다음 수업이 이어 받지 않는다.",
+  "id": "maze-walk",
+  "unit": "큰 게임 만들기: 미로 탈출",
+  "no": 2,
+  "title": "칸으로 걷기",
+  "desc": "탐험가를 넣어 화살표로 한 칸씩 걷고, 벽에 막히게 해요.",
+  "minutes": 25,
+  "knows": [
+    "variables",
+    "loops",
+    "functions",
+    "classes"
+  ],
+  "canvas": true,
+  "project": "미로",
+  "saveAs": "미로 탈출",
+  "learned": [
+    {
+      "rule": "탐험가는 줄과 칸을 기억해요. 거북이는 그 자리를 보여 줄 뿐이에요. 움직일 때는 줄과 칸을 바꾸고 보이기를 불러요."
+    },
+    {
+      "rule": "위로 가면 줄이 하나 줄고, 아래로 가면 하나 늘어요.",
+      "code": "나.가기(-1, 0)"
+    },
+    {
+      "rule": "갈 칸이 벽인지는 가기 전에 지도에 물어요.",
+      "code": "if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":"
+    }
+  ],
+  "done": [
+    "done-1",
+    "done-2",
+    "done-bye"
+  ],
+  "lines": {
+    "today": [
+      "지난번에는 미로를 그렸어요. 오늘은 둘째 기능, 탐험가가 미로를 걷게 해요."
+    ],
+    "remember-intro": [
+      "오늘의 방법은 기억하는 것과 보이는 것 나누기예요. 탐험가는 지금 몇째 줄, 몇째 칸에 있는지 기억해요. 거북이는 그 자리를 화면에 보여 줄 뿐이에요."
+    ],
+    "class-intro": [
+      "탐험가 클래스예요. 만들 때 줄과 칸을 받아서 기억하고, 보이기로 거북이를 그 칸에 보내요. 가기는 줄과 칸을 바꾼 다음 다시 보여요."
+    ],
+    "keys-intro": [
+      "키마다 작은 함수를 만들어 나의 가기를 불러요. 위로 가면 줄이 하나 줄어서 [-1|빼기 일], 오른쪽은 칸이 하나 늘어서 [0, 1|영 일]이에요."
+    ],
+    "nowall-try": [
+      "돌려 볼게요. 오른쪽으로 일곱 번 가 볼게요."
+    ],
+    "nowall-after": [
+      "어? 벽을 그냥 뚫고 지나갔어요. 탐험가는 벽이 있는지 모르고 걸어요."
+    ],
+    "ask-intro": [
+      "그래서 가기 전에 물어요. 갈 칸의 글자를 지도에서 꺼내서, 샵이 아닐 때만 줄과 칸을 바꿔요."
+    ],
+    "ask-after": [
+      "이제 벽 앞에서 멈췄어요. 다섯째 칸 다음은 벽이에요."
+    ],
+    "late-intro": [
+      "그런데 묻는 줄을 옮긴 다음에 두면 어떻게 될까요? 먼저 옮기고, 벽이 아닐 때만 보여 주게 바꿔 볼게요."
+    ],
+    "late-after": [
+      "벽 앞에 서 있는 것처럼 보였는데, 마지막에 벽 너머로 훌쩍 넘어갔어요. 보이지는 않았지만 속으로는 줄과 칸이 이미 벽 안에 들어가 있었어요. 그래서 묻는 것은 꼭 가기 전에 해요."
+    ],
+    "check-ask": [
+      "하나 물어볼게요. 위 화살표를 누르면 탐험가의 줄은 어떻게 될까요?"
+    ],
+    "check-right": [
+      "맞아요. 위로 가면 지도의 윗줄로 가니까 줄 번호가 하나 줄어요."
+    ],
+    "check-teach-1": [
+      "지도의 첫 줄이 맨 위예요. 위로 갈수록 줄 번호는 작아져요."
+    ],
+    "follow-ok": [
+      "좋아요. 위 칸이 샵이라서 가지 않았어요. 줄은 그대로 [1|일]이에요."
+    ],
+    "summary": [
+      "정리해요. 탐험가는 줄과 칸을 기억하고, 거북이는 보여 줄 뿐이에요. 벽인지는 가기 전에 물어요."
+    ],
+    "q1-right": [
+      "맞아요. 위로 두 번이라 줄이 [3|삼]에서 [1|일]로, 오른쪽 한 번이라 칸이 [6|육]이에요."
+    ],
+    "q1-down": [
+      "위로 가면 줄이 줄어요. 늘지 않아요."
+    ],
+    "q1-swap": [
+      "위아래는 줄을, 옆은 칸을 바꿔요."
+    ],
+    "q1-explain": [
+      "[1 6|일 육]이 나와요."
+    ],
+    "q2-right": [
+      "맞아요. 칸 [2|이]의 옆인 칸 [3|삼]이 샵이라서, 칸 [2|이]에서 더 가지 않아요."
+    ],
+    "q2-three": [
+      "반복은 세 번이지만, 칸 [2|이]에서는 다음 칸이 벽이라서 멈춰요."
+    ],
+    "q2-four": [
+      "다음 칸이 벽인지 먼저 물어요. 벽이면 가지 않아요."
+    ],
+    "q2-explain": [
+      "[2|이]가 나와요."
+    ],
+    "q3-right": [
+      "맞아요. 먼저 칸을 옮겼더니 그 칸이 샵이에요. 벽 안에 들어와 버렸어요."
+    ],
+    "q3-none": [
+      "묻기 전에 칸이 이미 [2|이]로 바뀌었어요. 칸 [2|이]는 샵이에요."
+    ],
+    "q3-explain": [
+      "벽 안에 들어왔어요 [2|이]가 나와요."
+    ],
+    "task-intro": [
+      "이제 써 봐요. 두 문제예요. 먼저 탐험가가 걷게 하고, 그다음 벽에 막히게 해요."
+    ],
+    "task-how": [
+      "다 쓰면 실행해서 화살표 키로 걸어 보고, 멈춤 버튼으로 멈춰요. 잘 되면 '제출'을 눌러요."
+    ],
+    "praise-walk": [
+      "탐험가가 줄과 칸을 기억하고, 키마다 만든 함수가 가기를 불렀어요. 위는 줄을 빼고, 오른쪽은 칸을 더했어요."
+    ],
+    "walk-none": [
+      "탐험가가 보이지 않아요. 클래스 아래에 [나 = 탐험가(1, 1)|나 같다 탐험가 일 일]로 탐험가를 만들어요."
+    ],
+    "walk-nokey": [
+      "탐험가가 움직이지 않아요. 키 네 개에 함수를 붙이고 [turtle.listen()|터틀 점 리슨]을 불렀는지, 맨 아래에 [while True|와일 트루] 반복이 있는지 봐요."
+    ],
+    "walk-pos": [
+      "탐험가의 자리가 달라요. 위는 [나.가기(-1, 0)|나 점 가기 빼기 일 영], 아래는 [1, 0|일 영], 왼쪽은 [0, -1|영 빼기 일], 오른쪽은 [0, 1|영 일]이에요."
+    ],
+    "walk-class": [
+      "걷기는 잘 돼요. 이번에는 칠판처럼 탐험가 클래스를 만들고, 메서드 가기로 줄과 칸을 바꿔 봐요."
+    ],
+    "walk-hint-1": [
+      "지도그리기 부르는 줄 아래에 칠판의 클래스 탐험가를 그대로 써요. 맨 위에는 [import time|임포트 타임]을 더해요."
+    ],
+    "walk-hint-2": [
+      "나를 만들고, 위, 아래, 왼쪽, 오른쪽 함수를 만들어 키에 붙여요. [turtle.listen()|터틀 점 리슨] 다음에 [while True|와일 트루] 안에서 [update|업데이트]와 [sleep|슬립]을 해요."
+    ],
+    "task-next": [
+      "이번에는 벽이에요. 갈 칸이 벽이면 가지 않게 해요."
+    ],
+    "praise-wall": [
+      "가기 전에 갈 칸의 글자를 지도에 물어서, 샵이 아닐 때만 줄과 칸을 바꿨어요."
+    ],
+    "wall-late": [
+      "벽에 막힌 것처럼 보이다가 벽 너머로 넘어가요. 줄과 칸을 먼저 바꾸고 나서 묻고 있어요. 묻는 [if|이프]를 맨 위로 올려서, 갈 칸을 먼저 물어요."
+    ],
+    "wall-pos": [
+      "탐험가가 벽을 지나가거나, 길에서 멈췄어요. 갈 칸은 지도에서 줄 더하기 위아래, 칸 더하기 옆이에요. 그 글자가 샵이 아닐 때만 가요."
+    ],
+    "wall-hint-1": [
+      "가기 메서드 맨 위에 [if|이프]를 써요. 지도에서 줄 더하기 위아래 번째 줄, 칸 더하기 옆 번째 칸의 글자가 샵이 아닌지 물어요."
+    ],
+    "wall-hint-2": [
+      "줄과 칸을 바꾸는 두 줄과 보이기는 그 [if|이프] 안으로 한 칸 들여써요."
+    ],
+    "praise-steps": [
+      "정말로 걸었을 때만 걸음을 하나 세고 판에 썼어요. 벽에 막힌 걸음은 세지 않았어요."
+    ],
+    "steps-text": [
+      "걸음 수가 달라요. 걸음은 벽이 아니라서 정말로 움직였을 때만 세요. 세는 줄을 [if|이프] 안에 둬요."
+    ],
+    "steps-hint-1": [
+      "[__init__|이닛]에 [self.걸음 = 0|셀프 점 걸음 같다 영]을 더하고, 가기의 [if|이프] 안에서 하나 늘린 다음 판을 지우고 걸음과 수를 써요. 판 거북이는 나를 만들기 전에 만들어요."
+    ],
+    "done-1": [
+      "둘째 기능을 넣었어요. 탐험가가 미로를 걷고 벽에 막혀요."
+    ],
+    "done-2": [
+      "만들기의 미로 탈출도 오늘 것으로 바뀌었어요. 다음 수업에서는 보석과 출구를 넣어요."
+    ]
+  },
+  "lecture": [
+    [
+      {
+        "say": "greet"
+      },
+      {
+        "say": "today"
+      },
+      {
+        "say": "remember-intro"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "card": {
+          "title": "탐험가 (아직 벽을 몰라요)",
+          "code": "class 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        self.줄 = self.줄 + 위아래\n        self.칸 = self.칸 + 옆\n        self.보이기()"
+        }
+      },
+      {
+        "say": "class-intro"
+      },
+      {
+        "card": {
+          "title": "키마다 함수",
+          "code": "def 위():\n    나.가기(-1, 0)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(오른쪽, \"Right\")"
+        }
+      },
+      {
+        "say": "keys-intro"
+      },
+      {
+        "say": "nowall-try"
+      },
+      {
+        "play": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n\n지도그리기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        self.줄 = self.줄 + 위아래\n        self.칸 = self.칸 + 옆\n        self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+        "keys": [
+          [
+            700,
+            "Right"
+          ],
+          [
+            1100,
+            "Right"
+          ],
+          [
+            1500,
+            "Right"
+          ],
+          [
+            1900,
+            "Right"
+          ],
+          [
+            2300,
+            "Right"
+          ],
+          [
+            2700,
+            "Right"
+          ],
+          [
+            3100,
+            "Right"
+          ]
+        ],
+        "ms": 4200
+      },
+      {
+        "say": "nowall-after"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "card": {
+          "title": "가기 전에 묻기",
+          "code": "    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()"
+        }
+      },
+      {
+        "say": "ask-intro"
+      },
+      {
+        "play": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n\n지도그리기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+        "keys": [
+          [
+            700,
+            "Right"
+          ],
+          [
+            1100,
+            "Right"
+          ],
+          [
+            1500,
+            "Right"
+          ],
+          [
+            1900,
+            "Right"
+          ],
+          [
+            2300,
+            "Right"
+          ],
+          [
+            2700,
+            "Right"
+          ],
+          [
+            3100,
+            "Right"
+          ]
+        ],
+        "ms": 4200
+      },
+      {
+        "say": "ask-after"
+      },
+      {
+        "card": {
+          "title": "가고 나서 묻으면?",
+          "code": "    def 가기(self, 위아래, 옆):\n        self.줄 = self.줄 + 위아래\n        self.칸 = self.칸 + 옆\n        if 지도[self.줄][self.칸] != \"#\":\n            self.보이기()"
+        }
+      },
+      {
+        "say": "late-intro"
+      },
+      {
+        "play": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n\n지도그리기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        self.줄 = self.줄 + 위아래\n        self.칸 = self.칸 + 옆\n        if 지도[self.줄][self.칸] != \"#\":\n            self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+        "keys": [
+          [
+            700,
+            "Right"
+          ],
+          [
+            1100,
+            "Right"
+          ],
+          [
+            1500,
+            "Right"
+          ],
+          [
+            1900,
+            "Right"
+          ],
+          [
+            2300,
+            "Right"
+          ],
+          [
+            2700,
+            "Right"
+          ],
+          [
+            3100,
+            "Right"
+          ]
+        ],
+        "ms": 4200
+      },
+      {
+        "say": "late-after"
+      },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "위 화살표를 누르면 탐험가의 줄은?",
+          "ask": "check-ask",
+          "choices": [
+            "하나 줄어요",
+            "하나 늘어요"
+          ],
+          "answer": 0,
+          "right": [
+            {
+              "say": "check-right"
+            }
+          ],
+          "teach": [
+            {
+              "say": "check-teach-1"
+            }
+          ]
+        }
+      }
+    ],
+    [
+      {
+        "card": {
+          "title": "따라 쳐요",
+          "code": "지도 = [\"#..\", \"..#\"]\n줄 = 1\n칸 = 0\nif 지도[줄 - 1][칸] != \"#\":\n    줄 = 줄 - 1\nprint(줄, 칸)"
+        }
+      },
+      {
+        "follow": {
+          "code": "지도 = [\"#..\", \"..#\"]\n줄 = 1\n칸 = 0\nif 지도[줄 - 1][칸] != \"#\":\n    줄 = 줄 - 1\nprint(줄, 칸)",
+          "expect": [
+            "1 0"
+          ],
+          "say": [
+            "follow-intro",
+            "follow-done"
+          ]
+        }
+      },
+      {
+        "say": "follow-ok"
+      }
+    ],
+    [
+      {
+        "card": {
+          "title": "오늘 배운 것",
+          "items": [
+            "탐험가는 줄·칸을 기억하고, 거북이는 보여 줄 뿐",
+            "위로 가면 줄이 하나 준다",
+            "벽인지는 가기 전에 지도에 묻는다"
+          ]
+        }
+      },
+      {
+        "say": "summary"
+      },
+      {
+        "say": "to-predict"
+      }
+    ]
+  ],
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "줄 = 3\n칸 = 5\nfor 키 in [\"위\", \"위\", \"오른쪽\"]:\n    if 키 == \"위\":\n        줄 = 줄 - 1\n    else:\n        칸 = 칸 + 1\nprint(줄, 칸)",
+      "answer": 0,
+      "choices": [
+        {
+          "text": "1 6",
+          "say": "q1-right"
+        },
+        {
+          "text": "5 6",
+          "say": "q1-down"
+        },
+        {
+          "text": "3 7",
+          "say": "q1-swap"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "지도 = [\"#####\", \"#..##\", \"#####\"]\n칸 = 1\nfor i in range(3):\n    if 지도[1][칸 + 1] != \"#\":\n        칸 = 칸 + 1\nprint(칸)",
+      "answer": 2,
+      "choices": [
+        {
+          "text": "4",
+          "say": "q2-three"
+        },
+        {
+          "text": "3",
+          "say": "q2-four"
+        },
+        {
+          "text": "2",
+          "say": "q2-right"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "지도 = [\"#.#\"]\n칸 = 1\n칸 = 칸 + 1\nif 지도[0][칸] == \"#\":\n    print(\"벽 안에 들어왔어요\", 칸)",
+      "answer": 0,
+      "choices": [
+        {
+          "text": "벽 안에 들어왔어요 2",
+          "say": "q3-right"
+        },
+        {
+          "text": "아무것도 안 나와요",
+          "say": "q3-none"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "walk",
+      "title": "탐험가 걷기",
+      "story": "파란 탐험가가 줄 1, 칸 1에서 시작해요. 화살표를 누르면 그쪽으로 한 칸 가요. 아직 벽은 생각하지 않아요.",
+      "steps": [
+        "맨 위에 import time 을 더해요.",
+        "지도그리기() 아래에 클래스 탐험가를 만들어요(아래 코드).",
+        "class 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        self.줄 = self.줄 + 위아래\n        self.칸 = self.칸 + 옆\n        self.보이기()",
+        "나 = 탐험가(1, 1)",
+        "위, 아래, 왼쪽, 오른쪽 함수를 만들어 나.가기를 불러요. 위는 (-1, 0), 아래는 (1, 0), 왼쪽은 (0, -1), 오른쪽은 (0, 1)",
+        "키 네 개(\"Up\", \"Down\", \"Left\", \"Right\")에 붙이고 turtle.listen()",
+        "while True: 안에서 turtle.update() 와 time.sleep(0.02)"
+      ],
+      "continues": [
+        "maze-map/map"
+      ],
+      "start": "import turtle\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n\n지도그리기()\nturtle.update()\n",
+      "cases": [
+        {
+          "keys": [
+            null,
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null
+          ],
+          "frames": 18,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            null,
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null
+          ],
+          "frames": 18,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "checks": [
+        {
+          "pattern": "class\\s+탐험가",
+          "say": "walk-class"
+        },
+        {
+          "pattern": "def\\s+가기",
+          "say": "walk-class"
+        }
+      ],
+      "mistakes": [
+        {
+          "game": "game-none",
+          "say": "walk-none"
+        },
+        {
+          "game": "game-count",
+          "say": "walk-none"
+        },
+        {
+          "game": "game-pos",
+          "code": "^(?![\\s\\S]*onkeypress[\\s\\S]*onkeypress[\\s\\S]*onkeypress[\\s\\S]*onkeypress)",
+          "say": "walk-nokey"
+        },
+        {
+          "game": "game-pos",
+          "code": "^(?![\\s\\S]*listen)",
+          "say": "walk-nokey"
+        },
+        {
+          "game": "game-pos",
+          "say": "walk-pos"
+        }
+      ],
+      "praise": "praise-walk",
+      "solution": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n\n지도그리기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        self.줄 = self.줄 + 위아래\n        self.칸 = self.칸 + 옆\n        self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+      "hints": [
+        {
+          "say": "walk-hint-1"
+        },
+        {
+          "say": "walk-hint-2"
+        }
+      ]
+    },
+    {
+      "id": "wall",
+      "title": "벽에 막히기",
+      "story": "갈 칸이 벽(#)이면 가지 않아요. 가기 전에 지도에 물어요.",
+      "steps": [
+        "가기 메서드 맨 위에 if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\": 을 써요.",
+        "줄과 칸을 바꾸는 두 줄과 self.보이기()를 그 안으로 들여써요.",
+        "실행해서 벽으로 걸어 봐요."
+      ],
+      "continues": [
+        "maze-walk/walk"
+      ],
+      "start": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n\n지도그리기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        self.줄 = self.줄 + 위아래\n        self.칸 = self.칸 + 옆\n        self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+      "cases": [
+        {
+          "keys": [
+            null,
+            null,
+            "Up",
+            null,
+            "Left",
+            null
+          ],
+          "frames": 8,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            null,
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null
+          ],
+          "frames": 18,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            null,
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null
+          ],
+          "frames": 20,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "mistakes": [
+        {
+          "game": "game-pos",
+          "code": "self\\.칸\\s*=\\s*self\\.칸\\s*\\+\\s*옆\\s*\\n\\s*if",
+          "say": "wall-late"
+        },
+        {
+          "game": "game-pos",
+          "say": "wall-pos"
+        }
+      ],
+      "praise": "praise-wall",
+      "solution": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n\n지도그리기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+      "hints": [
+        {
+          "say": "wall-hint-1"
+        },
+        {
+          "say": "wall-hint-2"
+        }
+      ]
+    }
+  ],
+  "challenge": {
+    "id": "steps",
+    "title": "심화: 걸음 수",
+    "story": "정말로 한 칸 걸었을 때마다 걸음을 세어서, 왼쪽 위 (-210, 155)의 판에 \"걸음 2\"처럼 써요. 벽에 막힌 걸음은 세지 않아요.",
+    "steps": [
+      "나를 만들기 전에 판 거북이를 만들어요: 숨기고, 펜을 들고, (-210, 155)로.",
+      "__init__에 self.걸음 = 0",
+      "가기의 if 안에서 self.걸음 = self.걸음 + 1, 판.clear(), 판.write(\"걸음 \" + str(self.걸음))"
+    ],
+    "continues": [
+      "maze-walk/wall"
+    ],
+    "start": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n\n지도그리기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+    "cases": [
+      {
+        "keys": [
+          null,
+          null,
+          "Up",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Down",
+          null
+        ],
+        "frames": 12,
+        "randoms": [],
+        "inputs": [],
+        "expect": []
+      },
+      {
+        "keys": [
+          null,
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null,
+          "Right",
+          null
+        ],
+        "frames": 18,
+        "randoms": [],
+        "inputs": [],
+        "expect": []
+      }
+    ],
+    "expect": [],
+    "game": true,
+    "showCases": 2,
+    "mistakes": [
+      {
+        "game": "game-text",
+        "say": "steps-text"
+      }
+    ],
+    "praise": "praise-steps",
+    "solution": "import turtle\nimport time\n\nturtle.tracer(0)\n크기 = 30\n지도 = [\n    \"###############\",\n    \"#S....#.......#\",\n    \"#.###.#.#####.#\",\n    \"#.#*..#.....#.#\",\n    \"#.#.#####.#.#.#\",\n    \"#...#...*.#...#\",\n    \"###.#.###.###.#\",\n    \"#*..#...#...#.#\",\n    \"#.#####.#.#.#.#\",\n    \"#.......#.#..E#\",\n    \"###############\",\n]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\ndef 지도그리기():\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            if 지도[줄][칸] == \"#\":\n                칸칠하기(줄, 칸, \"brown\")\n            elif 지도[줄][칸] == \"E\":\n                칸칠하기(줄, 칸, \"green\")\n\n지도그리기()\n\nclass 탐험가:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.걸음 = 0\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n            self.걸음 = self.걸음 + 1\n            판.clear()\n            판.write(\"걸음 \" + str(self.걸음))\n\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n나 = 탐험가(1, 1)\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    turtle.update()\n    time.sleep(0.02)\n",
+    "hints": [
+      {
+        "say": "steps-hint-1"
+      }
+    ]
+  }
+}

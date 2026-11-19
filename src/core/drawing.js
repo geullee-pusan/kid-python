@@ -125,7 +125,9 @@ function matchStrokes(got, want, tol) {
   const extra = got.filter((g) => !want.some((w) => covers(w, g, tol)));
   const pairs = [];
   for (const w of want) {
-    const g = got.find((one) => covers(one, w, tol) && covers(w, one, tol));
+    // 색이 다른 두 칸이 맞닿으면 같은 자리에 선이 둘 있다. 같은 색의 선과 먼저 짝짓는다.
+    const same = (one) => covers(one, w, tol) && covers(w, one, tol);
+    const g = got.find((one) => same(one) && one.c === w.c) ?? got.find(same);
     if (g) pairs.push([g, w]);
   }
   return { missing, extra, pairs };

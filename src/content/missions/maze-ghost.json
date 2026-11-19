@@ -1,0 +1,1041 @@
+{
+  "_설명": "큰 게임 만들기(미로 탈출) 단원 5번 수업. 다섯째 기능: 따라오는 유령. 만드는 방법은 컴퓨터 캐릭터에게 규칙 주기: \"옆으로 갈 수 있으면 옆으로, 아니면 위아래로 한 칸\"(무작위 없음, 그래서 채점과 시연이 늘 같다). 규칙이 단순해서 벽 뒤에서 막혀 서기도 한다(그것도 규칙대로다). 유령의 처음 자리는 지도의 G(미로지도.py가 G를 넣은 판으로 바뀐다). 강의에서 벽을 묻지 않는 유령(벽을 지나간다), 장면마다 움직이는 유령(너무 빠르다)을 돌려 보이고, 장면 % 8 == 0 일 때만 움직인다. 판을 바꿀 때 앞 판의 유령은 숨기고 리스트를 비운다. 잡히면 탐험가와 그 유령 모두 처음으로(유령을 두면 시작 칸 근처에서 또 잡힐 수 있다). 쓰기 둘: 유령(다가오기만), 잡히기. 심화(세로부터 가는 유령 H)는 다음 수업이 이어 받지 않는다.",
+  "id": "maze-ghost",
+  "unit": "큰 게임 만들기: 미로 탈출",
+  "no": 5,
+  "title": "따라오는 유령",
+  "desc": "규칙대로 다가오는 유령을 넣고, 잡히면 처음 자리로 돌아가게 해요.",
+  "minutes": 25,
+  "knows": [
+    "variables",
+    "loops",
+    "functions",
+    "classes"
+  ],
+  "canvas": true,
+  "project": "미로",
+  "saveAs": "미로 탈출",
+  "learned": [
+    {
+      "rule": "컴퓨터 캐릭터에게는 규칙을 줘요. 유령의 규칙: 옆으로 갈 수 있으면 옆으로, 아니면 위아래로 한 칸."
+    },
+    {
+      "rule": "장면을 세어서 몇 장면마다 한 번만 움직이게 해요.",
+      "code": "if 장면 % 8 == 0:"
+    },
+    {
+      "rule": "같은 칸인지는 줄과 칸이 둘 다 같은지 and로 물어요.",
+      "code": "if 하나.줄 == 나.줄 and 하나.칸 == 나.칸:"
+    }
+  ],
+  "done": [
+    "done-1",
+    "done-2",
+    "done-bye"
+  ],
+  "lines": {
+    "today": [
+      "오늘은 다섯째 기능, 따라오는 유령이에요. 유령에게 닿으면 처음 자리로 돌아가요."
+    ],
+    "rule-intro": [
+      "오늘의 방법은 컴퓨터 캐릭터에게 규칙 주기예요. 유령은 생각을 못 해서, 어떻게 움직일지 규칙을 줘야 해요."
+    ],
+    "g-intro": [
+      "[미로지도.py|미로지도 점 파이]가 바뀌었어요. 판마다 [G|지]가 하나씩 생겼어요. 유령이 처음 서는 칸이에요. 지도그리기가 [G|지]를 만나면 유령을 만들어 유령들 리스트에 넣어요. 판을 바꿀 때는 앞 판의 유령을 숨기고 리스트를 비워요."
+    ],
+    "ghost-intro": [
+      "유령 클래스예요. 처음 자리를 기억해 두고, 처음으로를 부르면 그 칸으로 돌아가요. 탐험가에도 같은 이름의 메서드가 있었죠."
+    ],
+    "rule-card": [
+      "규칙은 다가가기 메서드에 써요. 상대는 탐험가예요. 상대가 오른쪽에 있고 오른쪽 칸이 벽이 아니면 오른쪽으로 가요. 아니면 왼쪽, 아래, 위 차례로 물어요. 한 번에 한 칸만 가요."
+    ],
+    "thru-intro": [
+      "먼저 벽을 묻지 않는 유령을 돌려 볼게요. 탐험가는 아래쪽 길로 내려가요."
+    ],
+    "thru-after": [
+      "유령이 벽을 지나다녀요. 유령도 탐험가처럼 갈 칸이 벽인지 물어야 해요."
+    ],
+    "fast-intro": [
+      "이번에는 벽은 묻지만, 장면마다 한 칸씩 움직이는 유령이에요."
+    ],
+    "fast-after": [
+      "눈 깜짝할 새에 쫓아왔어요. 장면은 일 초에 수십 번 지나가요. 장면마다 한 칸씩 움직이면 너무 빨라요."
+    ],
+    "tick-intro": [
+      "그래서 장면을 세요. 장면을 [8|팔]로 나눈 나머지가 [0|영]일 때만, 곧 여덟 장면에 한 번만 움직여요."
+    ],
+    "slow-after": [
+      "이제 유령이 한 칸씩 천천히 따라와요. 피할 만해요. 규칙이 단순해서 벽 뒤에서 막혀 서 있기도 해요. 그것도 규칙대로 움직이는 거예요."
+    ],
+    "catch-intro": [
+      "잡혔는지는 줄과 칸이 둘 다 같은지 [and|앤드]로 물어요. 잡히면 탐험가는 시작 칸으로, 그 유령은 자기 처음 자리로 돌아가요."
+    ],
+    "check-ask": [
+      "하나 물어볼게요. 장면 나누기 [8|팔]의 나머지가 [0|영]인 장면은 어느 것일까요?"
+    ],
+    "check-right": [
+      "맞아요. [8|팔], [16|십육], [24|이십사]처럼 여덟 장면마다 한 번이에요."
+    ],
+    "check-teach-1": [
+      "[1|일]부터 [7|칠]까지는 나머지가 [0|영]이 아니에요. [8|팔]의 배수일 때만 [0|영]이에요."
+    ],
+    "follow-ok": [
+      "좋아요. [8|팔], [16|십육], [24|이십사], 여덟 장면마다 한 번이에요."
+    ],
+    "summary": [
+      "정리해요. 유령에게는 규칙을 주고, 장면을 세어 가끔만 움직여요. 같은 칸인지는 줄과 칸을 [and|앤드]로 물어요."
+    ],
+    "q1-right": [
+      "맞아요. 칸 [3|삼]에서 왼쪽으로 두 번 가서 [1|일]이에요. 왼쪽 칸이 길이었어요."
+    ],
+    "q1-once": [
+      "반복은 두 번이고, 두 번 다 왼쪽 칸이 길이에요."
+    ],
+    "q1-stay": [
+      "나가 왼쪽에 있고 왼쪽 칸이 벽이 아니라서 움직여요."
+    ],
+    "q1-explain": [
+      "[1|일]이 나와요."
+    ],
+    "q2-right": [
+      "맞아요. [or|오어]라서 줄만 같아도 잡혔다고 나와요. 칸은 다른데요. 같은 칸인지는 [and|앤드]로 물어야 해요."
+    ],
+    "q2-safe": [
+      "칸은 다르지만, [or|오어]는 한쪽만 참이어도 참이에요. 줄이 같아서 잡혔다고 나와요."
+    ],
+    "q2-explain": [
+      "잡혔어요가 나와요. 그래서 같은 칸은 [and|앤드]로 물어요."
+    ],
+    "q3-right": [
+      "맞아요. [8|팔], [16|십육], [24|이십사], [32|삼십이], [40|사십]에서 다섯 번이에요."
+    ],
+    "q3-all": [
+      "장면마다가 아니라 [8|팔]의 배수일 때만 세요."
+    ],
+    "q3-eight": [
+      "[8|팔]은 몇 장면마다인지예요. 사십 장면이면 다섯 번이에요."
+    ],
+    "q3-explain": [
+      "[5|오]가 나와요."
+    ],
+    "task-intro": [
+      "이제 써 봐요. 두 문제예요. 먼저 유령이 다가오게 하고, 그다음 잡히게 해요."
+    ],
+    "task-how": [
+      "다 쓰면 실행해서 화살표 키로 해 보고, 멈춤 버튼으로 멈춰요. 잘 되면 '제출'을 눌러요."
+    ],
+    "praise-ghost": [
+      "유령에게 규칙을 주고, 갈 칸이 벽인지 물었어요. 장면을 세어 여덟 장면마다 한 칸씩 다가와요."
+    ],
+    "ghost-none": [
+      "유령이 보이지 않거나 수가 달라요. 지도그리기에서 [G|지]를 만나면 [유령들.append(유령(줄, 칸))|유령들 점 어펜드 유령 줄 칸]을 해요. 유령들 같다 빈 리스트는 지도그리기보다 위에 있어야 해요."
+    ],
+    "ghost-old": [
+      "다음 판에 앞 판의 유령이 남아 있어요. 지도그리기 맨 위에서 유령마다 몸을 숨기고, [유령들.clear()|유령들 점 클리어]로 비워요."
+    ],
+    "ghost-fast": [
+      "유령이 너무 빨리 와요. 장면을 세어서 [장면 % 8 == 0|장면 나누기 팔의 나머지가 영]일 때만 다가가기를 불러요."
+    ],
+    "ghost-rule": [
+      "유령의 자리가 달라요. 규칙의 차례를 봐요: 오른쪽, 왼쪽, 아래, 위. 갈 칸이 벽이 아닐 때만 가고, 한 번에 한 칸만 가요. 장면은 반복마다 하나씩 세요."
+    ],
+    "ghost-hint-1": [
+      "칠판의 클래스 유령을 보석 클래스 아래에 쓰고, 다가가기 메서드도 더해요. 그 아래에 유령들 같다 빈 리스트."
+    ],
+    "ghost-hint-2": [
+      "지도그리기 맨 위에서 앞 판의 유령을 숨기고 비우고, [G|지]를 만나면 유령을 넣어요. 반복 앞에 [장면 = 0|장면 같다 영], 반복 안 맨 위에서 장면을 하나 늘리고, [8|팔]로 나눈 나머지가 [0|영]이면 유령마다 [다가가기(나)|다가가기 나]."
+    ],
+    "task-next": [
+      "이번에는 잡히기예요. 유령과 같은 칸이 되면 둘 다 처음 자리로 돌아가요."
+    ],
+    "praise-catch": [
+      "줄과 칸이 둘 다 같은지 [and|앤드]로 묻고, 잡히면 탐험가와 그 유령을 모두 처음으로 보냈어요."
+    ],
+    "catch-ghost": [
+      "잡힌 다음 유령의 자리가 달라요. 잡히면 탐험가만이 아니라 그 유령도 [하나.처음으로()|하나 점 처음으로]로 돌려보내요."
+    ],
+    "catch-or": [
+      "같은 칸이 아닌데 잡혔어요. 줄과 칸이 둘 다 같아야 해요. [or|오어]가 아니라 [and|앤드]로 물어요."
+    ],
+    "catch-pos": [
+      "자리가 달라요. 유령이 움직인 다음에, 유령마다 줄과 칸이 나와 같은지 물어요. 같으면 나와 그 유령을 처음으로 보내요."
+    ],
+    "catch-hint-1": [
+      "유령을 움직이는 줄 아래에 [for 하나 in 유령들:|포 하나 인 유령들]을 쓰고, 하나의 줄이 나의 줄과 같고 [and|앤드] 하나의 칸이 나의 칸과 같은지 물어요."
+    ],
+    "catch-hint-2": [
+      "맞으면 [나.처음으로()|나 점 처음으로]와 [하나.처음으로()|하나 점 처음으로]를 불러요."
+    ],
+    "praise-h": [
+      "위아래를 먼저 묻는 세로유령을 새 클래스로 만들었어요. 메서드 이름이 다가가기로 같아서, 유령들 리스트에 넣기만 하면 반복은 그대로예요."
+    ],
+    "h-pos": [
+      "세로유령의 자리가 달라요. 세로유령은 아래, 위를 먼저 묻고, 그다음 오른쪽, 왼쪽을 물어요. 지도그리기에서 [H|에이치]를 만나면 세로유령을 넣어요."
+    ],
+    "h-hint-1": [
+      "유령 클래스를 본떠서 클래스 세로유령을 만들어요. 색은 [red|레드], 다가가기의 네 줄 묶음 차례만 바꿔요. 지도그리기에 [H|에이치]일 때를 더해요."
+    ],
+    "done-1": [
+      "다섯째 기능을 넣었어요. 이제 유령을 피해야 해요."
+    ],
+    "done-2": [
+      "다음 수업은 단원 마무리예요. 목숨을 넣고, 내 미로를 만들어요."
+    ]
+  },
+  "lecture": [
+    [
+      {
+        "say": "greet"
+      },
+      {
+        "say": "today"
+      },
+      {
+        "say": "rule-intro"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "modules": {
+          "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작, G 유령\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#.......#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#..G#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#G....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#....G#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+        },
+        "locked": [
+          "미로지도.py"
+        ]
+      },
+      {
+        "say": "g-intro"
+      },
+      {
+        "card": {
+          "title": "지도그리기에 더하기",
+          "code": "    for 하나 in 유령들:\n        하나.몸.hideturtle()\n    유령들.clear()\n    ...\n            elif 글자 == \"G\":\n                유령들.append(유령(줄, 칸))"
+        }
+      },
+      {
+        "card": {
+          "title": "유령",
+          "code": "class 유령:\n    def __init__(self, 줄, 칸):\n        self.처음줄 = 줄\n        self.처음칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"purple\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        self.줄 = self.처음줄\n        self.칸 = self.처음칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))"
+        }
+      },
+      {
+        "say": "ghost-intro"
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "card": {
+          "title": "유령의 규칙",
+          "code": "    def 다가가기(self, 상대):\n        if 상대.칸 > self.칸 and 지도[self.줄][self.칸 + 1] != \"#\":\n            self.칸 = self.칸 + 1\n        elif 상대.칸 < self.칸 and 지도[self.줄][self.칸 - 1] != \"#\":\n            self.칸 = self.칸 - 1\n        elif 상대.줄 > self.줄 and 지도[self.줄 + 1][self.칸] != \"#\":\n            self.줄 = self.줄 + 1\n        elif 상대.줄 < self.줄 and 지도[self.줄 - 1][self.칸] != \"#\":\n            self.줄 = self.줄 - 1\n        self.보이기()"
+        }
+      },
+      {
+        "say": "rule-card"
+      },
+      {
+        "card": {
+          "title": "벽을 묻지 않으면?",
+          "code": "    def 다가가기(self, 상대):\n        if 상대.칸 > self.칸:\n            self.칸 = self.칸 + 1\n        elif 상대.칸 < self.칸:\n            self.칸 = self.칸 - 1\n        ..."
+        }
+      },
+      {
+        "say": "thru-intro"
+      },
+      {
+        "play": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\nclass 유령:\n    def __init__(self, 줄, 칸):\n        self.처음줄 = 줄\n        self.처음칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"purple\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        self.줄 = self.처음줄\n        self.칸 = self.처음칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 다가가기(self, 상대):\n        if 상대.칸 > self.칸:\n            self.칸 = self.칸 + 1\n        elif 상대.칸 < self.칸:\n            self.칸 = self.칸 - 1\n        elif 상대.줄 > self.줄:\n            self.줄 = self.줄 + 1\n        elif 상대.줄 < self.줄:\n            self.줄 = self.줄 - 1\n        self.보이기()\n\n유령들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 하나 in 유령들:\n        하나.몸.hideturtle()\n    유령들.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n            elif 글자 == \"G\":\n                유령들.append(유령(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\n장면 = 0\nwhile True:\n    장면 = 장면 + 1\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if 장면 % 8 == 0:\n        for 하나 in 유령들:\n            하나.다가가기(나)\n    for 하나 in 유령들:\n        if 하나.줄 == 나.줄 and 하나.칸 == 나.칸:\n            나.처음으로()\n            하나.처음으로()\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판번호 = 판번호 + 1\n        if 판번호 == len(지도들):\n            판.clear()\n            판.write(\"다 깼어요!\")\n            break\n        지도 = 지도들[판번호]\n        지도그리기()\n        처음수 = len(보석들)\n        판쓰기()\n        나.처음으로()\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+        "keys": [
+          [
+            600,
+            "Down"
+          ],
+          [
+            700,
+            "Down"
+          ],
+          [
+            800,
+            "Down"
+          ],
+          [
+            900,
+            "Down"
+          ],
+          [
+            1000,
+            "Right"
+          ],
+          [
+            1100,
+            "Right"
+          ],
+          [
+            1200,
+            "Down"
+          ],
+          [
+            1300,
+            "Down"
+          ],
+          [
+            1400,
+            "Left"
+          ],
+          [
+            1500,
+            "Left"
+          ],
+          [
+            1600,
+            "Down"
+          ],
+          [
+            1700,
+            "Down"
+          ],
+          [
+            1800,
+            "Right"
+          ],
+          [
+            1900,
+            "Right"
+          ],
+          [
+            2000,
+            "Right"
+          ],
+          [
+            2100,
+            "Right"
+          ],
+          [
+            2200,
+            "Right"
+          ],
+          [
+            2300,
+            "Right"
+          ]
+        ],
+        "ms": 3400
+      },
+      {
+        "say": "thru-after"
+      },
+      {
+        "say": "fast-intro"
+      },
+      {
+        "play": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\nclass 유령:\n    def __init__(self, 줄, 칸):\n        self.처음줄 = 줄\n        self.처음칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"purple\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        self.줄 = self.처음줄\n        self.칸 = self.처음칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 다가가기(self, 상대):\n        if 상대.칸 > self.칸 and 지도[self.줄][self.칸 + 1] != \"#\":\n            self.칸 = self.칸 + 1\n        elif 상대.칸 < self.칸 and 지도[self.줄][self.칸 - 1] != \"#\":\n            self.칸 = self.칸 - 1\n        elif 상대.줄 > self.줄 and 지도[self.줄 + 1][self.칸] != \"#\":\n            self.줄 = self.줄 + 1\n        elif 상대.줄 < self.줄 and 지도[self.줄 - 1][self.칸] != \"#\":\n            self.줄 = self.줄 - 1\n        self.보이기()\n\n유령들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 하나 in 유령들:\n        하나.몸.hideturtle()\n    유령들.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n            elif 글자 == \"G\":\n                유령들.append(유령(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\n장면 = 0\nwhile True:\n    장면 = 장면 + 1\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    for 하나 in 유령들:\n        하나.다가가기(나)\n    for 하나 in 유령들:\n        if 하나.줄 == 나.줄 and 하나.칸 == 나.칸:\n            나.처음으로()\n            하나.처음으로()\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판번호 = 판번호 + 1\n        if 판번호 == len(지도들):\n            판.clear()\n            판.write(\"다 깼어요!\")\n            break\n        지도 = 지도들[판번호]\n        지도그리기()\n        처음수 = len(보석들)\n        판쓰기()\n        나.처음으로()\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+        "keys": [
+          [
+            600,
+            "Down"
+          ],
+          [
+            700,
+            "Down"
+          ],
+          [
+            800,
+            "Down"
+          ],
+          [
+            900,
+            "Down"
+          ],
+          [
+            1000,
+            "Right"
+          ],
+          [
+            1100,
+            "Right"
+          ],
+          [
+            1200,
+            "Down"
+          ],
+          [
+            1300,
+            "Down"
+          ],
+          [
+            1400,
+            "Left"
+          ],
+          [
+            1500,
+            "Left"
+          ],
+          [
+            1600,
+            "Down"
+          ],
+          [
+            1700,
+            "Down"
+          ],
+          [
+            1800,
+            "Right"
+          ],
+          [
+            1900,
+            "Right"
+          ],
+          [
+            2000,
+            "Right"
+          ],
+          [
+            2100,
+            "Right"
+          ],
+          [
+            2200,
+            "Right"
+          ],
+          [
+            2300,
+            "Right"
+          ]
+        ],
+        "ms": 3400
+      },
+      {
+        "say": "fast-after"
+      },
+      {
+        "card": {
+          "title": "여덟 장면마다",
+          "code": "장면 = 0\nwhile True:\n    장면 = 장면 + 1\n    ...\n    if 장면 % 8 == 0:\n        for 하나 in 유령들:\n            하나.다가가기(나)"
+        }
+      },
+      {
+        "say": "tick-intro"
+      },
+      {
+        "play": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\nclass 유령:\n    def __init__(self, 줄, 칸):\n        self.처음줄 = 줄\n        self.처음칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"purple\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        self.줄 = self.처음줄\n        self.칸 = self.처음칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 다가가기(self, 상대):\n        if 상대.칸 > self.칸 and 지도[self.줄][self.칸 + 1] != \"#\":\n            self.칸 = self.칸 + 1\n        elif 상대.칸 < self.칸 and 지도[self.줄][self.칸 - 1] != \"#\":\n            self.칸 = self.칸 - 1\n        elif 상대.줄 > self.줄 and 지도[self.줄 + 1][self.칸] != \"#\":\n            self.줄 = self.줄 + 1\n        elif 상대.줄 < self.줄 and 지도[self.줄 - 1][self.칸] != \"#\":\n            self.줄 = self.줄 - 1\n        self.보이기()\n\n유령들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 하나 in 유령들:\n        하나.몸.hideturtle()\n    유령들.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n            elif 글자 == \"G\":\n                유령들.append(유령(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\n장면 = 0\nwhile True:\n    장면 = 장면 + 1\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if 장면 % 8 == 0:\n        for 하나 in 유령들:\n            하나.다가가기(나)\n    for 하나 in 유령들:\n        if 하나.줄 == 나.줄 and 하나.칸 == 나.칸:\n            나.처음으로()\n            하나.처음으로()\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판번호 = 판번호 + 1\n        if 판번호 == len(지도들):\n            판.clear()\n            판.write(\"다 깼어요!\")\n            break\n        지도 = 지도들[판번호]\n        지도그리기()\n        처음수 = len(보석들)\n        판쓰기()\n        나.처음으로()\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+        "keys": [
+          [
+            600,
+            "Down"
+          ],
+          [
+            700,
+            "Down"
+          ],
+          [
+            800,
+            "Down"
+          ],
+          [
+            900,
+            "Down"
+          ],
+          [
+            1000,
+            "Right"
+          ],
+          [
+            1100,
+            "Right"
+          ],
+          [
+            1200,
+            "Down"
+          ],
+          [
+            1300,
+            "Down"
+          ],
+          [
+            1400,
+            "Left"
+          ],
+          [
+            1500,
+            "Left"
+          ],
+          [
+            1600,
+            "Down"
+          ],
+          [
+            1700,
+            "Down"
+          ],
+          [
+            1800,
+            "Right"
+          ],
+          [
+            1900,
+            "Right"
+          ],
+          [
+            2000,
+            "Right"
+          ],
+          [
+            2100,
+            "Right"
+          ],
+          [
+            2200,
+            "Right"
+          ],
+          [
+            2300,
+            "Right"
+          ]
+        ],
+        "ms": 3400
+      },
+      {
+        "say": "slow-after"
+      },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "장면 % 8 == 0 이 참인 장면은?",
+          "ask": "check-ask",
+          "choices": [
+            "8, 16, 24 …",
+            "1부터 8까지"
+          ],
+          "answer": 0,
+          "right": [
+            {
+              "say": "check-right"
+            }
+          ],
+          "teach": [
+            {
+              "say": "check-teach-1"
+            }
+          ]
+        }
+      }
+    ],
+    [
+      {
+        "clearBoard": true
+      },
+      {
+        "card": {
+          "title": "잡히면 (놀이의 반복 안)",
+          "code": "for 하나 in 유령들:\n    if 하나.줄 == 나.줄 and 하나.칸 == 나.칸:\n        나.처음으로()\n        하나.처음으로()"
+        }
+      },
+      {
+        "say": "catch-intro"
+      },
+      {
+        "card": {
+          "title": "따라 쳐요",
+          "code": "for 장면 in range(1, 25):\n    if 장면 % 8 == 0:\n        print(장면)"
+        }
+      },
+      {
+        "follow": {
+          "code": "for 장면 in range(1, 25):\n    if 장면 % 8 == 0:\n        print(장면)",
+          "expect": [
+            "8",
+            "16",
+            "24"
+          ],
+          "say": [
+            "follow-intro",
+            "follow-done"
+          ]
+        }
+      },
+      {
+        "say": "follow-ok"
+      }
+    ],
+    [
+      {
+        "card": {
+          "title": "오늘 배운 것",
+          "items": [
+            "컴퓨터 캐릭터에게 규칙을 준다",
+            "장면 % 8 == 0  여덟 장면에 한 번",
+            "같은 칸: 줄 and 칸이 둘 다 같다"
+          ]
+        }
+      },
+      {
+        "say": "summary"
+      },
+      {
+        "say": "to-predict"
+      }
+    ]
+  ],
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "지도 = [\"#####\", \"#...#\", \"#####\"]\n유령 = 3\n나 = 1\nfor 장면 in range(2):\n    if 나 < 유령 and 지도[1][유령 - 1] != \"#\":\n        유령 = 유령 - 1\nprint(유령)",
+      "answer": 0,
+      "choices": [
+        {
+          "text": "1",
+          "say": "q1-right"
+        },
+        {
+          "text": "2",
+          "say": "q1-once"
+        },
+        {
+          "text": "3",
+          "say": "q1-stay"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "나줄 = 2\n나칸 = 5\n유령줄 = 2\n유령칸 = 4\nif 나줄 == 유령줄 or 나칸 == 유령칸:\n    print(\"잡혔어요\")\nelse:\n    print(\"괜찮아요\")",
+      "answer": 0,
+      "choices": [
+        {
+          "text": "잡혔어요",
+          "say": "q2-right"
+        },
+        {
+          "text": "괜찮아요",
+          "say": "q2-safe"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "움직임 = 0\nfor 장면 in range(1, 41):\n    if 장면 % 8 == 0:\n        움직임 += 1\nprint(움직임)",
+      "answer": 2,
+      "choices": [
+        {
+          "text": "40",
+          "say": "q3-all"
+        },
+        {
+          "text": "8",
+          "say": "q3-eight"
+        },
+        {
+          "text": "5",
+          "say": "q3-right"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "ghost",
+      "title": "다가오는 유령",
+      "story": "지도의 G 칸에 보라색 유령이 나와요. 유령은 여덟 장면마다 한 칸씩, 규칙대로 탐험가에게 다가와요: 옆으로 갈 수 있으면 옆으로, 아니면 위아래로. 아직 닿아도 아무 일이 없어요. 판이 바뀌면 앞 판의 유령은 사라져요.",
+      "steps": [
+        "클래스 보석 아래에 클래스 유령을 만들어요(아래 코드). 그 아래에 유령들 = []",
+        "class 유령:\n    def __init__(self, 줄, 칸):\n        self.처음줄 = 줄\n        self.처음칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"purple\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        self.줄 = self.처음줄\n        self.칸 = self.처음칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 다가가기(self, 상대):\n        if 상대.칸 > self.칸 and 지도[self.줄][self.칸 + 1] != \"#\":\n            self.칸 = self.칸 + 1\n        elif 상대.칸 < self.칸 and 지도[self.줄][self.칸 - 1] != \"#\":\n            self.칸 = self.칸 - 1\n        elif 상대.줄 > self.줄 and 지도[self.줄 + 1][self.칸] != \"#\":\n            self.줄 = self.줄 + 1\n        elif 상대.줄 < self.줄 and 지도[self.줄 - 1][self.칸] != \"#\":\n            self.줄 = self.줄 - 1\n        self.보이기()",
+        "지도그리기 맨 위(붓.clear() 아래)에서 앞 판의 유령을 숨기고 비워요. 그리고 \"G\"를 만나면 유령을 넣어요.",
+        "    for 하나 in 유령들:\n        하나.몸.hideturtle()\n    유령들.clear()\n    ...\n            elif 글자 == \"G\":\n                유령들.append(유령(줄, 칸))",
+        "while True: 앞에 장면 = 0. 반복 안 맨 위에서 장면 = 장면 + 1",
+        "줍기 아래에서: 장면 % 8 == 0 이면 유령마다 하나.다가가기(나)"
+      ],
+      "continues": [
+        "maze-level/next"
+      ],
+      "start": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\nwhile True:\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판번호 = 판번호 + 1\n        if 판번호 == len(지도들):\n            판.clear()\n            판.write(\"다 깼어요!\")\n            break\n        지도 = 지도들[판번호]\n        지도그리기()\n        처음수 = len(보석들)\n        판쓰기()\n        나.처음으로()\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+      "modules": {
+        "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작, G 유령\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#.......#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#..G#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#G....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#....G#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+      },
+      "lockModules": [
+        "미로지도.py"
+      ],
+      "cases": [
+        {
+          "keys": [],
+          "frames": 40,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [],
+          "frames": 160,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            null,
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null
+          ],
+          "frames": 88,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "checks": [
+        {
+          "pattern": "class\\s+유령",
+          "say": "ghost-rule"
+        },
+        {
+          "pattern": "%\\s*8",
+          "say": "ghost-fast"
+        }
+      ],
+      "mistakes": [
+        {
+          "game": "game-count",
+          "code": "^(?![\\s\\S]*유령들\\.clear)",
+          "say": "ghost-old"
+        },
+        {
+          "game": "game-count",
+          "say": "ghost-none"
+        },
+        {
+          "game": "game-none",
+          "say": "ghost-none"
+        },
+        {
+          "game": "game-pos",
+          "code": "^(?![\\s\\S]*%\\s*8)",
+          "say": "ghost-fast"
+        },
+        {
+          "game": "game-pos",
+          "say": "ghost-rule"
+        }
+      ],
+      "praise": "praise-ghost",
+      "solution": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\nclass 유령:\n    def __init__(self, 줄, 칸):\n        self.처음줄 = 줄\n        self.처음칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"purple\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        self.줄 = self.처음줄\n        self.칸 = self.처음칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 다가가기(self, 상대):\n        if 상대.칸 > self.칸 and 지도[self.줄][self.칸 + 1] != \"#\":\n            self.칸 = self.칸 + 1\n        elif 상대.칸 < self.칸 and 지도[self.줄][self.칸 - 1] != \"#\":\n            self.칸 = self.칸 - 1\n        elif 상대.줄 > self.줄 and 지도[self.줄 + 1][self.칸] != \"#\":\n            self.줄 = self.줄 + 1\n        elif 상대.줄 < self.줄 and 지도[self.줄 - 1][self.칸] != \"#\":\n            self.줄 = self.줄 - 1\n        self.보이기()\n\n유령들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 하나 in 유령들:\n        하나.몸.hideturtle()\n    유령들.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n            elif 글자 == \"G\":\n                유령들.append(유령(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\n장면 = 0\nwhile True:\n    장면 = 장면 + 1\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if 장면 % 8 == 0:\n        for 하나 in 유령들:\n            하나.다가가기(나)\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판번호 = 판번호 + 1\n        if 판번호 == len(지도들):\n            판.clear()\n            판.write(\"다 깼어요!\")\n            break\n        지도 = 지도들[판번호]\n        지도그리기()\n        처음수 = len(보석들)\n        판쓰기()\n        나.처음으로()\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+      "solutionModules": {
+        "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작, G 유령\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#.......#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#..G#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#G....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#....G#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+      },
+      "hints": [
+        {
+          "say": "ghost-hint-1"
+        },
+        {
+          "say": "ghost-hint-2"
+        }
+      ]
+    },
+    {
+      "id": "catch",
+      "title": "잡히면 처음으로",
+      "story": "유령과 같은 칸(줄도 칸도 같음)이 되면 잡힌 거예요. 탐험가는 시작 칸으로, 그 유령은 자기 처음 자리로 돌아가요.",
+      "steps": [
+        "유령을 움직이는 줄 아래에 써요(아래 코드).",
+        "for 하나 in 유령들:\n    if 하나.줄 == 나.줄 and 하나.칸 == 나.칸:\n        나.처음으로()\n        하나.처음으로()"
+      ],
+      "continues": [
+        "maze-ghost/ghost"
+      ],
+      "start": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\nclass 유령:\n    def __init__(self, 줄, 칸):\n        self.처음줄 = 줄\n        self.처음칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"purple\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        self.줄 = self.처음줄\n        self.칸 = self.처음칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 다가가기(self, 상대):\n        if 상대.칸 > self.칸 and 지도[self.줄][self.칸 + 1] != \"#\":\n            self.칸 = self.칸 + 1\n        elif 상대.칸 < self.칸 and 지도[self.줄][self.칸 - 1] != \"#\":\n            self.칸 = self.칸 - 1\n        elif 상대.줄 > self.줄 and 지도[self.줄 + 1][self.칸] != \"#\":\n            self.줄 = self.줄 + 1\n        elif 상대.줄 < self.줄 and 지도[self.줄 - 1][self.칸] != \"#\":\n            self.줄 = self.줄 - 1\n        self.보이기()\n\n유령들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 하나 in 유령들:\n        하나.몸.hideturtle()\n    유령들.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n            elif 글자 == \"G\":\n                유령들.append(유령(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\n장면 = 0\nwhile True:\n    장면 = 장면 + 1\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if 장면 % 8 == 0:\n        for 하나 in 유령들:\n            하나.다가가기(나)\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판번호 = 판번호 + 1\n        if 판번호 == len(지도들):\n            판.clear()\n            판.write(\"다 깼어요!\")\n            break\n        지도 = 지도들[판번호]\n        지도그리기()\n        처음수 = len(보석들)\n        판쓰기()\n        나.처음으로()\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+      "modules": {
+        "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작, G 유령\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#.......#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#..G#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#G....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#....G#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+      },
+      "lockModules": [
+        "미로지도.py"
+      ],
+      "cases": [
+        {
+          "keys": [],
+          "frames": 40,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        },
+        {
+          "keys": [
+            null,
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Left",
+            null,
+            "Left",
+            null,
+            "Up",
+            null,
+            "Up",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null,
+            "Down",
+            null,
+            "Down",
+            null,
+            "Right",
+            null,
+            "Right",
+            null
+          ],
+          "frames": 88,
+          "randoms": [],
+          "inputs": [],
+          "expect": []
+        }
+      ],
+      "expect": [],
+      "game": true,
+      "showCases": 2,
+      "mistakes": [
+        {
+          "code": "하나\\.줄\\s*==\\s*나\\.줄\\s+or",
+          "say": "catch-or"
+        },
+        {
+          "code": "^(?![\\s\\S]*하나\\.처음으로)",
+          "say": "catch-ghost"
+        },
+        {
+          "game": "game-pos",
+          "say": "catch-pos"
+        },
+        {
+          "game": "game-count",
+          "say": "catch-pos"
+        },
+        {
+          "game": "game-text",
+          "say": "catch-pos"
+        }
+      ],
+      "praise": "praise-catch",
+      "solution": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\nclass 유령:\n    def __init__(self, 줄, 칸):\n        self.처음줄 = 줄\n        self.처음칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"purple\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        self.줄 = self.처음줄\n        self.칸 = self.처음칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 다가가기(self, 상대):\n        if 상대.칸 > self.칸 and 지도[self.줄][self.칸 + 1] != \"#\":\n            self.칸 = self.칸 + 1\n        elif 상대.칸 < self.칸 and 지도[self.줄][self.칸 - 1] != \"#\":\n            self.칸 = self.칸 - 1\n        elif 상대.줄 > self.줄 and 지도[self.줄 + 1][self.칸] != \"#\":\n            self.줄 = self.줄 + 1\n        elif 상대.줄 < self.줄 and 지도[self.줄 - 1][self.칸] != \"#\":\n            self.줄 = self.줄 - 1\n        self.보이기()\n\n유령들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 하나 in 유령들:\n        하나.몸.hideturtle()\n    유령들.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n            elif 글자 == \"G\":\n                유령들.append(유령(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\n장면 = 0\nwhile True:\n    장면 = 장면 + 1\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if 장면 % 8 == 0:\n        for 하나 in 유령들:\n            하나.다가가기(나)\n    for 하나 in 유령들:\n        if 하나.줄 == 나.줄 and 하나.칸 == 나.칸:\n            나.처음으로()\n            하나.처음으로()\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판번호 = 판번호 + 1\n        if 판번호 == len(지도들):\n            판.clear()\n            판.write(\"다 깼어요!\")\n            break\n        지도 = 지도들[판번호]\n        지도그리기()\n        처음수 = len(보석들)\n        판쓰기()\n        나.처음으로()\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+      "solutionModules": {
+        "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작, G 유령\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#.......#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#..G#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#G....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#....G#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+      },
+      "hints": [
+        {
+          "say": "catch-hint-1"
+        },
+        {
+          "say": "catch-hint-2"
+        }
+      ]
+    }
+  ],
+  "challenge": {
+    "id": "vertical",
+    "title": "심화: 세로부터 가는 유령",
+    "story": "미로지도.py의 첫 판에 H 칸이 생겼어요. H에는 빨간 세로유령이 나와요. 세로유령은 규칙의 차례가 달라요: 위아래로 갈 수 있으면 위아래로, 아니면 옆으로.",
+    "steps": [
+      "유령 클래스를 본떠 클래스 세로유령을 만들어요(색 \"red\"). 다가가기는 아래, 위를 먼저 묻고 그다음 오른쪽, 왼쪽.",
+      "지도그리기: elif 글자 == \"H\": 이면 유령들.append(세로유령(줄, 칸))"
+    ],
+    "continues": [
+      "maze-ghost/catch"
+    ],
+    "start": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\nclass 유령:\n    def __init__(self, 줄, 칸):\n        self.처음줄 = 줄\n        self.처음칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"purple\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        self.줄 = self.처음줄\n        self.칸 = self.처음칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 다가가기(self, 상대):\n        if 상대.칸 > self.칸 and 지도[self.줄][self.칸 + 1] != \"#\":\n            self.칸 = self.칸 + 1\n        elif 상대.칸 < self.칸 and 지도[self.줄][self.칸 - 1] != \"#\":\n            self.칸 = self.칸 - 1\n        elif 상대.줄 > self.줄 and 지도[self.줄 + 1][self.칸] != \"#\":\n            self.줄 = self.줄 + 1\n        elif 상대.줄 < self.줄 and 지도[self.줄 - 1][self.칸] != \"#\":\n            self.줄 = self.줄 - 1\n        self.보이기()\n\n유령들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 하나 in 유령들:\n        하나.몸.hideturtle()\n    유령들.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n            elif 글자 == \"G\":\n                유령들.append(유령(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\n장면 = 0\nwhile True:\n    장면 = 장면 + 1\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if 장면 % 8 == 0:\n        for 하나 in 유령들:\n            하나.다가가기(나)\n    for 하나 in 유령들:\n        if 하나.줄 == 나.줄 and 하나.칸 == 나.칸:\n            나.처음으로()\n            하나.처음으로()\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판번호 = 판번호 + 1\n        if 판번호 == len(지도들):\n            판.clear()\n            판.write(\"다 깼어요!\")\n            break\n        지도 = 지도들[판번호]\n        지도그리기()\n        처음수 = len(보석들)\n        판쓰기()\n        나.처음으로()\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+    "modules": {
+      "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작, G 유령\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#......H#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#..G#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#G....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#....G#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+    },
+    "lockModules": [
+      "미로지도.py"
+    ],
+    "cases": [
+      {
+        "keys": [],
+        "frames": 80,
+        "randoms": [],
+        "inputs": [],
+        "expect": []
+      },
+      {
+        "keys": [],
+        "frames": 200,
+        "randoms": [],
+        "inputs": [],
+        "expect": []
+      }
+    ],
+    "expect": [],
+    "game": true,
+    "showCases": 2,
+    "mistakes": [
+      {
+        "game": "game-count",
+        "say": "h-pos"
+      },
+      {
+        "game": "game-pos",
+        "say": "h-pos"
+      },
+      {
+        "game": "game-look",
+        "say": "h-pos"
+      }
+    ],
+    "praise": "praise-h",
+    "solution": "import turtle\nimport time\nfrom 미로지도 import 지도들\n\nturtle.tracer(0)\n크기 = 30\n판번호 = 0\n지도 = 지도들[판번호]\n\ndef 가로(칸):\n    return 칸 * 크기 - 210\n\ndef 세로(줄):\n    return 135 - 줄 * 크기\n\n붓 = turtle.Turtle()\n붓.hideturtle()\n붓.penup()\n\ndef 칸칠하기(줄, 칸, 색):\n    붓.goto(가로(칸) - 15, 세로(줄) - 15)\n    붓.color(색)\n    붓.pendown()\n    붓.begin_fill()\n    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)\n    붓.end_fill()\n    붓.penup()\n\n색들 = {\"#\": \"brown\", \"E\": \"green\"}\n\nclass 보석:\n    def __init__(self, 줄, 칸):\n        self.줄 = 줄\n        self.칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"circle\")\n        self.몸.color(\"gold\")\n        self.몸.penup()\n        self.몸.goto(가로(칸), 세로(줄))\n\n보석들 = []\n\nclass 유령:\n    def __init__(self, 줄, 칸):\n        self.처음줄 = 줄\n        self.처음칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"purple\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        self.줄 = self.처음줄\n        self.칸 = self.처음칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 다가가기(self, 상대):\n        if 상대.칸 > self.칸 and 지도[self.줄][self.칸 + 1] != \"#\":\n            self.칸 = self.칸 + 1\n        elif 상대.칸 < self.칸 and 지도[self.줄][self.칸 - 1] != \"#\":\n            self.칸 = self.칸 - 1\n        elif 상대.줄 > self.줄 and 지도[self.줄 + 1][self.칸] != \"#\":\n            self.줄 = self.줄 + 1\n        elif 상대.줄 < self.줄 and 지도[self.줄 - 1][self.칸] != \"#\":\n            self.줄 = self.줄 - 1\n        self.보이기()\n\nclass 세로유령:\n    def __init__(self, 줄, 칸):\n        self.처음줄 = 줄\n        self.처음칸 = 칸\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"square\")\n        self.몸.color(\"red\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        self.줄 = self.처음줄\n        self.칸 = self.처음칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 다가가기(self, 상대):\n        if 상대.줄 > self.줄 and 지도[self.줄 + 1][self.칸] != \"#\":\n            self.줄 = self.줄 + 1\n        elif 상대.줄 < self.줄 and 지도[self.줄 - 1][self.칸] != \"#\":\n            self.줄 = self.줄 - 1\n        elif 상대.칸 > self.칸 and 지도[self.줄][self.칸 + 1] != \"#\":\n            self.칸 = self.칸 + 1\n        elif 상대.칸 < self.칸 and 지도[self.줄][self.칸 - 1] != \"#\":\n            self.칸 = self.칸 - 1\n        self.보이기()\n\n유령들 = []\n\ndef 지도그리기():\n    붓.clear()\n    for 하나 in 유령들:\n        하나.몸.hideturtle()\n    유령들.clear()\n    for 줄 in range(len(지도)):\n        for 칸 in range(len(지도[줄])):\n            글자 = 지도[줄][칸]\n            if 글자 in 색들:\n                칸칠하기(줄, 칸, 색들[글자])\n            elif 글자 == \"*\":\n                보석들.append(보석(줄, 칸))\n            elif 글자 == \"G\":\n                유령들.append(유령(줄, 칸))\n            elif 글자 == \"H\":\n                유령들.append(세로유령(줄, 칸))\n\n지도그리기()\n\n처음수 = len(보석들)\n판 = turtle.Turtle()\n판.hideturtle()\n판.penup()\n판.goto(-210, 155)\n\ndef 판쓰기():\n    판.clear()\n    판.write(\"보석 \" + str(처음수 - len(보석들)) + \" / \" + str(처음수))\n\n판쓰기()\n\nclass 탐험가:\n    def __init__(self):\n        self.몸 = turtle.Turtle()\n        self.몸.shape(\"turtle\")\n        self.몸.color(\"blue\")\n        self.몸.penup()\n        self.처음으로()\n    def 처음으로(self):\n        for 줄 in range(len(지도)):\n            for 칸 in range(len(지도[줄])):\n                if 지도[줄][칸] == \"S\":\n                    self.줄 = 줄\n                    self.칸 = 칸\n        self.보이기()\n    def 보이기(self):\n        self.몸.goto(가로(self.칸), 세로(self.줄))\n    def 가기(self, 위아래, 옆):\n        if 지도[self.줄 + 위아래][self.칸 + 옆] != \"#\":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()\n\n나 = 탐험가()\n\ndef 위():\n    나.가기(-1, 0)\n\ndef 아래():\n    나.가기(1, 0)\n\ndef 왼쪽():\n    나.가기(0, -1)\n\ndef 오른쪽():\n    나.가기(0, 1)\n\nturtle.onkeypress(위, \"Up\")\nturtle.onkeypress(아래, \"Down\")\nturtle.onkeypress(왼쪽, \"Left\")\nturtle.onkeypress(오른쪽, \"Right\")\nturtle.listen()\n\n장면 = 0\nwhile True:\n    장면 = 장면 + 1\n    for 돌 in 보석들:\n        if 돌.줄 == 나.줄 and 돌.칸 == 나.칸:\n            돌.몸.hideturtle()\n            보석들.remove(돌)\n            판쓰기()\n            break\n    if 장면 % 8 == 0:\n        for 하나 in 유령들:\n            하나.다가가기(나)\n    for 하나 in 유령들:\n        if 하나.줄 == 나.줄 and 하나.칸 == 나.칸:\n            나.처음으로()\n            하나.처음으로()\n    if len(보석들) == 0 and 지도[나.줄][나.칸] == \"E\":\n        판번호 = 판번호 + 1\n        if 판번호 == len(지도들):\n            판.clear()\n            판.write(\"다 깼어요!\")\n            break\n        지도 = 지도들[판번호]\n        지도그리기()\n        처음수 = len(보석들)\n        판쓰기()\n        나.처음으로()\n    turtle.update()\n    time.sleep(0.02)\nturtle.update()\n",
+    "solutionModules": {
+      "미로지도.py": "# 미로 지도들. # 벽, . 길, * 보석, E 출구, S 시작, G 유령\n\n지도들 = [\n    [\n        \"###############\",\n        \"#S....#......H#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#####.#.#.#\",\n        \"#...#...*.#...#\",\n        \"###.#.###.###.#\",\n        \"#*..#...#..G#.#\",\n        \"#.#####.#.#.#.#\",\n        \"#.......#.#..E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#S#.....#.....#\",\n        \"#.#.###.#.###.#\",\n        \"#...#*..#...#.#\",\n        \"###.#####.#.#.#\",\n        \"#G....#...#.*.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.....#.#\",\n        \"#.#.#######.#.#\",\n        \"#.#.........#E#\",\n        \"###############\",\n    ],\n    [\n        \"###############\",\n        \"#E..#....G#..*#\",\n        \"###.#.###.#.#.#\",\n        \"#...#.#*#...#.#\",\n        \"#.###.#.#####.#\",\n        \"#.#*..#.......#\",\n        \"#.#.###.#####.#\",\n        \"#...#...#*..#.#\",\n        \"#.#.#.###.#.#.#\",\n        \"#.#.........#S#\",\n        \"###############\",\n    ],\n]\n"
+    },
+    "hints": [
+      {
+        "say": "h-hint-1"
+      }
+    ]
+  }
+}

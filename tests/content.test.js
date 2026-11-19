@@ -1024,9 +1024,60 @@ const WRONG20 = () => {
   ];
 };
 
+// 단원 21(미로 탈출): 단원 20처럼 모범 답을 조금 고쳐서 만든다.
+const WRONG21 = () => {
+  const m = (missionId, taskId) => main(missionId, taskId);
+  const mods = (missionId, taskId) => sol(missionId, taskId).solutionModules ?? {};
+  const row = (missionId, taskId, code, kind, say) => [missionId, taskId, code, kind, say, mods(missionId, taskId)];
+  const cell = m('maze-map', 'cell');
+  const map = m('maze-map', 'map');
+  const walk = m('maze-walk', 'walk');
+  const exit = m('maze-gem', 'exit');
+  const next = m('maze-level', 'next');
+  const ghost = m('maze-ghost', 'ghost');
+  const lives = m('unit21-review', 'lives');
+  const late = swap(m('maze-walk', 'wall'), '        if 지도[self.줄 + 위아래][self.칸 + 옆] != "#":\n            self.줄 = self.줄 + 위아래\n            self.칸 = self.칸 + 옆\n            self.보이기()', '        self.줄 = self.줄 + 위아래\n        self.칸 = self.칸 + 옆\n        if 지도[self.줄][self.칸] != "#":\n            self.보이기()');
+  return [
+    row('maze-map', 'cell', swap(swap(cell, '    붓.begin_fill()\n', ''), '    붓.end_fill()\n', ''), 'mistake', 'cell-nofill'),
+    row('maze-map', 'cell', swap(cell, '붓.goto(가로(칸) - 15, 세로(줄) - 15)', '붓.goto(가로(칸), 세로(줄))'), 'mistake', 'cell-moved'),
+    row('maze-map', 'cell', swap(cell, '붓.color(색)', '붓.color("brown")'), 'mistake', 'cell-color'),
+    row('maze-map', 'cell', swap(cell, '    붓.end_fill()\n    붓.penup()\n', '    붓.end_fill()\n'), 'mistake', 'cell-line'),
+    row('maze-map', 'cell', swap(cell, '    for i in range(4):\n        붓.forward(크기)\n        붓.left(90)', '    for i in range(2):\n        붓.forward(크기)\n        붓.left(90)\n        붓.forward(크기)\n        붓.left(90)'), 'correct', null),
+    row('maze-map', 'map', swap(map, '지도그리기()\nturtle.update()', '칸칠하기(0, 0, "brown")\n칸칠하기(9, 13, "green")\n지도그리기()\nturtle.update()'), 'mistake', 'map-twice'),
+    row('maze-map', 'map', swap(map, '            elif 지도[줄][칸] == "E":\n                칸칠하기(줄, 칸, "green")\n', ''), 'mistake', 'map-missing'),
+    row('maze-map', 'map', swap(map, '칸칠하기(줄, 칸, "brown")', '칸칠하기(칸, 줄, "brown")'), 'mistake', 'map-swap'),
+    row('maze-map', 'map', swap(map, '\n지도그리기()\nturtle.update()', '\nturtle.update()'), 'mistake', 'map-nocall'),
+    row('maze-map', 'map', swap(map, '            elif 지도[줄][칸] == "E":', '            if 지도[줄][칸] == "E":'), 'correct', null),
+    row('maze-map', 'gray', map, 'mistake', 'gray-color'),
+    row('maze-walk', 'walk', sol('maze-walk', 'walk').start, 'mistake', 'walk-none'),
+    row('maze-walk', 'walk', swap(walk, 'turtle.listen()\n', ''), 'mistake', 'walk-nokey'),
+    row('maze-walk', 'walk', swap(walk, 'def 위():\n    나.가기(-1, 0)', 'def 위():\n    나.가기(1, 0)'), 'mistake', 'walk-pos'),
+    row('maze-walk', 'wall', late, 'mistake', 'wall-late'),
+    row('maze-walk', 'wall', walk, 'mistake', 'wall-pos'),
+    row('maze-gem', 'gems', swap(m('maze-gem', 'gems'), '            elif 지도[줄][칸] == "*":\n                보석들.append(보석(줄, 칸))\n', ''), 'mistake', 'gems-count'),
+    row('maze-gem', 'exit', swap(exit, '            돌.몸.hideturtle()\n', ''), 'mistake', 'exit-hide'),
+    row('maze-gem', 'exit', swap(exit, 'if len(보석들) == 0 and 지도', 'if 지도'), 'mistake', 'exit-text'),
+    row('maze-gem', 'exit', swap(exit, '            break\n', ''), 'correct', null),
+    row('maze-level', 'data', m('maze-gem', 'exit'), 'mistake', 'data-import'),
+    row('maze-level', 'next', swap(next, '        지도그리기()\n        처음수 = len(보석들)\n', '        지도그리기()\n'), 'mistake', 'next-count'),
+    row('maze-level', 'next', swap(next, '        나.처음으로()\n', ''), 'mistake', 'next-start'),
+    row('maze-level', 'next', swap(next, '        if 판번호 == len(지도들):\n            판.clear()\n            판.write("다 깼어요!")\n            break\n', ''), 'error', null),
+    row('maze-ghost', 'ghost', swap(ghost, '    for 하나 in 유령들:\n        하나.몸.hideturtle()\n    유령들.clear()\n', ''), 'mistake', 'ghost-old'),
+    row('maze-ghost', 'ghost', swap(ghost, '    if 장면 % 8 == 0:\n        for 하나 in 유령들:\n            하나.다가가기(나)\n', '    for 하나 in 유령들:\n        하나.다가가기(나)\n'), 'mistake', 'ghost-fast'),
+    row('maze-ghost', 'ghost', swap(ghost, '상대.칸 > self.칸 and', '상대.칸 < self.칸 and'), 'mistake', 'ghost-rule'),
+    row('maze-ghost', 'ghost', swap(ghost, '장면 % 8 == 0', '장면 % 4 == 0'), 'mistake', 'ghost-fast'),
+    row('maze-map', 'map', swap(map, '칸칠하기(줄, 칸, "green")', '칸칠하기(줄, 칸, "blue")'), 'mistake', 'map-color'),
+    row('maze-ghost', 'catch', swap(m('maze-ghost', 'catch'), '            하나.처음으로()\n', ''), 'mistake', 'catch-ghost'),
+    row('maze-ghost', 'catch', swap(m('maze-ghost', 'catch'), '하나.줄 == 나.줄 and', '하나.줄 == 나.줄 or'), 'mistake', 'catch-or'),
+    row('unit21-review', 'lives', swap(lives, '    판.write("끝! 다시 해 봐요")\n', '    판.write("끝!")\n'), 'mistake', 'lives-text'),
+    row('unit21-review', 'mine', swap(lives, '나 = 탐험가()', '나 = 탐험가(1, 1)'), 'error', null),
+    ['unit21-review', 'mine', lives, 'correct', null, { '미로지도.py': `${mods('unit21-review', 'lives')['미로지도.py'].replace(/\]\n$/, '')}    [\n        "#####",\n        "#S*E#",\n        "#####",\n    ],\n]\n` }],
+  ];
+};
+
 test('흔한 오답에 의도한 말이 나온다', () => {
   // 여섯째 칸: 모듈 탭들(없으면 문제의 시작 모듈)
-  for (const [missionId, taskId, code, kind, say, modules] of [...WRONG, ...WRONG20(), ...PRACTICE_WRONG]) {
+  for (const [missionId, taskId, code, kind, say, modules] of [...WRONG, ...WRONG20(), ...WRONG21(), ...PRACTICE_WRONG]) {
     const task = allTasks(SCRIPTS[missionId]).find((t) => t.id === taskId);
     assert.ok(task, `${missionId}/${taskId}: 문제가 없어요`);
     const result = grade(task, code, modules ?? task.modules ?? {});
