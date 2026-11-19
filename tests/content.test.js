@@ -71,7 +71,7 @@ function grade(task, code, modules = task.modules ?? {}) {
     }
     else if (ran.error) diagnosis = { kind: 'error', error: ran.error };
     else if (ran.unused > 0) diagnosis = { kind: 'input-few' };
-    else if (task.game) diagnosis = diagnoseGame(task, code, ran, scripted(task.solution, one.inputs, false, { randoms: one.randoms, keys: one.keys, frames: one.frames }));
+    else if (task.game) diagnosis = diagnoseGame({ ...task, expectFiles }, code, ran, scripted(task.solution, one.inputs, false, { randoms: one.randoms, keys: one.keys, frames: one.frames, files: withModules(one.files ?? task.files, task.solutionModules ?? task.modules) }), modules);
     else if (task.draw) diagnosis = diagnoseDrawing({ ...task, inputs: one.inputs }, code, ran.draw, want(one.inputs));
     else diagnosis = diagnoseTask({ ...task, expect: one.expect, inputs: one.inputs, expectFiles }, code, ran, modules);
     if (diagnosis.kind !== 'correct') {

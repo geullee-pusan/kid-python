@@ -190,14 +190,18 @@ export function diagnoseDrawing(task, code, got, want) {
  * @param {{draw: object[], output: string}} want 모범 답을 돌린 결과
  * @returns {{kind: string, vars?: object, say?: string}} kind: correct, mistake, game-pos, … , game-output(출력이 다르다)
  */
-export function diagnoseGame(task, code, got, want) {
+export function diagnoseGame(task, code, got, want, modules = {}) {
   let result = compareScene(got.draw ?? [], want.draw ?? [], task.game === true ? {} : task.game);
   if (result.kind === 'game-correct' && outputLines(got.output).join('\n') !== outputLines(want.output).join('\n')) result = { kind: 'game-output' };
-  const bare = stripStrings(code);
+  // 파일에 남기는 게임(단원 20의 최고 기록): 장면이 맞으면 파일도 본다. 어긋남의 종류는 파일 문제와 같다(file-none 등).
+  if (result.kind === 'game-correct' && task.expectFiles) result = fileProblem(task.expectFiles, got.files ?? {}, outputLines(got.output)) ?? result;
+  // in: checks와 mistakes의 code를 어느 탭에서 볼지(단원 19·20). 없으면 main.py
+  const mainBare = stripStrings(code);
+  const bareIn = (where) => (!where || where === 'main.py' ? mainBare : stripStrings(modules[where] ?? ''));
   if (result.kind === 'game-correct') {
-    const skipped = (task.checks ?? []).find((rule) => !new RegExp(rule.pattern).test(bare));
+    const skipped = (task.checks ?? []).find((rule) => !new RegExp(rule.pattern).test(bareIn(rule.in)));
     return skipped ? { kind: 'mistake', say: skipped.say } : { kind: 'correct' };
   }
-  const mistake = (task.mistakes ?? []).find((m) => m.game === result.kind && (!m.code || new RegExp(m.code).test(bare)));
+  const mistake = (task.mistakes ?? []).find((m) => (m.game === result.kind || (m.game === undefined && m.code)) && (!m.code || new RegExp(m.code).test(bareIn(m.in))));
   return mistake ? { kind: 'mistake', say: mistake.say } : result;
 }

@@ -115,7 +115,9 @@ export function predictRevealScenes(script, question, seed = 0) {
 export function taskFeedback(script, task, diagnosis, seed = 0) {
   if (diagnosis.kind === 'correct') {
     // 칭찬은 구체적으로: 문제에 praise가 있으면 무엇을 잘했는지 이어서 말한다.
-    const scenes = [{ kind: 'nod' }, line(script, diagnosis.first ? 'task-correct-first' : 'task-correct', seed)];
+    // 채점하지 않는 쓰기(free, 단원 20): 맞았다고 하지 않고, 더한 것을 하나씩 짚는다(added).
+    const scenes = [{ kind: 'nod' }, line(script, task.free ? 'free-done' : diagnosis.first ? 'task-correct-first' : 'task-correct', seed)];
+    for (const text of diagnosis.added ?? []) scenes.push({ kind: 'say', key: 'free-added', text, speech: text, pose: 'talk' });
     if (task.praise) scenes.push(line(script, task.praise, seed));
     return scenes;
   }
@@ -155,6 +157,7 @@ export function missingLines(script) {
     'intro-ask', 'intro-solve', 'follow-different', 'follow-different-draw', 'follow-different-file','follow-not-run', 'follow-not-stopped', 'follow-show', 'predict-ask', 'predict-run',
     'task-intro', 'task-next', 'task-how', 'task-keys', 'task-case-files', 'task-case-nofile', 'play-intro', 'task-correct-first', 'task-correct', 'skip-ok', 'lecture-back', 'done-bye',
     'challenge-ask', 'challenge-intro', 'challenge-skip',
+    'free-done', 'project-mine', 'project-teacher', 'project-saved', 'project-ask', 'project-kept', 'project-taken',
   ]);
   for (const kind of ['not-computed', 'quoted-calc', 'order', 'count', 'spacing', 'line-diff', 'no-output', 'input-few', 'input-many', 'case', 'endless', 'draw-none', 'draw-mirror', 'draw-flip', 'draw-moved', 'draw-size', 'draw-missing', 'draw-extra', 'draw-diff', 'draw-color', 'draw-fill', 'game-none', 'game-count', 'game-pos', 'game-heading', 'game-look', 'game-text', 'game-output', 'missing-f']) used.add(`task-${kind}`);
   const walk = (spec) => {

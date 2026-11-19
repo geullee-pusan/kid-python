@@ -13,6 +13,7 @@ import { explain } from './core/errors-ko.js';
 import { hasBatchim } from './core/korean.js';
 import { lectureParts, line, mergeScript, predictAskScenes, predictFeedback, predictRevealScenes, taskFeedback } from './core/lesson.js';
 import { errorAt, splitFiles, validModuleName, withFileNames, withModules } from './core/modules.js';
+import { describeAdded, pickInherited, withInherited } from './core/project.js';
 import { createBoard } from './ui/board.js';
 import { createCanvas, usesTurtle } from './ui/canvas.js';
 import { createConsole } from './ui/console.js';
@@ -195,8 +196,16 @@ async function main() {
     column.hidden = !on;
     if (canvas !== lessonCanvas) return;
     column.closest('.right').classList.toggle('drawing', on);
+    $('tall').hidden = !on;
     if (on) fitCanvas();
   }
+  // 코드 크게: 그림판이 보이면 편집기가 9줄쯤이라, 긴 코드(단원 20의 게임)를 쓸 때 그림판과 출력 칸을 줄인다.
+  function setTall(on) {
+    $('draw-col').closest('.right').classList.toggle('tall', on);
+    $('tall').textContent = on ? '⇕ 그림판 크게' : '⇕ 코드 크게';
+    fitCanvas();
+  }
+  $('tall').addEventListener('click', () => setTall(!$('draw-col').closest('.right').classList.contains('tall')));
   function fitCanvas() {
     const column = $('draw-col');
     if (column.hidden) return;
@@ -272,10 +281,11 @@ async function main() {
     return wanted.get(key);
   }
   // 게임 문제: 모범 답을 정해 둔 키와 장면 수로 돌린 결과(그린 것과 출력).
-  async function wantGame(code, one) {
-    const key = JSON.stringify([code, one]);
+  // modules: 모범 답의 모듈 탭(solutionModules). files: 처음 파일(단원 20의 기록 파일).
+  async function wantGame(code, one, modules = null, files = null) {
+    const key = JSON.stringify([code, one, modules, files]);
     if (!wanted.has(key)) {
-      const ran = await runner.run(code, { check: true, inputs: one.inputs ?? [], randoms: one.randoms, keys: one.keys, frames: one.frames });
+      const ran = await runner.run(code, { check: true, inputs: one.inputs ?? [], randoms: one.randoms, keys: one.keys, frames: one.frames, files: withModules(files, modules) });
       wanted.set(key, { draw: ran.draw ?? [], output: ran.output ?? '' });
     }
     return wanted.get(key);
@@ -536,10 +546,10 @@ async function main() {
     });
   }
   const orAbort = (promise) => firstOf(promise).then((result) => result.value);
-  const PRESSABLE = ['with-lecture', 'solve-now', 'challenge-yes', 'challenge-no', 'give-up', 'done', 'submit', 'next', 'hint', 'finish', 'lecture-again', 'to-list', 'next-problem'];
+  const PRESSABLE = ['with-lecture', 'solve-now', 'challenge-yes', 'challenge-no', 'give-up', 'done', 'submit', 'next', 'hint', 'finish', 'lecture-again', 'to-list', 'next-problem', 'keep-mine', 'take-lesson'];
   for (const id of PRESSABLE) $(id).addEventListener('click', () => press(id));
 
-  const FOOTER = ['with-lecture', 'solve-now', 'challenge-yes', 'challenge-no', 'give-up', 'done', 'submit', 'next', 'hint', 'finish', 'skip', 'to-list', 'next-problem', 'reset-code'];
+  const FOOTER = ['with-lecture', 'solve-now', 'challenge-yes', 'challenge-no', 'give-up', 'done', 'submit', 'next', 'hint', 'finish', 'skip', 'to-list', 'next-problem', 'reset-code', 'teacher-code', 'keep-mine', 'take-lesson'];
   /** 아래 줄과 위 줄에서 지금 쓸 버튼만 보인다 */
   function show(...ids) {
     for (const id of FOOTER) $(id).hidden = !ids.includes(id);
@@ -555,7 +565,7 @@ async function main() {
     const running = isRunning() && screen === 'play';
     $('run').disabled = !canRun || !isReady();
     $('stop').disabled = !canRun || !running;
-    for (const id of ['submit', 'hint', 'done', 'lecture-again', 'give-up', 'reset-code']) $(id).disabled = running && canRun;
+    for (const id of ['submit', 'hint', 'done', 'lecture-again', 'give-up', 'reset-code', 'teacher-code']) $(id).disabled = running && canRun;
     lessonConsole.askInput(runner.state === 'waiting-input' && canRun && screen === 'play');
     $('lock-note').textContent = canRun ? '' : '선생님이 쓰는 중이에요';
   }
@@ -622,6 +632,40 @@ async function main() {
       editor.setModules(resetModules.modules, resetModules.locked);
       if (draftSaving) store.set(`${draftSaving}.modules`, resetModules.modules);
     }
+    editor.markErrorLine(null);
+    lessonConsole.clear();
+    lessonCanvas.reset();
+    showVars({});
+    editor.focus();
+  });
+
+  // 선생님 코드로: 앞 수업에서 이어 받은 내 코드가 너무 엉켰을 때(단원 20). 이것도 두 번 눌러야 된다.
+  let teacherTimer = null;
+  function calmTeacher() {
+    clearTimeout(teacherTimer);
+    delete $('teacher-code').dataset.sure;
+    $('teacher-code').textContent = '선생님 코드로 시작';
+  }
+  $('teacher-code').addEventListener('click', () => {
+    if (!teacherTo || !canRun) return;
+    const button = $('teacher-code');
+    if (!button.dataset.sure) {
+      button.dataset.sure = '1';
+      button.textContent = '정말 바꿔요?';
+      teacherTimer = setTimeout(calmTeacher, 4000);
+      return;
+    }
+    calmTeacher();
+    log('teacher-code', { mission: mission.id, code: editor.getCode() });
+    editor.setModules(teacherTo.modules, teacherTo.locked);
+    editor.setCode(teacherTo.code);
+    if (draftSaving) {
+      store.set(draftSaving, teacherTo.code);
+      store.set(`${draftSaving}.modules`, teacherTo.modules);
+    }
+    // 이제부터 "처음 코드로"도 선생님 코드로 되돌린다.
+    resetTo = teacherTo.code;
+    resetModules = { modules: teacherTo.modules, locked: teacherTo.locked };
     editor.markErrorLine(null);
     lessonConsole.clear();
     lessonCanvas.reset();
@@ -710,7 +754,7 @@ async function main() {
           ? Boolean(ran?.stopped)
           : scene.game
             ? // 게임 따라 하기: 아이가 실행해 본 뒤(멈춤으로 끝내도 된다), 정해 둔 키와 장면 수로 돌려서 선생님 것과 견준다.
-              ran && !ran.error && (await sameGame(editor.getCode(), scene.code, scene.game))
+              ran && !ran.error && (await sameGame(editor.getCode(), scene.code, scene.game, editor.getModules(), { ...scene.modules, ...given }))
             : scene.draw
             ? ran && !ran.error && !ran.stopped && compareDrawing(ran.draw ?? [], await wantDrawing(scene.code)).kind === 'draw-correct'
             : ran && !ran.error && !ran.stopped && (scene.match ? new RegExp(scene.match).test(ran.output) : outputLines(ran.output).join('\n') === scene.expect.join('\n')) &&
@@ -744,10 +788,10 @@ async function main() {
   }
 
   /** 두 프로그램을 같은 키와 장면 수로 돌렸을 때 마지막 모습이 같은가 */
-  async function sameGame(mine, theirs, game) {
-    const ran = await runner.run(mine, { check: true, keys: game.keys, frames: game.frames, randoms: game.randoms });
+  async function sameGame(mine, theirs, game, myModules = null, theirModules = null) {
+    const ran = await runner.run(mine, { check: true, keys: game.keys, frames: game.frames, randoms: game.randoms, files: withModules(null, myModules) });
     if (ran.error) return false;
-    return compareScene(ran.draw ?? [], (await wantGame(theirs, game)).draw, game).kind === 'game-correct';
+    return compareScene(ran.draw ?? [], (await wantGame(theirs, game, theirModules)).draw, game).kind === 'game-correct';
   }
 
   /** 강의 중 확인 문제: 고른 보기 번호를 돌려준다. 강의를 건너뛰면 'stop'. */
@@ -886,7 +930,7 @@ async function main() {
       } else if (result.unused > 0) {
         diagnosis = { kind: 'input-few', vars: { want: (one.inputs ?? []).length, got: (one.inputs ?? []).length - result.unused } };
       } else if (task.game) {
-        diagnosis = diagnoseGame(task, code, result, await wantGame(task.solution, one));
+        diagnosis = diagnoseGame({ ...task, expectFiles: one.expectFiles ?? task.expectFiles }, code, result, await wantGame(task.solution, one, task.solutionModules ?? task.modules, startFiles), modules);
         if (diagnosis.kind !== 'correct' && keyWords(one.keys)) diagnosis.keys = keyWords(one.keys);
       } else if (task.draw) {
         diagnosis = diagnoseDrawing({ ...task, inputs: one.inputs }, code, result.draw, await wantDrawing(task.solution, one.inputs));
@@ -917,9 +961,43 @@ async function main() {
     return out;
   }
 
+  // 큰 만들기 단원(단원 20): 대본에 project가 있는 수업에서 통과한 코드를 "수업id/문제id"로 모아 둔다.
+  // 쓰기 문제의 continues에 적은 앞 문제의 코드가 있으면 그것으로 시작한다(없으면 대본의 start, 곧 선생님 코드).
+  const PROJECT_KEY = 'kidpy.project';
+  let teacherTo = null; // 이어 받은 코드로 시작한 문제의 선생님 코드 { code, modules, locked }. 없으면 null
+
+  /** 채점하지 않는 쓰기(free): 오류 없이 도는지만 본다. 게임이면 정해 둔 장면 수만큼 돌린다. */
+  async function gradeFree(task, begin) {
+    if (!isReady()) return null;
+    const code = editor.getCode();
+    const modules = editor.getModules();
+    activeConsole = lessonConsole;
+    lessonConsole.clear();
+    editor.markErrorLine(null);
+    const result = await runner.run(code, { check: true, keys: task.keys ?? [], frames: task.frames ?? 300, files: withModules(givenFiles, modules) });
+    if (result.stopped) return null;
+    lessonConsole.append(result.output ?? '');
+    if (result.draw?.length) lessonCanvas.showAll(result.draw);
+    if (result.error?.type === 'TraceLimit') {
+      lessonConsole.append('\n■ 끝나지 않아서 멈췄어요\n', 'note');
+      return { ran: { code }, diagnosis: { kind: 'endless' } };
+    }
+    if (result.error) {
+      lessonConsole.append(`\n${explain(result.error, knows())}${errorAt(result.error)}\n`, 'ko');
+      lessonConsole.append(result.error.text, 'err');
+      if (result.error.line) editor.markErrorLine(result.error.line, result.error.file ?? undefined);
+      return { ran: { code }, diagnosis: { kind: 'error', text: explain(result.error, knows()) } };
+    }
+    return { ran: { code }, diagnosis: { kind: 'correct', added: describeAdded({ main: begin.start ?? '', modules: begin.modules ?? {} }, { main: code, modules }) } };
+  }
+
   /** 쓰기 문제 하나. 통과하면 { attempts, hints, first, code }, 심화 문제를 그만두면 null을 돌려준다. */
   async function runTask(task, { index = 0, total = 1, optional = false, firstWords = null } = {}) {
     const key = `${draftKey()}.${task.id}`;
+    // 이어 받는 문제: begin은 시작 코드 자리에 아이의 앞 코드를 넣은 문제(없으면 task 그대로)
+    const mine = pickInherited(task, store.get(PROJECT_KEY, {}));
+    const begin = withInherited(task, mine);
+    const fresh = !store.get(key, '');
     const hasLecture = Boolean(mission.lecture?.length);
     const sample = task.cases?.[0];
     // showCases: 답에 따라 출력이 달라지는 문제(조건)는 앞의 몇 가지 경우를 나란히 보여 준다.
@@ -932,7 +1010,7 @@ async function main() {
       for (const one of task.cases.slice(0, task.showCases ?? 1)) {
         // 키 없이 보여 주는 장면이 둘이면 뒤의 것은 시간이 더 지난 모습이다.
         const idle = pictures.some((p) => p.idle) ? '시간이 더 지나면' : '조금 지나면';
-        pictures.push({ scene: true, idle: !keyWords(one.keys), note: keyWords(one.keys) ? `${keyWords(one.keys)} 키를 누르면` : idle, cmds: (await wantGame(task.solution, one)).draw });
+        pictures.push({ scene: true, idle: !keyWords(one.keys), note: keyWords(one.keys) ? `${keyWords(one.keys)} 키를 누르면` : idle, cmds: (await wantGame(task.solution, one, task.solutionModules ?? task.modules, one.files ?? task.files)).draw });
       }
       checkAbort();
     } else if (task.draw) {
@@ -961,8 +1039,9 @@ async function main() {
     showLessonFiles(givenFiles);
     // 쓰던 것이 있으면 이어서, 없으면 문제에 딸린 시작 코드(고치기 문제)로 시작한다.
     // 모듈 탭(도구.py)도 같다. 고칠 수 없게 준 탭(lockModules)은 늘 문제의 것을 쓴다.
-    editor.setModules(taskModules(task, store.get(`${key}.modules`, null)), task.lockModules ?? []);
-    editor.setCode(store.get(key, '') || task.start || '');
+    // 이어 받는 문제(단원 20)는 아이가 앞 수업에서 통과한 코드가 시작 코드다.
+    editor.setModules(taskModules(begin, store.get(`${key}.modules`, null)), task.lockModules ?? []);
+    editor.setCode(store.get(key, '') || begin.start || '');
     lessonConsole.clear();
     lessonCanvas.reset();
     showCanvas(lessonCanvas, usesTurtle(editor.getCode()) || Boolean(mission.canvas));
@@ -973,16 +1052,22 @@ async function main() {
     // 선생님이 설명하는 동안에도 바로 쓰기 시작할 수 있다.
     allowRun(true);
     // firstWords: 연습 문제는 수업과 다른 말로 시작한다.
-    const opening = firstWords ?? (optional ? ['challenge-intro'] : index === 0 ? ['task-intro', 'task-how'] : ['task-next']);
+    const opening = [...(firstWords ?? [])];
+    if (!firstWords) opening.push(...(optional ? ['challenge-intro'] : index === 0 ? ['task-intro', 'task-how'] : ['task-next']));
+    // 처음 여는 이어 받는 문제: 누구의 코드에서 시작하는지 말해 준다.
+    if (task.continues && fresh) opening.splice(1, 0, mine ? 'project-mine' : 'project-teacher');
     background(opening.map((k) => line(mission, k, seed)));
     const hints = task.hints ?? [];
     const buttons = ['submit'];
     if (hints.length) buttons.push('hint');
-    // 시작 코드가 있는 문제는 처음 코드로 되돌릴 수 있다(모듈 탭이 있으면 그것도).
-    resetTo = task.start ?? (task.modules ? '' : null);
-    resetModules = task.modules ? { modules: task.modules, locked: task.lockModules ?? [] } : null;
+    // 시작 코드가 있는 문제는 처음 코드로 되돌릴 수 있다(모듈 탭이 있으면 그것도). 이어 받은 문제는 이어 받은 코드로.
+    resetTo = begin.start ?? (begin.modules ? '' : null);
+    resetModules = begin.modules ? { modules: begin.modules, locked: task.lockModules ?? [] } : null;
+    // 아이의 코드를 이어 받았으면, 엉켰을 때 선생님 코드로 다시 시작할 수도 있다.
+    teacherTo = mine ? { code: task.start ?? '', modules: task.modules ?? {}, locked: task.lockModules ?? [] } : null;
     calmReset();
     if (resetTo != null) buttons.unshift('reset-code');
+    if (teacherTo) buttons.unshift('teacher-code');
     if (optional) buttons.push('give-up');
     else if (hasLecture) buttons.push('lecture-again');
     let attempts = 0;
@@ -1030,7 +1115,7 @@ async function main() {
       }
       // 제출: 지금 코드를 새로 실행해서 채점한다.
       attempts += 1;
-      const graded = await grade(task);
+      const graded = task.free ? await gradeFree(task, begin) : await grade(task);
       if (!graded) continue;
       const { ran, diagnosis } = graded;
       if (diagnosis.kind === 'correct') diagnosis.first = attempts === 1 && hintLevel === 0;
@@ -1044,6 +1129,9 @@ async function main() {
         store.set(key, '');
         // 모듈 탭의 쓰던 것도 지운다(다시 풀 때 고치기 문제가 고친 채로 열리지 않게)
         if (task.modules) store.set(`${key}.modules`, null);
+        teacherTo = null;
+        // 큰 만들기 단원: 통과한 코드를 다음 수업이 이어 받게 모아 둔다.
+        if (mission.project) store.set(PROJECT_KEY, { ...store.get(PROJECT_KEY, {}), [`${mission.id}/${task.id}`]: { main: ran.code, modules: editor.getModules(), at: new Date().toISOString() } });
         return { attempts, hints: hintLevel, first: diagnosis.first, code: ran.code, modules: editor.getModules() };
       }
       allowRun(true);
@@ -1076,6 +1164,44 @@ async function main() {
     return runTask(mission.challenge, { optional: true });
   }
 
+  /**
+   * 큰 만들기 단원: 만들기의 작품(saveAs)과 내 파일의 모듈을 이 수업까지의 코드로 바꾼다.
+   * 앱이 마지막으로 넣은 것과 지금 만들기의 것이 다르면(아이가 수업 사이에 고쳤으면) 바꿀지 묻는다.
+   */
+  async function keepProject(last) {
+    const putKey = `${PROJECT_KEY}.put.${mission.project}`;
+    const put = store.get(putKey, null); // 앱이 마지막으로 넣은 것 { code, files }
+    const works = store.get('kidpy.works', []);
+    const work = works.find((w) => w.name === mission.saveAs);
+    const files = store.get(FILES_KEY, {});
+    const modules = last.modules ?? {};
+    const same = work?.code === last.code && Object.entries(modules).every(([name, text]) => files[name] === text);
+    if (same) return;
+    const touched = (work && work.code !== put?.code) || Object.keys(modules).some((name) => name in files && files[name] !== put?.files?.[name]);
+    if (touched) {
+      show('keep-mine', 'take-lesson');
+      background([line(mission, 'project-ask', seed)]);
+      const pressed = await nextPress('keep-mine', 'take-lesson');
+      hush();
+      show();
+      log('project-choice', { mission: mission.id, take: pressed === 'take-lesson' });
+      if (pressed === 'keep-mine') {
+        await say('project-kept');
+        checkAbort();
+        return;
+      }
+    }
+    const now = new Date().toISOString();
+    if (work) Object.assign(work, { code: last.code, updatedAt: now });
+    else works.push({ id: `w-${Date.now().toString(36)}`, name: mission.saveAs, code: last.code, updatedAt: now });
+    store.set('kidpy.works', works);
+    // saveFiles(그 게임이 읽는 파일)는 없을 때만 넣는다. 모듈은 이 수업까지의 것으로 바꾼다.
+    keepStudioFiles({ ...(mission.saveFiles ?? {}), ...files, ...modules });
+    store.set(putKey, { code: last.code, files: modules });
+    await say(touched ? 'project-taken' : 'project-saved');
+    checkAbort();
+  }
+
   async function finish(results, extra) {
     currentPhase = 'done';
     setPhase('');
@@ -1090,8 +1216,10 @@ async function main() {
     const progress = store.get('kidpy.progress', {});
     progress[mission.id] = { doneAt: new Date().toISOString(), ...summary };
     store.set('kidpy.progress', progress);
+    // 큰 만들기 단원: 수업을 마칠 때마다 만들기의 작품을 이 수업까지의 것으로 바꾼다(심화를 풀었으면 그것으로).
+    if (mission.project && mission.saveAs) await keepProject(extra ?? results[results.length - 1]);
     // 만들기 과제로 쓴 프로그램은 "만들기"에 넣어 둔다(같은 이름이 있으면 그대로 둔다).
-    if (mission.saveAs) {
+    else if (mission.saveAs) {
       const works = store.get('kidpy.works', []);
       if (!works.some((w) => w.name === mission.saveAs)) {
         works.push({ id: `w-${Date.now().toString(36)}`, name: mission.saveAs, code: results[results.length - 1].code, updatedAt: new Date().toISOString() });

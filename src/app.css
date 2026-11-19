@@ -375,7 +375,8 @@ a.btn {
   color: var(--muted);
 }
 
-#reset-code[data-sure] {
+#reset-code[data-sure],
+#teacher-code[data-sure] {
   border-color: var(--bad);
   color: var(--bad);
 }
@@ -642,6 +643,11 @@ a.btn {
 
 .right.drawing .bottom {
   flex: 1.05;
+}
+
+/* 코드 크게: 그림판과 출력 칸을 줄이고 편집기를 길게 본다 */
+.right.drawing.tall .bottom {
+  flex: 0.3;
 }
 
 .canvas-pane {
