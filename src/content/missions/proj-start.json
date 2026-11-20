@@ -122,6 +122,9 @@
     "praise-walk": [
       "위와 아래를 탐험가 클래스 안에 메서드로 넣고, 키 네 개에 괄호 없이 붙였어요. 걸음은 섬설정에서 가져왔어요."
     ],
+    "walk-paren": [
+      "키를 눌러도 움직이지 않는 쪽이 있어요. [onkeypress|온 키 프레스]의 괄호 안에서, 메서드 이름 뒤에 괄호가 붙어 있어요. [나.위|나 점 위]처럼 이름만 써요."
+    ],
     "walk-nokey": [
       "탐험가가 위아래로 움직이지 않아요. [main.py|메인 점 파이]에서 위 화살표와 아래 화살표 키에도 메서드를 붙였는지 봐요. 키 이름은 [Up|업]과 [Down|다운]이에요."
     ],
@@ -520,6 +523,11 @@
         }
       ],
       "mistakes": [
+        {
+          "game": "game-pos",
+          "code": "onkey(press)?\\s*\\(\\s*[^,()\\s]+\\s*\\(\\s*\\)",
+          "say": "walk-paren"
+        },
         {
           "game": "game-pos",
           "code": "^(?![\\s\\S]*onkeypress[\\s\\S]*onkeypress[\\s\\S]*onkeypress)",

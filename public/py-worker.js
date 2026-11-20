@@ -643,10 +643,13 @@ def _kidpy_key_name(key):
 def _kidpy_bind(table, fun, key):
     if fun is not None and not callable(fun):
         raise TurtleGraphicsError("key handler must be a function")
+    name = _kidpy_key_name(key)
     if fun is None:
-        # 함수 이름 뒤에 괄호를 붙이면 함수가 바로 실행되고, 돌려준 값(None)이 넘어온다.
-        raise TurtleGraphicsError("key handler is None")
-    _kidpy_state[table][_kidpy_key_name(key)] = fun
+        # 진짜 turtle과 같이: None을 넘기면 그 키에 붙어 있던 함수를 뗀다(오류는 없다).
+        # 함수 이름 뒤에 괄호를 붙이면 함수가 그 자리에서 실행되고 돌려준 값 None이 넘어와서, 키에는 아무것도 붙지 않는다.
+        _kidpy_state[table].pop(name, None)
+        return
+    _kidpy_state[table][name] = fun
 
 def _kidpy_mainloop():
     # 키와 타이머를 기다린다. 멈춤 버튼을 누를 때까지(채점에서는 정해 둔 장면 수만큼) 돈다.
@@ -685,8 +688,11 @@ class _KidpyScreen:
         _kidpy_bind("release", fun, key)
     onkey = onkeyrelease
     def ontimer(self, fun, t=0):
+        if fun is None:
+            # 진짜 turtle과 같이: None이면 아무것도 맡겨 두지 않는다(오류는 없다).
+            return
         if not callable(fun):
-            raise TurtleGraphicsError("key handler is None" if fun is None else "key handler must be a function")
+            raise TurtleGraphicsError("key handler must be a function")
         now = _kidpy_time.time() if _kidpy_stream[0] else _kidpy_state["clock"]
         _kidpy_state["timers"].append([now + t / 1000, fun])
     def mainloop(self):

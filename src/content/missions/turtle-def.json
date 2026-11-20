@@ -41,11 +41,15 @@
     "q3-right": ["맞아요. 함수는 선 하나를 긋고, 그것을 네 번 부르면서 [90|구십]도씩 돌았어요. 네모가 돼요."],
     "q3-line": ["부를 때마다 [90|구십]도씩 돌았어요. 선이 이어지면서 꺾여요."],
     "q3-plus": ["선을 긋고 나서 제자리로 돌아오지 않아요. 간 자리에서 돌아서 이어 그어요."],
+    "q4-right": ["맞아요. 세모라는 함수를 만들기만 하고 부르지 않았어요. 그래서 아무것도 그려지지 않아요."],
+    "q4-tri": ["[def|데프]는 함수를 만들기만 해요. [세모(50)|세모 오십]처럼 불러야 그려져요."],
+    "q4-explain": ["만들어 둔 함수는 부를 때까지 아무 일도 하지 않아요."],
     "q3-explain": ["가고 돌기를 네 번 한 것과 같아요. 가는 일을 함수가 맡았을 뿐이에요."],
 
     "task-how": ["실행해서 그림판에 그려 보고, 칠판의 그림과 같으면 '제출'을 눌러요."],
     "praise-three": ["네모를 그리는 함수를 만들고, 그리기와 옮기기를 세 번 되풀이했어요. 옮길 때 펜을 든 것도 맞아요."],
     "need-def": ["그림은 맞아요. 그런데 네모를 그리는 줄들을 [def|데프]로 함수 하나에 묶고, 그 함수를 불러서 그려 봐요."],
+    "three-nocall": ["아무것도 그려지지 않았어요. 함수를 만들기만 하고 부르지 않았는지 봐요. 아래에서 [네모(40)|네모 사십]처럼 이름과 괄호로 불러야 그려져요."],
     "three-joined": ["네모 사이에 선이 이어졌거나, 옮긴 거리가 달라요. 옮길 때는 펜을 들고 앞으로 [60|육십] 간 다음, 펜을 다시 내려요."],
     "hint-1": ["먼저 [def|데프]로 네모라는 함수를 만들어요. 크기를 넘겨받아서, 가고 [90|구십]도 돌기를 네 번 해요."],
     "hint-2": ["그 아래에서 세 번 되풀이해요. 네모를 [40|사십]으로 부르고, 펜을 들고, 앞으로 [60|육십] 가고, 펜을 내려요."],
@@ -142,6 +146,18 @@
         { "text": "더하기 모양", "say": "q3-plus" },
         { "text": "네모", "say": "q3-right" }
       ]
+    },
+    {
+      "id": "q4",
+      "ask": "어떤 그림이 그려질까요?",
+      "explain": "q4-explain",
+      "code": "import turtle\ndef 세모(크기):\n    for i in range(3):\n        turtle.forward(크기)\n        turtle.left(120)",
+      "outcome": { "output": [], "strokes": 0 },
+      "answer": 1,
+      "choices": [
+        { "text": "세모 하나", "say": "q4-tri" },
+        { "text": "아무것도 그려지지 않는다", "say": "q4-right" }
+      ]
     }
   ],
 
@@ -155,7 +171,7 @@
       "expect": [],
       "draw": true,
       "checks": [{ "pattern": "def\\s", "say": "need-def" }],
-      "mistakes": [{ "draw": "draw-extra", "say": "three-joined" }, { "draw": "draw-diff", "say": "three-joined" }],
+      "mistakes": [{ "draw": "draw-none", "code": "def\\s", "say": "three-nocall" }, { "draw": "draw-extra", "say": "three-joined" }, { "draw": "draw-diff", "say": "three-joined" }],
       "praise": "praise-three",
       "solution": "import turtle\ndef 네모(크기):\n    for i in range(4):\n        turtle.forward(크기)\n        turtle.left(90)\nfor i in range(3):\n    네모(40)\n    turtle.penup()\n    turtle.forward(60)\n    turtle.pendown()",
       "hints": [

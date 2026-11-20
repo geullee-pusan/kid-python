@@ -99,7 +99,6 @@ test('turtle: 오류를 우리 설명이 알아듣는다', () => {
     ['import turtle\nturtle.foward(10)', 'AttributeError', /철자/],
     ['import turtle\nturtle.Forward(10)', 'AttributeError', /작은 글자/],
     ['import turtle\nturtle.stamp()', 'AttributeError', /아직 쓸 수 없는/],
-    ['import turtle\ndef 왼쪽():\n    turtle.left(90)\nturtle.onkey(왼쪽(), "Left")', 'TurtleGraphicsError', /괄호를 지워요/],
     ['import turtle\nturtle.onkey(3, "Left")', 'TurtleGraphicsError', /함수의 이름/],
     ['import turtle\ndef 왼쪽():\n    turtle.left(90)\nturtle.onkey(왼쪽, "left")', 'TurtleGraphicsError', /키 이름/],
     ['import turtle\nturtle.shapesize(0)', 'TurtleGraphicsError', /크기/],
