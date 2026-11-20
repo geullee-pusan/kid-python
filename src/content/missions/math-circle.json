@@ -1,0 +1,198 @@
+{
+  "_설명": "수학 실험 단원 5번 수업. 곱셈 원: 원 위에 점을 고르게 찍고, i번 점과 (i × 곱) % 점 수 번 점을 잇는다. 점 찍기는 거북이가 circle(반지름, 각도)로 원을 조금씩 그리며 멈출 때마다 turtle.pos()를 리스트에 적는다(거북이 단원의 pos와 circle에 각도를 더함). 점 수를 넘으면 나머지로 한 바퀴 돈다(14 % 10 = 4). 점 100개에 곱하기 2는 카디오이드(꽃잎 하나), 3은 꽃잎 둘, 4는 꽃잎 셋: 곱하는 수보다 하나 적은 꽃잎이라는 규칙을 실험으로 찾는다. 겨냥하는 오개념: 점 수를 넘는 번호도 있다(나머지 없이 쓰면 IndexError), 옮길 때 펜을 들지 않아도 된다(선이 이어진다), 곧은 선만 그었으니 곡선은 나올 수 없다.",
+  "id": "math-circle",
+  "unit": "수학 실험",
+  "no": 5,
+  "title": "곱셈 원",
+  "desc": "원 위의 점을 곱셈표대로 이으면 어떤 모양이 될까요? 곱하는 수를 바꾸며 실험해요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes", "tries"],
+  "showVars": true,
+  "canvas": true,
+  "learned": [
+    { "rule": "거북이가 원을 조금씩 그리면서, 멈출 때마다 turtle.pos()로 자리를 리스트에 적으면 원 위의 점들이 생겨요.", "code": "점들 = []\nfor i in range(10):\n    점들.append(turtle.pos())\n    turtle.circle(150, 36)" },
+    { "rule": "i번 점과 i * 곱 % 개수 번 점을 이어요. 점 수를 넘으면 나머지로 한 바퀴 돌아요." },
+    { "rule": "곱하기 2는 꽃잎 하나, 3은 둘, 4는 셋. 곱하는 수보다 하나 적은 꽃잎이 생겨요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["오늘은 곱셈으로 그림을 그려요. 원 위에 점을 찍고 곱셈표대로 선을 이으면, 생각지도 못한 모양이 나와요."],
+    "points-intro": ["먼저 원 위에 점 열 개를 고르게 찍어요. [circle(150, 36)|서클 백오십 삼십육]은 반지름이 [150|백오십]인 원을 [36|삼십육]도만큼만 그려요. 열 번 하면 [360|삼백육십]도, 한 바퀴예요. 멈출 때마다 [turtle.pos()|터틀 포스]로 거북이의 자리를 점들 리스트에 적어요. 점마다 [dot|닷]으로 동그라미도 찍어요."],
+    "points-after": ["점들 리스트에 자리 열 개가 들어갔어요. [0|영]번 점이 맨 아래이고, 왼쪽으로 돌면서 [1|일]번, [2|이]번이에요."],
+    "join-intro": ["이제 곱하기 [2|이]로 이어요. [1|일]번 점은 [2|이]번 점과, [2|이]번은 [4|사]번과, [3|삼]번은 [6|육]번과 이어요. [7|칠]번은 [14|십사]번인데, 점은 [9|구]번까지예요. 열을 넘으면 한 바퀴 돌아서 [14|십사]를 [10|십]으로 나눈 나머지, [4|사]번과 이어요. 옮길 때는 펜을 들어요."],
+    "join-after": ["열 줄을 이었어요. [0|영]번은 [0|영]번과 이어서 선이 없어요. 아직은 무슨 모양인지 잘 모르겠지요?"],
+    "check-ask": ["하나 물어볼게요. 점이 열 개일 때, [8|팔]번 점은 몇 번 점과 이을까요?"],
+    "check-right": ["맞아요. [8|팔] 곱하기 [2|이]는 [16|십육], [10|십]으로 나눈 나머지는 [6|육]이에요."],
+    "check-teach-1": ["[16|십육]번 점은 없어요. 점은 [9|구]번까지예요."],
+    "check-teach-2": ["[16|십육]을 [10|십]으로 나눈 나머지, [6|육]번과 이어요."],
+    "big-intro": ["점을 [100|백]개로 늘려 볼게요. 코드는 그대로이고 [10|십]을 [100|백]으로만 바꿨어요."],
+    "big-after": ["곧은 선만 그었는데 동그랗게 휜 곡선이 보여요. 꽃잎이 하나인 이 모양을 카디오이드라고 불러요. 심장 모양이라는 뜻이에요."],
+    "three-intro": ["곱하기 [3|삼]으로 바꾸면 어떤 모양일까요?"],
+    "three-after": ["꽃잎이 둘이에요. 곱하기 [2|이]는 하나, [3|삼]은 둘이었어요. 곱하기 [4|사]는 몇 개일까요?"],
+    "four-after": ["셋이에요. 곱하는 수보다 하나 적은 꽃잎이 생겨요. 이렇게 여러 번 해 보고 규칙을 찾는 것도 수학 실험이에요."],
+    "follow-ok": ["좋아요. 점 열 개를 곱하기 [3|삼]으로 이었어요."],
+    "summary": ["정리해요. 거북이가 원을 조금씩 그리면서 자리를 적으면 원 위의 점이 생겨요. [i|아이]번 점과, [i|아이] 곱하기 곱을 점 수로 나눈 나머지 번 점을 이어요. 곱하는 수보다 하나 적은 꽃잎이 생겨요."],
+
+    "q1-right": ["맞아요. [7|칠] 곱하기 [2|이]는 [14|십사], [10|십]으로 나눈 나머지는 [4|사]예요."],
+    "q1-fourteen": ["곱하기를 먼저 하고, 그다음 나머지를 구해요. [14|십사]를 [10|십]으로 나눈 나머지예요."],
+    "q1-two": ["[%|퍼센트]는 몫이 아니라 나머지예요. [14|십사]를 [10|십]으로 나누면 몫이 [1|일], 나머지가 [4|사]예요."],
+    "q1-explain": ["[14 % 10|십사 나머지 십]은 [4|사]예요."],
+    "q2-right": ["맞아요. [10|십], [12|십이], [14|십사], [16|십육], [18|십팔]을 [10|십]으로 나눈 나머지예요. 한 바퀴 돌아서 앞쪽 점이 돼요."],
+    "q2-big": ["[% 10|나머지 십]이 있어서 [10|십]을 넘지 않아요. 나머지만 남아요."],
+    "q2-explain": ["[5|오]부터 [9|구]까지에 [2|이]를 곱하면 [10|십]을 넘어서, 나머지 [0|영], [2|이], [4|사], [6|육], [8|팔]이 돼요."],
+    "q3-right": ["맞아요. [0|영], [3|삼], [6|육], [9|구]를 [4|사]로 나눈 나머지, [0|영], [3|삼], [2|이], [1|일]이에요."],
+    "q3-nomod": ["[% 4|나머지 사]가 있어서 [4|사]보다 작은 수만 들어가요."],
+    "q3-explain": ["[6 % 4|육 나머지 사]는 [2|이], [9 % 4|구 나머지 사]는 [1|일]이에요."],
+
+    "praise-three": ["점마다 펜을 들고 옮긴 다음, 펜을 내리고 [i * 3 % 60|아이 곱하기 삼 나머지 육십]번 점으로 그었어요. 점 수로 나눈 나머지 덕분에 한 바퀴 넘는 번호도 원 위의 점이 됐어요. 꽃잎 둘이 피었어요."],
+    "three-pen": ["선이 너무 많아요. 다음 점으로 옮길 때 펜을 들어요. 옮긴 다음에 펜을 내리고 그어요."],
+    "three-two": ["꽃잎이 하나예요. 곱하기 [3|삼]으로 이어요. [i * 3 % 60|아이 곱하기 삼 나머지 육십]이에요."],
+    "three-count": ["모양이 조금 달라요. 점은 [60|육십]개이고, 나머지도 [60|육십]으로 구해요."],
+    "three-hint-1": ["시작 코드가 점 [60|육십]개를 점들에 적어 둬요. 그 아래에 [for i in range(60):|포 아이 인 레인지 육십]을 써요."],
+    "three-hint-2": ["반복 안에서 펜을 들고 [goto|고투]로 점들의 [i|아이]번 자리로 옮기고, 펜을 내리고 [i * 3 % 60|아이 곱하기 삼 나머지 육십]번 점으로 [goto|고투]해요."],
+    "three-hint-3": ["칠판에 강의 예제를 적었어요. 점 열 개, 곱하기 [2|이]예요. 수를 바꿔 봐요."],
+    "praise-make": ["점 수와 곱하는 수를 넘겨받는 함수를 만들었어요. 점 수가 바뀌면 원을 그리는 각도도 [360|삼백육십]을 점 수로 나눠서 바꿨어요. 이제 수 두 개만 바꾸면 어떤 곱셈 원이든 그릴 수 있어요."],
+    "make-angle": ["원이 한 바퀴가 아니에요. 원을 그리는 각도는 [360 / 개수|삼백육십 나누기 개수]예요."],
+    "make-hint-1": ["[def 곱셈원(개수, 곱):|데프 곱셈원 개수 곱] 안에 강의 코드를 넣어요. 점들 리스트도 함수 안에서 만들어요."],
+    "make-hint-2": ["[10|십]을 개수로, [36|삼십육]을 [360 / 개수|삼백육십 나누기 개수]로, [2|이]를 곱으로 바꿔요. 맨 아래에서 [곱셈원(90, 4)|곱셈원 구십 사]를 불러요."],
+
+    "done-1": ["오늘은 곱셈으로 원 위에 꽃을 피웠어요."],
+    "done-2": ["곱하는 수보다 하나 적은 꽃잎. 실험으로 찾은 규칙이에요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "원 위에 점 찍기", "code": "점들 = []\nfor i in range(10):\n    점들.append(turtle.pos())\n    turtle.dot(8)\n    turtle.circle(150, 36)" } },
+      { "say": "points-intro" },
+      { "type": "import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(10):\n    점들.append(turtle.pos())\n    turtle.dot(8)\n    turtle.circle(150, 36)" },
+      { "trace": "import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(10):\n    점들.append(turtle.pos())\n    turtle.dot(8)\n    turtle.circle(150, 36)" },
+      { "say": "points-after" }
+    ],
+    [
+      { "card": { "title": "곱하기 2로 잇기 (점 10개)", "items": ["1번 → 2번,   2번 → 4번,   3번 → 6번", "7번 → 14번?  14 % 10 = 4  →  4번", "i번 점  →  i * 2 % 10 번 점"] } },
+      { "say": "join-intro" },
+      { "type": "import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(10):\n    점들.append(turtle.pos())\n    turtle.dot(8)\n    turtle.circle(150, 36)\nfor i in range(10):\n    turtle.penup()\n    turtle.goto(점들[i])\n    turtle.pendown()\n    turtle.goto(점들[i * 2 % 10])" },
+      { "trace": "import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(10):\n    점들.append(turtle.pos())\n    turtle.dot(8)\n    turtle.circle(150, 36)\nfor i in range(10):\n    turtle.penup()\n    turtle.goto(점들[i])\n    turtle.pendown()\n    turtle.goto(점들[i * 2 % 10])" },
+      { "say": "join-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "점이 10개일 때,\n8번 점은 몇 번 점과 이을까요?",
+          "ask": "check-ask",
+          "choices": ["6번", "16번"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "big-intro" },
+      { "play": "import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(100):\n    점들.append(turtle.pos())\n    turtle.circle(150, 3.6)\nfor i in range(100):\n    turtle.penup()\n    turtle.goto(점들[i])\n    turtle.pendown()\n    turtle.goto(점들[i * 2 % 100])", "ms": 6000 },
+      { "say": "big-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "three-intro" },
+      { "play": "import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(100):\n    점들.append(turtle.pos())\n    turtle.circle(150, 3.6)\nfor i in range(100):\n    turtle.penup()\n    turtle.goto(점들[i])\n    turtle.pendown()\n    turtle.goto(점들[i * 3 % 100])", "ms": 6000 },
+      { "say": "three-after" },
+      { "clearBoard": true },
+      { "play": "import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(100):\n    점들.append(turtle.pos())\n    turtle.circle(150, 3.6)\nfor i in range(100):\n    turtle.penup()\n    turtle.goto(점들[i])\n    turtle.pendown()\n    turtle.goto(점들[i * 4 % 100])", "ms": 6000 },
+      { "say": "four-after" },
+      { "card": { "title": "실험 결과", "items": ["곱하기 2  →  꽃잎 1개", "곱하기 3  →  꽃잎 2개", "곱하기 4  →  꽃잎 3개", "곱하는 수보다 하나 적은 꽃잎"] } }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "따라 쳐요", "code": "import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(10):\n    점들.append(turtle.pos())\n    turtle.circle(150, 36)\nfor i in range(10):\n    turtle.penup()\n    turtle.goto(점들[i])\n    turtle.pendown()\n    turtle.goto(점들[i * 3 % 10])" } },
+      { "follow": { "code": "import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(10):\n    점들.append(turtle.pos())\n    turtle.circle(150, 36)\nfor i in range(10):\n    turtle.penup()\n    turtle.goto(점들[i])\n    turtle.pendown()\n    turtle.goto(점들[i * 3 % 10])", "draw": true, "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["circle(150, 36): 원을 36도만큼만", "turtle.pos()로 원 위의 점을 리스트에", "i번 점  →  i * 곱 % 개수 번 점", "옮길 때는 펜을 들고", "곱하는 수보다 하나 적은 꽃잎"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "print(7 * 2 % 10)",
+      "answer": 1,
+      "choices": [
+        { "text": "14", "say": "q1-fourteen" },
+        { "text": "4", "say": "q1-right" },
+        { "text": "1", "say": "q1-two" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "for i in range(5, 10):\n    print(i * 2 % 10)",
+      "answer": 0,
+      "choices": [
+        { "text": "0\n2\n4\n6\n8", "say": "q2-right" },
+        { "text": "10\n12\n14\n16\n18", "say": "q2-big" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "번호들 = []\nfor i in range(4):\n    번호들.append(i * 3 % 4)\nprint(번호들)",
+      "answer": 1,
+      "choices": [
+        { "text": "[0, 3, 6, 9]", "say": "q3-nomod" },
+        { "text": "[0, 3, 2, 1]", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "three",
+      "title": "꽃잎 둘",
+      "story": "점 60개를 곱하기 3으로 이어요. 시작 코드가 원을 그리면서 점 60개의 자리를 점들에 적어 둬요. 그 아래에, i번 점과 i * 3 % 60 번 점을 잇는 코드를 써요. 옮길 때는 펜을 들어요.",
+      "steps": ["for i in range(60):", "펜을 들고 점들[i]로 옮겨요.", "펜을 내리고 점들[i * 3 % 60]으로 가요."],
+      "start": "import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(60):\n    점들.append(turtle.pos())\n    turtle.circle(150, 6)\n",
+      "expect": [],
+      "draw": true,
+      "mistakes": [
+        { "draw": "draw-extra", "code": "^(?![\\s\\S]*penup[\\s\\S]*penup)", "say": "three-pen" },
+        { "draw": "draw-diff", "code": "^(?![\\s\\S]*penup[\\s\\S]*penup)", "say": "three-pen" },
+        { "draw": "draw-diff", "code": "\\*\\s*2\\s*%", "say": "three-two" },
+        { "draw": "draw-diff", "say": "three-count" },
+        { "draw": "draw-missing", "say": "three-count" },
+        { "draw": "draw-extra", "say": "three-count" }
+      ],
+      "praise": "praise-three",
+      "solution": "import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(60):\n    점들.append(turtle.pos())\n    turtle.circle(150, 6)\nfor i in range(60):\n    turtle.penup()\n    turtle.goto(점들[i])\n    turtle.pendown()\n    turtle.goto(점들[i * 3 % 60])",
+      "hints": [
+        { "say": "three-hint-1" },
+        { "say": "three-hint-2" },
+        { "say": "three-hint-3", "card": { "title": "강의에서 본 예제 (정답은 아니에요)", "code": "import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(10):\n    점들.append(turtle.pos())\n    turtle.circle(150, 36)\nfor i in range(10):\n    turtle.penup()\n    turtle.goto(점들[i])\n    turtle.pendown()\n    turtle.goto(점들[i * 2 % 10])" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "make",
+    "title": "심화: 곱셈 원 함수",
+    "story": "점 수와 곱하는 수를 넘겨받아 곱셈 원을 그리는 함수 곱셈원(개수, 곱)을 만들어요. 함수는 거북이를 (0, -150)으로 옮기는 것부터, 원을 그리며 점을 적고 선을 잇는 것까지 해요. 원을 그리는 각도는 360 / 개수예요. 곱셈원(90, 4)를 불러서 꽃잎 셋을 그려요.",
+    "steps": ["def 곱셈원(개수, 곱): 안에 강의 코드를 넣어요.", "10은 개수로, 36은 360 / 개수로, 2는 곱으로 바꿔요.", "곱셈원(90, 4)를 불러요."],
+    "start": "import turtle\n",
+    "expect": [],
+    "draw": true,
+    "checks": [{ "pattern": "def\\s+[^\\s(]+\\s*\\(\\s*[^\\s,)]+\\s*,", "say": "make-hint-1" }],
+    "mistakes": [
+      { "draw": "draw-diff", "code": "circle\\(\\s*150\\s*,\\s*(?:36|6|3\\.6)\\s*\\)", "say": "make-angle" },
+      { "draw": "draw-missing", "code": "circle\\(\\s*150\\s*,\\s*(?:36|6|3\\.6)\\s*\\)", "say": "make-angle" },
+      { "draw": "draw-extra", "code": "circle\\(\\s*150\\s*,\\s*(?:36|6|3\\.6)\\s*\\)", "say": "make-angle" }
+    ],
+    "praise": "praise-make",
+    "solution": "import turtle\ndef 곱셈원(개수, 곱):\n    turtle.penup()\n    turtle.goto(0, -150)\n    turtle.pendown()\n    점들 = []\n    for i in range(개수):\n        점들.append(turtle.pos())\n        turtle.circle(150, 360 / 개수)\n    for i in range(개수):\n        turtle.penup()\n        turtle.goto(점들[i])\n        turtle.pendown()\n        turtle.goto(점들[i * 곱 % 개수])\n곱셈원(90, 4)",
+    "hints": [{ "say": "make-hint-1" }, { "say": "make-hint-2" }]
+  }
+}

@@ -1152,9 +1152,42 @@ const WRONG22 = () => {
   ];
 };
 
+// 단원 23(수학 실험): 모범 답을 조금 고쳐서 만든다.
+const WRONG23 = () => {
+  const s = (missionId, taskId, from, to, kind, say) => [missionId, taskId, swap(main(missionId, taskId), from, to), kind, say];
+  return [
+    s('math-hail', 'seq', '수 // 2', '수 / 2', 'mistake', 'seq-float'),
+    s('math-hail', 'seq', '수 = int(input())\nprint(수)\n', '수 = int(input())\n', 'mistake', 'seq-first'),
+    s('math-hail', 'long', '        걸음 += 1\n', '        걸음 += 1\n    걸음 += 1\n', 'mistake', 'long-count'),
+    s('math-hail', 'long', 'range(1, 101)', 'range(1, 31)', 'mistake', 'long-27'),
+    s('math-prime', 'count', '개수 == 2', '개수 <= 2', 'mistake', 'count-one'),
+    s('math-prime', 'count', 'range(1, 끝 + 1)', 'range(1, 끝)', 'mistake', 'count-end'),
+    s('math-prime', 'gold', '        break', '', 'mistake', 'gold-break'),
+    s('math-prime', 'gold', 'print(짝수, "=", 작은수, "+", 짝수 - 작은수)', 'print(f"{짝수} = {작은수} + {짝수 - 작은수}")', 'correct', null),
+    s('math-dice', 'roll', 'for 눈 in range(1, 7):', 'for 눈 in range(7):', 'mistake', 'roll-zero'),
+    s('math-dice', 'roll', 'for 눈 in range(1, 7):\n    print(눈, 개수[눈])', 'print(개수)', 'mistake', 'roll-list'),
+    s('math-dice', 'roll', '[0, 0, 0, 0, 0, 0, 0]', '[0, 0, 0, 0, 0, 0]', 'error', null),
+    s('math-dice', 'most', 'random.randint(1, 6) + random.randint(1, 6)', 'random.randint(2, 12)', 'mistake', 'most-flat'),
+    s('math-dice', 'most', 'print(가장합)', 'print(개수[가장합])', 'mistake', 'most-count'),
+    s('math-magic', 'trick', '차 = 수 - 뒤집기(수)', '차 = 뒤집기(수) - 수', 'mistake', 'trick-minus'),
+    s('math-magic', 'trick', 'print(차 + 뒤집기(차))', 'print(1089)', 'mistake', 'trick-calc'),
+    s('math-magic', 'trick', '    백 = 수 // 100\n    십 = 수 // 10 % 10\n    일 = 수 % 10\n    return 일 * 100 + 십 * 10 + 백', '    return int(str(수)[::-1])', 'mistake', 'trick-99'),
+    s('math-circle', 'three', '    turtle.penup()\n    turtle.goto(점들[i])\n    turtle.pendown()\n    turtle.goto(점들[i * 3 % 60])', '    turtle.goto(점들[i])\n    turtle.goto(점들[i * 3 % 60])', 'mistake', 'three-pen'),
+    s('math-circle', 'three', 'i * 3 % 60', 'i * 2 % 60', 'mistake', 'three-two'),
+    s('math-circle', 'three', 'i * 3 % 60', 'i * 3 % 50', 'mistake', 'three-count'),
+    s('math-circle', 'three', 'import turtle\n', 'import turtle\nturtle.color("red")\n', 'correct', null),
+    s('math-circle', 'make', '360 / 개수', '36', 'mistake', 'make-angle'),
+    s('unit23-review', 'perfect', 'range(1, 수)', 'range(1, 수 + 1)', 'mistake', 'perfect-self'),
+    s('unit23-review', 'garden', '    turtle.penup()\n    turtle.goto(x, -100)\n    turtle.pendown()\n', '    turtle.goto(x, -100)\n', 'mistake', 'garden-pen'),
+    s('unit23-review', 'garden', '꽃(110, 3)', '꽃(100, 3)', 'mistake', 'garden-place'),
+    s('unit23-review', 'garden', 'import turtle\n', 'import turtle\nturtle.color("purple")\n', 'correct', null),
+    ['math-hail', 'seq', '수 = int(input())\nwhile 수 != 1:\n    print(수)\n    if 수 % 2 == 0:\n        수 = 수 // 2\n    else:\n        수 = 수 * 3 + 1', 'mistake', 'seq-last'],
+  ];
+};
+
 test('흔한 오답에 의도한 말이 나온다', () => {
   // 여섯째 칸: 모듈 탭들(없으면 문제의 시작 모듈)
-  for (const [missionId, taskId, code, kind, say, modules] of [...WRONG, ...WRONG20(), ...WRONG21(), ...WRONG22(), ...WRONG_REVIEW2(), ...PRACTICE_WRONG]) {
+  for (const [missionId, taskId, code, kind, say, modules] of [...WRONG, ...WRONG20(), ...WRONG21(), ...WRONG22(), ...WRONG23(), ...WRONG_REVIEW2(), ...PRACTICE_WRONG]) {
     const task = allTasks(SCRIPTS[missionId]).find((t) => t.id === taskId);
     assert.ok(task, `${missionId}/${taskId}: 문제가 없어요`);
     const result = grade(task, code, modules ?? task.modules ?? {});

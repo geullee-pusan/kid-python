@@ -355,4 +355,13 @@ export const PRACTICE_WRONG = [
   ['practice-22', 'p22-paper', 'def 겹(번):\n    if 번 == 0:\n        return 0\n    return 2 * 겹(번 - 1)\nprint(겹(int(input())))', 'mistake', 'paper-zero'],
   ['practice-22', 'p22-paper', 'def 겹(번):\n    if 번 == 0:\n        return 1\n    return 2 + 겹(번 - 1)\nprint(겹(int(input())))', 'mistake', 'paper-plus'],
   ['practice-22', 'p22-vtree', 'import turtle\nturtle.penup()\nturtle.goto(0, -140)\nturtle.pendown()\nturtle.left(90)\ndef 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(45)\n    나무(길이 * 0.6, 단계 - 1)\n    turtle.right(45)\n    나무(길이 * 0.6, 단계 - 1)\n    turtle.left(45)\n    turtle.backward(길이)\n나무(110, 5)', 'mistake', 'vtree-right'],
+  ['practice-23', 'p23-steps', '수 = int(input())\n걸음 = 0\nwhile 수 != 1:\n    if 수 % 2 == 0:\n        수 = 수 // 2\n    else:\n        수 = 수 * 3 + 1\n    걸음 += 1\n    print(수)\nprint(걸음)', 'mistake', 'steps-list'],
+  ['practice-23', 'p23-steps', '수 = int(input())\n걸음 = 1\nwhile 수 != 1:\n    if 수 % 2 == 0:\n        수 = 수 // 2\n    else:\n        수 = 수 * 3 + 1\n    걸음 += 1\nprint(걸음)', 'mistake', 'steps-one'],
+  ['practice-23', 'p23-coin', 'import random\n번 = int(input())\n앞 = 0\n뒤 = 0\nfor i in range(번):\n    if random.randint(1, 2) == 2:\n        앞 += 1\n    else:\n        뒤 += 1\nprint("앞", 앞)\nprint("뒤", 뒤)', 'mistake', 'coin-swap'],
+  ['practice-23', 'p23-fix-prime', 'def 소수인가(수):\n    개수 = 0\n    for 나눌수 in range(1, 수 + 1):\n        if 수 % 나눌수 == 0:\n            개수 += 1\n    return 개수 < 3 and 개수 > 1\nfor 수 in range(1, 21):\n    if 소수인가(수):\n        print(수)', 'correct'],
+  ['practice-23', 'p23-odd', '개수 = int(input())\n합 = 0\nfor i in range(개수):\n    합 += i * 2 + 1\nprint(합)', 'mistake', 'odd-last'],
+  ['practice-23', 'p23-odd', '개수 = int(input())\n합 = 0\nfor i in range(개수):\n    합 += i * 2\n    print(합)', 'mistake', 'odd-even'],
+  ['practice-23', 'p23-circle4', 'import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(90):\n    점들.append(turtle.pos())\n    turtle.circle(150, 4)\nfor i in range(90):\n    turtle.goto(점들[i])\n    turtle.goto(점들[i * 4 % 90])', 'mistake', 'c4-pen'],
+  ['practice-23', 'p23-circle4', 'import turtle\nturtle.penup()\nturtle.goto(0, -150)\nturtle.pendown()\n점들 = []\nfor i in range(90):\n    점들.append(turtle.pos())\n    turtle.circle(150, 6)\nfor i in range(90):\n    turtle.penup()\n    turtle.goto(점들[i])\n    turtle.pendown()\n    turtle.goto(점들[i * 4 % 90])', 'mistake', 'c4-diff'],
+  ['practice-23', 'p23-root', '수 = int(input())\nif 수 >= 10:\n    합 = 0\n    while 수 > 0:\n        합 += 수 % 10\n        수 = 수 // 10\n    수 = 합\n    print(수)', 'mistake', 'root-once'],
 ];
