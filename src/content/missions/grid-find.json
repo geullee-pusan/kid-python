@@ -202,7 +202,10 @@
     "expect": ["2 개"],
     "show": true,
     "showCases": 2,
-    "mistakes": [{ "inputs": "^0,1$", "output": "^[3-9] 개$", "say": "mines-wrap" }],
+    "mistakes": [
+      { "inputs": "^0,1$", "output": "^[3-9] 개$", "say": "mines-wrap" },
+      { "inputs": "^3,0$", "output": "^2 개$", "say": "mines-wrap" }
+    ],
     "praise": "praise-mines",
     "solution": "지도 = [\"*...\",\n        \"..*.\",\n        \"....\",\n        \".*.*\"]\n줄 = int(input(\"줄 번호: \"))\n칸 = int(input(\"칸 번호: \"))\n개수 = 0\nfor 옆줄 in range(줄 - 1, 줄 + 2):\n    for 옆칸 in range(칸 - 1, 칸 + 2):\n        if 옆줄 >= 0 and 옆줄 < len(지도) and 옆칸 >= 0 and 옆칸 < len(지도[0]):\n            if 지도[옆줄][옆칸] == \"*\":\n                개수 += 1\nprint(개수, \"개\")",
     "hints": [{ "say": "mines-hint-1" }, { "say": "mines-hint-2" }]

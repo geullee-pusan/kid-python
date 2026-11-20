@@ -45,10 +45,11 @@
     "check-rows": ["한 줄이 모두 같은 칸이에요. 줄의 번호만 보고 골랐어요. 줄의 번호와 칸의 번호를 더한 수가 짝수인지 물어요."],
     "check-flip": ["검은 칸과 흰 칸이 서로 바뀌었어요. 맨 왼쪽 위는 검은 칸이에요. 더한 수가 짝수일 때 검은 칸을 내보내요."],
     "check-oneline": ["모두 한 줄에 나왔어요. 안쪽 반복이 끝난 뒤에 빈 [print|프린트]로 줄을 바꿔요."],
+    "check-inner-print": ["한 칸마다 줄이 바뀌었어요. 빈 [print|프린트]가 안쪽 반복 안에 들어가 있어요. 안쪽 [for|포]와 줄의 앞을 맞춰서 한 단만 들여써요."],
     "check-lines": ["한 칸이 한 줄씩 나왔어요. 칸을 내보낼 때 [end|엔드]에 따옴표 두 개를 써서 옆으로 이어요."],
     "check-hint-1": ["크기를 물어서 숫자로 바꿔요. 바깥 반복은 줄을, 안쪽 반복은 칸을 크기만큼 돌아요. 둘 다 [0|영]부터 세요."],
     "check-hint-2": ["안쪽 반복 안에서, 줄 더하기 칸을 [2|이]로 나눈 나머지가 [0|영]인지 물어요. 맞으면 검은칸을, 아니면 흰칸을 내보내요. [end|엔드]에 따옴표 두 개를 써요."],
-    "check-hint-3": ["안쪽 반복이 끝나면 빈 [print|프린트]로 줄을 바꿔요. 한 단만 들여써요."],
+    "check-hint-3": ["안쪽 반복이 끝나면 빈 [print|프린트]로 줄을 바꿔요. 안쪽 [for|포]와 줄의 앞을 맞춰요. 칠판에 비슷한 예제를 적었어요. 세로 줄무늬예요."],
     "praise-checker": ["줄의 번호와 칸의 번호를 더해서, 짝수인지 홀수인지로 칸을 골랐어요. 두 반복의 값을 조건에 함께 쓴 거예요. 크기가 달라져도 무늬가 맞아요."],
 
     "done-1": ["반복 안의 반복 단원을 마쳤어요. 수고했어요."],
@@ -145,11 +146,12 @@
         { "inputs": "^4$", "output": "^(■■■■\\n□□□□|□□□□\\n■■■■)", "say": "check-rows" },
         { "inputs": "^4$", "output": "^□■□■\\n■□■□", "say": "check-flip" },
         { "inputs": "^4$", "output": "^[■□]{16}$", "say": "check-oneline" },
+        { "inputs": "^4$", "code": "end\\s*=", "output": "^[■□]\\n[■□]\\n", "say": "check-inner-print" },
         { "inputs": "^4$", "output": "^[■□]\\n[■□]\\n", "say": "check-lines" }
       ],
       "praise": "praise-checker",
       "solution": "검은칸 = \"■\"\n흰칸 = \"□\"\n크기 = int(input(\"크기: \"))\nfor 줄 in range(크기):\n    for 칸 in range(크기):\n        if (줄 + 칸) % 2 == 0:\n            print(검은칸, end=\"\")\n        else:\n            print(흰칸, end=\"\")\n    print()",
-      "hints": [{ "say": "check-hint-1" }, { "say": "check-hint-2" }, { "say": "check-hint-3" }]
+      "hints": [{ "say": "check-hint-1" }, { "say": "check-hint-2" }, { "say": "check-hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "for 줄 in range(3):\n    for 칸 in range(3):\n        if 칸 % 2 == 0:\n            print(\"O\", end=\"\")\n        else:\n            print(\"X\", end=\"\")\n    print()" } }]
     }
   ]
 }

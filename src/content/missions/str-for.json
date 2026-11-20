@@ -57,6 +57,8 @@
     "mirror-hint-1": ["먼저 낱말을 뒤집어요. 빈 글자에서 시작해서, 꺼낸 글자를 앞에 붙여요."],
     "mirror-hint-2": ["뒤집은 것을 내보낸 다음, 뒤집은 것과 원래 낱말이 같은지 [if|이프]로 물어요. 같은지는 등호 두 개예요."],
 
+    "squeeze-inside": ["쌓는 도중이 다 나왔어요. 내보내는 줄은 반복이 끝난 뒤에, 들여쓰지 않고 써요."],
+
     "done-1": ["오늘은 글자를 한 글자씩 돌면서 세고, 쌓는 법을 배웠어요."],
     "done-2": ["글자를 쌓을 때는 빈 글자에서 시작해요. 시작은 반복 앞에 둬요."]
   },
@@ -166,7 +168,8 @@
       "mistakes": [
         { "inputs": "^나는 파이썬을 배워요$", "output": "^나는 파이썬을 배워요$", "say": "squeeze-same" },
         { "inputs": "^나는 파이썬을 배워요$", "output": "^나\\n는\\n", "say": "squeeze-lines" },
-        { "inputs": "^나는 파이썬을 배워요$", "output": "^요$", "say": "squeeze-last" }
+        { "inputs": "^나는 파이썬을 배워요$", "output": "^요$", "say": "squeeze-last" },
+        { "inputs": "^나는 파이썬을 배워요$", "output": "^나\\n나는\\n", "say": "squeeze-inside" }
       ],
       "praise": "praise-squeeze",
       "solution": "문장 = input(\"문장: \")\n새글 = \"\"\nfor 글자 in 문장:\n    if 글자 != \" \":\n        새글 = 새글 + 글자\nprint(새글)",

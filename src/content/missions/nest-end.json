@@ -46,6 +46,8 @@
     "praise-grid": ["안쪽 반복으로 숫자 다섯 개를 한 줄에 잇고, 안쪽 반복이 끝난 뒤에 줄을 바꿨어요. 줄과 칸의 틀을 만들었어요."],
     "need-end": ["출력은 맞아요. 그런데 숫자를 하나씩 내보내면서 [end|엔드]로 한 줄에 이어 봐요. 반복 안의 반복을 써요."],
     "grid-oneline": ["모두 한 줄에 나왔어요. 안쪽 반복이 끝난 뒤에 빈 [print|프린트]로 줄을 바꿔요. 한 단만 들여써요."],
+    "grid-inner-print": ["숫자 하나마다 줄이 바뀌었어요. 빈 [print|프린트]가 안쪽 반복 안에 들어가 있어요. 안쪽 [for|포]와 줄의 앞을 맞춰서 한 단만 들여써요. 그래야 한 줄이 다 끝난 뒤에 줄을 바꿔요."],
+    "rect-inner-print": ["#이 한 줄에 하나씩 나왔어요. #을 내보낼 때는 [end|엔드]로 옆으로 잇고, 빈 [print|프린트]는 안쪽 반복이 끝난 뒤에, 안쪽 [for|포]와 줄의 앞을 맞춰 써요."],
     "grid-lines": ["숫자가 한 줄에 하나씩 나왔어요. 숫자를 내보내는 [print|프린트]의 괄호 안 맨 뒤에 [end|엔드]를 써서 옆으로 이어요."],
     "grid-zero": ["[0|영]부터 나왔어요. 칸을 도는 [range|레인지] 안에 [1|일]과 [6|육]을 써요."],
     "grid-nospace": ["숫자가 붙어 나왔어요. [end|엔드]의 따옴표 사이에 빈칸을 하나 넣어요."],
@@ -157,6 +159,7 @@
       "checks": [{ "pattern": "end\\s*=", "say": "need-end" }],
       "mistakes": [
         { "output": "^1 2 3 4 5 1 2", "say": "grid-oneline" },
+        { "code": "end\\s*=", "output": "^1\\n2\\n", "say": "grid-inner-print" },
         { "output": "^1\\n2\\n", "say": "grid-lines" },
         { "output": "^0 1 2 3 4", "say": "grid-zero" },
         { "output": "^12345", "say": "grid-nospace" }
@@ -186,7 +189,8 @@
     "showCases": 2,
     "mistakes": [
       { "inputs": "^4,2$", "output": "^##\\n##\\n##\\n##$", "say": "rect-swap" },
-      { "inputs": "^4,2$", "output": "^########$", "say": "rect-oneline" }
+      { "inputs": "^4,2$", "output": "^########$", "say": "rect-oneline" },
+      { "inputs": "^4,2$", "output": "^#\\n#\\n#\\n#\\n#", "say": "rect-inner-print" }
     ],
     "praise": "praise-rect",
     "solution": "가로 = int(input(\"가로: \"))\n세로 = int(input(\"세로: \"))\nfor 줄 in range(세로):\n    for 칸 in range(가로):\n        print(\"#\", end=\"\")\n    print()",

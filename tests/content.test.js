@@ -667,7 +667,7 @@ const WRONG = [
   ['grid-sum', 'subjects', '과목 = ["국어", "수학", "과학"]\n점수 = [[90, 80, 70],\n        [60, 100, 85],\n        [75, 75, 90]]\n합 = 0\nfor 칸 in range(3):\n    for 줄 in range(3):\n        합 += 점수[줄][칸]\n    print(과목[칸], 합)', 'mistake', 'sub-carry'],
   ['grid-sum', 'subjects', '과목 = ["국어", "수학", "과학"]\n점수 = [[90, 80, 70],\n        [60, 100, 85],\n        [75, 75, 90]]\nfor 칸 in range(3):\n    합 = 0\n    for 한줄 in 점수:\n        합 += 한줄[칸]\n    print(과목[칸], 합)', 'correct'],
   ['grid-change', 'mark', '판 = [[7, 2, 9],\n      [4, 5, 1],\n      [8, 3, 6]]\n수 = input()\nfor 줄 in range(3):\n    for 칸 in range(3):\n        if 판[줄][칸] == 수:\n            판[줄][칸] = "X"\nfor 한줄 in 판:\n    for 값 in 한줄:\n        print(값, end=" ")\n    print()\n', 'mistake', 'mark-same'],
-  ['grid-change', 'mark', '판 = [[7, 2, 9],\n      [4, 5, 1],\n      [8, 3, 6]]\n수 = int(input())\nfor 한줄 in 판:\n    for 값 in 한줄:\n        if 값 == 수:\n            값 = "X"\nfor 한줄 in 판:\n    for 값 in 한줄:\n        print(값, end=" ")\n    print()\n', 'mistake', 'mark-same'],
+  ['grid-change', 'mark', '판 = [[7, 2, 9],\n      [4, 5, 1],\n      [8, 3, 6]]\n수 = int(input())\nfor 한줄 in 판:\n    for 값 in 한줄:\n        if 값 == 수:\n            값 = "X"\nfor 한줄 in 판:\n    for 값 in 한줄:\n        print(값, end=" ")\n    print()\n', 'mistake', 'mark-name'],
   ['grid-change', 'mark', '판 = [[7, 2, 9],\n      [4, 5, 1],\n      [8, 3, 6]]\n수 = int(input())\nfor 줄 in range(3):\n    for 칸 in range(3):\n        if 판[줄][칸] == 수:\n            판[줄][칸] = "X"\nfor 한줄 in 판:\n    print(한줄)', 'mistake', 'mark-raw'],
   ['grid-change', 'mark', '판 = [[7, 2, 9],\n      [4, 5, 1],\n      [8, 3, 6]]\n수 = int(input())\nfor 한줄 in 판:\n    for 값 in 한줄:\n        if 값 == 수:\n            print("X", end=" ")\n        else:\n            print(값, end=" ")\n    print()', 'correct'],
   ['grid-change', 'diag', '크기 = int(input())\n판 = []\nfor 줄 in range(크기):\n    한줄 = []\n    for 칸 in range(크기):\n        한줄.append(0)\n    판.append(한줄)\nfor 한줄 in 판:\n    for 값 in 한줄:\n        print(값, end=" ")\n    print()', 'mistake', 'diag-zero'],
@@ -1029,6 +1029,36 @@ const WRONG20 = () => {
   ];
 };
 
+// 2026-11-20 점검(글자·반복 안의 반복·클래스·딕셔너리·표)에서 더한 흔한 실수: 모범 답을 조금 고쳐서 만든다.
+const WRONG_REVIEW2 = () => {
+  const s = (missionId, taskId, from, to, say) => {
+    const code = main(missionId, taskId);
+    assert.ok(code.includes(from), `${missionId}/${taskId}: 고칠 곳이 없어요 (${from})`);
+    return [missionId, taskId, code.replaceAll(from, to), 'mistake', say];
+  };
+  return [
+    s('str-index', 'ends', '낱말[0]', '낱말[1]', 'ends-one'),
+    s('str-for', 'squeeze', '\nprint(새글)', '\n        print(새글)', 'squeeze-inside'),
+    s('str-slice', 'date', '날짜[:4]', '날짜[1:4]', 'date-entry'),
+    s('str-split', 'sum-line', '    합 += int(하나)\nprint(len(수들), "개")\nprint("합", 합)', '    합 += int(하나)\n    print("합", 합)\nprint(len(수들), "개")', 'sum-inside'),
+    s('unit9-review', 'short', '줄임 = ""\nfor 낱말 in 문장.split():\n', 'for 낱말 in 문장.split():\n    줄임 = ""\n', 'short-reset'),
+    s('nest-basic', 'rooms', 'range(1, 4)', 'range(1, 3)', 'rooms-end'),
+    s('nest-depend', 'stairs', 'range(1, 층 + 1)', 'range(1, 층)', 'stairs-few'),
+    s('nest-table', 'times-grid', 'for 칸 in range(1, 6)', 'for 칸 in range(1, 5)', 'grid-end'),
+    s('nest-search', 'matches', '개수 = 0\nfor i in range(len(팀)):\n', 'for i in range(len(팀)):\n    개수 = 0\n', 'match-reset'),
+    s('nest-end', 'grid', '\n    print()', '\n        print()', 'grid-inner-print'),
+    s('unit10-review', 'checker', '\n    print()', '\n        print()', 'check-inner-print'),
+    s('grid-for', 'show', '\n    print()', '\n        print()', 'show-inner'),
+    s('grid-for', 'turn', '판[줄][칸]', '판[칸][줄]', 'turn-index'),
+    s('grid-sum', 'totals', 'print(이름[i], sum(점수[i]))', '합 = 0\n    for 점 in 점수[i]:\n        합 += 점\n        print(이름[i], 합)', 'tot-inner'),
+    s('class-basic', 'card', '= 학생()', '= 학생', 'card-noparen'),
+    s('class-list', 'pass', '수 = 0\nfor 한명 in 반:\n', 'for 한명 in 반:\n    수 = 0\n', 'pass-reset'),
+    s('class-list', 'pass', '>= 기준', '> 기준', 'pass-over'),
+    s('dict-count', 'votes', '    if 하나 in 개수:\n        개수[하나] += 1\n    else:\n        개수[하나] = 1', '    개수[하나] = 1', 'votes-overwrite'),
+    s('unit11-review', 'cart', '합 = 0\nfor 물건 in 답.split():\n', 'for 물건 in 답.split():\n    합 = 0\n', 'cart-reset'),
+  ];
+};
+
 // 단원 21(미로 탈출): 단원 20처럼 모범 답을 조금 고쳐서 만든다.
 const WRONG21 = () => {
   const m = (missionId, taskId) => main(missionId, taskId);
@@ -1082,7 +1112,7 @@ const WRONG21 = () => {
 
 test('흔한 오답에 의도한 말이 나온다', () => {
   // 여섯째 칸: 모듈 탭들(없으면 문제의 시작 모듈)
-  for (const [missionId, taskId, code, kind, say, modules] of [...WRONG, ...WRONG20(), ...WRONG21(), ...PRACTICE_WRONG]) {
+  for (const [missionId, taskId, code, kind, say, modules] of [...WRONG, ...WRONG20(), ...WRONG21(), ...WRONG_REVIEW2(), ...PRACTICE_WRONG]) {
     const task = allTasks(SCRIPTS[missionId]).find((t) => t.id === taskId);
     assert.ok(task, `${missionId}/${taskId}: 문제가 없어요`);
     const result = grade(task, code, modules ?? task.modules ?? {});

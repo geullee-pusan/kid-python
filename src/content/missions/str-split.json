@@ -58,6 +58,8 @@
     "join-hint-1": ["먼저 [input|인풋]의 답을 [split|스플릿]으로 나눠서 리스트로 만들어요."],
     "join-hint-2": ["사이에 넣을 글자를 따옴표로 쓰고, 점을 찍고 [join|조인]을 써요. 괄호 안에 리스트를 넣어요. 사이에 넣을 글자는 쉼표와 빈칸이에요."],
 
+    "sum-inside": ["합이 여러 번 나왔어요. 합을 내보내는 줄은 반복이 끝난 뒤에, 들여쓰지 않고 써요."],
+
     "done-1": ["오늘은 글자를 나눠서 리스트로 만드는 법을 배웠어요."],
     "done-2": ["나눈 것은 모두 글자예요. 계산하려면 [int|인트]로 바꿔요."]
   },
@@ -166,7 +168,8 @@
       "show": true,
       "mistakes": [
         { "inputs": "^3 5 7$", "output": "^5 개", "say": "sum-chars" },
-        { "inputs": "^3 5 7$", "output": "합 357$", "say": "sum-joined" }
+        { "inputs": "^3 5 7$", "output": "합 357$", "say": "sum-joined" },
+        { "inputs": "^3 5 7$", "output": "합 3\\n합 8", "say": "sum-inside" }
       ],
       "praise": "praise-sum",
       "solution": "답 = input(\"숫자들: \")\n수들 = 답.split()\n합 = 0\nfor 하나 in 수들:\n    합 += int(하나)\nprint(len(수들), \"개\")\nprint(\"합\", 합)",
