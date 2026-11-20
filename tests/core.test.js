@@ -131,6 +131,8 @@ test('한 줄씩 보기: 긴 반복은 앞부분만 제 속도로, 나머지는 
   const seconds = (total) => Array.from({ length: total }, (_, i) => 1.2 * tracePace(i, total)).reduce((a, b) => a + b, 0);
   assert.ok(seconds(81) < 40, `81줄: ${seconds(81)}초`);
   assert.ok(seconds(32) < 30, `32줄: ${seconds(32)}초`);
+  // 끝없는 재귀가 오류로 멈추는 시연(2000줄쯤)도 30초 안에 끝난다
+  assert.ok(seconds(2000) < 30, `2000줄: ${seconds(2000)}초`);
 });
 
 test('예측 문제: 고른 것에 따라 다른 말을 한다', () => {

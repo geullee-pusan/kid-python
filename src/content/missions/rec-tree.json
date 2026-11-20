@@ -1,0 +1,190 @@
+{
+  "_설명": "그림으로 재귀 단원 3번 수업. 함수 안에서 자기를 두 번 부르면 갈라지는 나무가 된다. 줄기를 긋고, 왼쪽으로 돌아 작은 나무, 오른쪽으로 돌아 작은 나무, 처음 방향으로 돌고 뒤로 내려온다(2번 수업의 '제자리로 돌아오기'). 단계가 하나 오를 때마다 끝 가지가 두 배가 된다(1, 3, 7, 15). 그리는 차례: 첫째로 부른 작은 나무를 끝까지 다 그린 다음에 둘째로 간다(한 층씩 그리지 않는다). 그림은 아래에서 위로 자라도록 시작 코드에서 거북이를 (0, -140)으로 옮기고 위를 보게 한다. 겨냥하는 오개념: 왼쪽과 오른쪽 가지를 한 층씩 함께 그린다, 돌아오지 않아도 둘째 가지가 줄기 끝에서 시작한다.",
+  "id": "rec-tree",
+  "unit": "그림으로 재귀",
+  "no": 3,
+  "title": "두 번 부르면 나무",
+  "desc": "함수 안에서 자기를 두 번 불러서, 갈라지는 나무를 그려요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes", "tries"],
+  "showVars": true,
+  "canvas": true,
+  "learned": [
+    { "rule": "자기를 두 번 부르면 갈라져요. 줄기를 긋고, 왼쪽으로 돌아 작은 나무, 오른쪽으로 돌아 작은 나무를 그려요.", "code": "def 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(30)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.right(60)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.left(30)\n    turtle.backward(길이)" },
+    { "rule": "작은 나무를 그린 거북이가 제자리로 돌아와야 다음 가지가 맞는 자리에서 시작해요." },
+    { "rule": "첫째로 부른 작은 나무를 끝까지 다 그린 다음에 둘째로 가요. 단계가 하나 오를 때마다 끝 가지가 두 배가 돼요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["지난 시간에 그리고 나서 제자리로 돌아오는 가지를 만들었지요? 오늘은 그 안에서 자기를 두 번 불러서 나무를 그려요."],
+    "tree-intro": ["줄기를 긋고 왼쪽으로 [30|삼십]도 돌아서 작은 나무를 그려요. 그다음 오른쪽으로 [60|육십]도 돌아서 작은 나무를 또 그려요. 끝나면 왼쪽으로 [30|삼십]도 돌아 처음 방향을 보고, 뒤로 내려와요. 단계가 [0|영]이면 아무것도 그리지 않고 멈춰요."],
+    "start-note": ["위의 네 줄은 거북이를 그림판 아래쪽으로 옮기고 위를 보게 하는 줄이에요. 나무가 위로 자라게 하려는 거예요."],
+    "tree-after": ["단계 [2|이]는 줄기 하나에 가지 두 개, Y 모양이에요. 양쪽의 작은 나무가 단계 [1|일]짜리 나무, 막대 하나예요."],
+    "order-intro": ["단계를 [3|삼]으로 올려 볼게요. 어느 가지부터 그리는지 잘 봐요."],
+    "order-after": ["왼쪽 작은 나무를 끝까지 다 그린 다음에야 오른쪽으로 갔어요. 첫째로 부른 나무가 끝나야 그 아래 줄로 돌아오기 때문이에요."],
+    "count-intro": ["가지를 세어 봐요. 단계 [1|일]은 하나, [2|이]는 셋, [3|삼]은 일곱 개예요. 한 단계 오를 때마다 끝에 가지가 두 배로 늘어요."],
+    "check-ask": ["하나 물어볼게요. 단계가 [4|사]인 나무는 가지가 몇 개일까요?"],
+    "check-right": ["맞아요. [1|일] 더하기 [2|이] 더하기 [4|사] 더하기 [8|팔], 열다섯 개예요."],
+    "check-teach-1": ["여덟 개는 맨 끝에 새로 난 가지만 센 거예요. 줄기와 중간 가지도 세어요."],
+    "check-teach-2": ["[1|일] 더하기 [2|이] 더하기 [4|사] 더하기 [8|팔], 열다섯 개예요."],
+    "big-intro": ["이번에는 단계를 [7|칠]로 올려서 그대로 실행해 볼게요."],
+    "big-after": ["코드는 그대로이고 단계만 바꿨는데, 가지가 백스물일곱 개인 나무가 됐어요. 재귀는 짧은 코드로 이런 복잡한 그림을 그려요."],
+    "follow-ok": ["좋아요. 단계 [4|사]짜리 나무가 그려졌어요."],
+    "summary": ["정리해요. 자기를 두 번 부르면 갈라지는 나무가 돼요. 작은 나무를 그린 다음 제자리로 돌아와야 다음 가지가 맞는 자리에서 시작해요."],
+
+    "q1-right": ["맞아요. 줄기 하나와 양쪽 가지 둘이에요. 내려올 때는 그은 선을 되짚어서 새 선이 생기지 않아요."],
+    "q1-two": ["작은 나무를 두 번 불렀어요. 양쪽 가지가 다 있어요."],
+    "q1-four": ["뒤로 내려올 때는 그은 선을 다시 지나가요. 새 선은 아니에요."],
+    "q1-explain": ["줄기 하나, 가지 둘, 모두 셋이에요."],
+    "q2-right": ["맞아요. 줄왼을 쓴 다음, 줄왼의 작은 나무 둘을 먼저 다 해요. 그다음에야 줄오로 가요."],
+    "q2-level": ["한 층씩 하지 않아요. 줄왼을 부르면, 줄왼이 끝날 때까지 줄오로 가지 않아요."],
+    "q2-explain": ["첫째로 부른 쪽을 끝까지 다 한 다음에 둘째로 가요."],
+    "q3-right": ["맞아요. 뒤로 내려오지 않아서, 왼쪽 가지 끝에서 돌기만 하고 오른쪽 가지를 그었어요. 오른쪽 가지가 왼쪽 가지 끝에 붙어요."],
+    "q3-tree": ["돌기만 거꾸로 했지, 뒤로 내려오지 않았어요. 둘째 가지는 거북이가 있는 곳, 왼쪽 가지 끝에서 시작해요."],
+    "q3-explain": ["작은 나무가 끝날 때 제자리로 돌아오지 않아서, 둘째 가지의 자리가 어긋나요."],
+
+    "task-how": ["실행해서 그림판에 그려 보고, 칠판의 그림과 같으면 '제출'을 눌러요."],
+    "praise-tree": ["줄기를 긋고 양쪽으로 작은 나무를 부른 다음, 처음 방향으로 돌고 뒤로 내려왔어요. 그래서 단계 [4|사]까지 모든 가지가 제자리에서 갈라졌어요."],
+    "need-rec": ["그림은 맞아요. 그런데 이번에는 재귀로 해 봐요. 나무라는 함수 안에서 나무를 다시 불러요."],
+    "tree-back": ["가지들이 어긋났어요. 작은 나무를 두 번 그린 다음, 뒤로 길이만큼 내려와서 제자리로 돌아와야 해요."],
+    "tree-turn": ["가지들이 비뚤어졌어요. 뒤로 내려오기 전에 왼쪽으로 [20|이십]도 돌아서 처음 방향을 봐야 해요."],
+    "tree-right": ["오른쪽 가지가 똑바로 위로 섰어요. 왼쪽으로 [20|이십]도 돌았던 것까지 되돌려야 해서, 오른쪽으로 [40|사십]도 돌아요."],
+    "tree-level": ["가지의 수가 달라요. 단계를 봐요. [나무(90, 4)|나무 구십 사]로 부르고, 단계가 [0|영]이면 멈춰요."],
+    "tree-hint-1": ["나무라는 함수를 만들어요. 길이와 단계를 넘겨받아요. 단계가 [0|영]이면 [return|리턴]해요."],
+    "tree-hint-2": ["앞으로 길이만큼, 왼쪽으로 [20|이십]도, [나무(길이 - 15, 단계 - 1)|나무 길이 빼기 십오, 단계 빼기 일], 오른쪽으로 [40|사십]도, 또 [나무(길이 - 15, 단계 - 1)|나무 길이 빼기 십오, 단계 빼기 일], 왼쪽으로 [20|이십]도, 뒤로 길이만큼이에요."],
+    "tree-hint-3": ["칠판에 비슷한 예제를 적었어요. 강의에서 본 나무를 단계 [3|삼]으로 그리는 예제예요. 숫자를 바꿔서 써 봐요."],
+    "praise-three": ["자기를 세 번 불러서 세 갈래로 갈라지는 나무를 만들었어요. 돈 각을 모두 되돌려 처음 방향을 보고 내려와서, 가지 마흔 개가 제자리에서 갈라졌어요."],
+    "three-back": ["가지들이 어긋났어요. 세 번 부른 다음, 처음 방향으로 돌고 뒤로 길이만큼 내려와요."],
+    "three-hint-1": ["왼쪽으로 [40|사십]도 돌고 부르고, 오른쪽으로 [40|사십]도 돌고 부르고, 또 오른쪽으로 [40|사십]도 돌고 불러요."],
+    "three-hint-2": ["그러면 오른쪽으로 [40|사십]도만큼 기울어 있어요. 왼쪽으로 [40|사십]도 돌아서 처음 방향을 보고, 뒤로 내려와요."],
+
+    "done-1": ["오늘은 자기를 두 번 불러서 나무를 그렸어요."],
+    "done-2": ["첫째로 부른 작은 나무를 끝까지 다 그린 다음에 둘째로 가요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "두 번 부르면 나무", "code": "def 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(30)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.right(60)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.left(30)\n    turtle.backward(길이)" } },
+      { "say": "tree-intro" },
+      { "type": "import turtle\nturtle.penup()\nturtle.goto(0, -140)\nturtle.pendown()\nturtle.left(90)\ndef 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(30)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.right(60)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.left(30)\n    turtle.backward(길이)\n나무(100, 2)" },
+      { "say": "start-note" },
+      { "trace": "import turtle\nturtle.penup()\nturtle.goto(0, -140)\nturtle.pendown()\nturtle.left(90)\ndef 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(30)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.right(60)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.left(30)\n    turtle.backward(길이)\n나무(100, 2)" },
+      { "say": "tree-after" }
+    ],
+    [
+      { "say": "order-intro" },
+      { "trace": "import turtle\nturtle.penup()\nturtle.goto(0, -140)\nturtle.pendown()\nturtle.left(90)\ndef 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(30)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.right(60)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.left(30)\n    turtle.backward(길이)\n나무(100, 3)" },
+      { "say": "order-after" },
+      { "card": { "title": "가지의 수", "items": ["단계 1:  1개", "단계 2:  1 + 2 = 3개", "단계 3:  1 + 2 + 4 = 7개", "한 단계 오를 때마다 끝 가지가 두 배"] } },
+      { "say": "count-intro" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "단계가 4인 나무는\n가지가 몇 개일까요?",
+          "ask": "check-ask",
+          "choices": ["15개", "8개"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "big-intro" },
+      { "play": "import turtle\nturtle.penup()\nturtle.goto(0, -140)\nturtle.pendown()\nturtle.left(90)\ndef 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(30)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.right(60)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.left(30)\n    turtle.backward(길이)\n나무(100, 7)", "ms": 9000 },
+      { "say": "big-after" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "import turtle\nturtle.penup()\nturtle.goto(0, -140)\nturtle.pendown()\nturtle.left(90)\ndef 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(30)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.right(60)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.left(30)\n    turtle.backward(길이)\n나무(100, 4)" } },
+      { "follow": { "code": "import turtle\nturtle.penup()\nturtle.goto(0, -140)\nturtle.pendown()\nturtle.left(90)\ndef 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(30)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.right(60)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.left(30)\n    turtle.backward(길이)\n나무(100, 4)", "draw": true, "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["자기를 두 번 부르면 갈라진다", "왼쪽으로 돌고 부르고, 오른쪽으로 돌고 부르고", "처음 방향으로 돌고 뒤로  →  제자리", "첫째 쪽을 끝까지 다 그린 다음 둘째로", "가지의 수: 1, 3, 7, 15, …"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "ask": "선이 몇 개 그려질까요?",
+      "explain": "q1-explain",
+      "code": "import turtle\nturtle.left(90)\ndef 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(30)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.right(60)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.left(30)\n    turtle.backward(길이)\n나무(80, 2)",
+      "outcome": { "output": [], "strokes": 3, "home": true },
+      "answer": 1,
+      "choices": [
+        { "text": "2개", "say": "q1-two" },
+        { "text": "3개", "say": "q1-right" },
+        { "text": "4개", "say": "q1-four" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "def 가지(이름, 단계):\n    if 단계 == 0:\n        return\n    print(이름)\n    가지(이름 + \"왼\", 단계 - 1)\n    가지(이름 + \"오\", 단계 - 1)\n가지(\"줄\", 3)",
+      "answer": 0,
+      "choices": [
+        { "text": "줄\n줄왼\n줄왼왼\n줄왼오\n줄오\n줄오왼\n줄오오", "say": "q2-right" },
+        { "text": "줄\n줄왼\n줄오\n줄왼왼\n줄왼오\n줄오왼\n줄오오", "say": "q2-level" }
+      ]
+    },
+    {
+      "id": "q3",
+      "ask": "어떤 그림이 그려질까요?",
+      "explain": "q3-explain",
+      "code": "import turtle\nturtle.left(90)\ndef 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(30)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.right(60)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.left(30)\n나무(80, 2)",
+      "outcome": { "output": [], "strokes": 3, "home": false },
+      "answer": 1,
+      "choices": [
+        { "text": "Y 모양 나무", "say": "q3-tree" },
+        { "text": "오른쪽 가지가 왼쪽 가지 끝에 붙은 모양", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "tree",
+      "title": "단계 4 나무",
+      "story": "재귀로 나무를 그려요. 나무(길이, 단계)는 줄기를 긋고, 왼쪽으로 20도 돌아 작은 나무, 오른쪽으로 40도 돌아 작은 나무를 그린 다음, 처음 방향으로 돌아 뒤로 내려와요. 작은 나무는 길이가 15 짧고 단계가 하나 작아요. 단계가 0이면 멈춰요. 나무(90, 4)로 불러요. 거북이를 옮기고 위를 보게 하는 줄은 시작 코드에 있어요.",
+      "steps": ["나무(길이, 단계)라는 함수를 만들어요. 단계가 0이면 return해요.", "앞으로 길이만큼, 왼쪽으로 20도, 작은 나무, 오른쪽으로 40도, 작은 나무.", "왼쪽으로 20도 돌고, 뒤로 길이만큼 내려와요.", "나무(90, 4)를 불러요."],
+      "start": "import turtle\nturtle.penup()\nturtle.goto(0, -140)\nturtle.pendown()\nturtle.left(90)\n",
+      "expect": [],
+      "draw": true,
+      "checks": [{ "pattern": "def\\s+([^\\s(]+)\\s*\\([^\\n]*\\n(?:(?:[ \\t]+[^\\n]*)?\\n)*?[ \\t]+[^\\n]*?(?<![\\w가-힣])\\1\\s*\\(", "say": "need-rec" }],
+      "mistakes": [
+        { "draw": "draw-diff", "code": "^(?![\\s\\S]*backward)", "say": "tree-back" },
+        { "draw": "draw-diff", "code": "right\\(\\s*20\\s*\\)", "say": "tree-right" },
+        { "draw": "draw-diff", "code": "^(?![\\s\\S]*left\\(\\s*20\\s*\\)[\\s\\S]*left\\(\\s*20\\s*\\))", "say": "tree-turn" },
+        { "draw": "draw-missing", "say": "tree-level" },
+        { "draw": "draw-extra", "say": "tree-level" }
+      ],
+      "praise": "praise-tree",
+      "solution": "import turtle\nturtle.penup()\nturtle.goto(0, -140)\nturtle.pendown()\nturtle.left(90)\ndef 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(20)\n    나무(길이 - 15, 단계 - 1)\n    turtle.right(40)\n    나무(길이 - 15, 단계 - 1)\n    turtle.left(20)\n    turtle.backward(길이)\n나무(90, 4)",
+      "hints": [
+        { "say": "tree-hint-1" },
+        { "say": "tree-hint-2" },
+        { "say": "tree-hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "import turtle\nturtle.penup()\nturtle.goto(0, -140)\nturtle.pendown()\nturtle.left(90)\ndef 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(30)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.right(60)\n    나무(길이 * 0.7, 단계 - 1)\n    turtle.left(30)\n    turtle.backward(길이)\n나무(100, 3)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "three",
+    "title": "심화: 세 갈래 나무",
+    "story": "가지가 세 갈래로 갈라지는 나무를 그려요. 줄기를 긋고 왼쪽으로 40도 돌아 작은 나무, 오른쪽으로 40도 돌아(가운데) 작은 나무, 또 오른쪽으로 40도 돌아 작은 나무를 그려요. 그다음 처음 방향으로 돌고 뒤로 내려와요. 작은 나무는 길이가 절반이고 단계가 하나 작아요. 나무(80, 4)로 불러요.",
+    "steps": ["나무(길이, 단계)에서 자기를 세 번 불러요. 작은 나무는 나무(길이 / 2, 단계 - 1).", "세 번 부르는 사이사이에 40도씩 돌아요.", "끝나면 처음 방향을 보도록 돌고, 뒤로 길이만큼 내려와요."],
+    "start": "import turtle\nturtle.penup()\nturtle.goto(0, -140)\nturtle.pendown()\nturtle.left(90)\n",
+    "expect": [],
+    "draw": true,
+    "checks": [{ "pattern": "def\\s+([^\\s(]+)\\s*\\([^\\n]*\\n(?:(?:[ \\t]+[^\\n]*)?\\n)*?[ \\t]+[^\\n]*?(?<![\\w가-힣])\\1\\s*\\(", "say": "need-rec" }],
+    "mistakes": [{ "draw": "draw-diff", "code": "^(?![\\s\\S]*backward)", "say": "three-back" }],
+    "praise": "praise-three",
+    "solution": "import turtle\nturtle.penup()\nturtle.goto(0, -140)\nturtle.pendown()\nturtle.left(90)\ndef 나무(길이, 단계):\n    if 단계 == 0:\n        return\n    turtle.forward(길이)\n    turtle.left(40)\n    나무(길이 / 2, 단계 - 1)\n    turtle.right(40)\n    나무(길이 / 2, 단계 - 1)\n    turtle.right(40)\n    나무(길이 / 2, 단계 - 1)\n    turtle.left(40)\n    turtle.backward(길이)\n나무(80, 4)",
+    "hints": [{ "say": "three-hint-1" }, { "say": "three-hint-2" }]
+  }
+}

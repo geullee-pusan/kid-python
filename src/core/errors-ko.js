@@ -293,6 +293,8 @@ export function explain(error, knows = {}) {
     if (/^-?\d+$/.test(message)) return `딕셔너리에는 ${message}이라는 키가 없어요. 딕셔너리는 번호가 아니라 키로 꺼내요.`;
     return '그 키가 딕셔너리에 없어요. 먼저 in으로 있는지 물어봐요.';
   }
+  // 끝없는 재귀: 함수가 자기를 너무 많이 불렀다(파이썬은 1000번쯤에서 멈춘다).
+  if (type === 'RecursionError') return '함수가 자기를 끝없이 불러서 멈췄어요. 멈추는 조건(if와 return)이 있는지, 부를 때마다 값이 그 조건에 가까워지는지 봐요. 건너뛰어서 조건을 지나치지 않는지도 봐요.';
   if (type === 'RuntimeError' && /dictionary changed size during iteration/.test(message)) return '딕셔너리를 for로 도는 동안에는 키를 넣거나 지울 수 없어요. 반복이 끝난 뒤에 바꿔요.';
   if (type === 'TurtleGraphicsError') {
     const color = /bad color string: (.*)$/.exec(message);

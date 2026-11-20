@@ -143,6 +143,15 @@ def __kidpy_error(e, name):
         for frame in mine:
             line = frame.lineno
             where = _kidpy_user_file(frame.filename)
+        # 끝없는 재귀: 맨 안쪽 줄은 def 줄이라서, 가장 많이 되풀이된 줄(자기를 부르는 줄)을 오류의 자리로 보인다.
+        if isinstance(e, RecursionError) and mine:
+            counts = {}
+            for frame in mine:
+                key = (frame.filename, frame.lineno)
+                counts[key] = counts.get(key, 0) + 1
+            top = max(counts, key=lambda k: counts[k])
+            line = top[1]
+            where = _kidpy_user_file(top[0])
         if mine:
             text = "Traceback (most recent call last):" + chr(10) + "".join(traceback.format_list(mine)) + "".join(traceback.format_exception_only(type(e), e))
         else:

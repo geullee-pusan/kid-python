@@ -1,0 +1,194 @@
+{
+  "_설명": "그림으로 재귀 단원 4번 수업. 곧은 선을 셋으로 나눠 가운데를 뾰족하게 하고, 나눈 조각마다 또 그렇게 한다(코흐 곡선, 이름은 '뾰족선'). 앞 수업의 나무와 달리 멈추는 조건에서 그린다(단계 0이면 곧은 선을 긋고 return). 자기를 네 번 부르고 사이사이에 왼쪽 60, 오른쪽 120, 왼쪽 60도 돈다. 곧은 선의 수는 단계마다 네 배(1, 4, 16, 64). 뾰족선 셋을 오른쪽으로 120도씩 돌며 이으면 눈송이가 된다. 겨냥하는 오개념: 멈추는 조건에서는 아무것도 하지 않는다, 단계 0에서 그린 뒤 return을 빠뜨려도 괜찮다(끝없이 부른다), 가운데 뾰족한 곳을 선 하나로 센다.",
+  "id": "rec-snow",
+  "unit": "그림으로 재귀",
+  "no": 4,
+  "title": "눈송이",
+  "desc": "선을 셋으로 나눠 가운데를 뾰족하게, 조각마다 또 그렇게 해서 눈송이를 그려요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes", "tries"],
+  "showVars": true,
+  "canvas": true,
+  "learned": [
+    { "rule": "멈추는 조건에서 그릴 수도 있어요. 단계가 0이면 곧은 선을 긋고 return해요. 아니면 작은 뾰족선을 네 번 그려요.", "code": "def 뾰족선(길이, 단계):\n    if 단계 == 0:\n        turtle.forward(길이)\n        return\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)" },
+    { "rule": "단계가 하나 오를 때마다 곧은 선이 네 배가 돼요: 1, 4, 16, 64." },
+    { "rule": "뾰족선 셋을 오른쪽으로 120도씩 돌며 이으면 눈송이가 돼요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["오늘은 눈송이를 그려요. 곧은 선을 셋으로 나눠서 가운데를 뾰족하게 만들고, 나눈 조각마다 또 그렇게 해요."],
+    "steps-intro": ["단계 [0|영]은 곧은 선 하나예요. 단계 [1|일]은 그 선을 셋으로 나눠 가운데를 뾰족하게 세운 거예요. 그러면 선이 네 개가 돼요."],
+    "koch-intro": ["이번에는 멈추는 조건에서 그려요. 단계가 [0|영]이면 곧은 선을 긋고 끝나요. 아니면 길이를 셋으로 나눈 작은 뾰족선을 네 번 그리는데, 사이사이에 왼쪽 [60|육십]도, 오른쪽 [120|백이십]도, 왼쪽 [60|육십]도 돌아요."],
+    "koch-after": ["가운데가 뾰족하게 솟았어요. 선 네 개는 모두 단계 [0|영]짜리 곧은 선이에요. 곧은 선을 긋는 일은 멈추는 조건에서만 했어요."],
+    "level2-intro": ["단계를 [2|이]로 올려 볼게요. 네 조각이 저마다 또 뾰족해져요."],
+    "level2-after": ["네 조각마다 가운데가 솟아서 곧은 선이 열여섯 개가 됐어요. 단계가 하나 오를 때마다 네 배예요."],
+    "check-ask": ["하나 물어볼게요. 단계가 [3|삼]이면 곧은 선은 몇 개일까요?"],
+    "check-right": ["맞아요. 열여섯의 네 배, 예순네 개예요."],
+    "check-teach-1": ["단계마다 네 배가 돼요. 더하는 게 아니에요."],
+    "check-teach-2": ["[1|일], [4|사], [16|십육], 그다음은 [16|십육] 곱하기 [4|사], [64|육십사]예요."],
+    "snow-intro": ["이제 뾰족선 셋을 이어 볼게요. 뾰족선을 그리고 오른쪽으로 [120|백이십]도 돌기를 세 번 해요. 단계는 [3|삼]이에요."],
+    "snow-after": ["눈송이가 됐어요. 단계 [0|영]으로 하면 그냥 세모예요. 세모의 변마다 뾰족한 것이 자라서 눈송이가 된 거예요."],
+    "follow-ok": ["좋아요. 단계 [2|이]짜리 뾰족선이 그려졌어요."],
+    "summary": ["정리해요. 단계가 [0|영]이면 곧은 선을 긋고 [return|리턴], 아니면 작은 뾰족선 넷을 돌아 가며 그려요. 셋을 이으면 눈송이예요."],
+
+    "q1-right": ["맞아요. 셋으로 나눈 양쪽 두 조각과, 뾰족하게 솟은 두 변이에요. 모두 넷이에요."],
+    "q1-three": ["가운데 뾰족한 곳은 올라가는 선과 내려오는 선, 둘이에요."],
+    "q1-five": ["가운데 조각은 긋지 않고 그 자리에 뾰족한 두 변을 그어요. 넷이에요."],
+    "q1-explain": ["작은 뾰족선을 네 번 부르니, 곧은 선이 넷이에요."],
+    "q2-right": ["맞아요. 단계가 [0|영]이면 곧은 선만 그어요. 곧은 선과 [120|백이십]도 돌기를 세 번 하면 정삼각형이에요."],
+    "q2-snow": ["단계가 [0|영]이라서 뾰족해지지 않아요. 곧은 선만 그어요."],
+    "q2-line": ["반복이 세 번 돌면서 [120|백이십]도씩 꺾여요. 선이 셋이에요."],
+    "q2-explain": ["곧은 선 셋을 [120|백이십]도씩 돌며 이으면 정삼각형이에요."],
+    "q3-right": ["맞아요. 단계가 [0|영]일 때 선을 긋고도 [return|리턴]하지 않아서, 아래로 내려가 단계 [-1|빼기 일]로 또 불러요. 단계가 [0|영]을 지나쳐 끝없이 작아져요."],
+    "q3-line": ["단계가 [0|영]일 때 선을 그은 다음 [return|리턴]이 없어요. 함수가 끝나지 않고 아래 줄로 내려가요."],
+    "q3-explain": ["멈추는 조건에서 그린 다음에도 [return|리턴]으로 끝내야 해요."],
+
+    "task-how": ["실행해서 그림판에 그려 보고, 칠판의 그림과 같으면 '제출'을 눌러요."],
+    "praise-down": ["뾰족선의 도는 방향을 거꾸로 바꿔서, 뾰족한 곳이 아래로 향했어요. 오른쪽 [60|육십]도, 왼쪽 [120|백이십]도, 오른쪽 [60|육십]도예요."],
+    "need-rec": ["그림은 맞아요. 그런데 이번에는 재귀로 해 봐요. 뾰족선이라는 함수 안에서 뾰족선을 다시 불러요."],
+    "down-up": ["뾰족한 곳이 위로 솟았어요. 아래로 향하게 하려면 도는 방향을 모두 거꾸로 해요. 왼쪽은 오른쪽으로, 오른쪽은 왼쪽으로요."],
+    "down-level": ["곧은 선의 수가 달라요. 단계를 봐요. [뾰족선(270, 2)|뾰족선 이백칠십 이]로 불러요."],
+    "down-hint-1": ["강의에서 본 뾰족선 함수를 써요. 단계가 [0|영]이면 앞으로 길이만큼 가고 [return|리턴]해요. 아니면 작은 뾰족선을 네 번 불러요."],
+    "down-hint-2": ["사이사이에 도는 것만 거꾸로 해요. 오른쪽으로 [60|육십]도, 왼쪽으로 [120|백이십]도, 오른쪽으로 [60|육십]도예요."],
+    "down-hint-3": ["칠판에 비슷한 예제를 적었어요. 위로 솟는 뾰족선 단계 [1|일]이에요. 이걸 보고 바꿔 봐요."],
+    "praise-snow": ["뾰족선 셋을 오른쪽으로 [120|백이십]도씩 돌며 이어서 눈송이를 만들었어요. 뾰족한 곳이 모두 바깥으로 솟았어요."],
+    "snow-in": ["뾰족한 곳이 안쪽으로 들어갔어요. 이번 눈송이는 오른쪽으로 돌면서 이어요. 그래야 뾰족한 곳이 바깥으로 솟아요."],
+    "snow-level": ["곧은 선의 수가 달라요. 단계를 봐요. [뾰족선(240, 2)|뾰족선 이백사십 이]로 불러요."],
+    "snow-hint-1": ["강의에서 본 뾰족선 함수를 그대로 써요."],
+    "snow-hint-2": ["[for|포]로 세 번 되풀이하면서 [뾰족선(240, 2)|뾰족선 이백사십 이]를 그리고 오른쪽으로 [120|백이십]도 돌아요."],
+
+    "done-1": ["오늘은 뾰족선과 눈송이를 그렸어요."],
+    "done-2": ["멈추는 조건에서 그릴 때도, 그린 다음에는 [return|리턴]으로 끝내요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "단계마다 뾰족하게", "items": ["단계 0:  곧은 선 하나", "단계 1:  셋으로 나눠 가운데를 뾰족하게  →  선 4개", "단계 2:  4개가 저마다 또 뾰족하게  →  선 16개"] } },
+      { "say": "steps-intro" },
+      { "say": "koch-intro" },
+      { "type": "import turtle\nturtle.penup()\nturtle.goto(-150, -40)\nturtle.pendown()\ndef 뾰족선(길이, 단계):\n    if 단계 == 0:\n        turtle.forward(길이)\n        return\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n뾰족선(300, 1)" },
+      { "trace": "import turtle\nturtle.penup()\nturtle.goto(-150, -40)\nturtle.pendown()\ndef 뾰족선(길이, 단계):\n    if 단계 == 0:\n        turtle.forward(길이)\n        return\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n뾰족선(300, 1)" },
+      { "say": "koch-after" }
+    ],
+    [
+      { "say": "level2-intro" },
+      { "trace": "import turtle\nturtle.penup()\nturtle.goto(-150, -40)\nturtle.pendown()\ndef 뾰족선(길이, 단계):\n    if 단계 == 0:\n        turtle.forward(길이)\n        return\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n뾰족선(300, 2)" },
+      { "say": "level2-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "단계가 3이면\n곧은 선은 몇 개일까요?",
+          "ask": "check-ask",
+          "choices": ["64개", "20개"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "눈송이", "code": "for i in range(3):\n    뾰족선(240, 3)\n    turtle.right(120)" } },
+      { "say": "snow-intro" },
+      { "play": "import turtle\nturtle.penup()\nturtle.goto(-120, 70)\nturtle.pendown()\ndef 뾰족선(길이, 단계):\n    if 단계 == 0:\n        turtle.forward(길이)\n        return\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\nfor i in range(3):\n    뾰족선(240, 3)\n    turtle.right(120)", "ms": 9000 },
+      { "say": "snow-after" }
+    ],
+    [
+      { "card": { "title": "따라 쳐요", "code": "import turtle\nturtle.penup()\nturtle.goto(-150, -40)\nturtle.pendown()\ndef 뾰족선(길이, 단계):\n    if 단계 == 0:\n        turtle.forward(길이)\n        return\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n뾰족선(300, 2)" } },
+      { "follow": { "code": "import turtle\nturtle.penup()\nturtle.goto(-150, -40)\nturtle.pendown()\ndef 뾰족선(길이, 단계):\n    if 단계 == 0:\n        turtle.forward(길이)\n        return\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n뾰족선(300, 2)", "draw": true, "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["멈추는 조건에서 그린다: 곧은 선 긋고 return", "작은 뾰족선 넷: 왼 60, 오른 120, 왼 60", "곧은 선의 수: 1, 4, 16, 64", "뾰족선 셋 + 오른쪽 120도  →  눈송이"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "ask": "곧은 선이 몇 개 그려질까요?",
+      "explain": "q1-explain",
+      "code": "import turtle\ndef 뾰족선(길이, 단계):\n    if 단계 == 0:\n        turtle.forward(길이)\n        return\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n뾰족선(150, 1)",
+      "outcome": { "output": [], "strokes": 4 },
+      "answer": 1,
+      "choices": [
+        { "text": "3개", "say": "q1-three" },
+        { "text": "4개", "say": "q1-right" },
+        { "text": "5개", "say": "q1-five" }
+      ]
+    },
+    {
+      "id": "q2",
+      "ask": "어떤 그림이 그려질까요?",
+      "explain": "q2-explain",
+      "code": "import turtle\ndef 뾰족선(길이, 단계):\n    if 단계 == 0:\n        turtle.forward(길이)\n        return\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\nfor i in range(3):\n    뾰족선(150, 0)\n    turtle.right(120)",
+      "outcome": { "output": [], "strokes": 3, "home": true },
+      "answer": 2,
+      "choices": [
+        { "text": "눈송이", "say": "q2-snow" },
+        { "text": "곧은 선 하나", "say": "q2-line" },
+        { "text": "정삼각형", "say": "q2-right" }
+      ]
+    },
+    {
+      "id": "q3",
+      "ask": "어떻게 될까요?",
+      "explain": "q3-explain",
+      "code": "import turtle\ndef 뾰족선(길이, 단계):\n    if 단계 == 0:\n        turtle.forward(길이)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n뾰족선(150, 1)",
+      "limit": 3000,
+      "outcome": { "output": [], "error": "RecursionError" },
+      "answer": 0,
+      "choices": [
+        { "text": "끝없이 부르다가 오류로 멈춘다", "say": "q3-right" },
+        { "text": "뾰족선 하나가 그려진다", "say": "q3-line" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "down",
+      "title": "아래로 뾰족한 선",
+      "story": "뾰족한 곳이 아래로 향하는 뾰족선을 그려요. 강의의 뾰족선과 같은데, 도는 방향만 모두 거꾸로예요. 뾰족선(270, 2)로 불러요. 거북이를 옮기는 줄은 시작 코드에 있어요.",
+      "steps": ["뾰족선(길이, 단계)를 만들어요. 단계가 0이면 곧은 선을 긋고 return해요.", "작은 뾰족선을 네 번 부르면서, 사이사이에 오른쪽 60도, 왼쪽 120도, 오른쪽 60도 돌아요.", "뾰족선(270, 2)를 불러요."],
+      "start": "import turtle\nturtle.penup()\nturtle.goto(-135, 60)\nturtle.pendown()\n",
+      "expect": [],
+      "draw": true,
+      "checks": [{ "pattern": "def\\s+([^\\s(]+)\\s*\\([^\\n]*\\n(?:(?:[ \\t]+[^\\n]*)?\\n)*?[ \\t]+[^\\n]*?(?<![\\w가-힣])\\1\\s*\\(", "say": "need-rec" }],
+      "mistakes": [
+        { "draw": "draw-missing", "code": "left\\(\\s*60\\s*\\)[\\s\\S]*right\\(\\s*120\\s*\\)", "say": "down-up" },
+        { "draw": "draw-extra", "code": "left\\(\\s*60\\s*\\)[\\s\\S]*right\\(\\s*120\\s*\\)", "say": "down-up" },
+        { "draw": "draw-diff", "code": "left\\(\\s*60\\s*\\)[\\s\\S]*right\\(\\s*120\\s*\\)", "say": "down-up" },
+        { "draw": "draw-mirror", "say": "down-up" },
+        { "draw": "draw-missing", "say": "down-level" },
+        { "draw": "draw-extra", "say": "down-level" },
+        { "draw": "draw-diff", "code": "뾰족선\\(\\s*270\\s*,\\s*(?!\\s|2\\s*\\))", "say": "down-level" }
+      ],
+      "praise": "praise-down",
+      "solution": "import turtle\nturtle.penup()\nturtle.goto(-135, 60)\nturtle.pendown()\ndef 뾰족선(길이, 단계):\n    if 단계 == 0:\n        turtle.forward(길이)\n        return\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(60)\n    뾰족선(길이 / 3, 단계 - 1)\n뾰족선(270, 2)",
+      "hints": [
+        { "say": "down-hint-1" },
+        { "say": "down-hint-2" },
+        { "say": "down-hint-3", "card": { "title": "비슷한 예제 (정답은 아니에요)", "code": "import turtle\nturtle.penup()\nturtle.goto(-135, 60)\nturtle.pendown()\ndef 뾰족선(길이, 단계):\n    if 단계 == 0:\n        turtle.forward(길이)\n        return\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n뾰족선(270, 1)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "snow",
+    "title": "심화: 눈송이",
+    "story": "뾰족선 셋을 이어서 단계 2짜리 눈송이를 그려요. 뾰족선(240, 2)를 그리고 오른쪽으로 120도 돌기를 세 번 해요. 뾰족선은 강의에서 본 것(위로 솟는 것)을 그대로 써요. 거북이를 옮기는 줄은 시작 코드에 있어요.",
+    "steps": ["강의의 뾰족선 함수를 만들어요.", "for로 세 번: 뾰족선(240, 2), 오른쪽으로 120도."],
+    "start": "import turtle\nturtle.penup()\nturtle.goto(-120, 70)\nturtle.pendown()\n",
+    "expect": [],
+    "draw": true,
+    "checks": [{ "pattern": "def\\s+([^\\s(]+)\\s*\\([^\\n]*\\n(?:(?:[ \\t]+[^\\n]*)?\\n)*?[ \\t]+[^\\n]*?(?<![\\w가-힣])\\1\\s*\\(", "say": "need-rec" }],
+    "mistakes": [{ "draw": "draw-diff", "code": "뾰족선\\(\\s*240\\s*,\\s*(?!\\s|2\\s*\\))", "say": "snow-level" }, { "draw": "draw-diff", "code": "for[^\\n]*:\\s*\\n[\\s\\S]*left\\(\\s*120\\s*\\)\\s*$", "say": "snow-in" }],
+    "praise": "praise-snow",
+    "solution": "import turtle\nturtle.penup()\nturtle.goto(-120, 70)\nturtle.pendown()\ndef 뾰족선(길이, 단계):\n    if 단계 == 0:\n        turtle.forward(길이)\n        return\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)\n    뾰족선(길이 / 3, 단계 - 1)\nfor i in range(3):\n    뾰족선(240, 2)\n    turtle.right(120)",
+    "hints": [{ "say": "snow-hint-1" }, { "say": "snow-hint-2" }]
+  }
+}

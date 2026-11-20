@@ -143,7 +143,10 @@ export function tracePace(index, total) {
   const CALM = 14;
   const rest = total - CALM;
   if (index < CALM || rest <= 0) return 1;
-  return Math.max(0.2, Math.min(1, 12000 / (rest * 1200)));
+  // 보통은 0.2보다 빨라지지 않는다. 300줄이 넘는 시연(끝없는 재귀가 오류로 멈추기까지 2000줄쯤)은
+  // 그대로 두면 몇 분이 걸려서, 뒤쪽을 12초쯤에 몰아 넘긴다.
+  const floor = total > 300 ? 0.005 : 0.2;
+  return Math.max(floor, Math.min(1, 12000 / (rest * 1200)));
 }
 
 /** 수업에 든 쓰기 문제 전부(심화 포함). 점검과 테스트에서 쓴다. */

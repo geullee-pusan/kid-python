@@ -1117,9 +1117,44 @@ const WRONG21 = () => {
   ];
 };
 
+// 단원 22(그림으로 재귀): 모범 답을 조금 고쳐서 만든다.
+const WRONG22 = () => {
+  const s = (missionId, taskId, from, to, kind, say) => [missionId, taskId, swap(main(missionId, taskId), from, to), kind, say];
+  return [
+    s('rec-call', 'tri', '길이 < 30', '길이 <= 30', 'mistake', 'tri-stop'),
+    s('rec-call', 'tri', 'left(120)', 'right(120)', 'mistake', 'tri-turn'),
+    ['rec-call', 'tri', 'import turtle\nfor 길이 in range(150, 29, -15):\n    turtle.forward(길이)\n    turtle.left(120)', 'mistake', 'need-rec'],
+    s('rec-call', 'tri', '나선(길이 - 15)', '나선(길이)', 'error', null),
+    s('rec-call', 'two', '수 <= 0', '수 == 0', 'error', null),
+    s('rec-back', 'wings', '    turtle.backward(길이)\n', '', 'mistake', 'wings-back'),
+    s('rec-back', 'wings', '    turtle.left(30)\n', '', 'mistake', 'wings-turn'),
+    s('rec-back', 'up', '    세기(수 - 1)\n    print(수)', '    print(수)\n    세기(수 - 1)', 'mistake', 'up-before'),
+    s('rec-tree', 'tree', '    turtle.backward(길이)\n', '', 'mistake', 'tree-back'),
+    s('rec-tree', 'tree', 'turtle.right(40)', 'turtle.right(20)', 'mistake', 'tree-right'),
+    s('rec-tree', 'tree', '    turtle.left(20)\n    turtle.backward', '    turtle.backward', 'mistake', 'tree-turn'),
+    s('rec-tree', 'tree', '나무(90, 4)', '나무(90, 3)', 'mistake', 'tree-level'),
+    s('rec-tree', 'three', '    turtle.backward(길이)\n', '', 'mistake', 'three-back'),
+    s('rec-snow', 'down', 'right(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(60)', 'left(60)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.right(120)\n    뾰족선(길이 / 3, 단계 - 1)\n    turtle.left(60)', 'mistake', 'down-up'),
+    s('rec-snow', 'down', '뾰족선(270, 2)', '뾰족선(270, 1)', 'mistake', 'down-level'),
+    s('rec-snow', 'down', '        turtle.forward(길이)\n        return\n', '        turtle.forward(길이)\n', 'error', null),
+    s('rec-snow', 'snow', '뾰족선(240, 2)\n    turtle.right(120)', '뾰족선(240, 2)\n    turtle.left(120)', 'mistake', 'snow-in'),
+    s('rec-snow', 'snow', '뾰족선(240, 2)\n', '뾰족선(240, 1)\n', 'mistake', 'snow-level'),
+    s('rec-count', 'lines', 'return 1\n', 'return 0\n', 'mistake', 'lines-zero'),
+    s('rec-count', 'lines', '4 * 선수', '4 + 선수', 'mistake', 'lines-plus'),
+    s('rec-count', 'lines', '    return 4 * 선수', '    4 * 선수', 'error', null),
+    s('rec-count', 'three', '1 + 3 * 가지수', '1 + 2 * 가지수', 'mistake', 'three-two'),
+    s('unit22-review', 'nest', '    turtle.penup()\n    turtle.forward(10)', '    turtle.forward(10)', 'mistake', 'nest-pen'),
+    s('unit22-review', 'nest', '크기 < 20', '크기 < 40', 'mistake', 'nest-stop'),
+    s('unit22-review', 'forest', '    turtle.penup()\n    turtle.goto(x, -140)\n    turtle.pendown()\n', '    turtle.goto(x, -140)\n', 'mistake', 'forest-pen'),
+    s('unit22-review', 'forest', '    turtle.backward(길이)\n', '', 'mistake', 'forest-back'),
+    s('unit22-review', 'forest', '심기(0, 90, 5)', '심기(0, 90, 4)', 'mistake', 'forest-missing'),
+    s('unit22-review', 'forest', 'import turtle\n', 'import turtle\nturtle.color("green")\n', 'correct', null),
+  ];
+};
+
 test('흔한 오답에 의도한 말이 나온다', () => {
   // 여섯째 칸: 모듈 탭들(없으면 문제의 시작 모듈)
-  for (const [missionId, taskId, code, kind, say, modules] of [...WRONG, ...WRONG20(), ...WRONG21(), ...WRONG_REVIEW2(), ...PRACTICE_WRONG]) {
+  for (const [missionId, taskId, code, kind, say, modules] of [...WRONG, ...WRONG20(), ...WRONG21(), ...WRONG22(), ...WRONG_REVIEW2(), ...PRACTICE_WRONG]) {
     const task = allTasks(SCRIPTS[missionId]).find((t) => t.id === taskId);
     assert.ok(task, `${missionId}/${taskId}: 문제가 없어요`);
     const result = grade(task, code, modules ?? task.modules ?? {});
@@ -1180,6 +1215,8 @@ test('파이썬이 내는 오류를 우리 설명이 알아듣는다', () => {
     ['점수 = 5\n점수 + = 1', 'SyntaxError', /붙여 써요/, loops],
     ['수 = 12\nfor i in range(수):\n    if 수 % i == 0:\n        print(i)', 'ZeroDivisionError', /1부터 시작/, loops],
     ['print(5 / 0)', 'ZeroDivisionError', /^0으로 나눌 수 없어요\.$/],
+    // 끝없는 재귀(단원 22)
+    ['def 세기(수):\n    print(수)\n    세기(수 - 1)\n세기(3)', 'RecursionError', /멈추는 조건/, functions],
     ['합 = 합 + 1', 'NameError', /이름표가 아직 없어요/, loops],
     ['for i in range(3):\n    합 += i\nprint(합)', 'NameError', /이름표가 아직 없어요/, loops],
     // while과 무작위 수를 배운 뒤
