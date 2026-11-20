@@ -15,6 +15,7 @@
   ],
   "done": ["done-1", "done-2", "done-bye"],
   "lines": {
+    "first-else": ["50보다 큰 수가 없어요가 수마다 나왔어요. 그 줄이 반복 안에 있어요. 다 돌고 나서 한 번만 내보내게 반복 밖으로 빼요."],
     "today": ["리스트 단원에서 이름과 점수를 함께 꺼낼 때, 번호 [i|아이]로 돌면서 대괄호 안에 번호를 넣어 하나씩 꺼냈어요. 오늘은 [for|포]에서 값을 두 개씩 바로 받아요."],
     "zip-intro": ["[zip|집]은 지퍼라는 뜻이에요. 두 리스트를 지퍼처럼 같은 번호끼리 맞물려서 한 짝씩 줘요. [for|포] 뒤에 이름표 두 개를 쉼표로 써서 받아요."],
     "zip-after": ["번호 없이도 이름과 점수가 짝지어 나왔어요. 이름표 칸에서 이름과 점수가 함께 바뀌는 것을 봐요."],
@@ -188,7 +189,8 @@
     "checks": [{ "pattern": "enumerate\\s*\\(", "say": "need-enum" }],
     "mistakes": [
       { "inputs": "^10,45", "output": "2번째, 72$", "say": "first-zero" },
-      { "inputs": "^10,45", "output": "3번째, 72\\n처음으로", "say": "first-all" }
+      { "inputs": "^10,45", "output": "3번째, 72\\n처음으로", "say": "first-all" },
+      { "inputs": "^10,45", "output": "^50보다 큰 수가 없어요\\n", "say": "first-else" }
     ],
     "praise": "praise-first",
     "solution": "수들 = []\nfor i in range(5):\n    수들.append(int(input(\"수: \")))\n찾음 = False\nfor 번호, 수 in enumerate(수들, 1):\n    if 수 > 50:\n        print(f\"처음으로 50보다 큰 수: {번호}번째, {수}\")\n        찾음 = True\n        break\nif not 찾음:\n    print(\"50보다 큰 수가 없어요\")",

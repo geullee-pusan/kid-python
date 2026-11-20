@@ -6,6 +6,7 @@
   "knows": ["variables", "loops", "functions", "classes", "tries"],
   "showVars": true,
   "lines": {
+    "menu-equal": ["김밥이 빠졌어요. 값이 가진 돈과 같아도 살 수 있어요. 작거나 같다로 물어요."],
     "need-f": ["답은 맞아요. 이번에는 따옴표 앞에 [f|에프]를 붙인 글자로 써 봐요."],
     "receipt-praise": ["물건과 값과 개수를 [f|에프]를 붙인 글자 하나에 넣고, 중괄호 안에서 곱했어요."],
     "receipt-int": ["값이 글자 그대로 여러 번 이어졌어요. [input|인풋]의 답은 글자예요. 값과 개수를 [int|인트]로 바꿔요."],
@@ -93,7 +94,7 @@
       "expect": ["김밥 3000원", "주먹밥 1500원", "살 수 있는 것 2가지"],
       "show": true,
       "checks": [{ "pattern": "\\.items\\s*\\(", "say": "menu-need-items" }],
-      "mistakes": [{ "inputs": "^3000$", "output": "라면 4000원", "say": "menu-over" }],
+      "mistakes": [{ "inputs": "^3000$", "output": "라면 4000원", "say": "menu-over" }, { "inputs": "^3000$", "output": "^주먹밥 1500원", "say": "menu-equal" }],
       "praise": "menu-praise",
       "solution": "메뉴판 = {\"김밥\": 3000, \"라면\": 4000, \"떡볶이\": 3500, \"주먹밥\": 1500}\n돈 = int(input(\"가진 돈: \"))\n수 = 0\nfor 메뉴, 값 in 메뉴판.items():\n    if 값 <= 돈:\n        print(f\"{메뉴} {값}원\")\n        수 += 1\nprint(f\"살 수 있는 것 {수}가지\")",
       "hints": [{ "say": "menu-hint-1" }, { "say": "menu-hint-2" }]

@@ -6,6 +6,7 @@
   "knows": ["variables", "loops", "functions", "classes", "tries"],
   "showVars": true,
   "lines": {
+    "tool-none": ["[None|논]이 나왔어요. 도구의 함수가 값을 돌려주지 않았어요. 만든 값을 [return|리턴]으로 돌려줘요."],
     "need-sqrt": ["답은 맞아요. 이번에는 [math.sqrt|매스 점 스퀘어 루트]로 구해 봐요."],
     "side-praise": ["[math|매스]를 불러와서 [sqrt|스퀘어 루트]로 한 변을 구하고, [round|라운드]로 줄였어요."],
     "side-round": ["소수점 아래가 길게 나왔어요. [round|라운드]로 소수 첫째 자리까지 줄여요."],
@@ -100,7 +101,7 @@
         { "in": "도구.py", "pattern": "def\\s+거꾸로", "say": "need-tool-def" },
         { "pattern": "도구\\.|from\\s+도구", "say": "need-dot" }
       ],
-      "mistakes": [{ "inputs": "^사과$", "output": "^거꾸로 사과", "say": "word-same" }],
+      "mistakes": [{ "inputs": "^사과$", "output": "^거꾸로 사과", "say": "word-same" }, { "output": "None", "say": "tool-none" }],
       "praise": "word-praise",
       "solution": "import 도구\n낱말 = input(\"낱말: \")\n뒤집은 = 도구.거꾸로(낱말)\nprint(f\"거꾸로 {뒤집은}\")\nif 뒤집은 == 낱말:\n    print(\"앞뒤가 같아요\")\nelse:\n    print(\"앞뒤가 달라요\")",
       "solutionModules": { "도구.py": "def 거꾸로(글):\n    새글 = \"\"\n    for 글자 in 글:\n        새글 = 글자 + 새글\n    return 새글\n" },

@@ -154,7 +154,7 @@
       ],
       "expect": ["[8, 12]", "합 20"],
       "show": true,
-      "checks": [{ "pattern": "\\[[^\\n]*\\bfor\\b[^\\n]*\\]", "say": "need-comp" }],
+      "checks": [{ "pattern": "\\[[^\\n]*\\bfor\\b[^\\n]*\\bif\\b[^\\n]*\\]", "say": "need-comp" }],
       "mistakes": [{ "inputs": "^3 8 5 12 7$", "output": "^\\[3, 5, 7\\]", "say": "evens-odd" }],
       "praise": "praise-evens",
       "solution": "수들 = [int(x) for x in input(\"수들: \").split()]\n짝수 = [x for x in 수들 if x % 2 == 0]\nprint(짝수)\nprint(f\"합 {sum(짝수)}\")",

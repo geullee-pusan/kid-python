@@ -16,6 +16,7 @@
   ],
   "done": ["done-1", "done-2", "done-bye"],
   "lines": {
+    "still-test-if": ["[if|이프]는 썼는데 시험 줄이 아직 나와요. 시험 줄 둘 다 [if|이프] 아래로 들여썼는지, 따옴표 안이 밑줄 두 개, main, 밑줄 두 개인지 봐요."],
     "today": ["도구 파일을 만들다 보면, 함수가 맞는지 도구 파일 안에서 시험해 보고 싶어요. 그런데 그 시험 줄이 [main.py|메인 점 파이]를 돌릴 때도 나와요. 오늘은 그 까닭과 고치는 법을 배워요."],
     "test-intro": ["[도구.py|도구 점 파이]에 함수를 쓰고, 아래에 시험하는 [print|프린트]를 하나 넣을게요."],
     "run-all": ["시험 줄도 나왔어요. 한 줄씩 볼 때 [도구.py|도구 점 파이]를 처음부터 끝까지 지나갔지요. [import|임포트]하면 그 파일을 위에서 아래로 한 번 다 실행해요. [def|데프]는 함수를 만들어 두고, [print|프린트]는 그때 바로 내보내요."],
@@ -175,7 +176,7 @@
       "expect": ["큰 수 9"],
       "show": true,
       "checks": [{ "in": "도구.py", "pattern": "__name__", "say": "need-guard" }],
-      "mistakes": [{ "output": "시험", "say": "still-test" }],
+      "mistakes": [{ "in": "도구.py", "code": "if\\s+__name__", "output": "시험", "say": "still-test-if" }, { "output": "시험", "say": "still-test" }],
       "praise": "praise-guard",
       "solution": "import 도구\n가 = int(input(\"첫째: \"))\n나 = int(input(\"둘째: \"))\nprint(f\"큰 수 {도구.큰수(가, 나)}\")",
       "solutionModules": { "도구.py": "def 큰수(a, b):\n    if a > b:\n        return a\n    return b\n\nif __name__ == \"__main__\":\n    print(\"시험\", 큰수(3, 9))\n    print(\"시험\", 큰수(8, 2))\n" },
@@ -201,7 +202,7 @@
     ],
     "mistakes": [
       { "inputs": "^7,", "output": "^7 짝\\n10 홀", "say": "odd-swap" },
-      { "want": "^7 홀", "output": "^(?!7 )", "say": "odd-test" }
+      { "want": "^7 홀", "output": "^(?!7 ).+", "say": "odd-test" }
     ],
     "praise": "praise-odd",
     "solution": "import 도구\nfor i in range(3):\n    수 = int(input(\"수: \"))\n    print(수, 도구.홀짝(수))",

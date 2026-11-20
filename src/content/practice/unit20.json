@@ -11,6 +11,12 @@
     "tries"
   ],
   "lines": {
+    "walker-listen": [
+      "키를 눌러도 움직이지 않아요. 맨 아래에 [turtle.listen()|터틀 점 리슨]을 써요."
+    ],
+    "walker-paren": [
+      "키에 붙인 메서드 뒤에 괄호가 있어요. [나.위|나 점 위]처럼 이름만 써요."
+    ],
     "walker-praise": [
       "만들 때 받은 걸음을 [self.걸음|셀프 점 걸음]에 넣어 두고, 메서드마다 그만큼 옮겼어요. 키에는 괄호 없이 붙였어요."
     ],
@@ -147,6 +153,16 @@
         }
       ],
       "mistakes": [
+        {
+          "game": "game-pos",
+          "code": "onkey(press)?\\s*\\(\\s*[^,()\\s]+\\s*\\(\\s*\\)",
+          "say": "walker-paren"
+        },
+        {
+          "game": "game-pos",
+          "code": "^(?![\\s\\S]*listen\\s*\\()",
+          "say": "walker-listen"
+        },
         {
           "game": "game-pos",
           "say": "walker-pos"
