@@ -1,0 +1,180 @@
+{
+  "_설명": "데이터와 그래프 단원 3번 수업. 조사한 답을 그대로 적은 리스트(사과, 포도, 사과, …)를 딕셔너리로 세고(딕셔너리 단원의 세어서 모으기), 센 것을 막대그래프로 그린다. 딕셔너리를 for로 돌면서 x를 50씩 늘려 막대를 옮긴다(x += 50). 딕셔너리의 차례는 처음 나온 차례다. 막대 아래에 이름을 쓴다. 겨냥하는 오개념: 조사한 답을 그대로 그래프로 그린다(같은 답이 여러 막대가 된다), x를 늘리지 않는다, 딕셔너리의 차례는 가나다 차례다.",
+  "id": "data-count",
+  "unit": "데이터와 그래프",
+  "no": 3,
+  "title": "세어서 그래프로",
+  "desc": "친구들의 답을 딕셔너리로 세고, 센 것을 막대그래프로 그려요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes", "tries"],
+  "showVars": true,
+  "canvas": true,
+  "learned": [
+    { "rule": "조사한 답은 먼저 딕셔너리로 세어요. 같은 답이 몇 번 나왔는지가 막대의 높이예요.", "code": "개수 = {}\nfor 답 in 답들:\n    if 답 in 개수:\n        개수[답] += 1\n    else:\n        개수[답] = 1" },
+    { "rule": "딕셔너리를 for로 돌면서 x를 늘려 가면 막대를 옆으로 옮길 수 있어요.", "code": "x = -150\nfor 이름 in 개수:\n    막대(x, 개수[이름] * 40)\n    x += 50" },
+    { "rule": "딕셔너리는 처음 나온 차례대로 돌아요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["그래프에 그릴 수는 처음부터 세어져 있지 않을 때가 많아요. 친구들에게 물어보면 답이 하나씩 모이지요. 오늘은 모인 답을 세어서 그래프로 그려요."],
+    "count-intro": ["좋아하는 과일을 열 명에게 물었어요. 답이 차례로 리스트에 들어 있어요. 먼저 딕셔너리로 세어요. 딕셔너리 단원에서 했던 세어서 모으기예요."],
+    "count-after": ["사과 넷, 포도 셋, 귤 둘, 딸기 하나예요. 열 개의 답이 네 가지로 정리됐어요."],
+    "draw-intro": ["이제 그려요. 딕셔너리를 [for|포]로 돌면서 과일마다 막대를 그려요. x는 [-150|빼기 백오십]에서 시작해서 막대를 하나 그릴 때마다 [50|오십]씩 늘려요. 높이는 개수에 [40|사십]을 곱해요. 막대 아래에는 이름을 써요."],
+    "draw-after": ["사과가 가장 많아요. 막대의 차례는 사과, 포도, 귤, 딸기, 답에 처음 나온 차례예요. 딕셔너리는 들어간 차례대로 돌아요."],
+    "raw-intro": ["세지 않고 답마다 막대를 그리면 어떻게 될까요?"],
+    "raw-after": ["높이가 모두 같은 막대가 열 개예요. 사과가 몇 개인지 알 수 없어요. 그래서 먼저 세어야 해요."],
+    "check-ask": ["하나 물어볼게요. 답이 포도, 귤, 포도이면 개수 딕셔너리의 포도는 얼마일까요?"],
+    "check-right": ["맞아요. 포도가 두 번 나와서 [2|이]예요."],
+    "check-teach-1": ["포도는 처음에 [1|일]이 되고, 또 나와서 [1|일]을 더해요."],
+    "check-teach-2": ["그래서 [2|이]예요."],
+    "follow-ok": ["좋아요. 봄, 여름, 겨울 막대가 그려졌어요."],
+    "summary": ["정리해요. 조사한 답은 먼저 딕셔너리로 세어요. 딕셔너리를 [for|포]로 돌면서 x를 늘려 막대를 그려요. 막대는 답이 처음 나온 차례예요."],
+
+    "q1-right": ["맞아요. 빨강 둘, 파랑 하나. 빨강은 [2|이]예요."],
+    "q1-one": ["빨강은 두 번 나왔어요. 나올 때마다 [1|일]을 더해요."],
+    "q1-explain": ["빨강, 파랑, 빨강. 빨강은 [2|이]예요."],
+    "q2-right": ["맞아요. 처음 나온 차례, 귤, 감, 배예요."],
+    "q2-abc": ["딕셔너리는 가나다 차례가 아니라 들어간 차례로 돌아요."],
+    "q2-explain": ["귤이 먼저 들어가고, 그다음 감, 배예요."],
+    "q3-right": ["맞아요. x는 [-150|빼기 백오십], [-100|빼기 백], [-50|빼기 오십]으로 늘어요."],
+    "q3-same": ["반복 안에서 [x += 50|엑스 더하기 같다 오십]을 해서 x가 커져요."],
+    "q3-explain": ["돌 때마다 [50|오십]씩 커져요."],
+
+    "praise-vote": ["답을 딕셔너리로 센 다음, 계절마다 x를 [60|육십]씩 늘리며 개수에 [40|사십]을 곱한 막대를 그렸어요. 봄이 가장 많다는 것이 한눈에 보여요."],
+    "vote-raw": ["막대가 답의 수만큼 생겼어요. 먼저 딕셔너리로 세고, 센 것으로 막대를 그려요."],
+    "vote-same": ["막대가 겹쳤어요. 막대를 그릴 때마다 x를 [60|육십]씩 늘려요."],
+    "vote-diff": ["막대의 높이나 자리가 달라요. x는 [-150|빼기 백오십]에서 시작해 [60|육십]씩, 높이는 개수에 [40|사십]을 곱해요."],
+    "vote-hint-1": ["먼저 빈 딕셔너리 개수를 만들고, 답마다 있으면 [1|일]을 더하고 없으면 [1|일]로 넣어요."],
+    "vote-hint-2": ["x를 [-150|빼기 백오십]으로 두고, [for 계절 in 개수:|포 계절 인 개수]로 돌면서 막대를 그리고 x에 [60|육십]을 더해요."],
+    "vote-hint-3": ["칠판에 강의 예제를 적었어요. 이름과 수만 바꿔 봐요."],
+    "praise-most": ["센 딕셔너리를 돌면서 지금까지 가장 많은 것보다 많을 때만 바꿔 적었어요. 같으면 바꾸지 않아서 먼저 나온 것이 남아요."],
+    "most-count": ["개수만 썼어요. 계절과 그 개수를 함께, 계절 먼저 한 줄에 써요."],
+    "most-hint-1": ["가장이라는 이름표에 아무 계절이나 처음 것을 넣어 두고, 딕셔너리를 돌아요."],
+    "most-hint-2": ["개수가 가장의 개수보다 많으면 가장을 바꿔요. 다 돌고 나서 가장과 그 개수를 써요."],
+
+    "done-1": ["오늘은 조사한 답을 세어서 그래프로 그렸어요."],
+    "done-2": ["먼저 딕셔너리로 세고, x를 늘려 가며 막대를 그려요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "좋아하는 과일", "items": ["사과, 포도, 사과, 귤, 포도,", "사과, 딸기, 포도, 사과, 귤"] } },
+      { "say": "count-intro" },
+      { "type": "답들 = [\"사과\", \"포도\", \"사과\", \"귤\", \"포도\", \"사과\", \"딸기\", \"포도\", \"사과\", \"귤\"]\n개수 = {}\nfor 답 in 답들:\n    if 답 in 개수:\n        개수[답] += 1\n    else:\n        개수[답] = 1\nprint(개수)" },
+      { "trace": "답들 = [\"사과\", \"포도\", \"사과\", \"귤\", \"포도\", \"사과\", \"딸기\", \"포도\", \"사과\", \"귤\"]\n개수 = {}\nfor 답 in 답들:\n    if 답 in 개수:\n        개수[답] += 1\n    else:\n        개수[답] = 1\nprint(개수)" },
+      { "say": "count-after" }
+    ],
+    [
+      { "card": { "title": "센 것을 막대로", "code": "x = -150\nfor 이름 in 개수:\n    막대(x, 개수[이름] * 40)\n    x += 50" } },
+      { "say": "draw-intro" },
+      { "type": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n답들 = [\"사과\", \"포도\", \"사과\", \"귤\", \"포도\", \"사과\", \"딸기\", \"포도\", \"사과\", \"귤\"]\n개수 = {}\nfor 답 in 답들:\n    if 답 in 개수:\n        개수[답] += 1\n    else:\n        개수[답] = 1\nx = -150\nfor 이름 in 개수:\n    막대(x, 개수[이름] * 40)\n    turtle.penup()\n    turtle.goto(x, -175)\n    turtle.write(이름)\n    x += 50" },
+      { "play": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n답들 = [\"사과\", \"포도\", \"사과\", \"귤\", \"포도\", \"사과\", \"딸기\", \"포도\", \"사과\", \"귤\"]\n개수 = {}\nfor 답 in 답들:\n    if 답 in 개수:\n        개수[답] += 1\n    else:\n        개수[답] = 1\nx = -150\nfor 이름 in 개수:\n    막대(x, 개수[이름] * 40)\n    turtle.penup()\n    turtle.goto(x, -175)\n    turtle.write(이름)\n    x += 50" },
+      { "say": "draw-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "raw-intro" },
+      { "type": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n답들 = [\"사과\", \"포도\", \"사과\", \"귤\", \"포도\", \"사과\", \"딸기\", \"포도\", \"사과\", \"귤\"]\nx = -220\nfor 답 in 답들:\n    막대(x, 40)\n    x += 45" },
+      { "play": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n답들 = [\"사과\", \"포도\", \"사과\", \"귤\", \"포도\", \"사과\", \"딸기\", \"포도\", \"사과\", \"귤\"]\nx = -220\nfor 답 in 답들:\n    막대(x, 40)\n    x += 45" },
+      { "say": "raw-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "답이 포도, 귤, 포도이면\n개수[\"포도\"]는?",
+          "ask": "check-ask",
+          "choices": ["2", "1"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "따라 쳐요", "code": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n개수 = {\"봄\": 3, \"여름\": 5, \"겨울\": 2}\nx = -150\nfor 이름 in 개수:\n    막대(x, 개수[이름] * 40)\n    x += 50" } },
+      { "follow": { "code": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n개수 = {\"봄\": 3, \"여름\": 5, \"겨울\": 2}\nx = -150\nfor 이름 in 개수:\n    막대(x, 개수[이름] * 40)\n    x += 50", "draw": true, "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["조사한 답은 먼저 딕셔너리로 센다", "for 이름 in 개수:  →  막대 하나씩", "x += 50 으로 옆으로 옮기기", "딕셔너리는 처음 나온 차례"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "개수 = {}\nfor 색 in [\"빨강\", \"파랑\", \"빨강\"]:\n    if 색 in 개수:\n        개수[색] += 1\n    else:\n        개수[색] = 1\nprint(개수[\"빨강\"])",
+      "answer": 0,
+      "choices": [
+        { "text": "2", "say": "q1-right" },
+        { "text": "1", "say": "q1-one" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "개수 = {}\nfor 과일 in [\"귤\", \"감\", \"귤\", \"배\"]:\n    if 과일 in 개수:\n        개수[과일] += 1\n    else:\n        개수[과일] = 1\nfor 과일 in 개수:\n    print(과일)",
+      "answer": 1,
+      "choices": [
+        { "text": "감\n귤\n배", "say": "q2-abc" },
+        { "text": "귤\n감\n배", "say": "q2-right" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "x = -150\nfor 이름 in {\"가\": 1, \"나\": 2, \"다\": 3}:\n    print(x)\n    x += 50",
+      "answer": 0,
+      "choices": [
+        { "text": "-150\n-100\n-50", "say": "q3-right" },
+        { "text": "-150\n-150\n-150", "say": "q3-same" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "vote",
+      "title": "좋아하는 계절",
+      "story": "반 친구들이 좋아하는 계절을 답했어요. 답들을 딕셔너리로 센 다음, 계절마다 막대를 그려요. x는 -150에서 시작해 막대마다 60씩 늘리고, 높이는 개수에 40을 곱해요. 막대는 처음 나온 계절 차례예요. 막대 함수는 시작 코드에 있어요.",
+      "steps": ["빈 딕셔너리 개수를 만들고 답마다 세요.", "x = -150으로 두고, for 계절 in 개수:", "막대(x, 개수[계절] * 40)를 그리고 x += 60."],
+      "start": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n답들 = [\"봄\", \"겨울\", \"봄\", \"여름\", \"가을\", \"봄\", \"여름\", \"봄\", \"겨울\", \"가을\", \"여름\", \"봄\"]\n",
+      "expect": [],
+      "draw": true,
+      "mistakes": [
+        { "draw": "draw-extra", "code": "^(?![\\s\\S]*\\{\\s*\\})", "say": "vote-raw" },
+        { "draw": "draw-diff", "code": "^(?![\\s\\S]*\\{\\s*\\})", "say": "vote-raw" },
+        { "draw": "draw-missing", "code": "^(?![\\s\\S]*x\\s*(?:\\+=|=\\s*x\\s*\\+))", "say": "vote-same" },
+        { "draw": "draw-diff", "code": "^(?![\\s\\S]*x\\s*(?:\\+=|=\\s*x\\s*\\+))", "say": "vote-same" },
+        { "draw": "draw-diff", "say": "vote-diff" },
+        { "draw": "draw-missing", "say": "vote-diff" },
+        { "draw": "draw-extra", "say": "vote-diff" },
+        { "draw": "draw-fill", "say": "vote-diff" }
+      ],
+      "praise": "praise-vote",
+      "solution": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n답들 = [\"봄\", \"겨울\", \"봄\", \"여름\", \"가을\", \"봄\", \"여름\", \"봄\", \"겨울\", \"가을\", \"여름\", \"봄\"]\n개수 = {}\nfor 답 in 답들:\n    if 답 in 개수:\n        개수[답] += 1\n    else:\n        개수[답] = 1\nx = -150\nfor 계절 in 개수:\n    막대(x, 개수[계절] * 40)\n    x += 60",
+      "hints": [
+        { "say": "vote-hint-1" },
+        { "say": "vote-hint-2" },
+        { "say": "vote-hint-3", "card": { "title": "강의에서 본 예제 (정답은 아니에요)", "code": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n답들 = [\"사과\", \"포도\", \"사과\", \"귤\", \"포도\", \"사과\", \"딸기\", \"포도\", \"사과\", \"귤\"]\n개수 = {}\nfor 답 in 답들:\n    if 답 in 개수:\n        개수[답] += 1\n    else:\n        개수[답] = 1\nx = -150\nfor 이름 in 개수:\n    막대(x, 개수[이름] * 40)\n    x += 50" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "most",
+    "title": "심화: 가장 많은 계절",
+    "story": "같은 답들을 딕셔너리로 센 다음, 가장 많이 나온 계절과 그 개수를 한 줄에 써요. 개수가 같으면 먼저 나온 계절을 써요. 이번에는 그림 없이 출력만 해요.",
+    "steps": ["딕셔너리로 세어요.", "가장 = 답들[0]으로 두고, 딕셔너리를 돌면서 더 많은 계절이 있으면 바꿔요.", "print(가장, 개수[가장])"],
+    "start": "답들 = [\"봄\", \"겨울\", \"봄\", \"여름\", \"가을\", \"봄\", \"여름\", \"봄\", \"겨울\", \"가을\", \"여름\", \"봄\"]\n",
+    "expect": ["봄 5"],
+    "mistakes": [{ "output": "^5$", "say": "most-count" }],
+    "praise": "praise-most",
+    "solution": "답들 = [\"봄\", \"겨울\", \"봄\", \"여름\", \"가을\", \"봄\", \"여름\", \"봄\", \"겨울\", \"가을\", \"여름\", \"봄\"]\n개수 = {}\nfor 답 in 답들:\n    if 답 in 개수:\n        개수[답] += 1\n    else:\n        개수[답] = 1\n가장 = 답들[0]\nfor 계절 in 개수:\n    if 개수[계절] > 개수[가장]:\n        가장 = 계절\nprint(가장, 개수[가장])",
+    "hints": [{ "say": "most-hint-1" }, { "say": "most-hint-2" }]
+  }
+}

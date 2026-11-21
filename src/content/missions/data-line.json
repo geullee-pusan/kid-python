@@ -1,0 +1,178 @@
+{
+  "_설명": "데이터와 그래프 단원 4번 수업. 꺾은선그래프: 날마다 바뀌는 값(기온)을 점으로 찍고 차례로 잇는다. i번째 점은 x = -180 + i * 60, y = -150 + 값 * 20. 첫 점까지는 펜을 들고 가고, 그다음부터 펜을 내리고 goto로 잇는다. 점마다 dot을 찍는다. 막대그래프는 크기를 견줄 때, 꺾은선그래프는 바뀌는 모양을 볼 때 쓴다. 겨냥하는 오개념: 첫 점에도 펜을 내린 채로 가도 된다(가운데에서 첫 점까지 선이 생긴다), 오르내림을 막대로는 못 그린다고 생각한다, x를 옮기지 않는다.",
+  "id": "data-line",
+  "unit": "데이터와 그래프",
+  "no": 4,
+  "title": "꺾은선그래프",
+  "desc": "날마다 바뀌는 기온을 점으로 찍고 이어요. 오르고 내리는 모양이 보여요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes", "tries"],
+  "showVars": true,
+  "canvas": true,
+  "learned": [
+    { "rule": "꺾은선그래프는 값마다 점을 찍고 차례로 이어요. 첫 점까지는 펜을 들고 가요.", "code": "turtle.penup()\nfor i in range(len(기온)):\n    turtle.goto(-180 + i * 60, -150 + 기온[i] * 20)\n    turtle.pendown()\n    turtle.dot(8)" },
+    { "rule": "막대그래프는 크기를 견줄 때, 꺾은선그래프는 오르고 내리는 모양을 볼 때 좋아요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["막대그래프는 무엇이 많은지 견주기에 좋았어요. 그런데 날마다 바뀌는 기온처럼 오르고 내리는 모양을 보려면 다른 그래프가 좋아요. 오늘은 꺾은선그래프를 그려요."],
+    "line-intro": ["이레 동안 아침 기온이에요. [3|삼]도, [5|오]도, [4|사]도, [8|팔]도, [10|십]도, [9|구]도, [12|십이]도. 날마다 점을 찍는데, [i|아이]번째 날은 x가 [-180|빼기 백팔십]에서 [60|육십]씩 오른쪽이고, y는 바닥 [-150|빼기 백오십]에서 기온에 [20|이십]을 곱한 만큼 위예요. 처음에 펜을 들고, 첫 점에 간 다음부터 펜을 내려서 이어요."],
+    "line-after": ["기온이 오르다가 조금 내리고 다시 올라요. 이레 동안 전체로는 따뜻해졌다는 것이 선의 모양으로 보여요."],
+    "pen-intro": ["처음에 펜을 들지 않으면 어떻게 될까요?"],
+    "pen-after": ["가운데에서 첫 점까지 쓸데없는 선이 생겼어요. 거북이는 가운데에서 시작하니까, 첫 점까지는 펜을 들고 가요."],
+    "check-ask": ["하나 물어볼게요. 기온이 [5|오]도인 점의 y는 얼마일까요?"],
+    "check-right": ["맞아요. [5|오] 곱하기 [20|이십]은 [100|백], [-150|빼기 백오십]에 더하면 [-50|빼기 오십]이에요."],
+    "check-teach-1": ["y는 바닥 [-150|빼기 백오십]에 기온 곱하기 [20|이십]을 더해요."],
+    "check-teach-2": ["[-150 + 100|빼기 백오십 더하기 백]은 [-50|빼기 오십]이에요."],
+    "both-intro": ["같은 기온을 막대로 그려서 견줘 볼게요."],
+    "both-after": ["막대로도 높낮이는 보여요. 하지만 선으로 이으면 오르고 내리는 흐름이 더 잘 보여요. 크기를 견줄 때는 막대, 바뀌는 모양을 볼 때는 꺾은선을 써요."],
+    "follow-ok": ["좋아요. 네 점을 이은 꺾은선이 그려졌어요."],
+    "summary": ["정리해요. 꺾은선그래프는 값마다 점을 찍고 차례로 이어요. 처음에 펜을 들고, 첫 점에 간 다음 펜을 내려요."],
+
+    "q1-right": ["맞아요. [4 * 20|사 곱하기 이십]은 [80|팔십], [-150|빼기 백오십]에 더하면 [-70|빼기 칠십]이에요."],
+    "q1-eighty": ["바닥 [-150|빼기 백오십]에서 위로 가요. [-150|빼기 백오십]에 [80|팔십]을 더해요."],
+    "q1-explain": ["[-150 + 4 * 20|빼기 백오십 더하기 사 곱하기 이십]은 [-70|빼기 칠십]이에요."],
+    "q2-right": ["맞아요. 첫 점에 간 다음에 펜을 내리니까, 점 셋 사이의 선 두 개만 생겨요."],
+    "q2-three": ["처음에 펜을 들었어요. 첫 점까지는 선이 없어요."],
+    "q2-explain": ["점이 셋이면 잇는 선은 둘이에요."],
+    "q3-right": ["맞아요. 앞날보다 기온이 오른 날은 [5|오]도, [8|팔]도, [9|구]도, 세 번이에요."],
+    "q3-four": ["[4|사]도인 날은 앞날 [5|오]도보다 내렸어요."],
+    "q3-explain": ["[3|삼]에서 [5|오], [4|사]에서 [8|팔], [8|팔]에서 [9|구]로 올랐어요."],
+
+    "praise-plant": ["처음에 펜을 들고 첫 점에 간 다음 펜을 내려서, 날마다 점을 찍고 이었어요. 강낭콩이 점점 빨리 자라는 모양이 보여요."],
+    "plant-pen": ["가운데에서 첫 점까지 선이 있어요. 반복하기 전에 펜을 들고, 첫 점에 간 다음에 펜을 내려요."],
+    "plant-diff": ["점의 자리가 달라요. x는 [-180 + i * 60|빼기 백팔십 더하기 아이 곱하기 육십], y는 [-150 + 키 * 20|빼기 백오십 더하기 키 곱하기 이십]이에요."],
+    "plant-hint-1": ["먼저 펜을 들어요. 그리고 [for i in range(len(키)):|포 아이 인 레인지 렌 키]로 돌아요."],
+    "plant-hint-2": ["반복 안에서 점의 자리로 [goto|고투]하고, 펜을 내리고, [dot|닷]을 찍어요."],
+    "plant-hint-3": ["칠판에 강의 예제를 적었어요. 리스트 이름만 바꿔 봐요."],
+    "praise-two": ["두 반의 기온을 같은 방법으로 그렸어요. 둘째 선을 그리기 전에도 펜을 들어서, 첫째 선 끝과 둘째 선 처음이 이어지지 않았어요."],
+    "two-join": ["두 선이 이어졌어요. 둘째 선을 그리기 전에 펜을 들어요. 함수로 만들면 편해요."],
+    "two-hint-1": ["[def 꺾은선(값들):|데프 꺾은선 값들]을 만들어요. 안에서 펜을 들고, 점을 차례로 이어요."],
+    "two-hint-2": ["[꺾은선(우리반)|꺾은선 우리반]과 [꺾은선(옆반)|꺾은선 옆반]을 불러요. 색은 마음대로 바꿔도 돼요."],
+
+    "done-1": ["오늘은 꺾은선그래프를 그렸어요."],
+    "done-2": ["첫 점까지는 펜을 들고, 그다음부터 이어요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "이레 동안 아침 기온", "items": ["3, 5, 4, 8, 10, 9, 12 (도)", "i번째 점:  x = -180 + i * 60", "y = -150 + 기온 * 20"] } },
+      { "say": "line-intro" },
+      { "type": "import turtle\n기온 = [3, 5, 4, 8, 10, 9, 12]\nturtle.penup()\nfor i in range(len(기온)):\n    turtle.goto(-180 + i * 60, -150 + 기온[i] * 20)\n    turtle.pendown()\n    turtle.dot(8)" },
+      { "trace": "import turtle\n기온 = [3, 5, 4, 8, 10, 9, 12]\nturtle.penup()\nfor i in range(len(기온)):\n    turtle.goto(-180 + i * 60, -150 + 기온[i] * 20)\n    turtle.pendown()\n    turtle.dot(8)" },
+      { "say": "line-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "pen-intro" },
+      { "type": "import turtle\n기온 = [3, 5, 4, 8, 10, 9, 12]\nfor i in range(len(기온)):\n    turtle.goto(-180 + i * 60, -150 + 기온[i] * 20)\n    turtle.dot(8)" },
+      { "play": "import turtle\n기온 = [3, 5, 4, 8, 10, 9, 12]\nfor i in range(len(기온)):\n    turtle.goto(-180 + i * 60, -150 + 기온[i] * 20)\n    turtle.dot(8)" },
+      { "say": "pen-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "y = -150 + 기온 * 20 이면\n기온이 5도인 점의 y는?",
+          "ask": "check-ask",
+          "choices": ["-50", "100"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "both-intro" },
+      { "type": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n기온 = [3, 5, 4, 8, 10, 9, 12]\nturtle.fillcolor(\"lightblue\")\nfor i in range(len(기온)):\n    막대(-195 + i * 60, 기온[i] * 20)\nturtle.color(\"red\")\nturtle.penup()\nfor i in range(len(기온)):\n    turtle.goto(-180 + i * 60, -150 + 기온[i] * 20)\n    turtle.pendown()\n    turtle.dot(8)" },
+      { "play": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n기온 = [3, 5, 4, 8, 10, 9, 12]\nturtle.fillcolor(\"lightblue\")\nfor i in range(len(기온)):\n    막대(-195 + i * 60, 기온[i] * 20)\nturtle.color(\"red\")\nturtle.penup()\nfor i in range(len(기온)):\n    turtle.goto(-180 + i * 60, -150 + 기온[i] * 20)\n    turtle.pendown()\n    turtle.dot(8)" },
+      { "say": "both-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "따라 쳐요", "code": "import turtle\n값들 = [2, 6, 4, 7]\nturtle.penup()\nfor i in range(len(값들)):\n    turtle.goto(-180 + i * 60, -150 + 값들[i] * 20)\n    turtle.pendown()\n    turtle.dot(8)" } },
+      { "follow": { "code": "import turtle\n값들 = [2, 6, 4, 7]\nturtle.penup()\nfor i in range(len(값들)):\n    turtle.goto(-180 + i * 60, -150 + 값들[i] * 20)\n    turtle.pendown()\n    turtle.dot(8)", "draw": true, "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["꺾은선: 값마다 점을 찍고 차례로 잇기", "처음에 펜을 들고, 첫 점에 간 다음 펜을 내린다", "x = -180 + i * 60,   y = -150 + 값 * 20", "크기를 견줄 때는 막대, 바뀌는 모양은 꺾은선"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "기온 = 4\nprint(-150 + 기온 * 20)",
+      "answer": 1,
+      "choices": [
+        { "text": "80", "say": "q1-eighty" },
+        { "text": "-70", "say": "q1-right" }
+      ]
+    },
+    {
+      "id": "q2",
+      "ask": "선이 몇 개 그려질까요?",
+      "explain": "q2-explain",
+      "code": "import turtle\n높이 = [0, 50, 20]\nturtle.penup()\nfor i in range(3):\n    turtle.goto(-100 + i * 60, 높이[i])\n    turtle.pendown()",
+      "outcome": { "output": [], "strokes": 2 },
+      "answer": 0,
+      "choices": [
+        { "text": "2개", "say": "q2-right" },
+        { "text": "3개", "say": "q2-three" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "기온 = [3, 5, 4, 8, 9]\n오른날 = 0\nfor i in range(1, len(기온)):\n    if 기온[i] > 기온[i - 1]:\n        오른날 += 1\nprint(오른날)",
+      "answer": 0,
+      "choices": [
+        { "text": "3", "say": "q3-right" },
+        { "text": "4", "say": "q3-four" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "plant",
+      "title": "강낭콩 키",
+      "story": "강낭콩의 키(cm)를 엿새 동안 쟀어요. 리스트 키를 꺾은선그래프로 그려요. i번째 점은 x가 -180 + i * 60, y가 -150 + 키 * 20이에요. 첫 점까지는 펜을 들고 가고, 점마다 dot(8)을 찍어요.",
+      "steps": ["먼저 펜을 들어요.", "for i in range(len(키)): 안에서 점의 자리로 goto해요.", "펜을 내리고 dot(8)을 찍어요."],
+      "start": "import turtle\n키 = [1, 2, 4, 7, 10, 14]\n",
+      "expect": [],
+      "draw": true,
+      "mistakes": [
+        { "draw": "draw-extra", "code": "^(?![\\s\\S]*penup)", "say": "plant-pen" },
+        { "draw": "draw-diff", "code": "^(?![\\s\\S]*penup)", "say": "plant-pen" },
+        { "draw": "draw-diff", "say": "plant-diff" },
+        { "draw": "draw-missing", "say": "plant-diff" },
+        { "draw": "draw-extra", "say": "plant-diff" }
+      ],
+      "praise": "praise-plant",
+      "solution": "import turtle\n키 = [1, 2, 4, 7, 10, 14]\nturtle.penup()\nfor i in range(len(키)):\n    turtle.goto(-180 + i * 60, -150 + 키[i] * 20)\n    turtle.pendown()\n    turtle.dot(8)",
+      "hints": [
+        { "say": "plant-hint-1" },
+        { "say": "plant-hint-2" },
+        { "say": "plant-hint-3", "card": { "title": "강의에서 본 예제 (정답은 아니에요)", "code": "import turtle\n기온 = [3, 5, 4, 8, 10, 9, 12]\nturtle.penup()\nfor i in range(len(기온)):\n    turtle.goto(-180 + i * 60, -150 + 기온[i] * 20)\n    turtle.pendown()\n    turtle.dot(8)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "two",
+    "title": "심화: 두 반의 기온",
+    "story": "우리 반과 옆 반이 같은 날 잰 기온을 한 그래프에 꺾은선 두 개로 그려요. 점의 자리는 강의와 같아요(x = -180 + i * 60, y = -150 + 기온 * 20). 두 선이 이어지지 않게 해요. 색은 마음대로 해도 돼요.",
+    "steps": ["def 꺾은선(값들): 안에서 펜을 들고, 점을 차례로 잇고 dot(8)을 찍어요.", "꺾은선(우리반)과 꺾은선(옆반)을 불러요."],
+    "start": "import turtle\n우리반 = [3, 5, 4, 8, 10, 9, 12]\n옆반 = [2, 3, 6, 6, 7, 11, 10]\n",
+    "expect": [],
+    "draw": true,
+    "mistakes": [{ "draw": "draw-extra", "say": "two-join" }, { "draw": "draw-diff", "say": "two-join" }],
+    "praise": "praise-two",
+    "solution": "import turtle\n우리반 = [3, 5, 4, 8, 10, 9, 12]\n옆반 = [2, 3, 6, 6, 7, 11, 10]\ndef 꺾은선(값들):\n    turtle.penup()\n    for i in range(len(값들)):\n        turtle.goto(-180 + i * 60, -150 + 값들[i] * 20)\n        turtle.pendown()\n        turtle.dot(8)\n꺾은선(우리반)\n꺾은선(옆반)",
+    "hints": [{ "say": "two-hint-1" }, { "say": "two-hint-2" }]
+  }
+}

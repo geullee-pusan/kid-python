@@ -1,0 +1,190 @@
+{
+  "_설명": "데이터와 그래프 단원 1번 수업. 리스트의 수를 거북이로 막대그래프로 그린다. 막대(x, 높이)는 (x, -150)에서 오른쪽을 보고 폭 30, 높이만큼의 직사각형을 색칠해 그린다(거북이 단원의 색칠과 함수). 값 하나를 높이로 그대로 쓰면 너무 작아서 값에 20을 곱한다. i번째 막대는 x = -150 + i * 50. 막대 위에 수, 아래에 이름을 write로 쓴다(글자는 채점하지 않는다). 겨냥하는 오개념: 막대마다 x를 바꾸지 않아도 된다(모두 한자리에 겹친다), 값을 그대로 높이로 쓴다, 그릴 때마다 펜을 들고 옮기지 않아도 된다.",
+  "id": "data-bar",
+  "unit": "데이터와 그래프",
+  "no": 1,
+  "title": "막대그래프 그리기",
+  "desc": "리스트에 든 수를 거북이로 막대그래프로 그려요. 어느 것이 가장 많은지 한눈에 보여요.",
+  "minutes": 15,
+  "knows": ["variables", "loops", "functions", "classes", "tries"],
+  "showVars": true,
+  "canvas": true,
+  "learned": [
+    { "rule": "막대 하나를 그리는 함수를 만들어 두면, 값마다 불러서 막대그래프를 그릴 수 있어요.", "code": "def 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()" },
+    { "rule": "i번째 막대는 x를 i만큼 옮겨서 그려요. 옮기지 않으면 막대가 한자리에 겹쳐요.", "code": "for i in range(len(값들)):\n    막대(-150 + i * 50, 값들[i] * 20)" },
+    { "rule": "값이 작으면 몇 배를 곱해서 높이로 써요. 모든 막대에 같은 수를 곱해야 크기를 견줄 수 있어요." }
+  ],
+  "done": ["done-1", "done-2", "done-bye"],
+  "lines": {
+    "today": ["새 단원이에요. 모은 수를 그래프로 그려요. 수가 줄줄이 있으면 어느 것이 큰지 알아보기 어렵지만, 막대로 그리면 한눈에 보여요. 오늘은 거북이로 막대그래프를 그려요."],
+    "bar-intro": ["먼저 막대 하나를 그리는 함수를 만들어요. 펜을 들고 ([x|엑스], [-150|빼기 백오십])으로 가서, 폭이 [30|삼십]이고 높이가 넘겨받은 수만큼인 네모를 색칠해서 그려요. [-150|빼기 백오십]은 그래프의 바닥이에요."],
+    "bar-after": ["막대 하나가 그려졌어요. 높이 [100|백]짜리예요."],
+    "list-intro": ["이제 우리 모둠이 지난주에 읽은 책의 수를 그려요. 솔이 [3|삼]권, 빛이 [5|오]권, 하늘이 [2|이]권, 별이 [6|육]권이에요. 값마다 막대를 하나씩 그리는데, 막대가 겹치지 않게 [i|아이]번째 막대는 오른쪽으로 [50|오십]씩 옮겨요. 그리고 [3|삼]권을 높이 [3|삼]으로 그리면 너무 작아서, [20|이십]을 곱해요."],
+    "list-after": ["별이의 막대가 가장 높아요. 수 네 개를 읽는 것보다 훨씬 빨리 보여요."],
+    "same-intro": ["x를 옮기는 것을 빼먹으면 어떻게 될까요?"],
+    "same-after": ["막대가 모두 한자리에 겹쳐서, 가장 높은 막대 하나만 보여요. [i|아이]마다 x를 옮겨야 해요."],
+    "check-ask": ["하나 물어볼게요. [x = -150 + i * 50|엑스 같다 빼기 백오십 더하기 아이 곱하기 오십]이면, [2|이]번째 막대의 x는 얼마일까요?"],
+    "check-right": ["맞아요. [-150|빼기 백오십]에 [100|백]을 더해서 [-50|빼기 오십]이에요."],
+    "check-teach-1": ["[i|아이]가 [2|이]이면 [2 * 50|이 곱하기 오십]은 [100|백]이에요."],
+    "check-teach-2": ["[-150|빼기 백오십]에 [100|백]을 더하면 [-50|빼기 오십]이에요."],
+    "label-intro": ["막대 위에는 수를, 아래에는 이름을 쓰면 더 알아보기 쉬워요. [write|라이트]로 거북이가 있는 자리에 글자를 써요. 숫자와 글자는 그림 채점에 들어가지 않아요."],
+    "label-after": ["누가 몇 권 읽었는지 막대와 수로 함께 보여요. 이게 막대그래프예요."],
+    "follow-ok": ["좋아요. 막대 세 개를 그렸어요."],
+    "summary": ["정리해요. 막대 하나를 그리는 함수를 만들고, 값마다 불렀어요. [i|아이]번째 막대는 x를 옮기고, 값에 같은 수를 곱해서 높이로 써요."],
+
+    "q1-right": ["맞아요. [4 * 20|사 곱하기 이십]은 [80|팔십]이에요."],
+    "q1-four": ["값을 그대로 쓰지 않고 [20|이십]을 곱해요."],
+    "q1-index": ["[1|일]번 자리는 두 번째 값, [4|사]예요. 번호는 [0|영]부터 세요."],
+    "q1-explain": ["값 [4|사]에 [20|이십]을 곱해서 높이 [80|팔십]이에요."],
+    "q2-right": ["맞아요. 리스트에 수가 다섯 개라서 막대도 다섯 개예요."],
+    "q2-sum": ["값을 더한 만큼이 아니라, 값 하나에 막대 하나예요."],
+    "q2-explain": ["[range(len(값들))|레인지 렌 값들]은 값의 개수만큼 돌아요."],
+    "q3-right": ["맞아요. [i|아이]가 [0|영], [1|일], [2|이]일 때 [-150|빼기 백오십], [-100|빼기 백], [-50|빼기 오십]이에요."],
+    "q3-same": ["[i|아이]가 바뀌니까 x도 바뀌어요. [50|오십]씩 커져요."],
+    "q3-explain": ["[i * 50|아이 곱하기 오십]만큼 오른쪽으로 가요."],
+
+    "praise-books": ["값마다 [i|아이]번째 자리로 [60|육십]씩 옮기고, 값에 [20|이십]을 곱한 높이로 막대를 그렸어요. 다섯 날의 줄넘기가 한눈에 보여요."],
+    "books-same": ["막대가 겹쳤어요. [i|아이]번째 막대는 x를 [-150 + i * 60|빼기 백오십 더하기 아이 곱하기 육십]으로 옮겨요."],
+    "books-scale": ["막대가 너무 낮거나 높아요. 높이는 값에 [20|이십]을 곱해요."],
+    "books-gap": ["막대의 자리가 조금 달라요. 이번에는 [60|육십]씩 옮겨요."],
+    "books-hint-1": ["시작 코드에 막대 함수가 있어요. 그 아래에 [for i in range(len(횟수)):|포 아이 인 레인지 렌 횟수]를 써요."],
+    "books-hint-2": ["반복 안에서 막대를 불러요. x는 [-150 + i * 60|빼기 백오십 더하기 아이 곱하기 육십], 높이는 횟수의 [i|아이]번째 값에 [20|이십]을 곱한 수예요."],
+    "books-hint-3": ["칠판에 강의 예제를 적었어요. 옮기는 수만 바꿔 봐요."],
+    "praise-side": ["막대를 옆으로 누인 함수를 만들어서, 값마다 아래로 [50|오십]씩 내려가며 그렸어요. 함수 안에서 위를 보고 돌기만 바꾸면 가로 막대가 돼요."],
+    "side-dir": ["막대가 다른 쪽으로 뻗었어요. ([-200|빼기 이백], [y|와이])에서 오른쪽으로 길이만큼, 위로 [30|삼십]만큼이에요. 앞으로 길이, 왼쪽으로 돌고 [30|삼십]이에요."],
+    "side-hint-1": ["가로막대(y, 길이) 함수를 만들어요. 펜을 들고 ([-200|빼기 이백], [y|와이])로 가서 펜을 내려요."],
+    "side-hint-2": ["색칠하면서 두 번: 앞으로 길이, 왼쪽 [90|구십]도, 앞으로 [30|삼십], 왼쪽 [90|구십]도. [i|아이]번째 막대의 [y|와이]는 [100 - i * 50|백 빼기 아이 곱하기 오십]이에요."],
+
+    "done-1": ["오늘은 수를 막대그래프로 그렸어요."],
+    "done-2": ["막대 함수를 값마다 부르고, x를 옮기고, 같은 수를 곱해요."]
+  },
+
+  "lecture": [
+    [{ "say": "greet" }, { "say": "today" }],
+    [
+      { "card": { "title": "막대 하나", "code": "def 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()" } },
+      { "say": "bar-intro" },
+      { "type": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n막대(0, 100)" },
+      { "trace": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n막대(0, 100)" },
+      { "say": "bar-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "읽은 책", "items": ["솔 3권,  빛 5권,  하늘 2권,  별 6권", "i번째 막대의 x:  -150 + i * 50", "높이:  권 수 * 20"] } },
+      { "say": "list-intro" },
+      { "type": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n권수 = [3, 5, 2, 6]\nfor i in range(len(권수)):\n    막대(-150 + i * 50, 권수[i] * 20)" },
+      { "play": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n권수 = [3, 5, 2, 6]\nfor i in range(len(권수)):\n    막대(-150 + i * 50, 권수[i] * 20)" },
+      { "say": "list-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "same-intro" },
+      { "type": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n권수 = [3, 5, 2, 6]\nfor i in range(len(권수)):\n    막대(-150, 권수[i] * 20)" },
+      { "play": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n권수 = [3, 5, 2, 6]\nfor i in range(len(권수)):\n    막대(-150, 권수[i] * 20)" },
+      { "say": "same-after" },
+      {
+        "check": {
+          "title": "확인해요",
+          "text": "x = -150 + i * 50 이면\ni가 2인 막대의 x는?",
+          "ask": "check-ask",
+          "choices": ["-50", "-100"],
+          "answer": 0,
+          "right": [{ "say": "check-right" }],
+          "teach": [{ "say": "check-teach-1" }, { "say": "check-teach-2" }]
+        }
+      }
+    ],
+    [
+      { "clearBoard": true },
+      { "say": "label-intro" },
+      { "type": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n이름들 = [\"솔\", \"빛\", \"하늘\", \"별\"]\n권수 = [3, 5, 2, 6]\nfor i in range(len(권수)):\n    x = -150 + i * 50\n    막대(x, 권수[i] * 20)\n    turtle.penup()\n    turtle.goto(x + 8, -150 + 권수[i] * 20 + 5)\n    turtle.write(권수[i])\n    turtle.goto(x, -175)\n    turtle.write(이름들[i])" },
+      { "play": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n이름들 = [\"솔\", \"빛\", \"하늘\", \"별\"]\n권수 = [3, 5, 2, 6]\nfor i in range(len(권수)):\n    x = -150 + i * 50\n    막대(x, 권수[i] * 20)\n    turtle.penup()\n    turtle.goto(x + 8, -150 + 권수[i] * 20 + 5)\n    turtle.write(권수[i])\n    turtle.goto(x, -175)\n    turtle.write(이름들[i])" },
+      { "say": "label-after" }
+    ],
+    [
+      { "clearBoard": true },
+      { "card": { "title": "따라 쳐요", "code": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n값들 = [4, 7, 5]\nfor i in range(len(값들)):\n    막대(-150 + i * 50, 값들[i] * 20)" } },
+      { "follow": { "code": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n값들 = [4, 7, 5]\nfor i in range(len(값들)):\n    막대(-150 + i * 50, 값들[i] * 20)", "draw": true, "say": ["follow-intro", "follow-done"] } },
+      { "say": "follow-ok" }
+    ],
+    [
+      { "card": { "title": "오늘 배운 것", "items": ["막대 하나를 그리는 함수: 막대(x, 높이)", "i번째 막대: x = -150 + i * 50", "높이: 값 * 20 (모두 같은 수를 곱한다)", "turtle.write(값)으로 수와 이름 쓰기"] } },
+      { "say": "summary" },
+      { "say": "to-predict" }
+    ]
+  ],
+
+  "predict": [
+    {
+      "id": "q1",
+      "explain": "q1-explain",
+      "code": "값들 = [2, 4, 3]\nprint(값들[1] * 20)",
+      "answer": 1,
+      "choices": [
+        { "text": "4", "say": "q1-four" },
+        { "text": "80", "say": "q1-right" },
+        { "text": "40", "say": "q1-index" }
+      ]
+    },
+    {
+      "id": "q2",
+      "explain": "q2-explain",
+      "code": "값들 = [3, 1, 4, 1, 5]\n개수 = 0\nfor i in range(len(값들)):\n    개수 += 1\nprint(개수)",
+      "answer": 0,
+      "choices": [
+        { "text": "5", "say": "q2-right" },
+        { "text": "14", "say": "q2-sum" }
+      ]
+    },
+    {
+      "id": "q3",
+      "explain": "q3-explain",
+      "code": "for i in range(3):\n    print(-150 + i * 50)",
+      "answer": 1,
+      "choices": [
+        { "text": "-150\n-150\n-150", "say": "q3-same" },
+        { "text": "-150\n-100\n-50", "say": "q3-right" }
+      ]
+    }
+  ],
+
+  "tasks": [
+    {
+      "id": "books",
+      "title": "줄넘기 막대그래프",
+      "story": "닷새 동안 줄넘기를 한 횟수(십 번 단위)가 리스트 횟수에 있어요. 날마다 막대 하나씩 막대그래프를 그려요. i번째 막대는 x가 -150 + i * 60이고, 높이는 값에 20을 곱해요. 막대 함수는 시작 코드에 있어요.",
+      "steps": ["for i in range(len(횟수)):", "막대(-150 + i * 60, 횟수[i] * 20)을 불러요."],
+      "start": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n횟수 = [4, 6, 3, 8, 7]\n",
+      "expect": [],
+      "draw": true,
+      "mistakes": [
+        { "draw": "draw-missing", "code": "막대\\(\\s*-150\\s*,", "say": "books-same" },
+        { "draw": "draw-diff", "code": "막대\\(\\s*-150\\s*,", "say": "books-same" },
+        { "draw": "draw-diff", "code": "\\*\\s*50", "say": "books-gap" },
+        { "draw": "draw-diff", "say": "books-scale" },
+        { "draw": "draw-fill", "say": "books-scale" }
+      ],
+      "praise": "praise-books",
+      "solution": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n횟수 = [4, 6, 3, 8, 7]\nfor i in range(len(횟수)):\n    막대(-150 + i * 60, 횟수[i] * 20)",
+      "hints": [
+        { "say": "books-hint-1" },
+        { "say": "books-hint-2" },
+        { "say": "books-hint-3", "card": { "title": "강의에서 본 예제 (정답은 아니에요)", "code": "import turtle\ndef 막대(x, 높이):\n    turtle.penup()\n    turtle.goto(x, -150)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(높이)\n        turtle.left(90)\n    turtle.end_fill()\n권수 = [3, 5, 2, 6]\nfor i in range(len(권수)):\n    막대(-150 + i * 50, 권수[i] * 20)" } }
+      ]
+    }
+  ],
+
+  "challenge": {
+    "id": "side",
+    "title": "심화: 가로 막대그래프",
+    "story": "막대를 옆으로 누인 가로 막대그래프를 그려요. 가로막대(y, 길이)는 (-200, y)에서 오른쪽을 보고, 길이만큼 오른쪽으로, 30만큼 위로 뻗은 네모를 색칠해 그려요. 값들 [5, 9, 3, 7]을 그리는데, i번째 막대의 y는 100 - i * 50이고 길이는 값에 30을 곱해요.",
+    "steps": ["def 가로막대(y, 길이): 펜을 들고 (-200, y)로 가서 펜을 내려요.", "색칠하면서 두 번: 앞으로 길이, 왼쪽 90도, 앞으로 30, 왼쪽 90도.", "for로 값마다 가로막대(100 - i * 50, 값들[i] * 30)."],
+    "start": "import turtle\n값들 = [5, 9, 3, 7]\n",
+    "expect": [],
+    "draw": true,
+    "mistakes": [{ "draw": "draw-diff", "say": "side-dir" }, { "draw": "draw-fill", "say": "side-dir" }],
+    "praise": "praise-side",
+    "solution": "import turtle\n값들 = [5, 9, 3, 7]\ndef 가로막대(y, 길이):\n    turtle.penup()\n    turtle.goto(-200, y)\n    turtle.pendown()\n    turtle.begin_fill()\n    for i in range(2):\n        turtle.forward(길이)\n        turtle.left(90)\n        turtle.forward(30)\n        turtle.left(90)\n    turtle.end_fill()\nfor i in range(len(값들)):\n    가로막대(100 - i * 50, 값들[i] * 30)",
+    "hints": [{ "say": "side-hint-1" }, { "say": "side-hint-2" }]
+  }
+}

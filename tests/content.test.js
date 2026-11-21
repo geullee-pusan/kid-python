@@ -1185,9 +1185,38 @@ const WRONG23 = () => {
   ];
 };
 
+// 단원 24(데이터와 그래프): 모범 답을 조금 고쳐서 만든다.
+const WRONG24 = () => {
+  const s = (missionId, taskId, from, to, kind, say) => [missionId, taskId, swap(main(missionId, taskId), from, to), kind, say];
+  return [
+    s('data-bar', 'books', '막대(-150 + i * 60, 횟수[i] * 20)', '막대(-150, 횟수[i] * 20)', 'mistake', 'books-same'),
+    s('data-bar', 'books', '-150 + i * 60', '-150 + i * 50', 'mistake', 'books-gap'),
+    s('data-bar', 'books', '횟수[i] * 20', '횟수[i]', 'mistake', 'books-scale'),
+    s('data-bar', 'books', '    막대(-150 + i * 60, 횟수[i] * 20)', '    막대(-150 + i * 60, 횟수[i] * 20)\n    turtle.penup()\n    turtle.goto(-150 + i * 60, -175)\n    turtle.write(횟수[i])', 'correct', null),
+    s('data-bar', 'books', 'import turtle\n', 'import turtle\nturtle.fillcolor("orange")\n', 'correct', null),
+    s('data-bar', 'side', '        turtle.forward(길이)\n        turtle.left(90)\n        turtle.forward(30)\n', '        turtle.forward(30)\n        turtle.left(90)\n        turtle.forward(길이)\n', 'mistake', 'side-dir'),
+    s('data-scale', 'fit', '점수들[i] * 칸', '점수들[i]', 'mistake', 'fit-raw'),
+    s('data-scale', 'fit', '칸 = 300 / max(점수들)', '칸 = 300 / 60', 'mistake', 'fit-diff'),
+    s('data-scale', 'tick', 'y = -150 + 값 * 칸', 'y = -150 + 값', 'mistake', 'tick-diff'),
+    s('data-count', 'vote', '개수 = {}\nfor 답 in 답들:\n    if 답 in 개수:\n        개수[답] += 1\n    else:\n        개수[답] = 1\nx = -150\nfor 계절 in 개수:\n    막대(x, 개수[계절] * 40)\n    x += 60', 'x = -220\nfor 답 in 답들:\n    막대(x, 40)\n    x += 35', 'mistake', 'vote-raw'),
+    s('data-count', 'vote', '    x += 60', '', 'mistake', 'vote-same'),
+    s('data-count', 'vote', '개수[계절] * 40', '개수[계절] * 30', 'mistake', 'vote-diff'),
+    s('data-count', 'most', 'print(가장, 개수[가장])', 'print(개수[가장])', 'mistake', 'most-count'),
+    s('data-line', 'plant', 'turtle.penup()\n', '', 'mistake', 'plant-pen'),
+    s('data-line', 'plant', '키[i] * 20', '키[i] * 10', 'mistake', 'plant-diff'),
+    s('data-line', 'two', '    turtle.penup()\n', '', 'mistake', 'two-join'),
+    s('data-mean', 'stat', 'sum(기록) / len(기록)', 'sum(기록) // len(기록)', 'mistake', 'stat-int'),
+    s('data-mean', 'stat', 'sorted(기록)[len(기록) // 2]', '기록[len(기록) // 2]', 'mistake', 'stat-raw'),
+    s('data-mean', 'avg', '평균 * 5)\nturtle.pendown()\nturtle.goto(170, -150 + 평균 * 5)', '평균)\nturtle.pendown()\nturtle.goto(170, -150 + 평균)', 'mistake', 'avg-diff'),
+    s('unit24-review', 'jump', '가장날 = i + 1', '가장날 = i', 'mistake', 'jump-zero'),
+    s('unit24-review', 'pet', '    x += 60', '', 'mistake', 'pet-diff'),
+    s('unit24-review', 'pet', 'import turtle\n', 'import turtle\nturtle.fillcolor("pink")\n', 'correct', null),
+  ];
+};
+
 test('흔한 오답에 의도한 말이 나온다', () => {
   // 여섯째 칸: 모듈 탭들(없으면 문제의 시작 모듈)
-  for (const [missionId, taskId, code, kind, say, modules] of [...WRONG, ...WRONG20(), ...WRONG21(), ...WRONG22(), ...WRONG23(), ...WRONG_REVIEW2(), ...PRACTICE_WRONG]) {
+  for (const [missionId, taskId, code, kind, say, modules] of [...WRONG, ...WRONG20(), ...WRONG21(), ...WRONG22(), ...WRONG23(), ...WRONG24(), ...WRONG_REVIEW2(), ...PRACTICE_WRONG]) {
     const task = allTasks(SCRIPTS[missionId]).find((t) => t.id === taskId);
     assert.ok(task, `${missionId}/${taskId}: 문제가 없어요`);
     const result = grade(task, code, modules ?? task.modules ?? {});
